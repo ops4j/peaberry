@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<project name="peaberry" default="dist">
+
+  <property file="build.properties"/>
+
+  <import file="scm.xml"/>
+  <import file="patch.xml"/>
+
+  <target name="dist" depends="scm"/>
+
+</project>

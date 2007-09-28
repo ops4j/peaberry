@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="scm">
+
+  <target name="scm" depends="init-scm,svn-co-guice,svn-up-guice"/>
+
+  <target name="init-scm">
+    <available file="${guice.src}" type="dir" property="have.guice"/>
+    <available file="${guice.src}/.svn" type="dir" property="have.guice.svn"/>
+  </target>
+
+  <target name="svn-co-guice" unless="have.guice">
+    <java classname="org.tmatesoft.svn.cli.SVN" fork="true">
+      <arg value="co"/>
+      <arg value="${google.guice.repo}/src"/>
+      <arg value="${guice.src}"/>
+      <classpath>
+        <pathelement location="${antlib}/svnkit.jar"/>
+        <pathelement location="${antlib}/svnkit-cli.jar"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="svn-up-guice" if="have.guice.svn">
+    <java classname="org.tmatesoft.svn.cli.SVN" fork="true">
+      <arg value="up"/>
+      <arg value="${guice.src}"/>
+      <classpath>
+        <pathelement location="${antlib}/svnkit.jar"/>
+        <pathelement location="${antlib}/svnkit-cli.jar"/>
+      </classpath>
+    </java>
+  </target>
+
+</project>
