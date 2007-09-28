@@ -21,13 +21,13 @@
     <basename property="name" file="${patchfile}" suffix="txt"/>
     <available file="${name}.java" type="file" property="already.applied">
       <filepath>
-        <dirset dir="${guice.src}"/>
+        <dirset dir="${guice}"/>
       </filepath>
     </available>
   </target>
 
   <target name="apply-patch" unless="already.applied">
-    <patch patchfile="${patchfile}" dir="${guice.src}" strip="1"/>
+    <patch patchfile="${patchfile}" dir="${guice}" strip="0"/>
   </target>
 
 </project>
