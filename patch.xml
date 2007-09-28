@@ -8,14 +8,25 @@
   </taskdef>
 
   <target name="patch">
-    <foreach param="patchfile" target="apply-patch">
+    <foreach param="patchfile" target="do-patch">
       <path>
         <fileset dir="${patches}"/>
       </path>
     </foreach>
   </target>
 
-  <target name="apply-patch">
+  <target name="do-patch" depends="check-patch,apply-patch"/>
+
+  <target name="check-patch">
+    <basename property="name" file="${patchfile}" suffix="txt"/>
+    <available file="${name}.java" type="file" property="already.applied">
+      <filepath>
+        <dirset dir="${guice.src}"/>
+      </filepath>
+    </available>
+  </target>
+
+  <target name="apply-patch" unless="already.applied">
     <patch patchfile="${patchfile}" dir="${guice.src}" strip="1"/>
   </target>
 
