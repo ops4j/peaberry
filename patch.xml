@@ -1,4 +1,22 @@
 <?xml version="1.0"?>
 <project name="patch">
 
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="${antlib}/ant-contrib.jar"/>
+    </classpath>
+  </taskdef>
+
+  <target name="patch">
+    <foreach param="patchfile" target="apply-patch">
+      <path>
+        <fileset dir="${patches}"/>
+      </path>
+    </foreach>
+  </target>
+
+  <target name="apply-patch">
+    <patch patchfile="${patchfile}" dir="${guice.src}" strip="1"/>
+  </target>
+
 </project>

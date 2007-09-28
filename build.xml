@@ -6,6 +6,6 @@
   <import file="scm.xml"/>
   <import file="patch.xml"/>
 
-  <target name="dist" depends="scm"/>
+  <target name="dist" depends="scm,patch"/>
 
 </project>
