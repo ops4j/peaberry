@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <project name="scm">
 
-  <target name="scm" depends="init-scm,fetch-guice"/>
+  <target name="scm" depends="check-guice,fetch-guice"/>
 
-  <target name="init-scm">
+  <target name="check-guice">
     <available file="${guice}/src" type="dir" property="have.guice"/>
   </target>
 

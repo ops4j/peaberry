@@ -11,6 +11,16 @@
     <ant dir="${guice}" target="jar"/>
   </target>
 
+  <target name="clean">
+    <ant dir="${guice}" target="clean"/>
+    <delete dir="${build}"/>
+  </target>
+
+  <target name="wipe">
+    <delete dir="${guice}"/>
+    <delete dir="${build}"/>
+  </target>
+
   <target name="dist" depends="scm,patch,guice,bnd"/>
 
 </project>
