@@ -1,0 +1,24 @@
+Bundle-ClassPath: guice.jar,aopalliance.jar
+
+Include-Resource:\
+ guice.jar=${guice.jar},\
+ aopalliance.jar=${aop.jar}
+
+Import-Package:\
+ !com.google.inject.asm.util,\
+ javax.naming;resolution:=optional,\
+ javax.management;resolution:=optional,\
+ *
+
+-exportcontents:\
+ org.aopalliance.aop,\
+ org.aopalliance.intercept,\
+ com.google.inject,\
+ com.google.inject.binder,\
+ com.google.inject.jndi,\
+ com.google.inject.matcher,\
+ com.google.inject.name,\
+ com.google.inject.spi,\
+ com.google.inject.tools.jmx,\
+ com.google.inject.util
+

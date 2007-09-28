@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<project name="bnd">
+
+  <taskdef resource="aQute/bnd/ant/taskdef.properties">
+    <classpath>
+      <pathelement location="${antlib}/bnd.jar"/>
+    </classpath>
+  </taskdef>
+
+  <target name="bnd">
+    <mkdir dir="${build}"/>
+    <bnd files="peaberry.bnd" output="${build}/peaberry.jar"/>
+  </target>
+
+</project>

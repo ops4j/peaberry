@@ -5,11 +5,12 @@
 
   <import file="scm.xml"/>
   <import file="patch.xml"/>
+  <import file="bnd.xml"/>
 
   <target name="guice">
     <ant dir="${guice}" target="jar"/>
   </target>
 
-  <target name="dist" depends="scm,patch,guice"/>
+  <target name="dist" depends="scm,patch,guice,bnd"/>
 
 </project>
