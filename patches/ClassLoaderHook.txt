@@ -216,10 +216,10 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 357)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -16,7 +16,7 @@
- 
+@@ -17,7 +17,7 @@
  package com.google.inject;
  
+ import com.google.inject.internal.Classes;
 -import com.google.inject.internal.GuiceFastClass;
 +import com.google.inject.internal.GuiceCodeGen;
  import com.google.inject.internal.ReferenceCache;
@@ -247,7 +247,7 @@ Index: src/com/google/inject/InjectorImpl.java
      this.constructionProxyFactory = constructionProxyFactory;
      this.explicitBindings = bindings;
      this.scopes = scopes;
-@@ -910,7 +913,7 @@
+@@ -913,7 +916,7 @@
          };
        }
        else {
@@ -458,7 +458,7 @@ Index: src/com/google/inject/BinderImpl.java
 ===================================================================
 --- src/com/google/inject/BinderImpl.java	(revision 357)
 +++ src/com/google/inject/BinderImpl.java	(working copy)
-@@ -21,6 +21,8 @@
+@@ -20,6 +20,8 @@
  import static com.google.inject.Scopes.SINGLETON;
  import com.google.inject.internal.Annotations;
  import static com.google.inject.internal.Objects.nonNull;
@@ -467,7 +467,7 @@ Index: src/com/google/inject/BinderImpl.java
  import com.google.inject.internal.StackTraceElements;
  import com.google.inject.internal.Stopwatch;
  import com.google.inject.internal.Objects;
-@@ -414,12 +416,28 @@
+@@ -413,12 +415,28 @@
     * @throws IllegalStateException if called more than once
     */
    Injector createInjector() throws CreationException {
