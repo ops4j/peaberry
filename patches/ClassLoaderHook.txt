@@ -196,6 +196,15 @@ Index: src/com/google/inject/InjectorImpl.java
          final FastMethod fastMethod = fastClass.getMethod(method);
  
          this.methodInvoker = new MethodInvoker() {
+@@ -1152,7 +1153,7 @@
+       }
+       finally {
+         // Only remove the context if this call created it.
+-        reference[0] = null;
++        localContext.remove();
+       }
+     }
+     else {
 Index: src/com/google/inject/ProxyFactory.java
 ===================================================================
 --- src/com/google/inject/ProxyFactory.java	(revision 379)
