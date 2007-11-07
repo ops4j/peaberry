@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="guice/src"/>
+	<classpathentry exported="true" kind="lib" path="guice/lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="guice/lib/build/asm-2.2.3.jar"/>
+	<classpathentry kind="lib" path="guice/lib/build/cglib-2.2_beta1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="guice/build/classes"/>
+</classpath>
