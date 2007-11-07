@@ -1,0 +1,372 @@
+Index: src/com/google/inject/Binder.java
+===================================================================
+--- src/com/google/inject/Binder.java	(revision 379)
++++ src/com/google/inject/Binder.java	(working copy)
+@@ -20,6 +20,7 @@
+ import com.google.inject.binder.AnnotatedConstantBindingBuilder;
+ import com.google.inject.binder.LinkedBindingBuilder;
+ import com.google.inject.matcher.Matcher;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.Message;
+ import com.google.inject.spi.TypeConverter;
+ import java.lang.annotation.Annotation;
+@@ -225,6 +226,16 @@
+   AnnotatedConstantBindingBuilder bindConstant();
+ 
+   /**
++   * Binds a binding factory to missing dependencies matched by a matcher.
++   *
++   * @param dependencyMatcher matches missing dependencies the binding factory
++   *     should attempt to satisfy. For example: {@code any()}.
++   * @param bindingFactory factory that can produce bindings on request
++   */
++  void bind(Matcher<? super Dependency<?>> dependencyMatcher,
++      BindingFactory<?> bindingFactory);
++
++  /**
+    * Upon successful creation, the {@link Injector} will inject static fields
+    * and methods in the given classes.
+    *
+Index: src/com/google/inject/InjectorImpl.java
+===================================================================
+--- src/com/google/inject/InjectorImpl.java	(revision 379)
++++ src/com/google/inject/InjectorImpl.java	(working copy)
+@@ -93,6 +93,8 @@
+ 
+   ErrorHandler errorHandler = new InvalidErrorHandler();
+ 
++  MissingDependencyHandler missingDependencyHandler;
++
+   InjectorImpl(ConstructionProxyFactory constructionProxyFactory,
+       Map<Key<?>, BindingImpl<?>> bindings,
+       Map<Class<? extends Annotation>, Scope> scopes,
+@@ -147,6 +149,10 @@
+     this.errorHandler = errorHandler;
+   }
+ 
++  void setMissingDependencyHandler(MissingDependencyHandler dependencyHandler) {
++    this.missingDependencyHandler = dependencyHandler;
++  }
++
+   /**
+    * Gets a binding implementation. First, this checks for an explicit binding.
+    * If no explicit binding is found, it looks for a just-in-time binding.
+@@ -799,20 +805,34 @@
+ 
+       final Key<?> key = Key.get(
+           field.getGenericType(), field, field.getAnnotations(), errorHandler);
+-      factory = SourceProviders.withDefault(StackTraceElements.forMember(field),
+-        new Callable<InternalFactory<?>>() {
+-          public InternalFactory<?> call() throws Exception {
+-            return injector.getInternalFactory(key);
+-          }
++
++      this.injectionPoint = InjectionPoint.newInstance(field,
++          Nullability.forAnnotations(field.getAnnotations()), key, injector);
++
++      // try this at most twice
++      InternalFactory<?> factory = null;
++      for (int i = 0; i < 2; i++) {
++        factory = SourceProviders.withDefault(
++            StackTraceElements.forMember(field),
++            new Callable<InternalFactory<?>>() {
++              public InternalFactory<?> call() throws Exception {
++                return injector.getInternalFactory(key);
++              }
++            }
++        );
++
++        // bail out early if nothing has changed
++        if (factory != null || missingDependencyHandler == null
++            || !missingDependencyHandler.handle(this.injectionPoint)) {
++          break;
+         }
+-      );
++      }
+ 
+       if (factory == null) {
+         throw new MissingDependencyException(key, field);
+       }
+ 
+-      this.injectionPoint = InjectionPoint.newInstance(field,
+-          Nullability.forAnnotations(field.getAnnotations()), key, injector);
++      this.factory = factory;
+     }
+ 
+     public Collection<Dependency<?>> getDependencies() {
+@@ -876,21 +896,33 @@
+   <T> SingleParameterInjector<T> createParameterInjector(
+       final Key<T> key, Member member, int index, Annotation[] annotations)
+       throws MissingDependencyException {
+-    InternalFactory<? extends T> factory =
+-        SourceProviders.withDefault(StackTraceElements.forMember(member),
+-      new Callable<InternalFactory<? extends T>>() {
+-        public InternalFactory<? extends T> call() throws Exception {
+-          return getInternalFactory(key);
+-        }
++
++    InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
++        member, index, Nullability.forAnnotations(annotations), key, this);
++
++    // try this at most twice
++    InternalFactory<? extends T> factory = null;
++    for (int i = 0; i < 2; i++) {
++      factory = SourceProviders.withDefault(
++          StackTraceElements.forMember(member),
++          new Callable<InternalFactory<? extends T>>() {
++            public InternalFactory<? extends T> call() throws Exception {
++              return getInternalFactory(key);
++            }
++          }
++      );
++
++      // bail out early if nothing has changed
++      if (factory != null || missingDependencyHandler == null
++          || !missingDependencyHandler.handle(injectionPoint)) {
++        break;
+       }
+-    );
++    }
+ 
+     if (factory == null) {
+       throw new MissingDependencyException(key, member);
+     }
+ 
+-    InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
+-        member, index, Nullability.forAnnotations(annotations), key, this);
+     return new SingleParameterInjector<T>(injectionPoint, factory);
+   }
+ 
+Index: src/com/google/inject/BindingFactory.java
+===================================================================
+--- src/com/google/inject/BindingFactory.java	(revision 0)
++++ src/com/google/inject/BindingFactory.java	(revision 0)
+@@ -0,0 +1,41 @@
++/**
++ * Copyright (C) 2007 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject;
++
++import com.google.inject.binder.LinkedBindingBuilder;
++import com.google.inject.spi.Dependency;
++
++/**
++ * A factory capable of supplying bindings on request during construction of
++ * the {@code Injector}. Binding factories can be used to integrate service
++ * registries with Guice.
++ *
++ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ */
++public interface BindingFactory<B> {
++
++  /**
++   * Supplies bindings for missing dependencies that extend {@code B}
++   * 
++   * @param <T> a type of dependency this factory can supply
++   * @param dependency the missing dependency that needs a binding
++   * @param linkedBindingBuilder a partially constructed binding
++   * @return true if this factory could supply a binding
++   */
++  <T extends B> boolean bind(Dependency<T> dependency,
++      LinkedBindingBuilder<T> linkedBindingBuilder);
++}
+
+Property changes on: src/com/google/inject/BindingFactory.java
+___________________________________________________________________
+Name: svn:eol-style
+   + native
+
+Index: src/com/google/inject/MissingDependencyHandler.java
+===================================================================
+--- src/com/google/inject/MissingDependencyHandler.java	(revision 0)
++++ src/com/google/inject/MissingDependencyHandler.java	(revision 0)
+@@ -0,0 +1,32 @@
++/**
++ * Copyright (C) 2007 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject;
++
++import com.google.inject.spi.Dependency;
++
++/**
++ * Handles missing dependencies in the Injector.
++ *
++ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ */
++interface MissingDependencyHandler {
++
++  /**
++   * Handles a missing dependency.
++   */
++  boolean handle(Dependency<?> dependency);
++}
+
+Property changes on: src/com/google/inject/MissingDependencyHandler.java
+___________________________________________________________________
+Name: svn:eol-style
+   + native
+
+Index: src/com/google/inject/AbstractModule.java
+===================================================================
+--- src/com/google/inject/AbstractModule.java	(revision 379)
++++ src/com/google/inject/AbstractModule.java	(working copy)
+@@ -21,6 +21,7 @@
+ import com.google.inject.binder.LinkedBindingBuilder;
+ import com.google.inject.internal.Objects;
+ import com.google.inject.matcher.Matcher;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.SourceProviders;
+ import com.google.inject.spi.TypeConverter;
+ import java.lang.annotation.Annotation;
+@@ -120,6 +121,15 @@
+   }
+ 
+   /**
++   * @see Binder#bind(Matcher, BindingFactory)
++   */
++  protected void bind(Matcher<? super Dependency<?>> dependencyMatcher,
++      BindingFactory<?> bindingFactory)
++  {
++    binder.bind(dependencyMatcher, bindingFactory);
++  }
++
++  /**
+    * @see Binder#install(Module)
+    */
+   protected void install(Module module) {
+Index: src/com/google/inject/BinderImpl.java
+===================================================================
+--- src/com/google/inject/BinderImpl.java	(revision 379)
++++ src/com/google/inject/BinderImpl.java	(working copy)
+@@ -18,6 +18,7 @@
+ 
+ import com.google.inject.InjectorImpl.SingleMemberInjector;
+ import static com.google.inject.Scopes.SINGLETON;
++import com.google.inject.binder.LinkedBindingBuilder;
+ import com.google.inject.internal.Annotations;
+ import static com.google.inject.internal.Objects.nonNull;
+ import com.google.inject.internal.StackTraceElements;
+@@ -27,6 +28,7 @@
+ import com.google.inject.matcher.Matcher;
+ import com.google.inject.matcher.Matchers;
+ import com.google.inject.matcher.AbstractMatcher;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.Message;
+ import com.google.inject.spi.SourceProviders;
+ import com.google.inject.spi.TypeConverter;
+@@ -69,6 +71,8 @@
+       = new ArrayList<ConstantBindingBuilderImpl>();
+   final Map<Class<? extends Annotation>, Scope> scopes =
+       new HashMap<Class<? extends Annotation>, Scope>();
++  final List<BindingFactory<?>> bindingFactories
++      = new ArrayList<BindingFactory<?>>();
+ 
+   final List<StaticInjection> staticInjections
+       = new ArrayList<StaticInjection>();
+@@ -363,6 +367,24 @@
+     return constantBuilder;
+   }
+ 
++  @SuppressWarnings("unchecked")
++  public void bind(final Matcher<? super Dependency<?>> dependencyMatcher,
++      final BindingFactory<?> bindingFactory) {
++
++    bindingFactories.add(new BindingFactory() {
++      public boolean bind(Dependency dependency, LinkedBindingBuilder lbb) {
++        if (dependencyMatcher.matches((Dependency<?>)dependency)) {
++          try {
++            return bindingFactory.bind(dependency, lbb);
++          } catch (Exception e) {
++            addError(e);
++          }
++        }
++        return false;
++      }
++    });
++  }
++
+   public void requestStaticInjection(Class<?>... types) {
+     staticInjections.add(new StaticInjection(source(), types));
+   }
+@@ -442,10 +464,23 @@
+ 
+     stopwatch.resetAndLog(logger, "Binding indexing");
+ 
+-    for (CreationListener creationListener : creationListeners) {
+-      creationListener.notify(injector);
++    if (bindingFactories.size() > 0) {
++      injector.setMissingDependencyHandler(bindingFactoryHandler);
+     }
+ 
++    while (creationListeners.size() > 0) {
++      // need to copy list as we may be adding bindings during this loop
++      CreationListener[] cachedCreationListeners = creationListeners.toArray(
++          new CreationListener[creationListeners.size()]);
++
++      creationListeners.clear();
++      for (CreationListener creationListener : cachedCreationListeners) {
++        creationListener.notify(injector);
++      }
++    }
++
++    injector.setMissingDependencyHandler(null);
++
+     stopwatch.resetAndLog(logger, "Validation");
+ 
+     for (StaticInjection staticInjection : staticInjections) {
+@@ -622,6 +657,29 @@
+   }
+ 
+   /**
++   * Handles missing dependencies by consulting binding factories.
++   */
++  MissingDependencyHandler bindingFactoryHandler =
++      new MissingDependencyHandler() {
++
++    @SuppressWarnings("unchecked")
++    public boolean handle(Dependency<?> dependency) {
++      BindingBuilderImpl<?> builder = bind(dependency.getKey());
++
++      // search in order of registration...
++      for (BindingFactory bindingFactory : bindingFactories) {
++        if (bindingFactory.bind(dependency, builder)) {
++          // register this as a fixed binding
++          putBinding(builder.build(injector));
++          return true;
++        }
++      }
++
++      return false;
++    }
++  };
++
++  /**
+    * A requested static injection.
+    */
+   class StaticInjection {
