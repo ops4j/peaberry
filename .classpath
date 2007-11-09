@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="guice/src"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="guice/build/classes" path="guice/src"/>
+	<classpathentry kind="src" output="guice/build/test" path="guice/test"/>
 	<classpathentry exported="true" kind="lib" path="guice/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="guice/lib/build/asm-2.2.3.jar"/>
 	<classpathentry kind="lib" path="guice/lib/build/cglib-2.2_beta1.jar"/>
+	<classpathentry kind="lib" path="guice/lib/build/spring-beans.jar"/>
+	<classpathentry kind="lib" path="guice/lib/build/spring-core.jar"/>
+	<classpathentry kind="lib" path="guice/lib/build/junit.jar"/>
+	<classpathentry kind="lib" path="lib/osgi.core.jar"/>
+	<classpathentry kind="lib" path="lib/osgi.cmpn.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="guice/build/classes"/>
+	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -11,6 +11,11 @@
     <ant dir="${guice}" target="test.dist"/>
   </target>
 
+  <target name="compile">
+    <mkdir dir="${build}/classes"/>
+    <javac srcdir="${src}" destdir="${build}/classes" classpath="${build.classpath}"/>
+  </target>
+
   <target name="clean">
     <ant dir="${guice}" target="clean"/>
     <delete dir="${build}"/>
@@ -21,6 +26,6 @@
     <delete dir="${build}"/>
   </target>
 
-  <target name="dist" depends="scm,patch,guice,bnd"/>
+  <target name="dist" depends="scm,patch,guice,compile,bnd"/>
 
 </project>

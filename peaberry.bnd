@@ -1,13 +1,19 @@
-Bundle-ClassPath: guice.jar,aopalliance.jar
+Bundle-ClassPath: aopalliance.jar,guice.jar,.
 
 Include-Resource:\
- guice.jar=${guice.jar},\
- aopalliance.jar=${aop.jar}
+ aopalliance.jar=${aop.jar},\
+ guice.jar=${guice.jar}
+
+Private-Package:\
+ org.osgi.util.tracker,\
+ com.google.inject.osgi
 
 Import-Package:\
  !com.google.inject.asm.util,\
  javax.naming;resolution:=optional,\
  javax.management;resolution:=optional,\
+ org.osgi.util.tracker; version="[1.3.0, 2.0.0)",\
+ org.osgi.framework; version="[1.3.0, 2.0.0)",\
  *
 
 -exportcontents:\
@@ -18,7 +24,15 @@ Import-Package:\
  com.google.inject.jndi,\
  com.google.inject.matcher,\
  com.google.inject.name,\
+ com.google.inject.osgi,\
  com.google.inject.spi,\
  com.google.inject.tools.jmx,\
  com.google.inject.util
+
+-removeheaders:\
+ Private-Package,\
+ Include-Resource,\
+ Bnd-LastModified,\
+ Ignore-Package,\
+ Tool
 
