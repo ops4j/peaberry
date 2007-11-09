@@ -8,7 +8,7 @@
   <import file="bnd.xml"/>
 
   <target name="guice">
-    <ant dir="${guice}" target="jar"/>
+    <ant dir="${guice}" target="test.dist"/>
   </target>
 
   <target name="clean">
