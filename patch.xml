@@ -10,7 +10,7 @@
   <target name="patch">
     <foreach param="patchfile" target="do-patch">
       <path>
-        <fileset dir="${patches}"/>
+        <fileset dir="${patch}"/>
       </path>
     </foreach>
   </target>
