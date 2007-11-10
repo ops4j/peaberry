@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<project name="doc">
+
+  <target name="doc">
+    <mkdir dir="${build}/doc"/>
+    <javadoc destdir="${build}/doc" classpath="${buildjars}" sourcepath="${src}"
+        windowtitle="Peaberry - Guice injection of OSGi services">
+      <link href="http://google-guice.googlecode.com/svn/trunk/javadoc"/>
+    </javadoc>
+  </target>
+
+</project>

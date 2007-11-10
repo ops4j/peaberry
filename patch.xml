@@ -13,6 +13,12 @@
         <fileset dir="${patch}"/>
       </path>
     </foreach>
+    <delete verbose="true">
+      <fileset dir="${guice}/src" includes="**/*.java">
+        <size value="0"/>
+      </fileset>
+      <fileset dir="${guice}/src" includes="**/package-info.java"/>
+    </delete>
   </target>
 
   <target name="do-patch" depends="check-patch,apply-patch"/>

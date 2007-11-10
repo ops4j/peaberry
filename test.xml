@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project name="test">
+
+  <target name="felix">
+    <delete dir="${cache.dir}"/>
+    <java fork="true" jar="${testlib}/felix.jar" timeout="${timeout}">
+      <sysproperty key="felix.config.properties" value="file:test/felix.properties"/>
+      <syspropertyset>
+        <propertyref name="build"/>
+        <propertyref name="cache.dir"/>
+        <propertyref name="peaberry.jar"/>
+        <propertyref name="director.jar"/>
+      </syspropertyset>
+    </java>
+  </target>
+
+  <target name="test.peaberry" depends="director,felix"/>
+
+</project>

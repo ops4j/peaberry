@@ -10,8 +10,8 @@ Private-Package:\
 
 Import-Package:\
  !com.google.inject.asm.util,\
- javax.naming;resolution:=optional,\
- javax.management;resolution:=optional,\
+ javax.naming; resolution:=optional,\
+ javax.management; resolution:=optional,\
  org.osgi.util.tracker; version="[1.3.0, 2.0.0)",\
  org.osgi.framework; version="[1.3.0, 2.0.0)",\
  *

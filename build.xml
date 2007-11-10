@@ -1,31 +1,42 @@
 <?xml version="1.0"?>
-<project name="peaberry" default="dist">
+<project name="peaberry" default="peaberry">
 
   <property file="build.properties"/>
 
   <import file="scm.xml"/>
   <import file="patch.xml"/>
   <import file="bnd.xml"/>
+  <import file="test.xml"/>
+  <import file="doc.xml"/>
 
   <target name="guice">
+    <ant dir="${guice}" target="jar"/>
+  </target>
+
+  <target name="test.guice">
     <ant dir="${guice}" target="test.dist"/>
   </target>
 
   <target name="compile">
     <mkdir dir="${build}/classes"/>
-    <javac srcdir="${src}" destdir="${build}/classes" classpath="${build.classpath}"/>
+    <javac srcdir="${src}" destdir="${build}/classes" classpath="${buildjars}"/>
+  </target>
+
+  <target name="test.compile">
+    <mkdir dir="${build}/test"/>
+    <javac srcdir="${test}" destdir="${build}/test" classpath="${testjars}"/>
   </target>
 
   <target name="clean">
-    <ant dir="${guice}" target="clean"/>
     <delete dir="${build}"/>
   </target>
 
-  <target name="wipe">
+  <target name="wipe" depends="clean">
     <delete dir="${guice}"/>
-    <delete dir="${build}"/>
   </target>
 
-  <target name="dist" depends="scm,patch,guice,compile,bnd"/>
+  <target name="dist" depends="scm,patch,guice,peaberry,doc"/>
+
+  <target name="test.dist" depends="dist,test.guice,test.peaberry"/>
 
 </project>

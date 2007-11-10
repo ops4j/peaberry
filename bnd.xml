@@ -7,9 +7,14 @@
     </classpath>
   </taskdef>
 
-  <target name="bnd">
-    <mkdir dir="${build}"/>
-    <bnd files="peaberry.bnd" classpath="${util.jar},${build}/classes" output="${build}/peaberry.jar"/>
+  <target name="peaberry" depends="compile">
+    <mkdir dir="${build}/dist"/>
+    <bnd files="peaberry.bnd" classpath="${util.jar},${build}/classes" output="${peaberry.jar}"/>
+  </target>
+
+  <target name="director" depends="test.compile">
+    <mkdir dir="${build}/test"/>
+    <bnd files="director.bnd" classpath="${build}/test" output="${director.jar}"/>
   </target>
 
 </project>
