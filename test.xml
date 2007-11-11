@@ -10,6 +10,7 @@
         <propertyref name="cache.dir"/>
         <propertyref name="peaberry.jar"/>
         <propertyref name="director.jar"/>
+        <propertyref name="testlib"/>
       </syspropertyset>
     </java>
   </target>

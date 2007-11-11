@@ -14,7 +14,7 @@
 
   <target name="director" depends="test.compile">
     <mkdir dir="${build}/test"/>
-    <bnd files="director.bnd" classpath="${build}/test" output="${director.jar}"/>
+    <bnd files="director.bnd" classpath="${build}/test,${guice}/build/test" output="${director.jar}"/>
   </target>
 
 </project>

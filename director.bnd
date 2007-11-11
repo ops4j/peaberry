@@ -4,9 +4,10 @@ Include-Resource:\
  junit.jar=${junit.jar}
 
 Private-Package:\
- com.google.inject.osgi.test
+ com.google.inject.*
 
 Import-Package:\
+ javax.sql; resolution:=optional,\
  javax.swing*; resolution:=optional,\
  org.osgi.util.tracker; version="[1.3.0, 2.0.0)",\
  org.osgi.framework; version="[1.3.0, 2.0.0)",\
