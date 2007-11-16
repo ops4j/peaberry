@@ -5,15 +5,15 @@ Include-Resource:\
  guice.jar=${guice.jar}
 
 Private-Package:\
- org.osgi.util.tracker,\
- com.google.inject.osgi
+ com.google.inject.osgi,\
+ org.osgi.util.tracker
 
 Import-Package:\
  !com.google.inject.asm.util,\
- javax.naming; resolution:=optional,\
  javax.management; resolution:=optional,\
- org.osgi.util.tracker; version="[1.3.0, 2.0.0)",\
+ javax.naming; resolution:=optional,\
  org.osgi.framework; version="[1.3.0, 2.0.0)",\
+ org.osgi.util.tracker; version="[1.3.0, 2.0.0)",\
  *
 
 -exportcontents:\
@@ -30,9 +30,9 @@ Import-Package:\
  com.google.inject.util
 
 -removeheaders:\
- Private-Package,\
- Include-Resource,\
  Bnd-LastModified,\
  Ignore-Package,\
+ Include-Resource,\
+ Private-Package,\
  Tool
 
