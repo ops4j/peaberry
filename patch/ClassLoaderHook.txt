@@ -142,7 +142,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +  public static Enhancer getEnhancer(final Class<?> type) {
 +    Enhancer enhancer = new Enhancer() {
 +        protected ClassLoader getDefaultClassLoader() {
-+          return getClassLoader(type);
++          return GuiceCodeGen.getClassLoader(type);
 +        }
 +      };
 +
