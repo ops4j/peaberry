@@ -15,6 +15,7 @@
 
   <target name="test.guice">
     <echo message="Skipping Guice unit tests"/>
+    <mkdir dir="${guice}/build/test"/>
 <!--
     <ant dir="${guice}" target="test.dist"/>
 -->
