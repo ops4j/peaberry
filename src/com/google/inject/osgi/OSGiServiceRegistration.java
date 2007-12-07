@@ -34,7 +34,7 @@ import com.google.inject.Injector;
  * <pre>
  *     {@literal @}Inject
  *     {@literal @}OSGiServiceRegistration
- *     MyService registered;
+ *     MyService basicService;
  * </pre>
  * 
  * <pre>
@@ -43,15 +43,31 @@ import com.google.inject.Injector;
  *       value = &quot;lang=fr,qos=3&quot;,
  *       interfaces = {MyService.class, MyExtraService.class}
  *     )
- *     MyService customized;
+ *     MyService customizedService;
  * </pre>
  * 
  * <pre>
- *     Peaberry.disableOSGiService(registered);
+ *     {@literal @}Inject
+ *     Peaberry peaberry;
+ * 
+ *     public void suspendMyService() {
+ *       peaberry.suspendService(customizedService);
+ *     }
+ * 
+ *     public void resumeMyService() {
+ *       peaberry.resumeService(customizedService);
+ *     }
  * </pre>
  * 
  * <pre>
- *     Peaberry.setOSGiServiceProperties(customized, newProperties);
+ *     {@literal @}Inject
+ *     Peaberry peaberry;
+ * 
+ *     public Properties updateMyServiceSettings(Properties newSettings) {
+ *       Properties oldSettings = peaberry.getServiceProperties(basicService);
+ *       peaberry.setServiceProperties(basicService, newSettings);
+ *       return oldSettings;
+ *     }
  * </pre>
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)

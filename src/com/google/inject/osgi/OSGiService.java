@@ -65,7 +65,7 @@ import com.google.inject.Injector;
  * <pre>
  *     {@literal @}Inject
  *     {@literal @}OSGiService(&quot;(code=simple)&quot;)
- *     MyService ldapFiltering;
+ *     MyService ldapFiltered;
  * </pre>
  * 
  * <pre>
@@ -77,7 +77,8 @@ import com.google.inject.Injector;
  * <pre>
  *     {@literal @}Inject
  *     {@literal @}OSGiService(interfaces = MyService.class)
- *     MyServiceTrackerCustomizer listener;
+ *     {@literal @}ImplementedBy(MyServiceTrackerCustomizer.class)
+ *     ServiceTrackerCustomizer listener;
  * </pre>
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
