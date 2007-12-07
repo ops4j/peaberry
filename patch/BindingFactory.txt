@@ -232,15 +232,14 @@ Index: src/com/google/inject/AbstractModule.java
  import com.google.inject.spi.SourceProviders;
  import com.google.inject.spi.TypeConverter;
  import java.lang.annotation.Annotation;
-@@ -120,6 +121,15 @@
+@@ -120,6 +121,14 @@
    }
  
    /**
 +   * @see Binder#bind(Matcher, BindingFactory)
 +   */
 +  protected void bind(Matcher<? super Dependency<?>> dependencyMatcher,
-+      BindingFactory<?> bindingFactory)
-+  {
++      BindingFactory<?> bindingFactory) {
 +    binder.bind(dependencyMatcher, bindingFactory);
 +  }
 +
