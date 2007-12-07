@@ -20,36 +20,35 @@ import java.util.Dictionary;
 import com.google.inject.Module;
 
 /**
- * Helper methods to manage registered OSGi services, a default implementation
- * is bound to this interface in the {@link Module} supplied with the Peaberry
- * bundle.
+ * Helper to manage registered OSGi services, a default implementation is bound
+ * to this interface in the {@link Module} supplied with the Peaberry bundle.
  * 
  * <pre>
  *     {@literal @}Inject
- *     Peaberry peaberry;
+ *     OSGiServiceRegistry registry;
  * 
  *     {@literal @}Inject
  *     {@literal @}OSGiServiceRegistration
  *     MyService basicService;
  * 
  *     public void suspendMyService() {
- *       peaberry.unregisterService(basicService);
+ *       registry.unregisterService(basicService);
  *     }
  * 
  *     public void resumeMyService() {
- *       peaberry.registerService(basicService);
+ *       registry.registerService(basicService);
  *     }
  * 
  *     public Dictionary changeMyServiceSettings(Dictionary newSettings) {
- *       Dictionary oldSettings = peaberry.getServiceProperties(basicService);
- *       peaberry.setServiceProperties(basicService, newSettings);
+ *       Dictionary oldSettings = registry.getServiceProperties(basicService);
+ *       registry.setServiceProperties(basicService, newSettings);
  *       return oldSettings;
  *     }
  * </pre>
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface Peaberry {
+public interface OSGiServiceRegistry {
   /**
    * Register this OSGi service with the Service Registry
    * 

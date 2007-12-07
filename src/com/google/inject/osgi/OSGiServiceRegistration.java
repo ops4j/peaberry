@@ -28,8 +28,7 @@ import com.google.inject.Injector;
  * Annotates members of your implementation class (constructors, methods and
  * fields) where the {@link Injector} should take the injected implementation
  * and register it with the framework as an OSGi service. Registered services
- * can be controlled by using the injected member with the {@link Peaberry}
- * helper.
+ * can be managed by using the {@link OSGiServiceRegistry} helper.
  * 
  * <pre>
  *     {@literal @}Inject
