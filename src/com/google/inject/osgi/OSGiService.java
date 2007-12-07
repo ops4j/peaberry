@@ -64,7 +64,7 @@ import com.google.inject.Injector;
  * 
  * <pre>
  *     {@literal @}Inject
- *     {@literal @}OSGiService(&quot;(code=simple)&quot;)
+ *     {@literal @}OSGiService(&quot;(lang=fr)&quot;)
  *     MyService ldapFiltered;
  * </pre>
  * 

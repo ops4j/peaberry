@@ -29,7 +29,7 @@ import com.google.inject.Injector;
  * fields) where the {@link Injector} should take the injected implementation
  * and register it with the framework as an OSGi service. Registered services
  * can be controlled by using the injected member with the {@link Peaberry}
- * helper class.
+ * helper.
  * 
  * <pre>
  *     {@literal @}Inject
@@ -39,35 +39,16 @@ import com.google.inject.Injector;
  * 
  * <pre>
  *     {@literal @}Inject
+ *     {@literal @}OSGiServiceRegistration(&quot;lang=fr,qos=3&quot;)
+ *     MyService ldapFiltered;
+ * </pre>
+ * 
+ * <pre>
+ *     {@literal @}Inject
  *     {@literal @}OSGiServiceRegistration(
- *       value = &quot;lang=fr,qos=3&quot;,
- *       interfaces = {MyService.class, MyExtraService.class}
+ *       interfaces = {MyService.class, MySpecialisedService.class}
  *     )
- *     MyService customizedService;
- * </pre>
- * 
- * <pre>
- *     {@literal @}Inject
- *     Peaberry peaberry;
- * 
- *     public void suspendMyService() {
- *       peaberry.suspendService(customizedService);
- *     }
- * 
- *     public void resumeMyService() {
- *       peaberry.resumeService(customizedService);
- *     }
- * </pre>
- * 
- * <pre>
- *     {@literal @}Inject
- *     Peaberry peaberry;
- * 
- *     public Properties updateMyServiceSettings(Properties newSettings) {
- *       Properties oldSettings = peaberry.getServiceProperties(basicService);
- *       peaberry.setServiceProperties(basicService, newSettings);
- *       return oldSettings;
- *     }
+ *     MyService customInterface;
  * </pre>
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)

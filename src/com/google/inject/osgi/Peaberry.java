@@ -16,8 +16,75 @@
 
 package com.google.inject.osgi;
 
+import java.util.Dictionary;
+import com.google.inject.Module;
+
 /**
+ * Helper methods to manage registered OSGi services, a default implementation
+ * is bound to this interface in the {@link Module} supplied with the Peaberry
+ * bundle.
+ * 
+ * <pre>
+ *     {@literal @}Inject
+ *     Peaberry peaberry;
+ * 
+ *     {@literal @}Inject
+ *     {@literal @}OSGiServiceRegistration
+ *     MyService basicService;
+ * 
+ *     public void suspendMyService() {
+ *       peaberry.unregisterService(basicService);
+ *     }
+ * 
+ *     public void resumeMyService() {
+ *       peaberry.registerService(basicService);
+ *     }
+ * 
+ *     public Dictionary changeMyServiceSettings(Dictionary newSettings) {
+ *       Dictionary oldSettings = peaberry.getServiceProperties(basicService);
+ *       peaberry.setServiceProperties(basicService, newSettings);
+ *       return oldSettings;
+ *     }
+ * </pre>
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class Peaberry {
+public interface Peaberry {
+  /**
+   * Register this OSGi service with the Service Registry
+   * 
+   * @param service injected {@literal @}OSGiServiceRegistration member
+   */
+  void registerService(Object service);
+
+  /**
+   * Unregister this OSGi service from the Service Registry
+   * 
+   * @param service injected {@literal @}OSGiServiceRegistration member
+   */
+  void unregisterService(Object service);
+
+  /**
+   * Is this OSGi service registered with the Service Registry
+   * 
+   * @param service injected {@literal @}OSGiServiceRegistration member
+   * @return true if the service is registered, otherwise false
+   */
+  boolean isServiceRegistered(Object service);
+
+  /**
+   * Retrieve the current properties for this OSGi service
+   * 
+   * @param service injected {@literal @}OSGiServiceRegistration member
+   * @return dictionary of OSGi service properties
+   */
+  Dictionary<?, ?> getServiceProperties(Object service);
+
+  /**
+   * Update the registered properties for this OSGi service
+   * 
+   * @param service injected {@literal @}OSGiServiceRegistration member
+   * @param properties dictionary of OSGi service properties
+   */
+  void setServiceProperties(Object service, Dictionary<?, ?> properties);
 }
