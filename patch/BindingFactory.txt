@@ -1,6 +1,6 @@
 Index: src/com/google/inject/Binder.java
 ===================================================================
---- src/com/google/inject/Binder.java	(revision 379)
+--- src/com/google/inject/Binder.java	(revision 390)
 +++ src/com/google/inject/Binder.java	(working copy)
 @@ -20,6 +20,7 @@
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
@@ -29,7 +29,7 @@ Index: src/com/google/inject/Binder.java
     *
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 379)
+--- src/com/google/inject/InjectorImpl.java	(revision 390)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -93,6 +93,8 @@
  
@@ -51,39 +51,33 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Gets a binding implementation. First, this checks for an explicit binding.
     * If no explicit binding is found, it looks for a just-in-time binding.
-@@ -799,20 +805,34 @@
+@@ -799,20 +805,31 @@
  
        final Key<?> key = Key.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
 -      factory = SourceProviders.withDefault(StackTraceElements.forMember(field),
--        new Callable<InternalFactory<?>>() {
--          public InternalFactory<?> call() throws Exception {
--            return injector.getInternalFactory(key);
--          }
++      Object source = StackTraceElements.forMember(field);
++      Callable<InternalFactory<?>> lookupCall =
+         new Callable<InternalFactory<?>>() {
+           public InternalFactory<?> call() throws Exception {
+             return injector.getInternalFactory(key);
+           }
+-        }
+-      );
++        };
+ 
++      InternalFactory<?> factory =
++          SourceProviders.withDefault(source, lookupCall);
 +
 +      this.injectionPoint = InjectionPoint.newInstance(field,
 +          Nullability.forAnnotations(field.getAnnotations()), key, injector);
 +
-+      // try this at most twice
-+      InternalFactory<?> factory = null;
-+      for (int i = 0; i < 2; i++) {
-+        factory = SourceProviders.withDefault(
-+            StackTraceElements.forMember(field),
-+            new Callable<InternalFactory<?>>() {
-+              public InternalFactory<?> call() throws Exception {
-+                return injector.getInternalFactory(key);
-+              }
-+            }
-+        );
-+
-+        // bail out early if nothing has changed
-+        if (factory != null || missingDependencyHandler == null
-+            || !missingDependencyHandler.handle(this.injectionPoint)) {
-+          break;
-         }
--      );
++      // try to handle missing dependencies and check again...
++      if (null == factory && null != missingDependencyHandler &&
++          missingDependencyHandler.handle(injectionPoint)) {
++        factory = SourceProviders.withDefault(source, lookupCall);
 +      }
- 
++
        if (factory == null) {
          throw new MissingDependencyException(key, field);
        }
@@ -94,40 +88,34 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -876,21 +896,33 @@
+@@ -876,21 +893,30 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Key<T> key, Member member, int index, Annotation[] annotations)
        throws MissingDependencyException {
 -    InternalFactory<? extends T> factory =
 -        SourceProviders.withDefault(StackTraceElements.forMember(member),
--      new Callable<InternalFactory<? extends T>>() {
--        public InternalFactory<? extends T> call() throws Exception {
--          return getInternalFactory(key);
--        }
++    Object source = StackTraceElements.forMember(member);
++    Callable<InternalFactory<? extends T>> lookupCall =
+       new Callable<InternalFactory<? extends T>>() {
+         public InternalFactory<? extends T> call() throws Exception {
+           return getInternalFactory(key);
+         }
+-      }
+-    );
++      };
+ 
++    InternalFactory<? extends T> factory =
++        SourceProviders.withDefault(source, lookupCall);
 +
 +    InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
 +        member, index, Nullability.forAnnotations(annotations), key, this);
 +
-+    // try this at most twice
-+    InternalFactory<? extends T> factory = null;
-+    for (int i = 0; i < 2; i++) {
-+      factory = SourceProviders.withDefault(
-+          StackTraceElements.forMember(member),
-+          new Callable<InternalFactory<? extends T>>() {
-+            public InternalFactory<? extends T> call() throws Exception {
-+              return getInternalFactory(key);
-+            }
-+          }
-+      );
-+
-+      // bail out early if nothing has changed
-+      if (factory != null || missingDependencyHandler == null
-+          || !missingDependencyHandler.handle(injectionPoint)) {
-+        break;
-       }
--    );
++    // try to handle missing dependencies and check again...
++    if (null == factory && null != missingDependencyHandler &&
++        missingDependencyHandler.handle(injectionPoint)) {
++      factory = SourceProviders.withDefault(source, lookupCall);
 +    }
- 
++
      if (factory == null) {
        throw new MissingDependencyException(key, member);
      }
@@ -234,7 +222,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/AbstractModule.java
 ===================================================================
---- src/com/google/inject/AbstractModule.java	(revision 379)
+--- src/com/google/inject/AbstractModule.java	(revision 390)
 +++ src/com/google/inject/AbstractModule.java	(working copy)
 @@ -21,6 +21,7 @@
  import com.google.inject.binder.LinkedBindingBuilder;
@@ -262,7 +250,7 @@ Index: src/com/google/inject/AbstractModule.java
    protected void install(Module module) {
 Index: src/com/google/inject/BinderImpl.java
 ===================================================================
---- src/com/google/inject/BinderImpl.java	(revision 379)
+--- src/com/google/inject/BinderImpl.java	(revision 390)
 +++ src/com/google/inject/BinderImpl.java	(working copy)
 @@ -18,6 +18,7 @@
  
