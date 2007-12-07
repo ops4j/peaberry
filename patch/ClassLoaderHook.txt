@@ -178,7 +178,7 @@ Index: src/com/google/inject/InjectorImpl.java
  import com.google.inject.internal.ReferenceCache;
  import com.google.inject.internal.StackTraceElements;
  import com.google.inject.internal.ToStringBuilder;
-@@ -945,7 +945,8 @@
+@@ -939,7 +939,8 @@
          };
        }
        else {
@@ -188,7 +188,7 @@ Index: src/com/google/inject/InjectorImpl.java
          final FastMethod fastMethod = fastClass.getMethod(method);
  
          this.methodInvoker = new MethodInvoker() {
-@@ -1184,7 +1185,7 @@
+@@ -1178,7 +1179,7 @@
        }
        finally {
          // Only remove the context if this call created it.
