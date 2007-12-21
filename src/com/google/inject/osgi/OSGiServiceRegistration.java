@@ -66,4 +66,9 @@ public @interface OSGiServiceRegistration {
    * Customized service API
    */
   Class<?>[] interfaces() default {};
+
+  /**
+   * Register service as soon as it is injected?
+   */
+  boolean registerOnInject() default true;
 }
