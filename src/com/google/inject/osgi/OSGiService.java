@@ -88,6 +88,7 @@ import com.google.inject.Injector;
 })
 @Retention(RUNTIME)
 public @interface OSGiService {
+
   /**
    * RFC-1960 (LDAP) filter
    */

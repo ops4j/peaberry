@@ -49,6 +49,7 @@ import com.google.inject.Module;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface OSGiServiceRegistry {
+
   /**
    * Register this OSGi service with the Service Registry
    * 
@@ -64,12 +65,20 @@ public interface OSGiServiceRegistry {
   void unregisterService(Object service);
 
   /**
-   * Is this OSGi service registered with the Service Registry
+   * Is this OSGi service registered with the Service Registry?
    * 
    * @param service injected {@literal @}OSGiServiceRegistration member
    * @return true if the service is registered, otherwise false
    */
   boolean isServiceRegistered(Object service);
+
+  /**
+   * Is this OSGi service being used?
+   * 
+   * @param service injected {@literal @}OSGiServiceRegistration member
+   * @return true if the service is being used, otherwise false
+   */
+  boolean isServiceInUse(Object service);
 
   /**
    * Retrieve the current properties for this OSGi service

@@ -57,6 +57,7 @@ import com.google.inject.Injector;
 })
 @Retention(RUNTIME)
 public @interface OSGiServiceRegistration {
+
   /**
    * RFC-1960 (LDAP) filter
    */
@@ -68,7 +69,7 @@ public @interface OSGiServiceRegistration {
   Class<?>[] interfaces() default {};
 
   /**
-   * Register service as soon as it is injected?
+   * Service starts as registered?
    */
-  boolean registerOnInject() default true;
+  boolean registered() default true;
 }
