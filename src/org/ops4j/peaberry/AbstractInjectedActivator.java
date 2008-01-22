@@ -1,4 +1,4 @@
-package com.google.inject.osgi;
+package org.ops4j.peaberry;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

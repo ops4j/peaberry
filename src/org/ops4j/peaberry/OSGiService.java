@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.osgi;
+package org.ops4j.peaberry;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -22,33 +22,64 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Injector;
 
 /**
  * Annotates members of your implementation class (constructors, methods and
- * fields) where the {@link Injector} should take the injected implementation
- * and register it with the framework as an OSGi service. Registered services
- * can be managed by using the {@link OSGiServiceRegistry} helper.
+ * fields) where the {@link Injector} should either inject an OSGi service
+ * proxy, or a {@link ServiceTrackerCustomizer} implementation, backed by a
+ * {@link ServiceTracker}.
  * 
  * <pre>
  *     {@literal @}Inject
- *     {@literal @}OSGiServiceRegistration
- *     MyService basicService;
+ *     {@literal @}OSGiService
+ *     MyService zeroToOne;
  * </pre>
  * 
  * <pre>
  *     {@literal @}Inject
- *     {@literal @}OSGiServiceRegistration(&quot;lang=fr,qos=3&quot;)
+ *     {@literal @}OSGiService
+ *     Iterable&lt;MyService&gt; zeroToMany;
+ * </pre>
+ * 
+ * <pre>
+ *     {@literal @}Inject
+ *     {@literal @}OSGiService(mandatory = true)
+ *     MyService oneToOne;
+ * </pre>
+ * 
+ * <pre>
+ *     {@literal @}Inject
+ *     {@literal @}OSGiService(mandatory = true)
+ *     Iterable&lt;MyService&gt; oneToMany;
+ * </pre>
+ * 
+ * <pre>
+ *     {@literal @}Inject
+ *     {@literal @}OSGiService(dynamic = false)
+ *     MyService fixedAtStartup;
+ * </pre>
+ * 
+ * <pre>
+ *     {@literal @}Inject
+ *     {@literal @}OSGiService(&quot;(lang=fr)&quot;)
  *     MyService ldapFiltered;
  * </pre>
  * 
  * <pre>
  *     {@literal @}Inject
- *     {@literal @}OSGiServiceRegistration(
- *       interfaces = {MyService.class, MySpecialisedService.class}
- *     )
+ *     {@literal @}OSGiService(interfaces = {MySpecialisedService.class})
  *     MyService customInterface;
+ * </pre>
+ * 
+ * <pre>
+ *     {@literal @}Inject
+ *     {@literal @}OSGiService(interfaces = MyService.class)
+ *     {@literal @}ImplementedBy(MyServiceTrackerCustomizer.class)
+ *     ServiceTrackerCustomizer listener;
  * </pre>
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
@@ -58,7 +89,7 @@ import com.google.inject.Injector;
 })
 @Retention(RUNTIME)
 @BindingAnnotation
-public @interface OSGiServiceRegistration {
+public @interface OSGiService {
 
   /**
    * RFC-1960 (LDAP) filter
@@ -71,7 +102,12 @@ public @interface OSGiServiceRegistration {
   Class<?>[] interfaces() default {};
 
   /**
-   * Service starts as registered?
+   * Is this a mandatory service?
    */
-  boolean registered() default true;
+  boolean mandatory() default false;
+
+  /**
+   * Is this a dynamic service?
+   */
+  boolean dynamic() default true;
 }

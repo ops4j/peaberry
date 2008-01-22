@@ -1,2 +1,2 @@
-com.google.inject.osgi
-com.google.inject.osgi.internal
+org.ops4j.peaberry
+org.ops4j.peaberry.internal

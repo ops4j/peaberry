@@ -1,15 +1,15 @@
-package com.google.inject.osgi;
+package org.ops4j.peaberry;
 
+import org.ops4j.peaberry.internal.OSGiClassLoaderHook;
+import org.ops4j.peaberry.internal.OSGiServiceDependencyBindingFactory;
+import org.ops4j.peaberry.internal.OSGiServiceRegistrationBindingFactory;
+import org.ops4j.peaberry.internal.OSGiServiceRegistryImpl;
 import org.osgi.framework.BundleContext;
 import com.google.inject.Binder;
 import com.google.inject.ClassLoaderHook;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.osgi.internal.OSGiClassLoaderHook;
-import com.google.inject.osgi.internal.OSGiServiceDependencyBindingFactory;
-import com.google.inject.osgi.internal.OSGiServiceRegistrationBindingFactory;
-import com.google.inject.osgi.internal.OSGiServiceRegistryImpl;
 import com.google.inject.spi.Dependency;
 
 public final class Peaberry {

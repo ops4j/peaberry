@@ -16,13 +16,13 @@
 
 package org.ops4j.peaberry.test;
 
+import org.ops4j.peaberry.OSGiService;
+import org.ops4j.peaberry.Peaberry;
 import junit.framework.TestCase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
-import com.google.inject.osgi.OSGiService;
-import com.google.inject.osgi.Peaberry;
 import com.google.inject.util.GuiceContainer;
 
 public class OSGiServiceBindingTest extends TestCase {

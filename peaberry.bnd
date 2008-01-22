@@ -4,9 +4,11 @@ Include-Resource:\
  aopalliance.jar=${aop.jar},\
  guice.jar=${guice.jar}
 
+Export-Package:\
+ org.ops4j.peaberry
+
 Private-Package:\
- com.google.inject.osgi,\
- com.google.inject.osgi.internal,\
+ org.ops4j.peaberry.internal,\
  org.osgi.util.tracker
 
 Import-Package:\
@@ -25,7 +27,6 @@ Import-Package:\
  com.google.inject.jndi,\
  com.google.inject.matcher,\
  com.google.inject.name,\
- com.google.inject.osgi,\
  com.google.inject.spi,\
  com.google.inject.tools.jmx,\
  com.google.inject.util

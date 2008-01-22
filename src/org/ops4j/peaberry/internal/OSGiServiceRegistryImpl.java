@@ -1,7 +1,7 @@
-package com.google.inject.osgi.internal;
+package org.ops4j.peaberry.internal;
 
 import java.util.Dictionary;
-import com.google.inject.osgi.OSGiServiceRegistry;
+import org.ops4j.peaberry.OSGiServiceRegistry;
 
 public class OSGiServiceRegistryImpl
   implements OSGiServiceRegistry {

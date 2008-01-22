@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.osgi;
+package org.ops4j.peaberry;
 
 import java.util.Dictionary;
 import com.google.inject.Module;
