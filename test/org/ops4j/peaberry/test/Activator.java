@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2007 Stuart McCulloch
+ * Copyright (C) 2008 Stuart McCulloch
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,36 @@
  * limitations under the License.
  */
 
-package com.google.inject.osgi.test;
+package org.ops4j.peaberry.test;
 
+import junit.textui.TestRunner;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
-public class Activator implements BundleActivator {
+public class Activator
+  implements BundleActivator {
 
-  public void start(final BundleContext bc) throws Exception {
+  public void start(final BundleContext bc)
+    throws Exception {
 
-    // FIXME: need handshake
+    // FIXME: need handshake?
     new Thread(new Runnable() {
       public void run() {
         try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {}
-        try {
-          bc.getBundle(0).stop();
-        } catch (BundleException e) {}
+          TestRunner.run(OSGiTests.suite(bc));
+        } finally {
+          try {
+            bc.getBundle(0).stop();
+          } catch(BundleException e) {
+            // don't mind this...
+          }
+        }
       }
     }).start();
   }
 
-  public void stop(BundleContext bc) throws Exception {
+  public void stop(BundleContext bc)
+    throws Exception {
   }
 }
-
