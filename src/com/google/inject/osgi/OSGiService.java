@@ -24,6 +24,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import com.google.inject.BindingAnnotation;
 import com.google.inject.Injector;
 
 /**
@@ -87,6 +88,7 @@ import com.google.inject.Injector;
   TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
+@BindingAnnotation
 public @interface OSGiService {
 
   /**
