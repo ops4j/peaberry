@@ -23,12 +23,12 @@
 
   <target name="compile">
     <mkdir dir="${build}/classes"/>
-    <javac srcdir="${src}" destdir="${build}/classes" classpath="${buildjars}"/>
+    <javac srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
   </target>
 
   <target name="test.compile">
-    <mkdir dir="${build}/test"/>
-    <javac srcdir="${test}" destdir="${build}/test" classpath="${testjars}"/>
+    <mkdir dir="${build}/test-classes"/>
+    <javac srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
   </target>
 
   <target name="clean">

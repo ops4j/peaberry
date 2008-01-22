@@ -3,7 +3,7 @@
 
   <target name="doc">
     <mkdir dir="${doc}"/>
-    <javadoc destdir="${doc}" classpath="${buildjars}" sourcepath="${src}" author="no"
+    <javadoc destdir="${doc}" classpath="${build.cp}" sourcepath="${src}" author="no"
         windowtitle="Peaberry - Guice injection of OSGi services">
       <link href="http://google-guice.googlecode.com/svn/trunk/javadoc"/>
       <link href="http://www2.osgi.org/javadoc/r4"/>

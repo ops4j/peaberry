@@ -6,6 +6,7 @@ Include-Resource:\
 
 Private-Package:\
  com.google.inject.osgi,\
+ com.google.inject.osgi.internal,\
  org.osgi.util.tracker
 
 Import-Package:\
@@ -35,4 +36,7 @@ Import-Package:\
  Include-Resource,\
  Private-Package,\
  Tool
+
+-output:\
+ ${peaberry.jar}
 

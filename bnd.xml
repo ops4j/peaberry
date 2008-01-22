@@ -9,12 +9,12 @@
 
   <target name="peaberry" depends="compile">
     <mkdir dir="${build}/dist"/>
-    <bnd files="peaberry.bnd" classpath="${util.jar},${build}/classes" output="${peaberry.jar}"/>
+    <bnd files="peaberry.bnd" classpath="${build}/classes"/>
   </target>
 
   <target name="director" depends="test.compile">
     <mkdir dir="${build}/test"/>
-    <bnd files="director.bnd" classpath="${build}/test,${guice}/build/test" output="${director.jar}"/>
+    <bnd files="director.bnd" classpath="${build}/test-classes"/>
   </target>
 
 </project>

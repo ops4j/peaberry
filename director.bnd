@@ -4,7 +4,7 @@ Include-Resource:\
  junit.jar=${junit.jar}
 
 Private-Package:\
- com.google.inject.*
+ org.ops4j.peaberry.test
 
 Import-Package:\
  javax.sql; resolution:=optional,\
@@ -15,5 +15,8 @@ Import-Package:\
  *
 
 Bundle-Activator:\
- com.google.inject.osgi.test.Activator
+ org.ops4j.peaberry.test.Activator
+
+-output:\
+ ${director.jar}
 
