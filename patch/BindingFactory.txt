@@ -301,16 +301,23 @@ Index: src/com/google/inject/BinderImpl.java
    public void requestStaticInjection(Class<?>... types) {
      staticInjections.add(new StaticInjection(source(), types));
    }
-@@ -442,10 +464,23 @@
+@@ -428,6 +450,10 @@
+ 
+     injector.setErrorHandler(configurationErrorHandler);
+ 
++    if (bindingFactories.size() > 0) {
++      injector.setMissingDependencyHandler(bindingFactoryHandler);
++    }
++
+     createConstantBindings();
+ 
+     // Commands to execute before returning the Injector instance.
+@@ -442,10 +468,19 @@
  
      stopwatch.resetAndLog(logger, "Binding indexing");
  
 -    for (CreationListener creationListener : creationListeners) {
 -      creationListener.notify(injector);
-+    if (bindingFactories.size() > 0) {
-+      injector.setMissingDependencyHandler(bindingFactoryHandler);
-     }
- 
 +    while (creationListeners.size() > 0) {
 +      // need to copy list as we may be adding bindings during this loop
 +      CreationListener[] cachedCreationListeners = creationListeners.toArray(
@@ -320,14 +327,14 @@ Index: src/com/google/inject/BinderImpl.java
 +      for (CreationListener creationListener : cachedCreationListeners) {
 +        creationListener.notify(injector);
 +      }
-+    }
-+
+     }
+ 
 +    injector.setMissingDependencyHandler(null);
 +
      stopwatch.resetAndLog(logger, "Validation");
  
      for (StaticInjection staticInjection : staticInjections) {
-@@ -622,6 +657,29 @@
+@@ -622,6 +657,30 @@
    }
  
    /**
@@ -338,7 +345,8 @@ Index: src/com/google/inject/BinderImpl.java
 +
 +    @SuppressWarnings("unchecked")
 +    public boolean handle(Dependency<?> dependency) {
-+      BindingBuilderImpl<?> builder = bind(dependency.getKey());
++      BindingBuilderImpl<?> builder =
++        new BindingBuilderImpl(BinderImpl.this, dependency.getKey(), source());
 +
 +      // search in order of registration...
 +      for (BindingFactory bindingFactory : bindingFactories) {
