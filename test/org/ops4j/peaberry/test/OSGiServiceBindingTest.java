@@ -16,14 +16,14 @@
 
 package org.ops4j.peaberry.test;
 
+import junit.framework.TestCase;
 import org.ops4j.peaberry.OSGiService;
 import org.ops4j.peaberry.Peaberry;
-import junit.framework.TestCase;
+import org.osgi.framework.BundleContext;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
-import com.google.inject.util.GuiceContainer;
 
 public class OSGiServiceBindingTest extends TestCase {
 
@@ -37,7 +37,7 @@ public class OSGiServiceBindingTest extends TestCase {
 
   @Inject
   public OSGiServiceBindingTest(@OSGiService
-  Foo foo) {
+  Iterable<Foo> foos) {
   }
 
   void setFoo(Foo foo) {
@@ -51,10 +51,8 @@ public class OSGiServiceBindingTest extends TestCase {
   }
 
   public void testInjection() {
-    Injector injector =
-      GuiceContainer.createInjector(Peaberry.getClassLoaderHook(), Peaberry
-        .getModule(OSGiTests.getBundleContext()), new Module());
-
+    BundleContext bc = OSGiTests.getBundleContext();
+    Injector injector = Peaberry.getOSGiInjector(bc, new Module());
     injector.getInstance(OSGiServiceBindingTest.class);
   }
 }
