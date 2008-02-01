@@ -16,26 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
-import com.google.inject.BindingFactory;
-import com.google.inject.binder.LinkedBindingBuilder;
-import com.google.inject.spi.Dependency;
-
 /**
- * Provide on-demand bindings for OSGi service registrations.
- * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class OSGiServiceRegistrationBindingFactory
-  implements BindingFactory<Object> {
-
-  /**
-   * {@inheritDoc}
-   */
-  public <T> boolean bind(Dependency<T> dependency,
-    LinkedBindingBuilder<T> linkedBindingBuilder) {
-
-    // TODO Auto-generated method stub
-    System.out.println("AUTOBIND:" + dependency.getKey().getAnnotation());
-    return false;
-  }
+public final class OSGiServiceTrackerFactory {
 }

@@ -27,7 +27,7 @@ import com.google.inject.spi.Dependency;
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class OSGiServiceDependencyBindingFactory
+public final class OSGiServiceDependencyBindingFactory
   implements BindingFactory<Object> {
 
   /**
@@ -37,9 +37,11 @@ public class OSGiServiceDependencyBindingFactory
     LinkedBindingBuilder<T> linkedBindingBuilder) {
 
     // TODO Auto-generated method stub
-    OSGiService spec = (OSGiService)dependency.getKey().getAnnotation();
+    OSGiService spec = (OSGiService) dependency.getKey().getAnnotation();
     try {
-      System.out.println("AUTOBIND:" + OSGiServiceFilterFactory.get(spec, dependency.getKey().getTypeLiteral().getType()));
+      System.out.println("AUTOBIND:"
+        + OSGiServiceFilterFactory.get(spec, dependency.getKey()
+          .getTypeLiteral().getType()));
     } catch(InvalidSyntaxException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

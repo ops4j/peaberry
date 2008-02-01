@@ -53,7 +53,7 @@ public final class Peaberry {
   /**
    * Simple dependency matcher that matches on the binding annotation type.
    */
-  private static class AnnotationTypeMatcher extends
+  private static final class AnnotationTypeMatcher extends
     AbstractMatcher<Dependency<?>> {
 
     private final Class<? extends Annotation> m_annotationType;
@@ -84,11 +84,11 @@ public final class Peaberry {
 
         binder.bind(BundleContext.class).toInstance(bc);
 
-        // Auto-bind OSGi service dependencies
+        // auto-bind OSGi service dependencies
         binder.bind(new AnnotationTypeMatcher(OSGiService.class),
           new OSGiServiceDependencyBindingFactory());
 
-        // Auto-bind OSGi service registrations
+        // auto-bind OSGi service registrations
         binder.bind(new AnnotationTypeMatcher(OSGiServiceRegistration.class),
           new OSGiServiceRegistrationBindingFactory());
 

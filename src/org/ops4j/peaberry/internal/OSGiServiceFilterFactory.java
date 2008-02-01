@@ -61,7 +61,7 @@ public final class OSGiServiceFilterFactory {
      * STEP 3: if custom filter includes class filter then we're done
      */
     if (customFilter.toLowerCase().contains(
-      Constants.OBJECTCLASS.toLowerCase() + '=')) {
+      '(' + Constants.OBJECTCLASS.toLowerCase())) {
       return FrameworkUtil.createFilter(customFilter);
     }
 
@@ -76,9 +76,11 @@ public final class OSGiServiceFilterFactory {
     /*
      * STEP 5: combine custom filter AND class filter into single LDAP filter
      */
-    String comboFilter = classFilter;
+    final String comboFilter;
     if (customFilter.length() > 0) {
-      comboFilter = "(&" + customFilter + comboFilter + ')';
+      comboFilter = "(&" + customFilter + classFilter + ')';
+    } else {
+      comboFilter = classFilter;
     }
 
     return FrameworkUtil.createFilter(comboFilter);
@@ -93,7 +95,7 @@ public final class OSGiServiceFilterFactory {
   private static String getInterfaceFilter(OSGiService spec) {
     StringBuilder interfaceClauses = new StringBuilder();
 
-    Class<?>[] interfaces = spec.interfaces();
+    final Class<?>[] interfaces = spec.interfaces();
     for (Class<?> i : interfaces) {
       interfaceClauses.append('(' + Constants.OBJECTCLASS + '=');
       interfaceClauses.append(i.getName());
@@ -122,7 +124,7 @@ public final class OSGiServiceFilterFactory {
       memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
     }
 
-    String className = ((Class<?>) memberType).getName();
+    final String className = ((Class<?>) memberType).getName();
     return '(' + Constants.OBJECTCLASS + '=' + className + ')';
   }
 }
