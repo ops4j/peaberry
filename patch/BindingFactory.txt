@@ -31,16 +31,16 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 390)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -93,6 +93,8 @@
+@@ -96,6 +96,8 @@
  
    ErrorHandler errorHandler = new InvalidErrorHandler();
  
 +  MissingDependencyHandler missingDependencyHandler;
 +
-   InjectorImpl(ConstructionProxyFactory constructionProxyFactory,
+   InjectorImpl(Injector parentInjector,
+       ConstructionProxyFactory constructionProxyFactory,
        Map<Key<?>, BindingImpl<?>> bindings,
-       Map<Class<? extends Annotation>, Scope> scopes,
-@@ -147,6 +149,10 @@
+@@ -152,6 +154,10 @@
      this.errorHandler = errorHandler;
    }
  
@@ -49,9 +49,9 @@ Index: src/com/google/inject/InjectorImpl.java
 +  }
 +
    /**
-    * Gets a binding implementation. First, this checks for an explicit binding.
-    * If no explicit binding is found, it looks for a just-in-time binding.
-@@ -799,20 +805,31 @@
+    * Gets a binding implementation.  First, it check to see if the parent has
+    * a binding.  If the parent has a binding and the binding is scoped, it
+@@ -852,20 +858,31 @@
  
        final Key<?> key = Key.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
@@ -88,7 +88,7 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -876,21 +893,30 @@
+@@ -929,21 +946,30 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Key<T> key, Member member, int index, Annotation[] annotations)
        throws MissingDependencyException {
@@ -301,7 +301,7 @@ Index: src/com/google/inject/BinderImpl.java
    public void requestStaticInjection(Class<?>... types) {
      staticInjections.add(new StaticInjection(source(), types));
    }
-@@ -428,6 +450,10 @@
+@@ -441,6 +463,10 @@
  
      injector.setErrorHandler(configurationErrorHandler);
  
@@ -312,7 +312,7 @@ Index: src/com/google/inject/BinderImpl.java
      createConstantBindings();
  
      // Commands to execute before returning the Injector instance.
-@@ -442,10 +468,19 @@
+@@ -455,10 +481,19 @@
  
      stopwatch.resetAndLog(logger, "Binding indexing");
  
@@ -334,7 +334,7 @@ Index: src/com/google/inject/BinderImpl.java
      stopwatch.resetAndLog(logger, "Validation");
  
      for (StaticInjection staticInjection : staticInjections) {
-@@ -622,6 +657,30 @@
+@@ -635,6 +690,30 @@
    }
  
    /**
