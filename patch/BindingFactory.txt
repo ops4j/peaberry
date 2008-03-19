@@ -1,7 +1,7 @@
 Index: common.xml
 ===================================================================
---- common.xml  (revision 422)
-+++ common.xml  (working copy)
+--- common.xml	(revision 422)
++++ common.xml	(working copy)
 @@ -11,6 +11,7 @@
    <target name="compile" description="Compile Java source.">
      <mkdir dir="${build.dir}/classes"/>
@@ -12,7 +12,7 @@ Index: common.xml
        <classpath refid="compile.classpath"/>
 Index: src/com/google/inject/Binder.java
 ===================================================================
---- src/com/google/inject/Binder.java	(revision 390)
+--- src/com/google/inject/Binder.java	(revision 422)
 +++ src/com/google/inject/Binder.java	(working copy)
 @@ -20,6 +20,7 @@
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
@@ -22,23 +22,21 @@ Index: src/com/google/inject/Binder.java
  import com.google.inject.spi.Message;
  import com.google.inject.spi.TypeConverter;
  import java.lang.annotation.Annotation;
-@@ -225,6 +226,16 @@
-   AnnotatedConstantBindingBuilder bindConstant();
- 
-   /**
-+   * Binds a binding factory to missing dependencies matched by a matcher.
+@@ -284,4 +285,14 @@
+    */
+   void convertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
+       TypeConverter converter);
++
++  /**
++   * Adds a binding factory to provide missing dependencies matched by a matcher.
 +   *
 +   * @param dependencyMatcher matches missing dependencies the binding factory
 +   *     should attempt to satisfy. For example: {@code any()}.
 +   * @param bindingFactory factory that can produce bindings on request
 +   */
-+  void bind(Matcher<? super Dependency<?>> dependencyMatcher,
-+      BindingFactory<?> bindingFactory);
-+
-+  /**
-    * Upon successful creation, the {@link Injector} will inject static fields
-    * and methods in the given classes.
-    *
++  <T> void addBindingFactory(Matcher<Dependency<? extends T>> dependencyMatcher,
++      BindingFactory<T> bindingFactory);
+ }
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 390)
@@ -234,7 +232,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/AbstractModule.java
 ===================================================================
---- src/com/google/inject/AbstractModule.java	(revision 390)
+--- src/com/google/inject/AbstractModule.java	(revision 422)
 +++ src/com/google/inject/AbstractModule.java	(working copy)
 @@ -21,6 +21,7 @@
  import com.google.inject.binder.LinkedBindingBuilder;
@@ -244,18 +242,162 @@ Index: src/com/google/inject/AbstractModule.java
  import com.google.inject.spi.SourceProviders;
  import com.google.inject.spi.TypeConverter;
  import java.lang.annotation.Annotation;
-@@ -120,6 +121,14 @@
+@@ -186,4 +187,12 @@
+   protected Stage currentStage() {
+     return binder.currentStage();
    }
- 
-   /**
-+   * @see Binder#bind(Matcher, BindingFactory)
-+   */
-+  protected void bind(Matcher<? super Dependency<?>> dependencyMatcher,
-+      BindingFactory<?> bindingFactory) {
-+    binder.bind(dependencyMatcher, bindingFactory);
-+  }
 +
 +  /**
-    * @see Binder#install(Module)
-    */
-   protected void install(Module module) {
++   * @see Binder#addBindingFactory
++   */
++  protected <T> void addBindingFactory(Matcher<Dependency<? extends T>> dependencyMatcher,
++      BindingFactory<T> bindingFactory) {
++    binder.addBindingFactory(dependencyMatcher, bindingFactory);
++  }
+ }
+Index: src/com/google/inject/CommandProcessor.java
+===================================================================
+--- src/com/google/inject/CommandProcessor.java	(revision 422)
++++ src/com/google/inject/CommandProcessor.java	(working copy)
+@@ -91,4 +91,8 @@
+   public <T> Boolean visitGetProvider(GetProviderCommand<T> command) {
+     return false;
+   }
++
++  public <T> Boolean visitAddBindingFactory(AddBindingFactoryCommand<T> command) {
++    return false;
++  }
+ }
+Index: extensions/commands/src/com/google/inject/commands/CommandRecorder.java
+===================================================================
+--- extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(revision 422)
++++ extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(working copy)
+@@ -21,6 +21,7 @@
+ import com.google.inject.binder.AnnotatedConstantBindingBuilder;
+ import com.google.inject.matcher.Matcher;
+ import static com.google.inject.spi.SourceProviders.defaultSource;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.TypeConverter;
+ import com.google.inject.spi.SourceProviders;
+ import org.aopalliance.intercept.MethodInterceptor;
+@@ -152,5 +153,11 @@
+         TypeConverter converter) {
+       commands.add(new ConvertToTypesCommand(defaultSource(), typeMatcher, converter));
+     }
++
++    public <T> void addBindingFactory(Matcher<Dependency<? extends T>> dependencyMatcher,
++        BindingFactory<T> bindingFactory) {
++      commands.add(new AddBindingFactoryCommand<T>(defaultSource(), dependencyMatcher,
++          bindingFactory));
++    }
+   }
+ }
+Index: extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java
+===================================================================
+--- extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
++++ extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
+@@ -0,0 +1,58 @@
++/**
++ * Copyright (C) 2008 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject.commands;
++
++import com.google.inject.BindingFactory;
++import static com.google.inject.internal.Objects.nonNull;
++import com.google.inject.matcher.Matcher;
++import com.google.inject.spi.Dependency;
++
++/**
++ * Immutable snapshot of a request to add a binding factory.
++ *
++ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ */
++public final class AddBindingFactoryCommand<T> implements Command {
++  private final Object source;
++  private final Matcher<Dependency<? extends T>> dependencyMatcher;
++  private final BindingFactory<T> bindingFactory;
++
++  AddBindingFactoryCommand(
++      Object source,
++      Matcher<Dependency<? extends T>> dependencyMatcher,
++      BindingFactory<T> bindingFactory) {
++    this.source = nonNull(source, "source");
++    this.dependencyMatcher = nonNull(dependencyMatcher, "dependencyMatcher");
++    this.bindingFactory = nonNull(bindingFactory, "bindingFactory");
++  }
++
++  public Object getSource() {
++    return source;
++  }
++
++  public Matcher<Dependency<? extends T>> getDependencyMatcher() {
++    return dependencyMatcher;
++  }
++
++  public BindingFactory<T> getBindingFactory() {
++    return bindingFactory;
++  }
++
++  public <V> V acceptVisitor(Visitor<V> visitor) {
++    return visitor.visitAddBindingFactory(this);
++  }
++}
+
+Property changes on: extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java
+___________________________________________________________________
+Name: svn:eol-style
+   + native
+
+Index: extensions/commands/src/com/google/inject/commands/Command.java
+===================================================================
+--- extensions/commands/src/com/google/inject/commands/Command.java	(revision 422)
++++ extensions/commands/src/com/google/inject/commands/Command.java	(working copy)
+@@ -38,5 +38,6 @@
+     V visitConvertToTypes(ConvertToTypesCommand command);
+     <T> V visitBind(BindCommand<T> command);
+     <T> V visitGetProvider(GetProviderCommand<T> command);
++    <T> V visitAddBindingFactory(AddBindingFactoryCommand<T> command);
+   }
+ }
+Index: extensions/commands/src/com/google/inject/commands/CommandReplayer.java
+===================================================================
+--- extensions/commands/src/com/google/inject/commands/CommandReplayer.java	(revision 422)
++++ extensions/commands/src/com/google/inject/commands/CommandReplayer.java	(working copy)
+@@ -100,6 +100,11 @@
+         replayGetProvider(binder, command);
+         return null;
+       }
++
++      public <T> Void visitAddBindingFactory(AddBindingFactoryCommand<T> command) {
++        replayAddBindingFactory(binder, command);
++        return null;
++      }
+     };
+ 
+     for (Command command : commands) {
+@@ -199,4 +204,12 @@
+       }
+     });
+   }
++
++  public <T> void replayAddBindingFactory(final Binder binder, final AddBindingFactoryCommand<T> command) {
++    SourceProviders.withDefault(command.getSource(), new Runnable() {
++      public void run() {
++        binder.addBindingFactory(command.getDependencyMatcher(), command.getBindingFactory());
++      }
++    });
++  }
+ }

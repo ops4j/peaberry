@@ -85,11 +85,11 @@ public final class Peaberry {
         binder.bind(BundleContext.class).toInstance(bc);
 
         // auto-bind OSGi service dependencies
-        binder.bind(new AnnotationTypeMatcher(OSGiService.class),
+        binder.addBindingFactory(new AnnotationTypeMatcher(OSGiService.class),
           new OSGiServiceDependencyBindingFactory());
 
         // auto-bind OSGi service registrations
-        binder.bind(new AnnotationTypeMatcher(OSGiServiceRegistration.class),
+        binder.addBindingFactory(new AnnotationTypeMatcher(OSGiServiceRegistration.class),
           new OSGiServiceRegistrationBindingFactory());
 
         binder.bind(OSGiServiceRegistry.class)
