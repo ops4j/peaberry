@@ -1,3 +1,15 @@
+Index: common.xml
+===================================================================
+--- common.xml  (revision 422)
++++ common.xml  (working copy)
+@@ -11,6 +11,7 @@
+   <target name="compile" description="Compile Java source.">
+     <mkdir dir="${build.dir}/classes"/>
+     <javac srcdir="${src.dir}"
++         sourcepath="${commands.src.dir}"
+          debug="on"
+          destdir="${build.dir}/classes">
+       <classpath refid="compile.classpath"/>
 Index: src/com/google/inject/Binder.java
 ===================================================================
 --- src/com/google/inject/Binder.java	(revision 390)
@@ -31,16 +43,16 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 390)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -96,6 +96,8 @@
+@@ -94,6 +94,8 @@
  
    ErrorHandler errorHandler = new InvalidErrorHandler();
  
 +  MissingDependencyHandler missingDependencyHandler;
 +
-   InjectorImpl(Injector parentInjector,
-       ConstructionProxyFactory constructionProxyFactory,
-       Map<Key<?>, BindingImpl<?>> bindings,
-@@ -152,6 +154,10 @@
+   InjectorImpl(Injector parentInjector) {
+     this.parentInjector = parentInjector;
+   }
+@@ -174,6 +176,10 @@
      this.errorHandler = errorHandler;
    }
  
@@ -51,7 +63,7 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Gets a binding implementation.  First, it check to see if the parent has
     * a binding.  If the parent has a binding and the binding is scoped, it
-@@ -852,20 +858,31 @@
+@@ -874,20 +880,31 @@
  
        final Key<?> key = Key.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
@@ -88,7 +100,7 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -929,21 +946,30 @@
+@@ -951,21 +968,30 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Key<T> key, Member member, int index, Annotation[] annotations)
        throws MissingDependencyException {
@@ -247,121 +259,3 @@ Index: src/com/google/inject/AbstractModule.java
     * @see Binder#install(Module)
     */
    protected void install(Module module) {
-Index: src/com/google/inject/BinderImpl.java
-===================================================================
---- src/com/google/inject/BinderImpl.java	(revision 390)
-+++ src/com/google/inject/BinderImpl.java	(working copy)
-@@ -18,6 +18,7 @@
- 
- import com.google.inject.InjectorImpl.SingleMemberInjector;
- import static com.google.inject.Scopes.SINGLETON;
-+import com.google.inject.binder.LinkedBindingBuilder;
- import com.google.inject.internal.Annotations;
- import static com.google.inject.internal.Objects.nonNull;
- import com.google.inject.internal.StackTraceElements;
-@@ -27,6 +28,7 @@
- import com.google.inject.matcher.Matcher;
- import com.google.inject.matcher.Matchers;
- import com.google.inject.matcher.AbstractMatcher;
-+import com.google.inject.spi.Dependency;
- import com.google.inject.spi.Message;
- import com.google.inject.spi.SourceProviders;
- import com.google.inject.spi.TypeConverter;
-@@ -69,6 +71,8 @@
-       = new ArrayList<ConstantBindingBuilderImpl>();
-   final Map<Class<? extends Annotation>, Scope> scopes =
-       new HashMap<Class<? extends Annotation>, Scope>();
-+  final List<BindingFactory<?>> bindingFactories
-+      = new ArrayList<BindingFactory<?>>();
- 
-   final List<StaticInjection> staticInjections
-       = new ArrayList<StaticInjection>();
-@@ -363,6 +367,24 @@
-     return constantBuilder;
-   }
- 
-+  @SuppressWarnings("unchecked")
-+  public void bind(final Matcher<? super Dependency<?>> dependencyMatcher,
-+      final BindingFactory<?> bindingFactory) {
-+
-+    bindingFactories.add(new BindingFactory() {
-+      public boolean bind(Dependency dependency, LinkedBindingBuilder lbb) {
-+        if (dependencyMatcher.matches((Dependency<?>)dependency)) {
-+          try {
-+            return bindingFactory.bind(dependency, lbb);
-+          } catch (Exception e) {
-+            addError(e);
-+          }
-+        }
-+        return false;
-+      }
-+    });
-+  }
-+
-   public void requestStaticInjection(Class<?>... types) {
-     staticInjections.add(new StaticInjection(source(), types));
-   }
-@@ -441,6 +463,10 @@
- 
-     injector.setErrorHandler(configurationErrorHandler);
- 
-+    if (bindingFactories.size() > 0) {
-+      injector.setMissingDependencyHandler(bindingFactoryHandler);
-+    }
-+
-     createConstantBindings();
- 
-     // Commands to execute before returning the Injector instance.
-@@ -455,10 +481,19 @@
- 
-     stopwatch.resetAndLog(logger, "Binding indexing");
- 
--    for (CreationListener creationListener : creationListeners) {
--      creationListener.notify(injector);
-+    while (creationListeners.size() > 0) {
-+      // need to copy list as we may be adding bindings during this loop
-+      CreationListener[] cachedCreationListeners = creationListeners.toArray(
-+          new CreationListener[creationListeners.size()]);
-+
-+      creationListeners.clear();
-+      for (CreationListener creationListener : cachedCreationListeners) {
-+        creationListener.notify(injector);
-+      }
-     }
- 
-+    injector.setMissingDependencyHandler(null);
-+
-     stopwatch.resetAndLog(logger, "Validation");
- 
-     for (StaticInjection staticInjection : staticInjections) {
-@@ -635,6 +690,30 @@
-   }
- 
-   /**
-+   * Handles missing dependencies by consulting binding factories.
-+   */
-+  MissingDependencyHandler bindingFactoryHandler =
-+      new MissingDependencyHandler() {
-+
-+    @SuppressWarnings("unchecked")
-+    public boolean handle(Dependency<?> dependency) {
-+      BindingBuilderImpl<?> builder =
-+        new BindingBuilderImpl(BinderImpl.this, dependency.getKey(), source());
-+
-+      // search in order of registration...
-+      for (BindingFactory bindingFactory : bindingFactories) {
-+        if (bindingFactory.bind(dependency, builder)) {
-+          // register this as a fixed binding
-+          putBinding(builder.build(injector));
-+          return true;
-+        }
-+      }
-+
-+      return false;
-+    }
-+  };
-+
-+  /**
-    * A requested static injection.
-    */
-   class StaticInjection {

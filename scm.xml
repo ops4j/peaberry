@@ -39,6 +39,13 @@
       <classpath refId="svn.path"/>
       <arg value="export"/>
       <arg value="--force"/>
+      <arg value="${google.guice.repo}/extensions/commands"/>
+      <arg value="${guice}/extensions/commands"/>
+    </java>
+    <java classname="org.tmatesoft.svn.cli.SVN" fork="true">
+      <classpath refId="svn.path"/>
+      <arg value="export"/>
+      <arg value="--force"/>
       <arg value="${google.guice.repo}/lib"/>
       <arg value="${guice}/lib"/>
     </java>
