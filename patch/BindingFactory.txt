@@ -39,7 +39,7 @@ Index: src/com/google/inject/Binder.java
  }
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 390)
+--- src/com/google/inject/InjectorImpl.java	(revision 422)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -94,6 +94,8 @@
  
@@ -135,6 +135,33 @@ Index: src/com/google/inject/InjectorImpl.java
      return new SingleParameterInjector<T>(injectionPoint, factory);
    }
  
+Index: src/com/google/inject/InjectorBuilder.java
+===================================================================
+--- src/com/google/inject/InjectorBuilder.java	(revision 422)
++++ src/com/google/inject/InjectorBuilder.java	(working copy)
+@@ -134,6 +134,13 @@
+         .processCommands(commands, configurationErrorHandler);
+     stopwatch.resetAndLog("Converters creation");
+ 
++    AddBindingFactoryCommandProcessor addBindingFactoryCommandProcessor
++        = new AddBindingFactoryCommandProcessor();
++    addBindingFactoryCommandProcessor.processCommands(commands, configurationErrorHandler);
++    stopwatch.resetAndLog("Binding factory creation");
++
++    addBindingFactoryCommandProcessor.enableBindingFactories(injector);
++
+     bindCommandProcesor = new BindCommandProcessor(
+         injector, injector.scopes, stage, injector.explicitBindings,
+         injector.outstandingInjections);
+@@ -147,6 +154,8 @@
+     requestStaticInjectionCommandProcessor
+         .processCommands(commands, configurationErrorHandler);
+     stopwatch.resetAndLog("Static injection");
++
++    addBindingFactoryCommandProcessor.enableBindingFactories(null);
+   }
+ 
+   /**
 Index: src/com/google/inject/BindingFactory.java
 ===================================================================
 --- src/com/google/inject/BindingFactory.java	(revision 0)
@@ -255,6 +282,101 @@ Index: src/com/google/inject/AbstractModule.java
 +    binder.addBindingFactory(dependencyMatcher, bindingFactory);
 +  }
  }
+Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
+===================================================================
+--- src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
++++ src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
+@@ -0,0 +1,84 @@
++/**
++ * Copyright (C) 2008 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject;
++
++import com.google.inject.binder.LinkedBindingBuilder;
++import com.google.inject.commands.AddBindingFactoryCommand;
++import com.google.inject.matcher.Matcher;
++import com.google.inject.spi.Dependency;
++import java.util.ArrayList;
++import java.util.List;
++
++/**
++ * Handles {@link Binder#addBindingFactory} commands.
++ *
++ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ */
++class AddBindingFactoryCommandProcessor extends CommandProcessor {
++
++  private final List<BindingFactory> bindingFactories =
++      new ArrayList<BindingFactory>();
++
++  @Override public Boolean visitAddBindingFactory(
++      final AddBindingFactoryCommand command) {
++
++    final Object source = command.getSource();
++    final Matcher dependencyMatcher = command.getDependencyMatcher();
++    final BindingFactory bindingFactory = command.getBindingFactory();
++
++    bindingFactories.add(new BindingFactory() {
++      @SuppressWarnings("unchecked")
++      public boolean bind(Dependency dependency, LinkedBindingBuilder lbb) {
++        if (dependencyMatcher.matches(dependency)) {
++          try {
++            return bindingFactory.bind(dependency, lbb);
++          } catch (Exception e) {
++            addError(source, ErrorMessages.EXCEPTION_REPORTED_BY_BINDING_FACTORY,
++                dependency.getKey(), ErrorMessages.getRootMessage(e));
++          }
++        }
++        return false;
++      }
++    });
++
++    return true;
++  }
++
++  class BindingHandler implements MissingDependencyHandler {
++    public boolean handle(Dependency dependency) {
++
++      // search in order of registration...
++      for (BindingFactory bindingFactory : bindingFactories) {
++        if (bindingFactory.bind(dependency, null)) {
++          // register this as a fixed binding
++//TODO!
++          return true;
++        }
++      }
++
++      return false;
++    }
++  }
++
++  void enableBindingFactories(InjectorImpl injector) {
++    injector.setMissingDependencyHandler(new BindingHandler());
++  }
++
++  void disableBindingFactories(InjectorImpl injector) {
++    injector.setMissingDependencyHandler(null);
++  }
++}
+
+Property changes on: src/com/google/inject/AddBindingFactoryCommandProcessor.java
+___________________________________________________________________
+Name: svn:eol-style
+   + native
+
 Index: src/com/google/inject/CommandProcessor.java
 ===================================================================
 --- src/com/google/inject/CommandProcessor.java	(revision 422)
@@ -268,6 +390,20 @@ Index: src/com/google/inject/CommandProcessor.java
 +    return false;
 +  }
  }
+Index: src/com/google/inject/ErrorMessages.java
+===================================================================
+--- src/com/google/inject/ErrorMessages.java	(revision 422)
++++ src/com/google/inject/ErrorMessages.java	(working copy)
+@@ -100,6 +100,9 @@
+   static final String EXCEPTION_REPORTED_BY_MODULE_SEE_LOG = "An exception"
+       + " was caught and reported. See log for details. Message: %s";
+ 
++  static final String EXCEPTION_REPORTED_BY_BINDING_FACTORY = "An exception was"
++      + " caught and reported by a binding factory for %s. Message: %s";
++
+   static final String MISSING_IMPLEMENTATION
+       = "No implementation was specified.";
+ 
 Index: extensions/commands/src/com/google/inject/commands/CommandRecorder.java
 ===================================================================
 --- extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(revision 422)
