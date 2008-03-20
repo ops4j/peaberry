@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.test;
 
+import java.util.List;
 import junit.framework.TestCase;
 import org.ops4j.peaberry.OSGiService;
 import org.ops4j.peaberry.Peaberry;
@@ -27,20 +28,19 @@ import com.google.inject.Scopes;
 
 public class OSGiServiceBindingTest extends TestCase {
 
-  interface Foo {
-  }
-
-  Foo m_logService;
+  @Inject
+  @OSGiService
+  List m_logService;
 
   public OSGiServiceBindingTest() {
   }
 
   @Inject
-  public OSGiServiceBindingTest(@OSGiService
-  Iterable<Foo> foos) {
+  public OSGiServiceBindingTest(@OSGiService Iterable<List> foos) {
   }
 
-  void setFoo(Foo foo) {
+  @Inject
+  public void setFoo(@OSGiService List foo) {
   }
 
   class Module extends AbstractModule {

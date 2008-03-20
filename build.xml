@@ -21,6 +21,10 @@
 -->
   </target>
 
+  <target name="clean.guice">
+    <ant dir="${guice}" target="clean"/>
+  </target>
+
   <target name="compile">
     <mkdir dir="${build}/classes"/>
     <javac srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
@@ -31,7 +35,7 @@
     <javac srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
   </target>
 
-  <target name="clean">
+  <target name="clean" depends="clean.guice">
     <delete dir="${build}"/>
   </target>
 

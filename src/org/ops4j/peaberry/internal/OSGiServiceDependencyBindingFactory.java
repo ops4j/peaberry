@@ -46,6 +46,7 @@ public final class OSGiServiceDependencyBindingFactory
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    return false;
+    linkedBindingBuilder.toInstance((T)new java.util.ArrayList());
+    return true;
   }
 }

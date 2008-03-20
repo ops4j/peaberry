@@ -36,6 +36,7 @@ public final class OSGiServiceRegistrationBindingFactory
 
     // TODO Auto-generated method stub
     System.out.println("AUTOBIND:" + dependency.getKey().getAnnotation());
-    return false;
+    linkedBindingBuilder.toInstance((T)new java.util.ArrayList());
+    return true;
   }
 }
