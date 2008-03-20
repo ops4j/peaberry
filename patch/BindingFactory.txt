@@ -1,7 +1,7 @@
 Index: common.xml
 ===================================================================
---- common.xml  (revision 423)
-+++ common.xml  (working copy)
+--- common.xml	(revision 423)
++++ common.xml	(working copy)
 @@ -11,6 +11,7 @@
    <target name="compile" description="Compile Java source.">
      <mkdir dir="${build.dir}/classes"/>
@@ -139,13 +139,11 @@ Index: src/com/google/inject/InjectorBuilder.java
 ===================================================================
 --- src/com/google/inject/InjectorBuilder.java	(revision 423)
 +++ src/com/google/inject/InjectorBuilder.java	(working copy)
-@@ -17,16 +17,22 @@
+@@ -17,10 +17,13 @@
  package com.google.inject;
  
  import static com.google.inject.Scopes.SINGLETON;
 +
-+import com.google.inject.binder.LinkedBindingBuilder;
-+import com.google.inject.commands.AddBindingFactoryCommand;
 +import com.google.inject.commands.BindCommand;
  import com.google.inject.commands.Command;
  import com.google.inject.commands.CommandRecorder;
@@ -155,14 +153,7 @@ Index: src/com/google/inject/InjectorBuilder.java
  import com.google.inject.spi.Message;
  import com.google.inject.spi.SourceProviders;
  
- import java.lang.reflect.Member;
- import java.util.ArrayList;
- import java.util.Collection;
-+import java.util.Collections;
- import java.util.List;
- import java.util.LinkedList;
- import java.util.logging.Logger;
-@@ -134,12 +140,23 @@
+@@ -134,12 +137,23 @@
          .processCommands(commands, configurationErrorHandler);
      stopwatch.resetAndLog("Converters creation");
  
@@ -186,7 +177,7 @@ Index: src/com/google/inject/InjectorBuilder.java
      injector.index();
      stopwatch.resetAndLog("Binding indexing");
  
-@@ -268,4 +285,26 @@
+@@ -268,4 +282,26 @@
        throw new ConfigurationException("Error at " + source + " " + message);
      }
    }
@@ -203,7 +194,7 @@ Index: src/com/google/inject/InjectorBuilder.java
 +
 +      // search in order of registration...
 +      for (final BindingFactory bindingFactory : bindingFactories) {
-+        BindCommand command = AddBindingFactoryCommand.lateBinding(dependency, bindingFactory);
++        BindCommand command = BindCommand.lateBinding(dependency, bindingFactory);
 +        if (command != null) {
 +          bindCommandProcesor.visitBind(command);
 +          return true;
@@ -494,7 +485,7 @@ Index: extensions/commands/src/com/google/inject/commands/AddBindingFactoryComma
 ===================================================================
 --- extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
 +++ extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
-@@ -0,0 +1,80 @@
+@@ -0,0 +1,58 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -514,12 +505,7 @@ Index: extensions/commands/src/com/google/inject/commands/AddBindingFactoryComma
 +package com.google.inject.commands;
 +
 +import com.google.inject.BindingFactory;
-+import com.google.inject.Key;
-+
 +import static com.google.inject.internal.Objects.nonNull;
-+import static com.google.inject.spi.SourceProviders.defaultSource;
-+
-+import com.google.inject.binder.LinkedBindingBuilder;
 +import com.google.inject.matcher.Matcher;
 +import com.google.inject.spi.Dependency;
 +
@@ -557,23 +543,6 @@ Index: extensions/commands/src/com/google/inject/commands/AddBindingFactoryComma
 +  public <V> V acceptVisitor(Visitor<V> visitor) {
 +    return visitor.visitAddBindingFactory(this);
 +  }
-+
-+  /**
-+   * TODO
-+   */
-+  public static <B> BindCommand<B> lateBinding(Dependency<B> dependency, BindingFactory<B> bindingFactory) {
-+    BindCommand<B> bindCommand = new BindCommand<B>(defaultSource(), dependency.getKey());
-+    LinkedBindingBuilder<B> lbb = bindCommand.bindingBuilder(
-+      new ErrorHandler() {
-+        public void handle(Object source, String message, Object... arguments) {
-+          throw new RuntimeException("Error at " + source + " " + String.format(message, arguments));
-+        }});
-+    if (bindingFactory.bind(dependency, lbb)) {
-+      return bindCommand;
-+    } else {
-+      return null;
-+    }
-+  }
 +}
 
 Property changes on: extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java
@@ -585,7 +554,22 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
 ===================================================================
 --- extensions/commands/src/com/google/inject/commands/BindCommand.java	(revision 423)
 +++ extensions/commands/src/com/google/inject/commands/BindCommand.java	(working copy)
-@@ -122,18 +122,18 @@
+@@ -17,12 +17,14 @@
+ package com.google.inject.commands;
+ 
+ import com.google.inject.*;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.SourceProviders;
+ import com.google.inject.binder.AnnotatedBindingBuilder;
+ import com.google.inject.binder.ConstantBindingBuilder;
+ import com.google.inject.binder.LinkedBindingBuilder;
+ import com.google.inject.binder.ScopedBindingBuilder;
+ import static com.google.inject.internal.Objects.nonNull;
++import static com.google.inject.spi.SourceProviders.defaultSource;
+ 
+ import java.lang.annotation.Annotation;
+ 
+@@ -122,18 +124,18 @@
      }
    }
  
@@ -609,7 +593,7 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
      }
  
      public LinkedBindingBuilder<T> annotatedWith(
-@@ -318,25 +318,25 @@
+@@ -318,26 +320,44 @@
  
      private void assertNoTarget() {
        if (bindTarget != EMPTY_BIND_TARGET) {
@@ -639,6 +623,25 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
        }
      }
    }
++
++  /**
++   * TODO
++   */
++  public static <B, T extends B> BindCommand<T> lateBinding(
++      Dependency<T> dependency, BindingFactory<B> bindingFactory) {
++    BindCommand<T> bindCommand = new BindCommand<T>(defaultSource(), dependency.getKey());
++    LinkedBindingBuilder<T> lbb = bindCommand.bindingBuilder(
++      new ErrorHandler() {
++        public void handle(Object source, String message, Object... arguments) {
++          throw new RuntimeException("Error at " + source + " " + String.format(message, arguments));
++        }});
++    if (bindingFactory.bind(dependency, lbb)) {
++      return bindCommand;
++    } else {
++      return null;
++    }
++  }
+ }
 Index: extensions/commands/src/com/google/inject/commands/Command.java
 ===================================================================
 --- extensions/commands/src/com/google/inject/commands/Command.java	(revision 423)
