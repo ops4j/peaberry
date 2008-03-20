@@ -1,7 +1,7 @@
 Index: common.xml
 ===================================================================
---- common.xml	(revision 422)
-+++ common.xml	(working copy)
+--- common.xml  (revision 423)
++++ common.xml  (working copy)
 @@ -11,6 +11,7 @@
    <target name="compile" description="Compile Java source.">
      <mkdir dir="${build.dir}/classes"/>
@@ -12,7 +12,7 @@ Index: common.xml
        <classpath refid="compile.classpath"/>
 Index: src/com/google/inject/Binder.java
 ===================================================================
---- src/com/google/inject/Binder.java	(revision 422)
+--- src/com/google/inject/Binder.java	(revision 423)
 +++ src/com/google/inject/Binder.java	(working copy)
 @@ -20,6 +20,7 @@
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
@@ -39,7 +39,7 @@ Index: src/com/google/inject/Binder.java
  }
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 422)
+--- src/com/google/inject/InjectorImpl.java	(revision 423)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -94,6 +94,8 @@
  
@@ -137,7 +137,7 @@ Index: src/com/google/inject/InjectorImpl.java
  
 Index: src/com/google/inject/InjectorBuilder.java
 ===================================================================
---- src/com/google/inject/InjectorBuilder.java	(revision 422)
+--- src/com/google/inject/InjectorBuilder.java	(revision 423)
 +++ src/com/google/inject/InjectorBuilder.java	(working copy)
 @@ -134,6 +134,13 @@
          .processCommands(commands, configurationErrorHandler);
@@ -259,7 +259,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/AbstractModule.java
 ===================================================================
---- src/com/google/inject/AbstractModule.java	(revision 422)
+--- src/com/google/inject/AbstractModule.java	(revision 423)
 +++ src/com/google/inject/AbstractModule.java	(working copy)
 @@ -21,6 +21,7 @@
  import com.google.inject.binder.LinkedBindingBuilder;
@@ -286,7 +286,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 ===================================================================
 --- src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
 +++ src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,85 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -319,19 +319,19 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 + */
 +class AddBindingFactoryCommandProcessor extends CommandProcessor {
 +
-+  private final List<BindingFactory> bindingFactories =
-+      new ArrayList<BindingFactory>();
++  private final List<BindingFactory<?>> bindingFactories =
++      new ArrayList<BindingFactory<?>>();
 +
-+  @Override public Boolean visitAddBindingFactory(
-+      final AddBindingFactoryCommand command) {
++  @Override public <B> Boolean visitAddBindingFactory(
++      final AddBindingFactoryCommand<B> command) {
 +
 +    final Object source = command.getSource();
-+    final Matcher dependencyMatcher = command.getDependencyMatcher();
-+    final BindingFactory bindingFactory = command.getBindingFactory();
++    final Matcher<Dependency<? extends B>> dependencyMatcher = command.getDependencyMatcher();
++    final BindingFactory<B> bindingFactory = command.getBindingFactory();
 +
-+    bindingFactories.add(new BindingFactory() {
-+      @SuppressWarnings("unchecked")
-+      public boolean bind(Dependency dependency, LinkedBindingBuilder lbb) {
++    bindingFactories.add(new BindingFactory<B>() {
++
++        public <T extends B> boolean bind(Dependency<T> dependency, LinkedBindingBuilder<T> lbb) {
 +        if (dependencyMatcher.matches(dependency)) {
 +          try {
 +            return bindingFactory.bind(dependency, lbb);
@@ -348,6 +348,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 +  }
 +
 +  class BindingHandler implements MissingDependencyHandler {
++    @SuppressWarnings("unchecked")
 +    public boolean handle(Dependency dependency) {
 +
 +      // search in order of registration...
@@ -379,7 +380,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/CommandProcessor.java
 ===================================================================
---- src/com/google/inject/CommandProcessor.java	(revision 422)
+--- src/com/google/inject/CommandProcessor.java	(revision 423)
 +++ src/com/google/inject/CommandProcessor.java	(working copy)
 @@ -91,4 +91,8 @@
    public <T> Boolean visitGetProvider(GetProviderCommand<T> command) {
@@ -392,7 +393,7 @@ Index: src/com/google/inject/CommandProcessor.java
  }
 Index: src/com/google/inject/ErrorMessages.java
 ===================================================================
---- src/com/google/inject/ErrorMessages.java	(revision 422)
+--- src/com/google/inject/ErrorMessages.java	(revision 423)
 +++ src/com/google/inject/ErrorMessages.java	(working copy)
 @@ -100,6 +100,9 @@
    static final String EXCEPTION_REPORTED_BY_MODULE_SEE_LOG = "An exception"
@@ -406,7 +407,7 @@ Index: src/com/google/inject/ErrorMessages.java
  
 Index: extensions/commands/src/com/google/inject/commands/CommandRecorder.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(revision 422)
+--- extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(revision 423)
 +++ extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(working copy)
 @@ -21,6 +21,7 @@
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
@@ -499,7 +500,7 @@ Name: svn:eol-style
 
 Index: extensions/commands/src/com/google/inject/commands/Command.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/Command.java	(revision 422)
+--- extensions/commands/src/com/google/inject/commands/Command.java	(revision 423)
 +++ extensions/commands/src/com/google/inject/commands/Command.java	(working copy)
 @@ -38,5 +38,6 @@
      V visitConvertToTypes(ConvertToTypesCommand command);
@@ -510,7 +511,7 @@ Index: extensions/commands/src/com/google/inject/commands/Command.java
  }
 Index: extensions/commands/src/com/google/inject/commands/CommandReplayer.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/CommandReplayer.java	(revision 422)
+--- extensions/commands/src/com/google/inject/commands/CommandReplayer.java	(revision 423)
 +++ extensions/commands/src/com/google/inject/commands/CommandReplayer.java	(working copy)
 @@ -100,6 +100,11 @@
          replayGetProvider(binder, command);

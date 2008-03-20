@@ -4,6 +4,7 @@
 	<classpathentry kind="src" output="guice/build/classes" path="guice/src"/>
 	<classpathentry kind="src" output="guice/build/test" path="guice/test"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="guice/extensions/commands/src"/>
 	<classpathentry exported="true" kind="lib" path="guice/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="guice/lib/build/asm-2.2.3.jar"/>
 	<classpathentry kind="lib" path="guice/lib/build/cglib-2.2_beta1.jar"/>
