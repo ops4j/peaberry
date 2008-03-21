@@ -328,7 +328,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 ===================================================================
 --- src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
 +++ src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
-@@ -0,0 +1,65 @@
+@@ -0,0 +1,58 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -368,20 +368,13 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 +  @Override public <B> Boolean visitAddBindingFactory(
 +      final AddBindingFactoryCommand<B> command) {
 +
-+    final Object source = command.getSource();
 +    final Matcher<Dependency<? extends B>> dependencyMatcher = command.getDependencyMatcher();
 +    final BindingFactory<B> bindingFactory = command.getBindingFactory();
 +
 +    bindingFactories.add(new BindingFactory<B>() {
-+
-+        public <T extends B> boolean bind(Dependency<T> dependency, LinkedBindingBuilder<T> lbb) {
++      public <T extends B> boolean bind(Dependency<T> dependency, LinkedBindingBuilder<T> lbb) {
 +        if (dependencyMatcher.matches(dependency)) {
-+          try {
-+            return bindingFactory.bind(dependency, lbb);
-+          } catch (Exception e) {
-+            addError(source, ErrorMessages.EXCEPTION_REPORTED_BY_BINDING_FACTORY,
-+                dependency.getKey(), ErrorMessages.getRootMessage(e));
-+          }
++          return bindingFactory.bind(dependency, lbb);
 +        }
 +        return false;
 +      }
@@ -593,7 +586,7 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
      }
  
      public LinkedBindingBuilder<T> annotatedWith(
-@@ -318,26 +320,44 @@
+@@ -318,26 +320,49 @@
  
      private void assertNoTarget() {
        if (bindTarget != EMPTY_BIND_TARGET) {
@@ -629,12 +622,17 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
 +   */
 +  public static <B, T extends B> BindCommand<T> lateBinding(
 +      Dependency<T> dependency, BindingFactory<B> bindingFactory) {
-+    BindCommand<T> bindCommand = new BindCommand<T>(defaultSource(), dependency.getKey());
++
++    BindCommand<T> bindCommand = new BindCommand<T>(
++        defaultSource(), dependency.getKey());
++
 +    LinkedBindingBuilder<T> lbb = bindCommand.bindingBuilder(
 +      new ErrorHandler() {
 +        public void handle(Object source, String message, Object... arguments) {
-+          throw new RuntimeException("Error at " + source + " " + String.format(message, arguments));
++          throw new RuntimeException("Error at " + source + " " +
++              String.format(message, arguments));
 +        }});
++
 +    if (bindingFactory.bind(dependency, lbb)) {
 +      return bindCommand;
 +    } else {
