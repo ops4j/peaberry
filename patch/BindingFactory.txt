@@ -406,20 +406,6 @@ Index: src/com/google/inject/CommandProcessor.java
 +    return false;
 +  }
  }
-Index: src/com/google/inject/ErrorMessages.java
-===================================================================
---- src/com/google/inject/ErrorMessages.java	(revision 423)
-+++ src/com/google/inject/ErrorMessages.java	(working copy)
-@@ -100,6 +100,9 @@
-   static final String EXCEPTION_REPORTED_BY_MODULE_SEE_LOG = "An exception"
-       + " was caught and reported. See log for details. Message: %s";
- 
-+  static final String EXCEPTION_REPORTED_BY_BINDING_FACTORY = "An exception was"
-+      + " caught and reported by a binding factory for %s. Message: %s";
-+
-   static final String MISSING_IMPLEMENTATION
-       = "No implementation was specified.";
- 
 Index: extensions/commands/src/com/google/inject/commands/CommandRecorder.java
 ===================================================================
 --- extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(revision 423)
