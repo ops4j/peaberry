@@ -40,7 +40,7 @@ public final class OSGiServiceFilterFactory {
    * @throws InvalidSyntaxException
    */
   public static Filter get(OSGiService spec, Type memberType)
-    throws InvalidSyntaxException {
+      throws InvalidSyntaxException {
 
     /*
      * STEP 1: default spec, base filter on member type
@@ -61,7 +61,7 @@ public final class OSGiServiceFilterFactory {
      * STEP 3: if custom filter includes class filter then we're done
      */
     if (customFilter.toLowerCase().contains(
-      '(' + Constants.OBJECTCLASS.toLowerCase())) {
+        '(' + Constants.OBJECTCLASS.toLowerCase())) {
       return FrameworkUtil.createFilter(customFilter);
     }
 

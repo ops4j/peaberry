@@ -25,7 +25,7 @@ import org.ops4j.peaberry.OSGiServiceRegistry;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class OSGiServiceRegistryImpl
-  implements OSGiServiceRegistry {
+    implements OSGiServiceRegistry {
 
   /**
    * {@inheritDoc}

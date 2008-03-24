@@ -53,8 +53,8 @@ public final class Peaberry {
   /**
    * Simple dependency matcher that matches on the binding annotation type.
    */
-  private static final class AnnotationTypeMatcher extends
-    AbstractMatcher<Dependency<?>> {
+  private static final class AnnotationTypeMatcher
+      extends AbstractMatcher<Dependency<?>> {
 
     private final Class<? extends Annotation> m_annotationType;
 
@@ -86,14 +86,15 @@ public final class Peaberry {
 
         // auto-bind OSGi service dependencies
         binder.addBindingFactory(new AnnotationTypeMatcher(OSGiService.class),
-          new OSGiServiceDependencyBindingFactory());
+            new OSGiServiceDependencyBindingFactory());
 
         // auto-bind OSGi service registrations
-        binder.addBindingFactory(new AnnotationTypeMatcher(OSGiServiceRegistration.class),
-          new OSGiServiceRegistrationBindingFactory());
+        binder.addBindingFactory(
+            new AnnotationTypeMatcher(OSGiServiceRegistration.class),
+            new OSGiServiceRegistrationBindingFactory());
 
         binder.bind(OSGiServiceRegistry.class)
-          .to(OSGiServiceRegistryImpl.class).in(Scopes.SINGLETON);
+            .to(OSGiServiceRegistryImpl.class).in(Scopes.SINGLETON);
       }
     };
   }
@@ -106,7 +107,7 @@ public final class Peaberry {
    * @return OSGi enabled Guice injector
    */
   public static Injector getOSGiInjector(BundleContext bc,
-    Module... applicationModules) {
+      Module... applicationModules) {
     return getOSGiInjector(bc, Arrays.asList(applicationModules));
   }
 
@@ -118,7 +119,7 @@ public final class Peaberry {
    * @return OSGi enabled Guice injector
    */
   public static Injector getOSGiInjector(BundleContext bc,
-    Collection<? extends Module> applicationModules) {
+      Collection<? extends Module> applicationModules) {
 
     ClassLoaderHook loaderHook = Peaberry.getOSGiClassLoaderHook();
 

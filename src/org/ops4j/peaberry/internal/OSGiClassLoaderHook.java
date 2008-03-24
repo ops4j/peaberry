@@ -26,29 +26,30 @@ import com.google.inject.internal.ReferenceCache;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class OSGiClassLoaderHook
-  implements ClassLoaderHook {
+    implements ClassLoaderHook {
 
   /**
    * Weak cache of bridge classloaders that make the Guice implementation
    * classes visible to various code-generated proxies of client classes
    */
   private final ReferenceCache<ClassLoader, ClassLoader> m_classLoaderCache =
-    new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
-      @Override
-      protected final ClassLoader create(ClassLoader parent) {
-        return new BridgeClassLoader(parent);
-      }
-    };
+      new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
+        @Override
+        protected final ClassLoader create(ClassLoader parent) {
+          return new BridgeClassLoader(parent);
+        }
+      };
 
   /**
    * Custom classloader that switches delegation between two parent loaders.
    */
-  private static final class BridgeClassLoader extends ClassLoader {
+  private static final class BridgeClassLoader
+      extends ClassLoader {
 
     private static final String CGLIB_PACKAGE = "com.google.inject.cglib";
 
     private static final ClassLoader PEABERRY_LOADER =
-      BridgeClassLoader.class.getClassLoader();
+        BridgeClassLoader.class.getClassLoader();
 
     /**
      * {@inheritDoc}
@@ -62,7 +63,7 @@ public final class OSGiClassLoaderHook
      */
     @Override
     protected Class<?> loadClass(final String name, final boolean resolve)
-      throws ClassNotFoundException {
+        throws ClassNotFoundException {
 
       // delegate internal CGLIB requests to Peaberry bundle classloader
       if (PEABERRY_LOADER != null && name.startsWith(CGLIB_PACKAGE)) {

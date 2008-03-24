@@ -26,17 +26,17 @@ import com.google.inject.spi.Dependency;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class OSGiServiceRegistrationBindingFactory
-  implements BindingFactory<Object> {
+    implements BindingFactory<Object> {
 
   /**
    * {@inheritDoc}
    */
   public <T> boolean bind(Dependency<T> dependency,
-    LinkedBindingBuilder<T> linkedBindingBuilder) {
+      LinkedBindingBuilder<T> linkedBindingBuilder) {
 
     // TODO Auto-generated method stub
     System.out.println("AUTOBIND:" + dependency.getKey().getAnnotation());
-    linkedBindingBuilder.toInstance((T)new java.util.ArrayList());
+    linkedBindingBuilder.toInstance((T) new java.util.ArrayList());
     return true;
   }
 }

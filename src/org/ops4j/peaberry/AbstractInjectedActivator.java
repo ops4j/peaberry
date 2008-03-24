@@ -29,7 +29,7 @@ import com.google.inject.Module;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public abstract class AbstractInjectedActivator
-  implements BundleActivator {
+    implements BundleActivator {
 
   private volatile Injector m_injector;
 
@@ -37,7 +37,7 @@ public abstract class AbstractInjectedActivator
    * {@inheritDoc}
    */
   public final void start(BundleContext bc)
-    throws Exception {
+      throws Exception {
 
     m_injector = Peaberry.getOSGiInjector(bc, getModules());
     m_injector.injectMembers(this);
@@ -49,7 +49,7 @@ public abstract class AbstractInjectedActivator
    * {@inheritDoc}
    */
   public final void stop(BundleContext bc)
-    throws Exception {
+      throws Exception {
 
     stop();
 
@@ -62,7 +62,7 @@ public abstract class AbstractInjectedActivator
    * @throws Exception
    */
   protected abstract void start()
-    throws Exception;
+      throws Exception;
 
   /**
    * Customized stop method
@@ -70,7 +70,7 @@ public abstract class AbstractInjectedActivator
    * @throws Exception
    */
   protected abstract void stop()
-    throws Exception;
+      throws Exception;
 
   /**
    * @return customized list of Guice modules

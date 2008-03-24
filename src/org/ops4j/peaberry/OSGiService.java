@@ -85,7 +85,7 @@ import com.google.inject.Injector;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Target( {
-  TYPE, FIELD, PARAMETER
+    TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
 @BindingAnnotation
