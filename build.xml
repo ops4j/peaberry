@@ -43,7 +43,7 @@
     <delete dir="${guice}"/>
   </target>
 
-  <target name="dist" depends="scm,patch,guice,peaberry,doc"/>
+  <target name="dist" depends="scm,patch,guice,peaberry"/>
 
   <target name="test.dist" depends="dist,test.guice,test.peaberry"/>
 

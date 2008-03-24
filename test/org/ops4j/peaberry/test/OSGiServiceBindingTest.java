@@ -26,7 +26,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
 
-public class OSGiServiceBindingTest extends TestCase {
+public class OSGiServiceBindingTest
+    extends TestCase {
 
   @Inject
   @OSGiService
@@ -36,14 +37,17 @@ public class OSGiServiceBindingTest extends TestCase {
   }
 
   @Inject
-  public OSGiServiceBindingTest(@OSGiService Iterable<List> foos) {
+  public OSGiServiceBindingTest(@OSGiService
+  Iterable<List> foos) {
   }
 
   @Inject
-  public void setFoo(@OSGiService List foo) {
+  public void setFoo(@OSGiService
+  List foo) {
   }
 
-  class Module extends AbstractModule {
+  class Module
+      extends AbstractModule {
     @Override
     protected void configure() {
       bind(OSGiServiceBindingTest.class).in(Scopes.SINGLETON);

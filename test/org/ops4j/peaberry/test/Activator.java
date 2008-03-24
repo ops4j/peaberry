@@ -22,10 +22,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
 public class Activator
-  implements BundleActivator {
+    implements BundleActivator {
 
   public void start(final BundleContext bc)
-    throws Exception {
+      throws Exception {
 
     // FIXME: need handshake?
     new Thread(new Runnable() {
@@ -35,7 +35,7 @@ public class Activator
         } finally {
           try {
             bc.getBundle(0).stop();
-          } catch(BundleException e) {
+          } catch (BundleException e) {
             // don't mind this...
           }
         }
@@ -44,6 +44,6 @@ public class Activator
   }
 
   public void stop(BundleContext bc)
-    throws Exception {
+      throws Exception {
   }
 }
