@@ -31,6 +31,7 @@ public final class OSGiServiceRegistrationBindingFactory
   /**
    * {@inheritDoc}
    */
+  @SuppressWarnings("unchecked")
   public <T> boolean bind(Dependency<T> dependency,
       LinkedBindingBuilder<T> linkedBindingBuilder) {
 

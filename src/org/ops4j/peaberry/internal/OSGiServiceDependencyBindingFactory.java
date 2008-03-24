@@ -33,6 +33,7 @@ public final class OSGiServiceDependencyBindingFactory
   /**
    * {@inheritDoc}
    */
+  @SuppressWarnings("unchecked")
   public <T> boolean bind(Dependency<T> dependency,
       LinkedBindingBuilder<T> linkedBindingBuilder) {
 

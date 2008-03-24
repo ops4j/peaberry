@@ -34,6 +34,8 @@ public final class OSGiClassLoaderHook
    */
   private final ReferenceCache<ClassLoader, ClassLoader> m_classLoaderCache =
       new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
+        private static final long serialVersionUID = 1L;
+
         @Override
         protected final ClassLoader create(ClassLoader parent) {
           return new BridgeClassLoader(parent);
