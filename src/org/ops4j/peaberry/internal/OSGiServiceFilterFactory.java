@@ -119,9 +119,17 @@ public final class OSGiServiceFilterFactory {
    */
   private static String getMemberTypeFilter(Type memberType) {
 
-    // generic service type, ie. Iterable<T>
+    // multiple service dependency, ie. Iterable<T>
     if (memberType instanceof ParameterizedType) {
-      memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
+      ParameterizedType paramType = (ParameterizedType) memberType;
+      if (Iterable.class == paramType.getRawType()) {
+        memberType = paramType.getActualTypeArguments()[0];
+      }
+    }
+
+    // use raw type for other generic services
+    if (memberType instanceof ParameterizedType) {
+      memberType = ((ParameterizedType) memberType).getRawType();
     }
 
     final String className = ((Class<?>) memberType).getName();

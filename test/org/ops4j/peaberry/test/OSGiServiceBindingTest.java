@@ -31,19 +31,19 @@ public class OSGiServiceBindingTest
 
   @Inject
   @OSGiService
-  List m_logService;
+  List<Object> m_logService;
 
   public OSGiServiceBindingTest() {
   }
 
   @Inject
   public OSGiServiceBindingTest(@OSGiService
-  Iterable<List> foos) {
+  Iterable<List<Object>> foos) {
   }
 
   @Inject
   public void setFoo(@OSGiService
-  List foo) {
+  List<Object> foo) {
   }
 
   class Module
