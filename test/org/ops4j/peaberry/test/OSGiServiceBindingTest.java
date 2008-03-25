@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.test;
 
 import java.util.List;
+import java.util.ArrayList;
 import junit.framework.TestCase;
 import org.ops4j.peaberry.OSGiService;
 import org.ops4j.peaberry.Peaberry;
@@ -43,7 +44,7 @@ public class OSGiServiceBindingTest
 
   @Inject
   public void setFoo(@OSGiService
-  List<Object> foo) {
+  ArrayList foo) {
   }
 
   class Module

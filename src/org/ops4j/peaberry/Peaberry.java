@@ -20,11 +20,13 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.ops4j.peaberry.OSGiService.Policy;
 import org.ops4j.peaberry.internal.OSGiClassLoaderHook;
-import org.ops4j.peaberry.internal.OSGiServiceDependencyBindingFactory;
-import org.ops4j.peaberry.internal.OSGiServiceRegistrationBindingFactory;
+import org.ops4j.peaberry.internal.OSGiServiceBindingFactory;
 import org.ops4j.peaberry.internal.OSGiServiceRegistryImpl;
 import org.osgi.framework.BundleContext;
+
 import com.google.inject.Binder;
 import com.google.inject.ClassLoaderHook;
 import com.google.inject.Injector;
@@ -39,6 +41,7 @@ import com.google.inject.util.GuiceContainer;
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
+@OSGiService(policy = Policy.LAZY)
 public final class Peaberry {
 
   private static final ClassLoaderHook LOADER_HOOK = new OSGiClassLoaderHook();
@@ -84,14 +87,9 @@ public final class Peaberry {
 
         binder.bind(BundleContext.class).toInstance(bc);
 
-        // auto-bind OSGi service dependencies
+        // auto-bind OSGi service dependencies and implementations
         binder.addBindingFactory(new AnnotationTypeMatcher(OSGiService.class),
-            new OSGiServiceDependencyBindingFactory());
-
-        // auto-bind OSGi service registrations
-        binder.addBindingFactory(
-            new AnnotationTypeMatcher(OSGiServiceRegistration.class),
-            new OSGiServiceRegistrationBindingFactory());
+            new OSGiServiceBindingFactory());
 
         binder.bind(OSGiServiceRegistry.class)
             .to(OSGiServiceRegistryImpl.class).in(Scopes.SINGLETON);

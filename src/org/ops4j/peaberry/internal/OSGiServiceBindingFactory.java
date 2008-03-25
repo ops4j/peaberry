@@ -23,11 +23,11 @@ import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.spi.Dependency;
 
 /**
- * Provide on-demand bindings for OSGi service dependencies.
+ * Provide on-demand bindings for OSGi service dependencies and implementations.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class OSGiServiceDependencyBindingFactory
+public final class OSGiServiceBindingFactory
     implements BindingFactory<Object> {
 
   /**
