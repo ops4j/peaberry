@@ -69,7 +69,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 ===================================================================
 --- src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
 +++ src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,89 @@
 +/**
 + * Copyright (C) 2007 Google Inc.
 + *
@@ -88,6 +88,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +
 +package com.google.inject.internal;
 +
++import com.google.inject.ClassLoaderHook;
 +import java.lang.reflect.InvocationHandler;
 +import java.lang.reflect.Proxy;
 +import net.sf.cglib.proxy.Enhancer;
@@ -98,24 +99,34 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 + *
 + * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
 + */
-+public class GuiceCodeGen {
++public final class GuiceCodeGen {
 +
-+  private static volatile boolean useTCCL = false;
++  private static final ClassLoaderHook DEFAULT_CLASSLOADER_HOOK =
++      new ClassLoaderHook() {
++        public ClassLoader get(Class<?> type) {return type.getClassLoader();}
++      };
 +
-+  public static void enableTCCL() {
-+    useTCCL = true;
++  private static final ThreadLocal<ClassLoaderHook> THREAD_CLASS_LOADER_HOOK =
++      new InheritableThreadLocal<ClassLoaderHook>() {
++        protected ClassLoaderHook initialValue() {
++          return DEFAULT_CLASSLOADER_HOOK;
++        }
++      };
++
++  public static ClassLoaderHook getThreadClassLoaderHook() {
++    return THREAD_CLASS_LOADER_HOOK.get();
 +  }
 +
-+  public static void disableTCCL() {
-+    useTCCL = false;
++  public static void setThreadClassLoaderHook(ClassLoaderHook classLoaderHook) {
++    if (classLoaderHook != null) {
++      THREAD_CLASS_LOADER_HOOK.set(classLoaderHook);
++    } else {
++      THREAD_CLASS_LOADER_HOOK.remove();
++    }
 +  }
 +
 +  public static ClassLoader getClassLoader(Class<?> type) {
-+    if (useTCCL) {
-+      return Thread.currentThread().getContextClassLoader();
-+    } else {
-+      return type.getClassLoader();
-+    }
++    return getThreadClassLoaderHook().get(type);
 +  }
 +
 +  public static FastClass getFastClass(Class<?> type) {
@@ -255,3 +266,47 @@ Index: src/com/google/inject/ConstructionContext.java
      return expectedType.cast(object);
    }
  
+Index: src/com/google/inject/ClassLoaderHook.java
+===================================================================
+--- src/com/google/inject/ClassLoaderHook.java	(revision 0)
++++ src/com/google/inject/ClassLoaderHook.java	(revision 0)
+@@ -0,0 +1,33 @@
++/**
++ * Copyright (C) 2007 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject;
++
++/**
++ * Provide classloading interception for Guice enhanced classes and proxies.
++ * 
++ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ */
++public interface ClassLoaderHook {
++
++  /**
++   * Intercept classloading of enhanced class/proxy based on user type.
++   * 
++   * @param type user type being enhanced/proxied
++   * @return classloader to use for the enhanced class/proxy
++   */
++  ClassLoader get(Class<?> type);
++}
+
+Property changes on: src/com/google/inject/ClassLoaderHook.java
+___________________________________________________________________
+Name: svn:eol-style
+   + native
+
