@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.internal;
 
 import static com.google.inject.internal.ReferenceType.WEAK;
+
 import com.google.inject.ClassLoaderHook;
 import com.google.inject.internal.ReferenceCache;
 
@@ -36,9 +37,12 @@ public final class OSGiClassLoaderHook
       new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Bridge between client type classloader and main Guice classloader
+         */
         @Override
-        protected final ClassLoader create(ClassLoader parent) {
-          return new BridgeClassLoader(parent);
+        protected final ClassLoader create(ClassLoader typeClassLoader) {
+          return new BridgeClassLoader(typeClassLoader);
         }
       };
 
@@ -54,10 +58,10 @@ public final class OSGiClassLoaderHook
         BridgeClassLoader.class.getClassLoader();
 
     /**
-     * {@inheritDoc}
+     * By default, delegate to the client type classloader
      */
-    public BridgeClassLoader(ClassLoader parent) {
-      super(parent);
+    public BridgeClassLoader(ClassLoader typeClassLoader) {
+      super(typeClassLoader);
     }
 
     /**
@@ -84,7 +88,7 @@ public final class OSGiClassLoaderHook
   /**
    * {@inheritDoc}
    */
-  public synchronized ClassLoader get(Class<?> type) {
+  public ClassLoader get(Class<?> type) {
     return m_classLoaderCache.get(type.getClassLoader());
   }
 }

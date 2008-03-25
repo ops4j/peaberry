@@ -604,7 +604,7 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
    }
 +
 +  /**
-+   * TODO
++   * Attempt to add a missing binding to the injector by using a binding factory
 +   */
 +  public static <B, T extends B> BindCommand<T> lateBinding(
 +      Dependency<T> dependency, BindingFactory<B> bindingFactory) {

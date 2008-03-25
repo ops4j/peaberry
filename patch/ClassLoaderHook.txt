@@ -106,7 +106,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +
 +  private static final ClassLoaderHook DEFAULT_CLASSLOADER_HOOK =
 +      new ClassLoaderHook() {
-+        public ClassLoader get(Class<?> type) {return type.getClassLoader();}
++        public final ClassLoader get(Class<?> type) {return type.getClassLoader();}
 +      };
 +
 +  private static final ThreadLocal<ClassLoaderHook> THREAD_CLASS_LOADER_HOOK =

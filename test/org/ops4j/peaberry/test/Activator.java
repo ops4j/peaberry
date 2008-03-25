@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.test;
 
 import junit.textui.TestRunner;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;

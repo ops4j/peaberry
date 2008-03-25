@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.test;
 
 import junit.framework.TestSuite;
+
 import org.osgi.framework.BundleContext;
 
 public class OSGiTests {
