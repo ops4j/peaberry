@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,41 +17,23 @@
 package org.ops4j.peaberry;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.logging.Logger;
 
-import org.ops4j.peaberry.OSGiService.Policy;
-import org.ops4j.peaberry.internal.OSGiClassLoaderHook;
-import org.ops4j.peaberry.internal.OSGiServiceBindingFactory;
-import org.ops4j.peaberry.internal.OSGiServiceRegistryImpl;
+import org.ops4j.peaberry.internal.ServiceBindingFactory;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Binder;
-import com.google.inject.ClassLoaderHook;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.Scopes;
+import com.google.inject.internal.GuiceCodeGen;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.spi.Dependency;
-import com.google.inject.util.GuiceContainer;
 
 /**
- * Peaberry utility class, provides OSGi service injection for Guice.
- * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@OSGiService(policy = Policy.LAZY)
 public final class Peaberry {
-
-  private static final ClassLoaderHook LOADER_HOOK = new OSGiClassLoaderHook();
-
-  /**
-   * @return OSGi class loading hook
-   */
-  public static ClassLoaderHook getOSGiClassLoaderHook() {
-    return LOADER_HOOK;
-  }
 
   /**
    * Simple dependency matcher that matches on the binding annotation type.
@@ -87,12 +69,9 @@ public final class Peaberry {
 
         binder.bind(BundleContext.class).toInstance(bc);
 
-        // auto-bind OSGi service dependencies and implementations
-        binder.addBindingFactory(new AnnotationTypeMatcher(OSGiService.class),
-            new OSGiServiceBindingFactory());
-
-        binder.bind(OSGiServiceRegistry.class)
-            .to(OSGiServiceRegistryImpl.class).in(Scopes.SINGLETON);
+        // auto-bind service dependencies and implementations
+        binder.addBindingFactory(new AnnotationTypeMatcher(Service.class),
+            new ServiceBindingFactory());
       }
     };
   }
@@ -101,30 +80,18 @@ public final class Peaberry {
    * Convenience method for constructing an OSGi enabled Guice injector
    * 
    * @param bc current bundle context
-   * @param applicationModules application Guice modules
-   * @return OSGi enabled Guice injector
+   * @param module custom Guice module
+   * @return OSGi enabled injector
    */
-  public static Injector getOSGiInjector(BundleContext bc,
-      Module... applicationModules) {
-    return getOSGiInjector(bc, Arrays.asList(applicationModules));
-  }
+  public static Injector getOSGiInjector(BundleContext bc, Module module) {
 
-  /**
-   * Convenience method for constructing an OSGi enabled Guice injector
-   * 
-   * @param bc current bundle context
-   * @param applicationModules application Guice modules
-   * @return OSGi enabled Guice injector
-   */
-  public static Injector getOSGiInjector(BundleContext bc,
-      Collection<? extends Module> applicationModules) {
+    // eagerly load logging subsystem, as this appears to fix class unloading
+    Logger.getAnonymousLogger();
 
-    ClassLoaderHook loaderHook = Peaberry.getOSGiClassLoaderHook();
+    // enable use of bundle TCCL
+    GuiceCodeGen.enableTCCL();
 
-    Collection<Module> modules = new ArrayList<Module>();
-    modules.add(Peaberry.getOSGiModule(bc));
-    modules.addAll(applicationModules);
-
-    return GuiceContainer.createInjector(loaderHook, modules);
+    // TODO: bridge TCCL to find internal cglib packages
+    return Guice.createInjector(getOSGiModule(bc), module);
   }
 }

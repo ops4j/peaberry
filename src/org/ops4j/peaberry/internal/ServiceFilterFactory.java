@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,18 +18,19 @@ package org.ops4j.peaberry.internal;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import org.ops4j.peaberry.OSGiService;
+
+import org.ops4j.peaberry.Service;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
- * Provide instances of LDAP filters from OSGiService specifications.
+ * Provide instances of LDAP filters from Service specifications.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class OSGiServiceFilterFactory {
+public final class ServiceFilterFactory {
 
   /**
    * Convert OSGiService spec into LDAP filter for the ServiceTracker.
@@ -39,7 +40,7 @@ public final class OSGiServiceFilterFactory {
    * @return an LDAP filter object
    * @throws InvalidSyntaxException
    */
-  public static Filter get(OSGiService spec, Type memberType)
+  public static Filter get(Service spec, Type memberType)
       throws InvalidSyntaxException {
 
     /*
@@ -92,7 +93,7 @@ public final class OSGiServiceFilterFactory {
    * @param spec annotation details for the injected OSGi service
    * @return an LDAP filter string for the specific interfaces
    */
-  private static String getInterfaceFilter(OSGiService spec) {
+  private static String getInterfaceFilter(Service spec) {
     StringBuilder interfaceClauses = new StringBuilder();
 
     final Class<?>[] interfaces = spec.interfaces();

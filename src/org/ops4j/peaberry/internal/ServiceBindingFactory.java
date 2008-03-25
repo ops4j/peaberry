@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,18 +16,17 @@
 
 package org.ops4j.peaberry.internal;
 
-import org.ops4j.peaberry.OSGiService;
+import org.ops4j.peaberry.Service;
 import org.osgi.framework.InvalidSyntaxException;
+
 import com.google.inject.BindingFactory;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.spi.Dependency;
 
 /**
- * Provide on-demand bindings for OSGi service dependencies and implementations.
- * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class OSGiServiceBindingFactory
+public final class ServiceBindingFactory
     implements BindingFactory<Object> {
 
   /**
@@ -38,11 +37,11 @@ public final class OSGiServiceBindingFactory
       LinkedBindingBuilder<T> linkedBindingBuilder) {
 
     // TODO Auto-generated method stub
-    OSGiService spec = (OSGiService) dependency.getKey().getAnnotation();
+    Service spec = (Service) dependency.getKey().getAnnotation();
     try {
       System.out.println("AUTOBIND:"
-          + OSGiServiceFilterFactory.get(spec, dependency.getKey()
-              .getTypeLiteral().getType()));
+          + ServiceFilterFactory.get(spec, dependency.getKey().getTypeLiteral()
+              .getType()));
     } catch (InvalidSyntaxException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
