@@ -99,21 +99,23 @@ public final class Peaberry {
     // enable use of bundle TCCL
     GuiceCodeGen.enableTCCL();
 
-    final BridgeContextClassLoader bridgeTCCL =
+    final BridgeContextClassLoader moduleTCCL =
         new BridgeContextClassLoader(module);
 
-    return bridgeTCCL.bridge(new Callable<Injector>() {
+    return moduleTCCL.bridge(new Callable<Injector>() {
       public Injector call() {
+
         final Injector injector =
             Guice.createInjector(getOSGiModule(bc), module);
 
         return (Injector) GuiceCodeGen.getProxy(Injector.class,
             new InvocationHandler() {
+
               public Object invoke(Object proxy, final Method method,
                   final Object[] args)
                   throws Throwable {
 
-                return bridgeTCCL.bridge(new Callable<Object>() {
+                return moduleTCCL.bridge(new Callable<Object>() {
                   public Object call()
                       throws Exception {
                     return method.invoke(injector, args);
