@@ -58,7 +58,9 @@ public class OSGiServiceBindingTest
     }
   }
 
-  public void testInjection() {
+  public void testInjection()
+      throws Exception {
+
     BundleContext bc = OSGiTests.getBundleContext();
     Injector injector = Peaberry.getOSGiInjector(bc, new Module());
     injector.getInstance(OSGiServiceBindingTest.class);

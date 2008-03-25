@@ -17,8 +17,12 @@
 package org.ops4j.peaberry;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
+import org.ops4j.peaberry.internal.BridgeContextClassLoader;
 import org.ops4j.peaberry.internal.ServiceBindingFactory;
 import org.osgi.framework.BundleContext;
 
@@ -82,8 +86,12 @@ public final class Peaberry {
    * @param bc current bundle context
    * @param module custom Guice module
    * @return OSGi enabled injector
+   * 
+   * @throws Exception
    */
-  public static Injector getOSGiInjector(BundleContext bc, Module module) {
+  public static Injector getOSGiInjector(final BundleContext bc,
+      final Module module)
+      throws Exception {
 
     // eagerly load logging subsystem, as this appears to fix class unloading
     Logger.getAnonymousLogger();
@@ -91,7 +99,29 @@ public final class Peaberry {
     // enable use of bundle TCCL
     GuiceCodeGen.enableTCCL();
 
-    // TODO: bridge TCCL to find internal cglib packages
-    return Guice.createInjector(getOSGiModule(bc), module);
+    final BridgeContextClassLoader bridgeTCCL =
+        new BridgeContextClassLoader(module);
+
+    return bridgeTCCL.bridge(new Callable<Injector>() {
+      public Injector call() {
+        final Injector injector =
+            Guice.createInjector(getOSGiModule(bc), module);
+
+        return (Injector) GuiceCodeGen.getProxy(Injector.class,
+            new InvocationHandler() {
+              public Object invoke(Object proxy, final Method method,
+                  final Object[] args)
+                  throws Throwable {
+
+                return bridgeTCCL.bridge(new Callable<Object>() {
+                  public Object call()
+                      throws Exception {
+                    return method.invoke(injector, args);
+                  }
+                });
+              }
+            });
+      }
+    });
   }
 }
