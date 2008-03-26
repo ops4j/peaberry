@@ -749,3 +749,18 @@ ___________________________________________________________________
 Name: svn:eol-style
    + native
 
+Index: test/com/google/inject/commands/CommandRecorderTest.java
+===================================================================
+--- test/com/google/inject/commands/CommandRecorderTest.java   (revision 424)
++++ test/com/google/inject/commands/CommandRecorderTest.java   (working copy)
+@@ -759,6 +759,10 @@
+     public Void visitGetProvider(GetProviderCommand command) {
+       throw new AssertionFailedError();
+     }
++
++    public Void visitAddBindingFactory(AddBindingFactoryCommand command) {
++      throw new AssertionFailedError();
++    }
+   }
+
+   @Retention(RUNTIME)
