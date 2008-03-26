@@ -23,7 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import org.ops4j.peaberry.internal.OSGiClassLoaderHook;
+import org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook;
 import org.ops4j.peaberry.internal.ServiceBindingFactory;
 import org.osgi.framework.BundleContext;
 
@@ -57,7 +57,8 @@ public final class Peaberry {
     };
   }
 
-  private static final ClassLoaderHook LOADER_HOOK = new OSGiClassLoaderHook();
+  private static final ClassLoaderHook LOADER_HOOK =
+      new NonDelegatingClassLoaderHook();
 
   /**
    * Convenience method for constructing an OSGi enabled Guice injector

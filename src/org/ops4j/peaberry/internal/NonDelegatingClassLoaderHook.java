@@ -22,11 +22,12 @@ import com.google.inject.ClassLoaderHook;
 import com.google.inject.internal.ReferenceCache;
 
 /**
- * Hook to support Guice code generation inside OSGi containers.
+ * Hook to support Guice inside non-delegating classloader containers like OSGi,
+ * where the CGLIB proxy/reflection classes may not be visible to client types.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class OSGiClassLoaderHook
+public final class NonDelegatingClassLoaderHook
     implements ClassLoaderHook {
 
   /**
@@ -37,56 +38,39 @@ public final class OSGiClassLoaderHook
       new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
         private static final long serialVersionUID = 1L;
 
-        /**
-         * Bridge between client type classloader and main Guice classloader
-         */
+        private static final String CGLIB_PACKAGE = "com.google.inject.cglib";
+
         @Override
         protected final ClassLoader create(ClassLoader typeClassLoader) {
-          return new BridgeClassLoader(typeClassLoader);
+          return new ClassLoader(typeClassLoader) {
+
+            /**
+             * Bridge between client type classloader and main Guice classloader
+             */
+            @Override
+            protected Class<?> loadClass(String name, boolean resolve)
+                throws ClassNotFoundException {
+
+              if (name.startsWith(CGLIB_PACKAGE)) {
+                try {
+                  Class<?> clazz = getClass().getClassLoader().loadClass(name);
+                  if (resolve) {
+                    super.resolveClass(clazz);
+                  }
+                  return clazz;
+                } catch (Exception e) {
+                  // fallback to classic delegation
+                }
+              }
+
+              return super.loadClass(name, resolve);
+            }
+          };
         }
       };
 
   /**
-   * Custom classloader that switches delegation between two parent loaders.
-   */
-  private static final class BridgeClassLoader
-      extends ClassLoader {
-
-    private static final String CGLIB_PACKAGE = "com.google.inject.cglib";
-
-    private static final ClassLoader PEABERRY_LOADER =
-        BridgeClassLoader.class.getClassLoader();
-
-    /**
-     * By default, delegate to the client type classloader
-     */
-    public BridgeClassLoader(ClassLoader typeClassLoader) {
-      super(typeClassLoader);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected Class<?> loadClass(final String name, final boolean resolve)
-        throws ClassNotFoundException {
-
-      // delegate internal CGLIB requests to Peaberry bundle classloader
-      if (PEABERRY_LOADER != null && name.startsWith(CGLIB_PACKAGE)) {
-        final Class<?> clazz = PEABERRY_LOADER.loadClass(name);
-        if (resolve) {
-          super.resolveClass(clazz);
-        }
-        return clazz;
-      }
-
-      // default to standard OSGi delegation
-      return super.loadClass(name, resolve);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
+   * Use weak cache to avoid explosion of classloaders
    */
   public ClassLoader get(Class<?> type) {
     return m_classLoaderCache.get(type.getClassLoader());
