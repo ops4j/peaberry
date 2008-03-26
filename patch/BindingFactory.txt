@@ -1,15 +1,3 @@
-Index: common.xml
-===================================================================
---- common.xml	(revision 423)
-+++ common.xml	(working copy)
-@@ -11,6 +11,7 @@
-   <target name="compile" description="Compile Java source.">
-     <mkdir dir="${build.dir}/classes"/>
-     <javac srcdir="${src.dir}"
-+         sourcepath="${commands.src.dir}"
-          debug="on"
-          destdir="${build.dir}/classes">
-       <classpath refid="compile.classpath"/>
 Index: src/com/google/inject/Binder.java
 ===================================================================
 --- src/com/google/inject/Binder.java	(revision 423)
@@ -139,7 +127,7 @@ Index: src/com/google/inject/InjectorBuilder.java
 ===================================================================
 --- src/com/google/inject/InjectorBuilder.java	(revision 423)
 +++ src/com/google/inject/InjectorBuilder.java	(working copy)
-@@ -17,10 +17,13 @@
+@@ -17,11 +17,14 @@
  package com.google.inject;
  
  import static com.google.inject.Scopes.SINGLETON;
@@ -149,11 +137,12 @@ Index: src/com/google/inject/InjectorBuilder.java
  import com.google.inject.commands.CommandRecorder;
  import com.google.inject.commands.FutureInjector;
  import com.google.inject.internal.Stopwatch;
+ import com.google.inject.internal.Objects;
 +import com.google.inject.spi.Dependency;
  import com.google.inject.spi.Message;
  import com.google.inject.spi.SourceProviders;
  
-@@ -134,12 +137,23 @@
+@@ -135,12 +138,23 @@
          .processCommands(commands, configurationErrorHandler);
      stopwatch.resetAndLog("Converters creation");
  
@@ -177,7 +166,7 @@ Index: src/com/google/inject/InjectorBuilder.java
      injector.index();
      stopwatch.resetAndLog("Binding indexing");
  
-@@ -268,4 +282,26 @@
+@@ -269,4 +283,26 @@
        throw new ConfigurationException("Error at " + source + " " + message);
      }
    }
@@ -406,10 +395,10 @@ Index: src/com/google/inject/CommandProcessor.java
 +    return false;
 +  }
  }
-Index: extensions/commands/src/com/google/inject/commands/CommandRecorder.java
+Index: src/com/google/inject/commands/CommandRecorder.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(revision 423)
-+++ extensions/commands/src/com/google/inject/commands/CommandRecorder.java	(working copy)
+--- src/com/google/inject/commands/CommandRecorder.java	(revision 423)
++++ src/com/google/inject/commands/CommandRecorder.java	(working copy)
 @@ -19,8 +19,10 @@
  import com.google.inject.*;
  import com.google.inject.binder.AnnotatedBindingBuilder;
@@ -460,10 +449,10 @@ Index: extensions/commands/src/com/google/inject/commands/CommandRecorder.java
 +    }
    }
  }
-Index: extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java
+Index: src/com/google/inject/commands/AddBindingFactoryCommand.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
-+++ extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
+--- src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
++++ src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
 @@ -0,0 +1,58 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
@@ -524,15 +513,15 @@ Index: extensions/commands/src/com/google/inject/commands/AddBindingFactoryComma
 +  }
 +}
 
-Property changes on: extensions/commands/src/com/google/inject/commands/AddBindingFactoryCommand.java
+Property changes on: src/com/google/inject/commands/AddBindingFactoryCommand.java
 ___________________________________________________________________
 Name: svn:eol-style
    + native
 
-Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
+Index: src/com/google/inject/commands/BindCommand.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/BindCommand.java	(revision 423)
-+++ extensions/commands/src/com/google/inject/commands/BindCommand.java	(working copy)
+--- src/com/google/inject/commands/BindCommand.java	(revision 423)
++++ src/com/google/inject/commands/BindCommand.java	(working copy)
 @@ -17,12 +17,14 @@
  package com.google.inject.commands;
  
@@ -574,21 +563,21 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
      public LinkedBindingBuilder<T> annotatedWith(
 @@ -318,26 +320,49 @@
  
-     private void assertNoTarget() {
+     private void checkNotTargetted() {
        if (bindTarget != EMPTY_BIND_TARGET) {
 -        binder.addError(IMPLEMENTATION_ALREADY_SET);
 +        errorHandler.handle(source, IMPLEMENTATION_ALREADY_SET);
        }
      }
  
-     private void assertNotAnnotated() {
+     private void checkNotAnnotated() {
        if (BindCommand.this.key.getAnnotationType() != null) {
 -        binder.addError(ANNOTATION_ALREADY_SPECIFIED);
 +         errorHandler.handle(source, ANNOTATION_ALREADY_SPECIFIED);
        }
      }
  
-     private void assertNoScope() {
+     private void checkNotScoped() {
        // Scoping isn't allowed when we have only one instance.
        if (bindTarget.get() != null) {
 -        binder.addError(SINGLE_INSTANCE_AND_SCOPE);
@@ -626,10 +615,10 @@ Index: extensions/commands/src/com/google/inject/commands/BindCommand.java
 +    }
 +  }
  }
-Index: extensions/commands/src/com/google/inject/commands/Command.java
+Index: src/com/google/inject/commands/Command.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/Command.java	(revision 423)
-+++ extensions/commands/src/com/google/inject/commands/Command.java	(working copy)
+--- src/com/google/inject/commands/Command.java	(revision 423)
++++ src/com/google/inject/commands/Command.java	(working copy)
 @@ -38,5 +38,6 @@
      V visitConvertToTypes(ConvertToTypesCommand command);
      <T> V visitBind(BindCommand<T> command);
@@ -637,10 +626,10 @@ Index: extensions/commands/src/com/google/inject/commands/Command.java
 +    <T> V visitAddBindingFactory(AddBindingFactoryCommand<T> command);
    }
  }
-Index: extensions/commands/src/com/google/inject/commands/CommandReplayer.java
+Index: src/com/google/inject/commands/CommandReplayer.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/CommandReplayer.java	(revision 423)
-+++ extensions/commands/src/com/google/inject/commands/CommandReplayer.java	(working copy)
+--- src/com/google/inject/commands/CommandReplayer.java	(revision 423)
++++ src/com/google/inject/commands/CommandReplayer.java	(working copy)
 @@ -100,6 +100,11 @@
          replayGetProvider(binder, command);
          return null;
@@ -666,10 +655,10 @@ Index: extensions/commands/src/com/google/inject/commands/CommandReplayer.java
 +    });
 +  }
  }
-Index: extensions/commands/src/com/google/inject/commands/BindConstantCommand.java
+Index: src/com/google/inject/commands/BindConstantCommand.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/BindConstantCommand.java	(revision 423)
-+++ extensions/commands/src/com/google/inject/commands/BindConstantCommand.java	(working copy)
+--- src/com/google/inject/commands/BindConstantCommand.java	(revision 423)
++++ src/com/google/inject/commands/BindConstantCommand.java	(working copy)
 @@ -18,7 +18,6 @@
  
  import com.google.inject.Key;
@@ -719,10 +708,10 @@ Index: extensions/commands/src/com/google/inject/commands/BindConstantCommand.ja
        }
      }
    }
-Index: extensions/commands/src/com/google/inject/commands/ErrorHandler.java
+Index: src/com/google/inject/commands/ErrorHandler.java
 ===================================================================
---- extensions/commands/src/com/google/inject/commands/ErrorHandler.java	(revision 0)
-+++ extensions/commands/src/com/google/inject/commands/ErrorHandler.java	(revision 0)
+--- src/com/google/inject/commands/ErrorHandler.java	(revision 0)
++++ src/com/google/inject/commands/ErrorHandler.java	(revision 0)
 @@ -0,0 +1,30 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
@@ -755,7 +744,7 @@ Index: extensions/commands/src/com/google/inject/commands/ErrorHandler.java
 +  void handle(Object source, String message, Object... arguments);
 +}
 
-Property changes on: extensions/commands/src/com/google/inject/commands/ErrorHandler.java
+Property changes on: src/com/google/inject/commands/ErrorHandler.java
 ___________________________________________________________________
 Name: svn:eol-style
    + native
