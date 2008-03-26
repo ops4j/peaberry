@@ -16,7 +16,9 @@
 
 package org.ops4j.peaberry;
 
-import java.lang.annotation.Annotation;
+import static com.google.inject.matcher.Matchers.annotatedWith;
+import static com.google.inject.matcher.Matchers.key;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -31,36 +33,11 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.internal.GuiceCodeGen;
-import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.spi.Dependency;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class Peaberry {
-
-  /**
-   * Simple dependency matcher that matches on the binding annotation type.
-   */
-  private static final class AnnotationTypeMatcher
-      extends AbstractMatcher<Dependency<?>> {
-
-    private final Class<? extends Annotation> m_annotationType;
-
-    /**
-     * @param type annotation type to match on
-     */
-    public AnnotationTypeMatcher(Class<? extends Annotation> type) {
-      m_annotationType = type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean matches(Dependency<?> dependency) {
-      return m_annotationType.equals(dependency.getKey().getAnnotationType());
-    }
-  }
 
   /**
    * @param bc current bundle context
@@ -74,7 +51,7 @@ public final class Peaberry {
         binder.bind(BundleContext.class).toInstance(bc);
 
         // auto-bind service dependencies and implementations
-        binder.addBindingFactory(new AnnotationTypeMatcher(Service.class),
+        binder.addBindingFactory(key(annotatedWith(Service.class)),
             new ServiceBindingFactory());
       }
     };

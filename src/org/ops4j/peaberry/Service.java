@@ -63,7 +63,7 @@ public @interface Service {
 
     /**
      * Service tied to binding lifetime. Once a service is discovered it will
-     * always be the same for a given binding, even if the service goes away.
+     * always be the same for a given binding, even if the service has stopped.
      */
     STATIC,
 
