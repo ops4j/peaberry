@@ -59,6 +59,6 @@ public class StaticScope
 
   @Override
   public String toString() {
-    return "STATIC";
+    return "Peaberry.STATIC";
   }
 }

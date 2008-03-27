@@ -16,20 +16,13 @@
 
 package org.ops4j.peaberry.internal;
 
-import java.util.Iterator;
-
 /**
- * Representation of a dynamic service registry.
- * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface ServiceRegistry {
+public class ServiceProxyFactory {
 
-  /**
-   * Lookup service instances using LDAP query filter.
-   * 
-   * @param query RFC-1960 (LDAP) filter
-   * @return sequence of service instances
-   */
-  Iterator<?> lookup(String query);
+  public static Object get(Class<?> type, ServiceRegistry registry, String query) {
+    // TODO!
+    return null;
+  }
 }

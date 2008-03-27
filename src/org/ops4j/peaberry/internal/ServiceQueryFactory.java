@@ -110,32 +110,39 @@ public final class ServiceQueryFactory {
   }
 
   /**
-   * @param memberType the type of the member being injected
-   * @return true if this is a unary service otherwise false
+   * @param memberType runtime type of member being injected
+   * @return true if member expects a sequence of services
    */
-  public static boolean unary(Type memberType) {
-    return false == memberType.toString().startsWith("java.lang.Iterable");
+  public static boolean expectsSequence(Type memberType) {
+    return memberType.toString().startsWith("java.lang.Iterable");
+  }
+
+  /**
+   * @param memberType runtime type of member being injected
+   * @return expected service type
+   */
+  public static Class<?> getServiceType(Type memberType) {
+
+    // extract the actual service type
+    if (expectsSequence(memberType)) {
+      memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
+    }
+
+    // remove remaining generic parameters
+    if (memberType instanceof ParameterizedType) {
+      memberType = ((ParameterizedType) memberType).getRawType();
+    }
+
+    return (Class<?>) memberType;
   }
 
   /**
    * Create LDAP query to find a service for the member being injected.
    * 
-   * @param memberType the type of the member being injected
+   * @param memberType runtime type of member being injected
    * @return an LDAP query string for the injected member
    */
   private static String getMemberTypeQuery(Type memberType) {
-
-    // multiple service dependency
-    if (false == unary(memberType)) {
-      memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
-    }
-
-    // use raw type when finding generic services
-    if (memberType instanceof ParameterizedType) {
-      memberType = ((ParameterizedType) memberType).getRawType();
-    }
-
-    final String className = ((Class<?>) memberType).getName();
-    return "(objectclass=" + className + ')';
+    return "(objectclass=" + getServiceType(memberType).getName() + ')';
   }
 }
