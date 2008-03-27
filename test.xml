@@ -8,6 +8,7 @@
       <syspropertyset>
         <propertyref name="build"/>
         <propertyref name="cache.dir"/>
+        <propertyref name="cmpn.jar"/>
         <propertyref name="peaberry.jar"/>
         <propertyref name="director.jar"/>
         <propertyref name="testlib"/>

@@ -52,7 +52,7 @@ public final class Peaberry {
 
         // auto-bind service dependencies and implementations
         binder.addBindingFactory(key(annotatedWith(Service.class)),
-            new ServiceBindingFactory());
+            new ServiceBindingFactory(bc));
       }
     };
   }

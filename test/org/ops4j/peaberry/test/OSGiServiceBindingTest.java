@@ -16,14 +16,12 @@
 
 package org.ops4j.peaberry.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestCase;
 
 import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.Service;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.log.LogService;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -35,23 +33,15 @@ public class OSGiServiceBindingTest
 
   @Inject
   @Service
-  List<Object> m_logService;
+  LogService m_logService;
 
-  public OSGiServiceBindingTest() {
-  }
-
-  @Inject
-  public OSGiServiceBindingTest(@Service
-  Iterable<List<Object>> foos) {
-  }
-
-  @Inject
-  public void setFoo(@Service
-  ArrayList foo) {
+  public void log(String message) {
+    m_logService.log(LogService.LOG_INFO, message);
   }
 
   class Module
       extends AbstractModule {
+
     @Override
     protected void configure() {
       bind(OSGiServiceBindingTest.class).in(Scopes.SINGLETON);
@@ -63,6 +53,7 @@ public class OSGiServiceBindingTest
 
     BundleContext bc = OSGiTests.getBundleContext();
     Injector injector = Peaberry.getOSGiInjector(bc, new Module());
-    injector.getInstance(OSGiServiceBindingTest.class);
+
+    injector.getInstance(OSGiServiceBindingTest.class).log("Hello World");
   }
 }

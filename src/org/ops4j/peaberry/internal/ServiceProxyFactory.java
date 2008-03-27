@@ -16,9 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
-import net.sf.cglib.proxy.Dispatcher;
-import net.sf.cglib.proxy.Enhancer;
-
+import com.google.inject.cglib.proxy.Dispatcher;
+import com.google.inject.cglib.proxy.Enhancer;
 import com.google.inject.internal.GuiceCodeGen;
 
 /**

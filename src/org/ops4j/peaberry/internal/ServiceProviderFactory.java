@@ -38,7 +38,7 @@ public final class ServiceProviderFactory {
    * @return
    */
   @SuppressWarnings("unchecked")
-  public ServiceProvider<?> get(final ServiceRegistry registry,
+  public static ServiceProvider<?> get(final ServiceRegistry registry,
       Type memberType, Service spec) {
 
     final String query = ServiceQueryFactory.get(spec, memberType);

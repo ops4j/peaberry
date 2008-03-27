@@ -16,7 +16,10 @@
 
 package org.ops4j.peaberry.internal;
 
+import java.lang.reflect.Type;
+
 import org.ops4j.peaberry.Service;
+import org.osgi.framework.BundleContext;
 
 import com.google.inject.BindingFactory;
 import com.google.inject.binder.LinkedBindingBuilder;
@@ -28,20 +31,25 @@ import com.google.inject.spi.Dependency;
 public final class ServiceBindingFactory
     implements BindingFactory<Object> {
 
+  final BundleContext bundleContext;
+
+  public ServiceBindingFactory(BundleContext bundleContext) {
+    this.bundleContext = bundleContext;
+  }
+
   /**
    * {@inheritDoc}
    */
   @SuppressWarnings("unchecked")
-  public <T> boolean bind(Dependency<T> dependency,
-      LinkedBindingBuilder<T> linkedBindingBuilder) {
+  public boolean bind(Dependency dependency,
+      LinkedBindingBuilder linkedBindingBuilder) {
 
-    // TODO Auto-generated method stub
+    Type memberType = dependency.getKey().getTypeLiteral().getType();
     Service spec = (Service) dependency.getKey().getAnnotation();
-    System.out.println("AUTOBIND:"
-        + ServiceQueryFactory.get(spec, dependency.getKey().getTypeLiteral()
-            .getType()));
 
-    linkedBindingBuilder.toInstance((T) new java.util.ArrayList());
+    linkedBindingBuilder.toProvider(ServiceProviderFactory.get(
+        new OSGiServiceRegistry(bundleContext), memberType, spec));
+
     return true;
   }
 }
