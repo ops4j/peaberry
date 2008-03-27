@@ -17,17 +17,17 @@
 package org.ops4j.peaberry.internal;
 
 /**
- * Representation of a dynamic service registry
+ * Representation of a dynamic service registry.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface ServiceRegistry {
 
   /**
-   * Lookup service instances using LDAP query filter
+   * Lookup service instances using LDAP query filter.
    * 
    * @param query RFC-1960 (LDAP) filter
    * @return sequence of service instances
    */
-  Iterable<?> get(String query);
+  <T> Iterable<T> get(String query);
 }

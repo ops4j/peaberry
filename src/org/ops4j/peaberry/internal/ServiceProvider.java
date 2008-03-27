@@ -14,37 +14,22 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.internal;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import com.google.inject.BindingAnnotation;
+import com.google.inject.Provider;
 
 /**
- * Basic service specification.
+ * Representation of a service provider that provides a dynamic proxy.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Target( {
-    TYPE, FIELD, PARAMETER
-})
-@Retention(RUNTIME)
-@BindingAnnotation
-public @interface Service {
+public interface ServiceProvider<T>
+    extends Provider<T> {
 
   /**
-   * RFC-1960 (LDAP) filter
+   * Resolves to the current service instance(s), not the dynamic proxy.
+   * 
+   * @return current service instance(s)
    */
-  String value() default "";
-
-  /**
-   * Custom service API
-   */
-  Class<?>[] interfaces() default {};
+  T resolve();
 }

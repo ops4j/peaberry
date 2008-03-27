@@ -106,6 +106,14 @@ public final class ServiceQueryFactory {
   }
 
   /**
+   * @param memberType the type of the member being injected
+   * @return true if this is a unary service otherwise false
+   */
+  public static boolean unary(Type memberType) {
+    return false == memberType.toString().startsWith("java.lang.Iterable");
+  }
+
+  /**
    * Create LDAP query to find a service for the member being injected.
    * 
    * @param memberType the type of the member being injected
@@ -113,8 +121,8 @@ public final class ServiceQueryFactory {
    */
   private static String getMemberTypeQuery(Type memberType) {
 
-    // multiple service dependency, represented by iterable type
-    if (memberType.toString().startsWith("java.lang.Iterable<")) {
+    // multiple service dependency
+    if (false == unary(memberType)) {
       memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
     }
 
