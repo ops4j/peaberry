@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.internal;
+package org.ops4j.peaberry;
 
-import net.sf.cglib.proxy.Dispatcher;
-import net.sf.cglib.proxy.Enhancer;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.google.inject.internal.GuiceCodeGen;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import com.google.inject.ScopeAnnotation;
 
 /**
+ * Denotes a service that can be "leased" for a given amount of time. That is,
+ * the same service instance will always be returned during the lease period.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceProxyFactory {
-
-  public static <T> T get(Class<T> type, final ServiceRegistry registry,
-      final String query) {
-
-    Enhancer proxy = GuiceCodeGen.getEnhancer(type);
-    proxy.setCallback(new Dispatcher() {
-      public Object loadObject()
-          throws Exception {
-        // check the registry on every call
-        return registry.lookup(query).next();
-      }
-    });
-
-    return type.cast(proxy.create());
-  }
+@Target( {
+    TYPE, FIELD, PARAMETER
+})
+@Retention(RUNTIME)
+@ScopeAnnotation
+public @interface Leased {
+  int seconds();
 }
