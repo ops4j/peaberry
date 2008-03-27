@@ -24,10 +24,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.google.inject.BindingAnnotation;
-
 /**
- * Basic service specification
+ * Denotes a mandatory service, bundle is stopped when service is not available.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -35,16 +33,5 @@ import com.google.inject.BindingAnnotation;
     TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
-@BindingAnnotation
-public @interface Service {
-
-  /**
-   * RFC-1960 (LDAP) filter
-   */
-  String value() default "";
-
-  /**
-   * Custom service API
-   */
-  Class<?>[] interfaces() default {};
+public @interface Mandatory {
 }

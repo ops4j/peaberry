@@ -24,10 +24,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.google.inject.BindingAnnotation;
+import com.google.inject.ScopeAnnotation;
 
 /**
- * Basic service specification
+ * Denotes static service tied to binding lifetime. Once service is resolved, it
+ * will always be the same for a given binding, even if the service has stopped.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -35,16 +36,6 @@ import com.google.inject.BindingAnnotation;
     TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
-@BindingAnnotation
-public @interface Service {
-
-  /**
-   * RFC-1960 (LDAP) filter
-   */
-  String value() default "";
-
-  /**
-   * Custom service API
-   */
-  Class<?>[] interfaces() default {};
+@ScopeAnnotation
+public @interface Static {
 }

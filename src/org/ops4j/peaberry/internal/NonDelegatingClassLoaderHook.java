@@ -45,7 +45,7 @@ public final class NonDelegatingClassLoaderHook
           return new ClassLoader(typeClassLoader) {
 
             /**
-             * Bridge between client type classloader and main Guice classloader
+             * Bridge between client classloader and current classloader
              */
             @Override
             protected Class<?> loadClass(String name, boolean resolve)
@@ -59,7 +59,7 @@ public final class NonDelegatingClassLoaderHook
                   }
                   return clazz;
                 } catch (Exception e) {
-                  // fallback to classic delegation
+                  // fall back to classic delegation
                 }
               }
 
@@ -73,6 +73,13 @@ public final class NonDelegatingClassLoaderHook
    * Use weak cache to avoid explosion of classloaders
    */
   public ClassLoader get(Class<?> type) {
-    return m_classLoaderCache.get(type.getClassLoader());
+    ClassLoader typeLoader = type.getClassLoader();
+
+    // optimisation: no need to bridge sibling types
+    if (getClass().getClassLoader() == typeLoader) {
+      return typeLoader;
+    } else {
+      return m_classLoaderCache.get(typeLoader);
+    }
   }
 }

@@ -14,37 +14,20 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import com.google.inject.BindingAnnotation;
+package org.ops4j.peaberry.internal;
 
 /**
- * Basic service specification
+ * Representation of a dynamic service registry
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Target( {
-    TYPE, FIELD, PARAMETER
-})
-@Retention(RUNTIME)
-@BindingAnnotation
-public @interface Service {
+public interface ServiceRegistry {
 
   /**
-   * RFC-1960 (LDAP) filter
+   * Lookup service instances using LDAP query filter
+   * 
+   * @param query RFC-1960 (LDAP) filter
+   * @return sequence of service instances
    */
-  String value() default "";
-
-  /**
-   * Custom service API
-   */
-  Class<?>[] interfaces() default {};
+  Iterable<?> get(String query);
 }

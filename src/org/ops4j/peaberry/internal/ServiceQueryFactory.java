@@ -38,14 +38,14 @@ public final class ServiceQueryFactory {
   public static String get(Service spec, Type memberType) {
 
     /*
-     * STEP 1: default spec, query on member type
+     * STEP 1: default specification, just use member type
      */
     if (null == spec) {
       return getMemberTypeQuery(memberType);
     }
 
     /*
-     * STEP 2: normalize custom query, apply missing brackets
+     * STEP 2: normalise custom query, apply missing brackets
      */
     String customQuery = spec.value().trim();
     if (customQuery.length() > 0 && !customQuery.startsWith("(")) {
@@ -113,7 +113,7 @@ public final class ServiceQueryFactory {
    */
   private static String getMemberTypeQuery(Type memberType) {
 
-    // multiple service dependency, ie. Iterable<T>
+    // multiple service dependency, represented by iterable type
     if (memberType.toString().startsWith("java.lang.Iterable<")) {
       memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
     }
