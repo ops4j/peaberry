@@ -28,6 +28,10 @@ import org.ops4j.peaberry.Service;
  */
 public final class ServiceQueryFactory {
 
+  private ServiceQueryFactory() {
+    // don't allow instances of helper class
+  }
+
   /**
    * Convert {@literal @}Service specification into an LDAP query.
    * 

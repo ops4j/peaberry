@@ -46,6 +46,7 @@ public class StaticScope
           return instance;
         }
 
+        @Override
         public String toString() {
           return String.format("%s[%s]", dynamic, StaticScope.this);
         }
@@ -54,5 +55,10 @@ public class StaticScope
     } else {
       return Scopes.SINGLETON.scope(key, dynamic);
     }
+  }
+
+  @Override
+  public String toString() {
+    return "STATIC";
   }
 }
