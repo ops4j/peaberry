@@ -27,12 +27,14 @@
 
   <target name="compile">
     <mkdir dir="${build}/classes"/>
-    <javac srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
+    <javac debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}">
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
   </target>
 
   <target name="test.compile">
     <mkdir dir="${build}/test-classes"/>
-    <javac srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
+    <javac debug="on" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
   </target>
 
   <target name="clean">
