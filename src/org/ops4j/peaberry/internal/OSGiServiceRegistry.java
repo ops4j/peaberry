@@ -44,10 +44,10 @@ public final class OSGiServiceRegistry
 
     try {
       System.out.println("LDAP: " + filter);
-      services = bundleContext.getServiceReferences(null, filter);
+      services = bundleContext.getServiceReferences(type.getName(), filter);
       if (null != services) {
         for (ServiceReference sr : services) {
-          System.out.println("SR:" + sr);
+          System.out.println("SREF:" + sr);
         }
       }
     } catch (Exception e) {
