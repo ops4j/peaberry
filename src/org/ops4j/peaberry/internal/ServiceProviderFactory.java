@@ -25,11 +25,17 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Service;
+import org.ops4j.peaberry.ServiceProvider;
+import org.ops4j.peaberry.ServiceRegistry;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class ServiceProviderFactory {
+
+  private ServiceProviderFactory() {
+    // don't allow instances of helper class
+  }
 
   /**
    * @param registry

@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
+import org.ops4j.peaberry.ServiceRegistry;
+
 import com.google.inject.cglib.proxy.Dispatcher;
 import com.google.inject.cglib.proxy.Enhancer;
 import com.google.inject.internal.GuiceCodeGen;
@@ -24,6 +26,10 @@ import com.google.inject.internal.GuiceCodeGen;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public class ServiceProxyFactory {
+
+  private ServiceProxyFactory() {
+    // don't allow instances of helper class
+  }
 
   public static <T> T get(Class<T> type, final ServiceRegistry registry,
       final String query) {

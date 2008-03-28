@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.internal;
+package org.ops4j.peaberry;
 
-import com.google.inject.Provider;
+import java.util.Iterator;
 
 /**
- * Representation of a service provider that provides a dynamic proxy.
+ * Representation of a dynamic service registry.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface ServiceProvider<T>
-    extends Provider<T> {
+public interface ServiceRegistry {
 
   /**
-   * Resolves to the current service instance(s), not the dynamic proxy.
+   * Lookup service instances using LDAP query filter.
    * 
-   * @return current service instance(s)
+   * @param query RFC-1960 (LDAP) filter
+   * @return sequence of service instances
    */
-  T resolve();
+  Iterator<?> lookup(String query);
 }

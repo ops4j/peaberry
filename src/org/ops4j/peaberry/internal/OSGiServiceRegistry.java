@@ -19,6 +19,7 @@ package org.ops4j.peaberry.internal;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 

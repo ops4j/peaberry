@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
 import org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook;
+import org.ops4j.peaberry.internal.OSGiServiceRegistry;
 import org.ops4j.peaberry.internal.ServiceBindingFactory;
 import org.osgi.framework.BundleContext;
 
@@ -52,7 +53,7 @@ public final class Peaberry {
 
         // auto-bind service dependencies and implementations
         binder.addBindingFactory(key(annotatedWith(Service.class)),
-            new ServiceBindingFactory(bc));
+            new ServiceBindingFactory(new OSGiServiceRegistry(bc)));
       }
     };
   }
