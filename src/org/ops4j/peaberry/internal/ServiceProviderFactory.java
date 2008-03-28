@@ -30,6 +30,8 @@ import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceProvider;
 import org.ops4j.peaberry.ServiceRegistry;
 
+import com.google.inject.Provider;
+
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -37,6 +39,14 @@ public final class ServiceProviderFactory {
 
   private ServiceProviderFactory() {
     // don't allow instances of helper class
+  }
+
+  public static <T> T resolve(Provider<T> provider) {
+    if (provider instanceof ServiceProvider) {
+      return ((ServiceProvider<T>) provider).resolve();
+    } else {
+      return provider.get();
+    }
   }
 
   @SuppressWarnings("unchecked")

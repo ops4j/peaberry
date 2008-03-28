@@ -23,22 +23,33 @@ import com.google.inject.Provider;
 import com.google.inject.Scope;
 
 /**
- * Provides static service scoping.
+ * Provides leased service scoping.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class StaticScope
+public class LeasedScope
     implements Scope {
+
+  final long leaseTimeInSeconds;
+
+  public LeasedScope(long leaseTimeInSeconds) {
+    this.leaseTimeInSeconds = leaseTimeInSeconds;
+  }
 
   public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped) {
     return new Provider<T>() {
 
+      private volatile long expireTimeInMillis;
       private volatile T instance;
 
       public T get() {
-        if (instance == null) {
-          synchronized (StaticScope.class) {
-            if (instance == null) {
+        if (expireTimeInMillis < System.currentTimeMillis()) {
+          synchronized (LeasedScope.class) {
+            if (expireTimeInMillis < System.currentTimeMillis()) {
+
+              expireTimeInMillis =
+                  System.currentTimeMillis() + leaseTimeInSeconds * 1000;
+
               instance = resolve(unscoped);
             }
           }
@@ -48,7 +59,7 @@ public class StaticScope
 
       @Override
       public String toString() {
-        return String.format("%s[%s]", unscoped, StaticScope.this);
+        return String.format("%s[%s]", unscoped, LeasedScope.this);
       }
 
     };
@@ -56,6 +67,6 @@ public class StaticScope
 
   @Override
   public String toString() {
-    return "STATIC_SERVICE";
+    return "LEASED_SERVICE(" + leaseTimeInSeconds + "s)";
   }
 }
