@@ -33,6 +33,7 @@ import com.google.inject.ClassLoaderHook;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Scope;
 import com.google.inject.internal.GuiceCodeGen;
 
 /**
@@ -54,11 +55,18 @@ public final class Peaberry {
         // auto-bind service dependencies and implementations
         binder.addBindingFactory(key(annotatedWith(Service.class)),
             new ServiceBindingFactory(new OSGiServiceRegistry(bc)));
+
+        binder.bindScope(Static.class, STATIC_SERVICE_SCOPE);
+        binder.bindScope(Leased.class, LEASED_SERVICE_SCOPE);
       }
     };
   }
 
-  private static final ClassLoaderHook LOADER_HOOK =
+  private static final Scope STATIC_SERVICE_SCOPE = new StaticScope();
+  private static final Scope LEASED_SERVICE_SCOPE =
+      new LeasedScope(Long.getLong("peaberry.service.lease", 300));
+
+  private static final ClassLoaderHook NON_DELEGATING_LOADER_HOOK =
       new NonDelegatingClassLoaderHook();
 
   /**
@@ -76,7 +84,7 @@ public final class Peaberry {
     Logger.getAnonymousLogger();
 
     // use container classloading when creating the injector
-    GuiceCodeGen.setThreadClassLoaderHook(LOADER_HOOK);
+    GuiceCodeGen.setThreadClassLoaderHook(NON_DELEGATING_LOADER_HOOK);
     try {
       final Injector injector = Guice.createInjector(getOSGiModule(bc), module);
       return (Injector) GuiceCodeGen.getProxy(Injector.class,
@@ -84,7 +92,7 @@ public final class Peaberry {
             public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
               // use container classloading when using the injector
-              GuiceCodeGen.setThreadClassLoaderHook(LOADER_HOOK);
+              GuiceCodeGen.setThreadClassLoaderHook(NON_DELEGATING_LOADER_HOOK);
               try {
                 return method.invoke(injector, args);
               } finally {

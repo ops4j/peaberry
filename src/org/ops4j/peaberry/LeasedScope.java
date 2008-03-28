@@ -18,6 +18,8 @@ package org.ops4j.peaberry;
 
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.resolve;
 
+import java.lang.annotation.Annotation;
+
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
@@ -30,13 +32,31 @@ import com.google.inject.Scope;
 public class LeasedScope
     implements Scope {
 
-  final long leaseTimeInSeconds;
+  final long defaultLeaseTimeInSeconds;
 
-  public LeasedScope(long leaseTimeInSeconds) {
-    this.leaseTimeInSeconds = leaseTimeInSeconds;
+  public LeasedScope(long defaultLeaseTimeInSeconds) {
+    this.defaultLeaseTimeInSeconds = defaultLeaseTimeInSeconds;
+  }
+
+  private long getLeaseTime(Key<?> key) {
+
+    Annotation annotation = key.getAnnotation();
+    if (annotation instanceof Leased) {
+      return ((Leased) annotation).seconds();
+    }
+
+    Leased leased = annotation.annotationType().getAnnotation(Leased.class);
+    if (null != leased) {
+      return leased.seconds();
+    }
+
+    return defaultLeaseTimeInSeconds;
   }
 
   public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped) {
+
+    final long leaseTimeInSeconds = getLeaseTime(key);
+
     return new Provider<T>() {
 
       private volatile long expireTimeInMillis;
@@ -59,7 +79,8 @@ public class LeasedScope
 
       @Override
       public String toString() {
-        return String.format("%s[%s]", unscoped, LeasedScope.this);
+        return String.format("%s[%s(%ds)]", unscoped, LeasedScope.this,
+            leaseTimeInSeconds);
       }
 
     };
@@ -67,6 +88,6 @@ public class LeasedScope
 
   @Override
   public String toString() {
-    return "LEASED_SERVICE(" + leaseTimeInSeconds + "s)";
+    return "LEASED_SERVICE";
   }
 }
