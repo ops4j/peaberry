@@ -1,8 +1,7 @@
-Bundle-ClassPath: aopalliance.jar,guice.jar,.
 
 Include-Resource:\
- aopalliance.jar=${aop.jar},\
- guice.jar=${guice.jar}
+ @${aop.jar}!/org/aopalliance/**,\
+ @${guice.jar}!/com/google/**
 
 Export-Package:\
  org.ops4j.peaberry
@@ -31,6 +30,8 @@ Import-Package:\
  com.google.inject.spi,\
  com.google.inject.tools.jmx,\
  com.google.inject.util
+
+-nouses: true
 
 -removeheaders:\
  Bnd-LastModified,\
