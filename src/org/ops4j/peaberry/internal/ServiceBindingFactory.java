@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
+import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
+
 import java.lang.reflect.Type;
 
 import org.ops4j.peaberry.Service;
@@ -46,8 +48,7 @@ public final class ServiceBindingFactory
     Type memberType = dependency.getKey().getTypeLiteral().getType();
     Service spec = (Service) dependency.getKey().getAnnotation();
 
-    lbb.toProvider(ServiceProviderFactory
-        .get(serviceRegistry, memberType, spec));
+    lbb.toProvider(getServiceProvider(serviceRegistry, memberType, spec));
 
     return true;
   }

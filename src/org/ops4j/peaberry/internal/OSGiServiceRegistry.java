@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.ServiceRegistry;
@@ -38,33 +38,33 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public Iterator<?> lookup(String query) {
+  public <T> Iterator<T> lookup(final Class<? extends T> type, String filter) {
 
     final ServiceReference[] services;
 
     try {
-      System.out.println("LDAP: " + query);
-      services = bundleContext.getServiceReferences(null, query);
+      System.out.println("LDAP: " + filter);
+      services = bundleContext.getServiceReferences(null, filter);
       if (null != services) {
         for (ServiceReference sr : services) {
           System.out.println("SR:" + sr);
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
-      return Collections.EMPTY_LIST.iterator();
+      e.printStackTrace(); // FIXME?
+      return new ArrayList<T>().iterator();
     }
 
-    return new Iterator<Object>() {
+    return new Iterator<T>() {
       int i = 0;
 
       public boolean hasNext() {
         return i < services.length;
       }
 
-      public Object next() {
+      public T next() {
         try {
-          return bundleContext.getService(services[i++]);
+          return type.cast(bundleContext.getService(services[i++]));
         } catch (Exception e) {
           e.printStackTrace();
           return null; // FIXME: provide Null object?

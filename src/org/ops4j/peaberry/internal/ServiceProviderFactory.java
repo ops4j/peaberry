@@ -16,8 +16,10 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ServiceQueryFactory.expectsSequence;
-import static org.ops4j.peaberry.internal.ServiceQueryFactory.getServiceType;
+import static org.ops4j.peaberry.internal.ServiceFilterFactory.expectsSequence;
+import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
+import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceType;
+import static org.ops4j.peaberry.internal.ServiceProxyFactory.getServiceProxy;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -37,17 +39,12 @@ public final class ServiceProviderFactory {
     // don't allow instances of helper class
   }
 
-  /**
-   * @param registry
-   * @param memberType
-   * @param spec
-   * @return
-   */
   @SuppressWarnings("unchecked")
-  public static ServiceProvider<?> get(final ServiceRegistry registry,
-      Type memberType, Service spec) {
+  public static ServiceProvider getServiceProvider(
+      final ServiceRegistry registry, Type memberType, Service spec) {
 
-    final String query = ServiceQueryFactory.get(spec, memberType);
+    final Class<?> type = getServiceType(memberType);
+    final String filter = getServiceFilter(spec, memberType);
 
     if (expectsSequence(memberType)) {
 
@@ -56,29 +53,27 @@ public final class ServiceProviderFactory {
           return new Iterable() {
             // fresh lookup each time
             public Iterator iterator() {
-              return registry.lookup(query);
+              return registry.lookup(type, filter);
             }
           };
         }
 
         public Iterable resolve() {
           // provide static collection of services
-          return asCollection(registry.lookup(query));
+          return asCollection(registry.lookup(type, filter));
         }
       };
     } else {
 
-      final Class<?> serviceType = getServiceType(memberType);
-
       return new ServiceProvider() {
         public Object get() {
-          // provide dynamic dispatch of API calls to service instance
-          return ServiceProxyFactory.get(serviceType, registry, query);
+          // provide dynamic dispatch to service instance
+          return getServiceProxy(registry, type, filter);
         }
 
         public Object resolve() {
           // provide static instance of service
-          return registry.lookup(query).next();
+          return registry.lookup(type, filter).next();
         }
       };
     }

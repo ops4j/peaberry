@@ -31,15 +31,15 @@ public class ServiceProxyFactory {
     // don't allow instances of helper class
   }
 
-  public static <T> T get(Class<T> type, final ServiceRegistry registry,
-      final String query) {
+  public static <T> T getServiceProxy(final ServiceRegistry registry,
+      final Class<T> type, final String filter) {
 
     Enhancer proxy = GuiceCodeGen.getEnhancer(type);
     proxy.setCallback(new Dispatcher() {
       public Object loadObject()
           throws Exception {
         // check the registry on every call
-        return registry.lookup(query).next();
+        return registry.lookup(type, filter).next();
       }
     });
 

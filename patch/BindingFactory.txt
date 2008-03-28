@@ -49,7 +49,7 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Gets a binding implementation.  First, it check to see if the parent has
     * a binding.  If the parent has a binding and the binding is scoped, it
-@@ -874,20 +880,31 @@
+@@ -865,20 +871,31 @@
  
        final Key<?> key = Key.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
@@ -86,7 +86,7 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -951,21 +968,30 @@
+@@ -942,21 +959,30 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Key<T> key, Member member, int index, Annotation[] annotations)
        throws MissingDependencyException {

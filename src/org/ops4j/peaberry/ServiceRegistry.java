@@ -26,10 +26,11 @@ import java.util.Iterator;
 public interface ServiceRegistry {
 
   /**
-   * Lookup service instances using LDAP query filter.
+   * Lookup service instances from registry, constrained by LDAP filter.
    * 
-   * @param query RFC-1960 (LDAP) filter
+   * @param type expected service type
+   * @param filter RFC-1960 (LDAP) filter
    * @return sequence of service instances
    */
-  Iterator<?> lookup(String query);
+  <T> Iterator<T> lookup(Class<? extends T> type, String filter);
 }
