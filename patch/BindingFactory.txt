@@ -10,7 +10,7 @@ Index: src/com/google/inject/Binder.java
  import com.google.inject.spi.Message;
  import com.google.inject.spi.TypeConverter;
  import java.lang.annotation.Annotation;
-@@ -284,4 +285,14 @@
+@@ -284,4 +285,15 @@
     */
    void convertToTypes(Matcher<? super TypeLiteral<?>> typeMatcher,
        TypeConverter converter);
@@ -22,8 +22,9 @@ Index: src/com/google/inject/Binder.java
 +   *     should attempt to satisfy. For example: {@code any()}.
 +   * @param bindingFactory factory that can produce bindings on request
 +   */
-+  <T> void addBindingFactory(Matcher<Dependency<? extends T>> dependencyMatcher,
-+      BindingFactory<T> bindingFactory);
++  <T> void addBindingFactory(
++      Matcher<? super Dependency<? extends T>> dependencyMatcher,
++          BindingFactory<T> bindingFactory);
  }
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
@@ -301,7 +302,7 @@ Index: src/com/google/inject/AbstractModule.java
  import com.google.inject.spi.SourceProviders;
  import com.google.inject.spi.TypeConverter;
  import java.lang.annotation.Annotation;
-@@ -186,4 +187,12 @@
+@@ -186,4 +187,13 @@
    protected Stage currentStage() {
      return binder.currentStage();
    }
@@ -309,8 +310,9 @@ Index: src/com/google/inject/AbstractModule.java
 +  /**
 +   * @see Binder#addBindingFactory
 +   */
-+  protected <T> void addBindingFactory(Matcher<Dependency<? extends T>> dependencyMatcher,
-+      BindingFactory<T> bindingFactory) {
++  protected <T> void addBindingFactory(
++      Matcher<? super Dependency<? extends T>> dependencyMatcher,
++          BindingFactory<T> bindingFactory) {
 +    binder.addBindingFactory(dependencyMatcher, bindingFactory);
 +  }
  }
@@ -358,7 +360,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 +  @Override public <B> Boolean visitAddBindingFactory(
 +      final AddBindingFactoryCommand<B> command) {
 +
-+    final Matcher<Dependency<? extends B>> dependencyMatcher = command.getDependencyMatcher();
++    final Matcher<? super Dependency<? extends B>> dependencyMatcher = command.getDependencyMatcher();
 +    final BindingFactory<B> bindingFactory = command.getBindingFactory();
 +
 +    bindingFactories.add(new BindingFactory<B>() {
@@ -400,11 +402,8 @@ Index: src/com/google/inject/commands/CommandRecorder.java
 ===================================================================
 --- src/com/google/inject/commands/CommandRecorder.java	(revision 424)
 +++ src/com/google/inject/commands/CommandRecorder.java	(working copy)
-@@ -19,8 +19,10 @@
- import com.google.inject.*;
- import com.google.inject.binder.AnnotatedBindingBuilder;
+@@ -21,6 +21,7 @@
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
-+import com.google.inject.binder.LinkedBindingBuilder;
  import com.google.inject.matcher.Matcher;
  import static com.google.inject.spi.SourceProviders.defaultSource;
 +import com.google.inject.spi.Dependency;
@@ -438,13 +437,14 @@ Index: src/com/google/inject/commands/CommandRecorder.java
      }
  
      public <T> Provider<T> getProvider(final Key<T> key) {
-@@ -152,5 +160,11 @@
+@@ -152,5 +160,12 @@
          TypeConverter converter) {
        commands.add(new ConvertToTypesCommand(defaultSource(), typeMatcher, converter));
      }
 +
-+    public <T> void addBindingFactory(Matcher<Dependency<? extends T>> dependencyMatcher,
-+        BindingFactory<T> bindingFactory) {
++    public <T> void addBindingFactory(
++        Matcher<? super Dependency<? extends T>> dependencyMatcher,
++            BindingFactory<T> bindingFactory) {
 +      commands.add(new AddBindingFactoryCommand<T>(defaultSource(), dependencyMatcher,
 +          bindingFactory));
 +    }
@@ -485,12 +485,12 @@ Index: src/com/google/inject/commands/AddBindingFactoryCommand.java
 + */
 +public final class AddBindingFactoryCommand<T> implements Command {
 +  private final Object source;
-+  private final Matcher<Dependency<? extends T>> dependencyMatcher;
++  private final Matcher<? super Dependency<? extends T>> dependencyMatcher;
 +  private final BindingFactory<T> bindingFactory;
 +
 +  AddBindingFactoryCommand(
 +      Object source,
-+      Matcher<Dependency<? extends T>> dependencyMatcher,
++      Matcher<? super Dependency<? extends T>> dependencyMatcher,
 +      BindingFactory<T> bindingFactory) {
 +    this.source = nonNull(source, "source");
 +    this.dependencyMatcher = nonNull(dependencyMatcher, "dependencyMatcher");
@@ -501,7 +501,7 @@ Index: src/com/google/inject/commands/AddBindingFactoryCommand.java
 +    return source;
 +  }
 +
-+  public Matcher<Dependency<? extends T>> getDependencyMatcher() {
++  public Matcher<? super Dependency<? extends T>> getDependencyMatcher() {
 +    return dependencyMatcher;
 +  }
 +
