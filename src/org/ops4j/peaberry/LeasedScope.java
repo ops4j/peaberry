@@ -24,38 +24,45 @@ import com.google.inject.Provider;
 import com.google.inject.Scope;
 
 /**
- * Provides leased service scoping.
+ * Provides {@link Leased} {@link Service} scoping.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class LeasedScope
+public final class LeasedScope
     implements Scope {
 
-  final long defaultLeaseTimeInSeconds;
+  /**
+   * Default lease, for when the {@link Key} has no {@link Leased} annotation.
+   */
+  private final long defaultLeaseTimeInSeconds;
 
   public LeasedScope(long defaultLeaseTimeInSeconds) {
     this.defaultLeaseTimeInSeconds = defaultLeaseTimeInSeconds;
   }
 
+  /**
+   * Determines the lease time as specified by the binding {@link Key}.
+   * 
+   * @param key binding key
+   * @return lease time in seconds
+   */
   private long getLeaseTime(Key<?> key) {
     Leased lease = getLease(key.getAnnotationType());
-    if (null == lease) {
-      return defaultLeaseTimeInSeconds;
-    } else {
-      return lease.seconds();
-    }
+
+    return lease != null ? lease.seconds() : defaultLeaseTimeInSeconds;
   }
 
   public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped) {
-
     final long leaseTimeInSeconds = getLeaseTime(key);
-    System.out.println("LEASE: " + leaseTimeInSeconds);
 
     return new Provider<T>() {
 
       private volatile long expireTimeInMillis;
       private volatile T instance;
 
+      /**
+       * Only re-resolve when the lease expires.
+       */
       public T get() {
         if (expireTimeInMillis < System.currentTimeMillis()) {
           synchronized (LeasedScope.class) {
@@ -76,7 +83,6 @@ public class LeasedScope
         return String.format("%s[%s(%ds)]", unscoped, LeasedScope.this,
             leaseTimeInSeconds);
       }
-
     };
   }
 

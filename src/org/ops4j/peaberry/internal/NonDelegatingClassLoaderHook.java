@@ -45,7 +45,7 @@ public final class NonDelegatingClassLoaderHook
           return new ClassLoader(typeClassLoader) {
 
             /**
-             * Bridge between client classloader and current classloader.
+             * Bridge between client classloader and Peaberry classloader.
              */
             @Override
             protected Class<?> loadClass(String name, boolean resolve)
@@ -75,7 +75,7 @@ public final class NonDelegatingClassLoaderHook
   public ClassLoader get(Class<?> type) {
     ClassLoader typeLoader = type.getClassLoader();
 
-    // optimisation: no need to bridge sibling or bootstrap types
+    // optimisation: no need to bridge between sibling or bootstrap types
     if (null == typeLoader || getClass().getClassLoader() == typeLoader) {
       return typeLoader;
     } else {

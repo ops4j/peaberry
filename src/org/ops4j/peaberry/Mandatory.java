@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Denotes a mandatory service, bundle is stopped when service is not available.
+ * Denotes a mandatory {@link Service} the injectee needs in order to function.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

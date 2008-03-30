@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import java.util.Iterator;
 
 /**
- * Representation of a dynamic service registry.
+ * Simple abstraction of a dynamic service registry.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

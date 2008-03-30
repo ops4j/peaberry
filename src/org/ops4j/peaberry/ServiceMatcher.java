@@ -27,7 +27,7 @@ import com.google.inject.matcher.Matcher;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceMatcher {
+public final class ServiceMatcher {
 
   public static Matcher<AnnotatedElement> annotatedWithService() {
     return new AbstractMatcher<AnnotatedElement>() {

@@ -27,8 +27,8 @@ import java.lang.annotation.Target;
 import com.google.inject.ScopeAnnotation;
 
 /**
- * Denotes a service that can be "leased" for a given amount of time. That is,
- * the same service instance will always be returned during the lease period.
+ * Denotes a {@link Service} that can be "leased" for a given amount of time.
+ * That is, the same instance will always be returned during the lease period.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

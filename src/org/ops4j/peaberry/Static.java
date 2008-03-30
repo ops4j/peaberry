@@ -24,11 +24,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.google.inject.Binding;
 import com.google.inject.ScopeAnnotation;
 
 /**
- * Denotes static service tied to binding lifetime. Once service is resolved, it
- * will always be the same for a given binding, even if the service has stopped.
+ * Denotes a {@link Service} tied to the current {@link Binding} lifetime. Once
+ * the service is resolved, it will always resolve to the same instance for the
+ * given binding.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

@@ -23,11 +23,11 @@ import com.google.inject.Provider;
 import com.google.inject.Scope;
 
 /**
- * Provides static service scoping.
+ * Provides {@link Static} {@link Service} scoping.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class StaticScope
+public final class StaticScope
     implements Scope {
 
   public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped) {
@@ -35,6 +35,9 @@ public class StaticScope
 
       private volatile T instance;
 
+      /**
+       * Lazy static resolution of the dynamic service
+       */
       public T get() {
         if (instance == null) {
           synchronized (StaticScope.class) {
@@ -50,7 +53,6 @@ public class StaticScope
       public String toString() {
         return String.format("%s[%s]", unscoped, StaticScope.this);
       }
-
     };
   }
 

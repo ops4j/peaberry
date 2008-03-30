@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import com.google.inject.Provider;
 
 /**
- * Representation of a service provider that provides a dynamic proxy.
+ * Service {@link Provider} that provides a dynamic proxy.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -27,9 +27,9 @@ public interface ServiceProvider<T>
     extends Provider<T> {
 
   /**
-   * Resolves to the current service instance(s), not the dynamic proxy.
+   * Resolves to the current service, not the dynamic proxy.
    * 
-   * @return current service instance(s)
+   * @return resolved service instance
    */
   T resolve();
 }

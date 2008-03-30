@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Basic service specification.
+ * Denotes a dynamic service with an optional LDAP filter.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
