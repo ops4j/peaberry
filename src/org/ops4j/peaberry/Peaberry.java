@@ -16,8 +16,8 @@
 
 package org.ops4j.peaberry;
 
-import static com.google.inject.matcher.Matchers.annotatedWith;
-import static com.google.inject.matcher.Matchers.key;
+import static com.google.inject.matcher.Matchers.member;
+import static org.ops4j.peaberry.ServiceMatcher.annotatedWithService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -53,7 +53,7 @@ public final class Peaberry {
         binder.bind(BundleContext.class).toInstance(bc);
 
         // auto-bind service dependencies and implementations
-        binder.addBindingFactory(key(annotatedWith(Service.class)),
+        binder.addBindingFactory(member(annotatedWithService()),
             new ServiceBindingFactory(new OSGiServiceRegistry(bc)));
 
         binder.bindScope(Static.class, STATIC_SERVICE_SCOPE);
@@ -64,7 +64,7 @@ public final class Peaberry {
 
   private static final Scope STATIC_SERVICE_SCOPE = new StaticScope();
   private static final Scope LEASED_SERVICE_SCOPE =
-      new LeasedScope(Long.getLong("peaberry.service.lease", 300));
+      new LeasedScope(Long.getLong("peaberry.default.lease", 300));
 
   private static final ClassLoaderHook NON_DELEGATING_LOADER_HOOK =
       new NonDelegatingClassLoaderHook();

@@ -16,15 +16,23 @@
 
 package org.ops4j.peaberry.internal;
 
+import static org.ops4j.peaberry.ServiceMatcher.getLease;
+import static org.ops4j.peaberry.ServiceMatcher.getServiceSpec;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.BindingFactory;
 import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.spi.Dependency;
 
 /**
@@ -46,9 +54,28 @@ public final class ServiceBindingFactory
   public boolean bind(Dependency dependency, LinkedBindingBuilder lbb) {
 
     Type memberType = dependency.getKey().getTypeLiteral().getType();
-    Service spec = (Service) dependency.getKey().getAnnotation();
 
-    lbb.toProvider(getServiceProvider(serviceRegistry, memberType, spec));
+    Member member = dependency.getMember();
+    int i = dependency.getParameterIndex();
+    AnnotatedElement element = null;
+
+    if (i < 0) {
+      element = (AnnotatedElement) member;
+    } else if (member instanceof Constructor) {
+      element = ((Constructor<?>) member).getParameterTypes()[i];
+    } else if (member instanceof Method) {
+      element = ((Method) member).getParameterTypes()[i];
+    }
+
+    Service spec = getServiceSpec(element);
+    Leased lease = getLease(element);
+
+    ScopedBindingBuilder sbb =
+        lbb.toProvider(getServiceProvider(serviceRegistry, memberType, spec));
+
+    if (lease != null) {
+      sbb.in(Leased.class);
+    }
 
     return true;
   }

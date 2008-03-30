@@ -16,9 +16,8 @@
 
 package org.ops4j.peaberry;
 
+import static org.ops4j.peaberry.ServiceMatcher.getLease;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.resolve;
-
-import java.lang.annotation.Annotation;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -39,23 +38,18 @@ public class LeasedScope
   }
 
   private long getLeaseTime(Key<?> key) {
-
-    Annotation annotation = key.getAnnotation();
-    if (annotation instanceof Leased) {
-      return ((Leased) annotation).seconds();
+    Leased lease = getLease(key.getAnnotationType());
+    if (null == lease) {
+      return defaultLeaseTimeInSeconds;
+    } else {
+      return lease.seconds();
     }
-
-    Leased leased = annotation.annotationType().getAnnotation(Leased.class);
-    if (null != leased) {
-      return leased.seconds();
-    }
-
-    return defaultLeaseTimeInSeconds;
   }
 
   public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped) {
 
     final long leaseTimeInSeconds = getLeaseTime(key);
+    System.out.println("LEASE: " + leaseTimeInSeconds);
 
     return new Provider<T>() {
 

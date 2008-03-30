@@ -24,8 +24,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.google.inject.BindingAnnotation;
-
 /**
  * Basic service specification.
  * 
@@ -35,7 +33,6 @@ import com.google.inject.BindingAnnotation;
     TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
-@BindingAnnotation
 public @interface Service {
 
   /**

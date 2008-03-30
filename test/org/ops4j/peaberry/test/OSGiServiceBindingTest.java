@@ -16,14 +16,20 @@
 
 package org.ops4j.peaberry.test;
 
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+
 import junit.framework.TestCase;
 
+import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.Service;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.log.LogService;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
@@ -31,8 +37,15 @@ import com.google.inject.Scopes;
 public class OSGiServiceBindingTest
     extends TestCase {
 
-  @Inject
   @Service
+  @Leased(seconds = 10)
+  @BindingAnnotation
+  @Retention(RUNTIME)
+  public @interface TestService {
+  }
+
+  @Inject
+  @TestService
   LogService m_logService;
 
   public void log(String message) {
