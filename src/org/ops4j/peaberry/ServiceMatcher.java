@@ -52,20 +52,17 @@ public final class ServiceMatcher {
   private static <T extends Annotation> T findMetaAnnotation(
       AnnotatedElement element, final Class<? extends T> annotationType) {
 
-    Queue<Annotation> metaAnnotations = new LinkedList<Annotation>();
+    Queue<AnnotatedElement> candidates = new LinkedList<AnnotatedElement>();
 
-    while (null != element) {
+    candidates.add(element);
 
-      for (Annotation a : element.getAnnotations()) {
+    while (false == candidates.isEmpty()) {
+      for (Annotation a : candidates.remove().getAnnotations()) {
         if (annotationType.isInstance(a)) {
           return annotationType.cast(a);
-        } else {
-          metaAnnotations.add(a);
         }
+        candidates.add(a.annotationType());
       }
-
-      element = metaAnnotations.isEmpty() ? null
-          : metaAnnotations.remove().annotationType();
     }
 
     return null;

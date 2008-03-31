@@ -25,7 +25,7 @@ import com.google.inject.internal.GuiceCodeGen;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceProxyFactory {
+public final class ServiceProxyFactory {
 
   private ServiceProxyFactory() {
     // don't allow instances of helper class

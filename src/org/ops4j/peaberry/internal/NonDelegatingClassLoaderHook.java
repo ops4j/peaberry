@@ -78,9 +78,9 @@ public final class NonDelegatingClassLoaderHook
     // optimisation: no need to bridge between sibling or bootstrap types
     if (null == typeLoader || getClass().getClassLoader() == typeLoader) {
       return typeLoader;
-    } else {
-      return m_classLoaderCache.get(typeLoader);
     }
+
+    return m_classLoaderCache.get(typeLoader);
   }
 
   @Override
