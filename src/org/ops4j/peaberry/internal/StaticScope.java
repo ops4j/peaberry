@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.internal;
 
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.resolve;
+
+import org.ops4j.peaberry.Service;
+import org.ops4j.peaberry.Static;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;

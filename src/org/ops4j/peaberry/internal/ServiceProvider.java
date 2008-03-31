@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.internal;
 
 import com.google.inject.Provider;
 

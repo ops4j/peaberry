@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.ServiceMatcher.getLease;
+import static org.ops4j.peaberry.ServiceMatcher.getLeasedSpec;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.resolve;
+
+import org.ops4j.peaberry.Leased;
+import org.ops4j.peaberry.Service;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -47,7 +50,7 @@ public final class LeasedScope
    * @return lease time in seconds
    */
   private long getLeaseTime(Key<?> key) {
-    Leased lease = getLease(key.getAnnotationType());
+    Leased lease = getLeasedSpec(key.getAnnotationType());
 
     return lease != null ? lease.seconds() : defaultLeaseTimeInSeconds;
   }

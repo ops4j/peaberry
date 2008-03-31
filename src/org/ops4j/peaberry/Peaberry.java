@@ -23,9 +23,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
+import org.ops4j.peaberry.internal.LeasedScope;
 import org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
 import org.ops4j.peaberry.internal.ServiceBindingFactory;
+import org.ops4j.peaberry.internal.StaticScope;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Binder;

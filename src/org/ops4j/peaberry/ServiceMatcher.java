@@ -18,8 +18,8 @@ package org.ops4j.peaberry;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
@@ -45,23 +45,39 @@ public final class ServiceMatcher {
     return findMetaAnnotation(element, Service.class);
   }
 
-  public static Leased getLease(AnnotatedElement element) {
+  public static Leased getLeasedSpec(AnnotatedElement element) {
     return findMetaAnnotation(element, Leased.class);
+  }
+
+  public static boolean isStaticService(AnnotatedElement element) {
+    return findMetaAnnotation(element, Static.class) != null;
+  }
+
+  public static boolean isLeasedService(AnnotatedElement element) {
+    return findMetaAnnotation(element, Leased.class) != null;
+  }
+
+  public static boolean isMandatoryService(AnnotatedElement element) {
+    return findMetaAnnotation(element, Mandatory.class) != null;
   }
 
   private static <T extends Annotation> T findMetaAnnotation(
       AnnotatedElement element, final Class<? extends T> annotationType) {
 
-    Queue<AnnotatedElement> candidates = new LinkedList<AnnotatedElement>();
+    List<AnnotatedElement> candidates = new ArrayList<AnnotatedElement>();
 
     candidates.add(element);
 
-    while (false == candidates.isEmpty()) {
-      for (Annotation a : candidates.remove().getAnnotations()) {
-        if (annotationType.isInstance(a)) {
+    int i = 0;
+    while (i < candidates.size()) {
+      for (Annotation a : candidates.get(i++).getAnnotations()) {
+        final Class<?> aType = a.annotationType();
+
+        if (annotationType.equals(aType)) {
           return annotationType.cast(a);
+        } else if (!candidates.contains(aType)) {
+          candidates.add(aType);
         }
-        candidates.add(a.annotationType());
       }
     }
 

@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Service;
-import org.ops4j.peaberry.ServiceProvider;
 import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.Provider;
