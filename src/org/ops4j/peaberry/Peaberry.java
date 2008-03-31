@@ -17,7 +17,7 @@
 package org.ops4j.peaberry;
 
 import static com.google.inject.matcher.Matchers.member;
-import static org.ops4j.peaberry.ServiceMatcher.annotatedWithService;
+import static org.ops4j.peaberry.internal.ServiceMatcher.annotatedWithService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

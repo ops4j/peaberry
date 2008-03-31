@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.internal;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ops4j.peaberry.Leased;
+import org.ops4j.peaberry.Mandatory;
+import org.ops4j.peaberry.Service;
+import org.ops4j.peaberry.Static;
 
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;

@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.ServiceMatcher.getLeasedSpec;
+import static org.ops4j.peaberry.internal.ServiceMatcher.getLeasedSpec;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.resolve;
 
 import org.ops4j.peaberry.Leased;

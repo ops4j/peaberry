@@ -40,6 +40,15 @@ public final class ServiceProviderFactory {
     // don't allow instances of helper class
   }
 
+  /**
+   * Service {@link Provider} that provides a dynamic proxy.
+   */
+  private interface ServiceProvider<T>
+      extends Provider<T> {
+
+    T resolve(); // resolves to actual service, not the proxy
+  }
+
   public static <T> T resolve(Provider<T> provider) {
     if (provider instanceof ServiceProvider) {
       return ((ServiceProvider<T>) provider).resolve();
@@ -49,8 +58,8 @@ public final class ServiceProviderFactory {
   }
 
   @SuppressWarnings("unchecked")
-  public static ServiceProvider getServiceProvider(
-      final ServiceRegistry registry, Type memberType, Service spec) {
+  public static Provider getServiceProvider(final ServiceRegistry registry,
+      Type memberType, Service spec) {
 
     final Class<?> type = getServiceType(memberType);
     final String filter = getServiceFilter(spec, memberType);

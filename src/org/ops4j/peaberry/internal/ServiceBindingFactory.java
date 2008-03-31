@@ -16,9 +16,9 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.ServiceMatcher.getServiceSpec;
-import static org.ops4j.peaberry.ServiceMatcher.isLeasedService;
-import static org.ops4j.peaberry.ServiceMatcher.isStaticService;
+import static org.ops4j.peaberry.internal.ServiceMatcher.getServiceSpec;
+import static org.ops4j.peaberry.internal.ServiceMatcher.isLeasedService;
+import static org.ops4j.peaberry.internal.ServiceMatcher.isStaticService;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
 import java.lang.reflect.AnnotatedElement;

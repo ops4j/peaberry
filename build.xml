@@ -27,9 +27,7 @@
 
   <target name="compile">
     <mkdir dir="${build}/classes"/>
-    <javac debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}">
-      <compilerarg value="-Xlint:unchecked"/>
-    </javac>
+    <javac debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
   </target>
 
   <target name="test.compile">
