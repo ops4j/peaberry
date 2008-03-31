@@ -39,5 +39,4 @@ import com.google.inject.ScopeAnnotation;
 })
 @Retention(RUNTIME)
 @ScopeAnnotation
-public @interface Static {
-}
+public @interface Static {}

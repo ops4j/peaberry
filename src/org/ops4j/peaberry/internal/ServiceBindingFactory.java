@@ -25,23 +25,29 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 import org.ops4j.peaberry.Leased;
+import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.Static;
 
 import com.google.inject.BindingFactory;
+import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.spi.Dependency;
 
 /**
+ * {@link BindingFactory} that provides on-demand bindings to dynamic services.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class ServiceBindingFactory
     implements BindingFactory<Object> {
 
+  /**
+   * Underlying {@link ServiceRegistry} that provides dynamic services.
+   */
   final ServiceRegistry serviceRegistry;
 
   public ServiceBindingFactory(ServiceRegistry serviceRegistry) {
@@ -51,10 +57,7 @@ public final class ServiceBindingFactory
   /**
    * {@inheritDoc}
    */
-  @SuppressWarnings("unchecked")
-  public boolean bind(Dependency dependency, LinkedBindingBuilder lbb) {
-
-    Type memberType = dependency.getKey().getTypeLiteral().getType();
+  public <T> boolean bind(Dependency<T> dependency, LinkedBindingBuilder<T> lbb) {
 
     Member member = dependency.getMember();
     int i = dependency.getParameterIndex();
@@ -68,10 +71,15 @@ public final class ServiceBindingFactory
       element = ((Method) member).getParameterTypes()[i];
     }
 
-    ScopedBindingBuilder sbb =
-        lbb.toProvider(getServiceProvider(serviceRegistry, memberType,
-            getServiceSpec(element)));
+    // get service details from injectee
+    Service spec = getServiceSpec(element);
 
+    TypeLiteral<T> target = dependency.getKey().getTypeLiteral();
+
+    ScopedBindingBuilder sbb =
+        lbb.toProvider(getServiceProvider(serviceRegistry, target, spec));
+
+    // apply service scoping
     if (isStaticService(element)) {
       sbb.in(Static.class);
     } else if (isLeasedService(element)) {

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,6 +34,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
 
+/**
+ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ */
 public class OSGiServiceBindingTest
     extends TestCase {
 
@@ -41,8 +44,7 @@ public class OSGiServiceBindingTest
   @Leased(seconds = 10)
   @BindingAnnotation
   @Retention(RUNTIME)
-  public @interface TestService {
-  }
+  public @interface TestService {}
 
   @Inject
   @TestService

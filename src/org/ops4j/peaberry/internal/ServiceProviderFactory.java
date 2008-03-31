@@ -30,25 +30,33 @@ import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.Provider;
+import com.google.inject.TypeLiteral;
 
 /**
+ * Provide dynamic {@link Service} {@link Provider}s.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class ServiceProviderFactory {
 
-  private ServiceProviderFactory() {
-    // don't allow instances of helper class
-  }
+  // utility: instances not allowed
+  private ServiceProviderFactory() {}
 
   /**
-   * Service {@link Provider} that provides a dynamic proxy.
+   * {@link Service} {@link Provider} that provides a dynamic proxy.
    */
   private interface ServiceProvider<T>
       extends Provider<T> {
 
-    T resolve(); // resolves to actual service, not the proxy
+    T resolve(); // resolves to the actual service, not the proxy
   }
 
+  /**
+   * Resolves to the current service instance, not the dynamic proxy.
+   * 
+   * @param provider service provider
+   * @return current service instance
+   */
   public static <T> T resolve(Provider<T> provider) {
     if (provider instanceof ServiceProvider) {
       return ((ServiceProvider<T>) provider).resolve();
@@ -57,48 +65,64 @@ public final class ServiceProviderFactory {
     }
   }
 
+  /**
+   * Create a new {@link Service} {@link Provider} for the target member.
+   * 
+   * @param registry dynamic service registry
+   * @param target literal type of the member being injected
+   * @param spec annotation details for the injected service
+   * @return {@link Service} {@link Provider} for the target
+   */
   @SuppressWarnings("unchecked")
-  public static Provider getServiceProvider(final ServiceRegistry registry,
-      Type memberType, Service spec) {
+  public static <T> Provider<T> getServiceProvider(
+      final ServiceRegistry registry, TypeLiteral<T> target, Service spec) {
 
-    final Class<?> type = getServiceType(memberType);
-    final String filter = getServiceFilter(spec, memberType);
+    // runtime type of the injectee
+    Type targetType = target.getType();
 
-    if (expectsSequence(memberType)) {
+    // determine service proxy configuration
+    final Class<?> serviceType = getServiceType(targetType);
+    final String filter = getServiceFilter(spec, serviceType);
 
+    if (expectsSequence(targetType)) {
+
+      // multiple service (..N)
       return new ServiceProvider() {
+
         public Iterable get() {
           return new Iterable() {
             // fresh lookup each time
             public Iterator iterator() {
-              return registry.lookup(type, filter);
+              return registry.lookup(serviceType, filter);
             }
           };
         }
 
         public Iterable resolve() {
-          // provide static collection of services
-          return asCollection(registry.lookup(type, filter));
+          // provide static collection of currently available services
+          return asCollection(registry.lookup(serviceType, filter));
         }
       };
     } else {
 
+      // unary service (..1)
       return new ServiceProvider() {
+
         public Object get() {
-          // provide dynamic dispatch to service instance
-          return getServiceProxy(registry, type, filter);
+          // provide dynamic dispatch to first service instance
+          return getServiceProxy(registry, serviceType, filter);
         }
 
         public Object resolve() {
-          // provide static instance of service
-          return registry.lookup(type, filter).next();
+          // provide static instance of the current service
+          return registry.lookup(serviceType, filter).next();
         }
       };
     }
   }
 
   /**
-   * Utility method to wrap an iterator up as a collection
+   * Utility method to wrap an iterator up as a standard collection.
    */
   private static <T> Collection<T> asCollection(Iterator<T> iterator) {
     Collection<T> collection = new ArrayList<T>();

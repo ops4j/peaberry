@@ -33,5 +33,4 @@ import java.lang.annotation.Target;
     TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
-public @interface Mandatory {
-}
+public @interface Mandatory {}

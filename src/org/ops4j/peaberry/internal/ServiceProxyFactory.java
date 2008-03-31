@@ -23,14 +23,23 @@ import com.google.inject.cglib.proxy.Enhancer;
 import com.google.inject.internal.GuiceCodeGen;
 
 /**
+ * Provide proxies that delegate to services found in a {@link ServiceRegistry}.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 final class ServiceProxyFactory {
 
-  private ServiceProxyFactory() {
-    // don't allow instances of helper class
-  }
+  // utility: instances not allowed
+  private ServiceProxyFactory() {}
 
+  /**
+   * Create a new dynamic service proxy with optional LDAP filter.
+   * 
+   * @param registry dynamic service registry
+   * @param type expected service type
+   * @param filter RFC-1960 (LDAP) filter
+   * @return proxy that delegates to the registry
+   */
   public static <T> T getServiceProxy(final ServiceRegistry registry,
       final Class<T> type, final String filter) {
 
@@ -38,7 +47,8 @@ final class ServiceProxyFactory {
     proxy.setCallback(new Dispatcher() {
       public Object loadObject()
           throws Exception {
-        // check the registry on every call
+
+        // use first matching service from registry
         return registry.lookup(type, filter).next();
       }
     });

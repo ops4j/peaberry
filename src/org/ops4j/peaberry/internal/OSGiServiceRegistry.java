@@ -24,11 +24,16 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
+ * OSGi {@link ServiceRegistry} adaptor (proof-of-concept, not optimised)
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class OSGiServiceRegistry
     implements ServiceRegistry {
 
+  /**
+   * Current bundle context, used to interrogate the registry.
+   */
   final BundleContext bundleContext;
 
   public OSGiServiceRegistry(BundleContext bundleContext) {
@@ -43,18 +48,16 @@ public final class OSGiServiceRegistry
     final ServiceReference[] services;
 
     try {
-      System.out.println("LDAP: " + filter);
       services = bundleContext.getServiceReferences(type.getName(), filter);
-      if (null != services) {
-        for (ServiceReference sr : services) {
-          System.out.println("SREF:" + sr);
-        }
-      }
     } catch (Exception e) {
-      e.printStackTrace(); // FIXME?
-      return new ArrayList<T>().iterator();
+      return new ArrayList<T>().iterator(); // FIXME: runtime exception?
     }
 
+    /*
+     * This is just a quick proof-of-concept implementation, it doesn't track
+     * services and suffers from potential race conditions. A production ready
+     * implementation will be available soon.
+     */
     return new Iterator<T>() {
       int i = 0;
 
@@ -66,8 +69,7 @@ public final class OSGiServiceRegistry
         try {
           return type.cast(bundleContext.getService(services[i++]));
         } catch (Exception e) {
-          e.printStackTrace();
-          return null; // FIXME: provide Null object?
+          return null; // FIXME: provide some sort of Nil object?
         }
       }
 

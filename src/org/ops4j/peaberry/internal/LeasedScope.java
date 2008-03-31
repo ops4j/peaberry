@@ -37,9 +37,9 @@ public final class LeasedScope
   /**
    * Default lease, for when the {@link Key} has no {@link Leased} annotation.
    */
-  private final long defaultLeaseTimeInSeconds;
+  private final int defaultLeaseTimeInSeconds;
 
-  public LeasedScope(long defaultLeaseTimeInSeconds) {
+  public LeasedScope(int defaultLeaseTimeInSeconds) {
     this.defaultLeaseTimeInSeconds = defaultLeaseTimeInSeconds;
   }
 
@@ -49,26 +49,27 @@ public final class LeasedScope
    * @param key binding key
    * @return lease time in seconds
    */
-  private long getLeaseTime(Key<?> key) {
-    Leased lease = getLeasedSpec(key.getAnnotationType());
+  private int getLeaseTimeInSeconds(Key<?> key) {
+    Leased leasedSpec = getLeasedSpec(key.getAnnotationType());
 
-    return lease != null ? lease.seconds() : defaultLeaseTimeInSeconds;
+    return leasedSpec != null ? leasedSpec.seconds()
+        : defaultLeaseTimeInSeconds;
   }
 
   public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped) {
-    final long leaseTimeInSeconds = getLeaseTime(key);
+    final long leaseTimeInSeconds = getLeaseTimeInSeconds(key);
 
     return new Provider<T>() {
 
-      private volatile long expireTimeInMillis;
-      private volatile T instance;
+      private volatile Long expireTimeInMillis = 0L;
+      private volatile T instance = null;
 
       /**
        * Only re-resolve when the lease expires.
        */
       public T get() {
         if (expireTimeInMillis < System.currentTimeMillis()) {
-          synchronized (LeasedScope.class) {
+          synchronized (this) {
             if (expireTimeInMillis < System.currentTimeMillis()) {
 
               expireTimeInMillis =

@@ -35,13 +35,32 @@ import com.google.inject.ClassLoaderHook;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 import com.google.inject.Scope;
+import com.google.inject.TypeLiteral;
 import com.google.inject.internal.GuiceCodeGen;
 
 /**
+ * Guice extension that supports injection of dynamic services.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class Peaberry {
+
+  /**
+   * Creates a dynamic service provider for the given {@link ServiceRegistry}.
+   * The provider is configured to use the {@link Service} API and LDAP filter.
+   * 
+   * @param registry dynamic service registry
+   * @param target literal type of the target
+   * @param spec details of the injected service
+   * @return dynamic service provider
+   */
+  public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
+      TypeLiteral<T> target, Service spec) {
+
+    return getServiceProvider(registry, target, spec);
+  }
 
   /**
    * @param bc current bundle context
@@ -66,7 +85,7 @@ public final class Peaberry {
 
   private static final Scope STATIC_SERVICE_SCOPE = new StaticScope();
   private static final Scope LEASED_SERVICE_SCOPE =
-      new LeasedScope(Long.getLong("peaberry.default.lease", 300));
+      new LeasedScope(Integer.getInteger("peaberry.default.lease", 300));
 
   private static final ClassLoaderHook NON_DELEGATING_LOADER_HOOK =
       new NonDelegatingClassLoaderHook();

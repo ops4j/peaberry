@@ -22,30 +22,50 @@ import java.lang.reflect.Type;
 import org.ops4j.peaberry.Service;
 
 /**
- * Provide LDAP filters from {@literal @}Service specifications.
+ * Provide LDAP filters from {@link Service} specifications.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class ServiceFilterFactory {
 
-  private ServiceFilterFactory() {
-    // don't allow instances of helper class
+  // utility: instances not allowed
+  private ServiceFilterFactory() {}
+
+  /**
+   * Extract the expected service type from the member being injected.
+   * 
+   * @param memberType runtime type of member being injected
+   * @return expected service type
+   */
+  public static Class<?> getServiceType(Type memberType) {
+
+    // service type inside Iterable<T>
+    if (expectsSequence(memberType)) {
+      memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
+    }
+
+    // remove remaining generic parameters
+    if (memberType instanceof ParameterizedType) {
+      memberType = ((ParameterizedType) memberType).getRawType();
+    }
+
+    return (Class<?>) memberType;
   }
 
   /**
-   * Convert {@literal @}Service specification into an LDAP filter.
+   * Convert {@link Service} specification into an LDAP filter.
    * 
    * @param spec annotation details for the injected service
-   * @param memberType runtime type of member being injected
+   * @param serviceType runtime type of service being injected
    * @return LDAP filter
    */
-  public static String getServiceFilter(Service spec, Type memberType) {
+  public static String getServiceFilter(Service spec, Class<?> serviceType) {
 
     /*
-     * STEP 1: default specification, just use member type
+     * STEP 1: default specification, just use service type
      */
     if (null == spec) {
-      return getMemberTypeFilter(memberType);
+      return getServiceTypeFilter(serviceType);
     }
 
     /*
@@ -57,18 +77,18 @@ public final class ServiceFilterFactory {
     }
 
     /*
-     * STEP 3: if custom filter tests the member type then we're done
+     * STEP 3: if custom filter tests the service type then we're done
      */
     if (customFilter.toLowerCase().contains("(objectclass")) {
       return customFilter;
     }
 
     /*
-     * STEP 4: create interface type filter, AND'ing together clauses
+     * STEP 4: create class filter, AND'ing together clauses
      */
     String classFilter = getInterfaceFilter(spec);
     if (classFilter.length() == 0) {
-      classFilter = getMemberTypeFilter(memberType);
+      classFilter = getServiceTypeFilter(serviceType);
     }
 
     /*
@@ -110,6 +130,8 @@ public final class ServiceFilterFactory {
   }
 
   /**
+   * Check to see if service type is hidden inside a sequence like Iterable<T>.
+   * 
    * @param memberType runtime type of member being injected
    * @return true if member expects a sequence of services
    */
@@ -118,31 +140,12 @@ public final class ServiceFilterFactory {
   }
 
   /**
-   * @param memberType runtime type of member being injected
-   * @return expected service type
-   */
-  public static Class<?> getServiceType(Type memberType) {
-
-    // extract the actual service type
-    if (expectsSequence(memberType)) {
-      memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
-    }
-
-    // remove remaining generic parameters
-    if (memberType instanceof ParameterizedType) {
-      memberType = ((ParameterizedType) memberType).getRawType();
-    }
-
-    return (Class<?>) memberType;
-  }
-
-  /**
-   * Create LDAP filter to find a service for the member being injected.
+   * Create LDAP filter to find the service being injected.
    * 
-   * @param memberType runtime type of member being injected
-   * @return an LDAP filter for the injected member
+   * @param serviceType runtime type of service being injected
+   * @return an LDAP filter for the injected service
    */
-  private static String getMemberTypeFilter(Type memberType) {
-    return "(objectclass=" + getServiceType(memberType).getName() + ')';
+  private static String getServiceTypeFilter(Class<?> serviceType) {
+    return "(objectclass=" + serviceType.getName() + ')';
   }
 }

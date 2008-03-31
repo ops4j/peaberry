@@ -36,14 +36,14 @@ public final class StaticScope
   public <T> Provider<T> scope(Key<T> key, final Provider<T> unscoped) {
     return new Provider<T>() {
 
-      private volatile T instance;
+      private volatile T instance = null;
 
       /**
        * Lazy static resolution of the dynamic service
        */
       public T get() {
         if (instance == null) {
-          synchronized (StaticScope.class) {
+          synchronized (this) {
             if (instance == null) {
               instance = resolve(unscoped);
             }
