@@ -5,6 +5,7 @@
 
   <import file="scm.xml"/>
   <import file="patch.xml"/>
+  <import file="clover.xml"/>
   <import file="bnd.xml"/>
   <import file="test.xml"/>
   <import file="doc.xml"/>

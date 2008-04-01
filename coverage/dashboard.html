@@ -1,0 +1,673 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Peaberry Coverage</title>    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="SHORTCUT ICON" href="img/clover.ico" />
+
+    <style type="text/css" media="screen">
+        @import url('style.css');
+        @import url('roundedcorners.css');
+            </style>
+    
+    <script src="sorttable.js" type="text/javascript"></script>
+    <script src="overlib.js" type="text/javascript"></script>
+    <script src="overlib_shadow.js" type="text/javascript" ></script>
+    <script src="clover.js" type="text/javascript"></script>
+    <script src="cloud.js" type="text/javascript"></script>
+    <script src="help.js" type="text/javascript"></script>
+  </head>
+<body onload="setBrowserTitle('Peaberry Coverage: Dashboard')">
+<table cellspacing="0" cellpadding="2" class="barGraph">
+
+  <tr>
+    <td colspan="2">
+
+    <div class="roundedLarge">
+      <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+      <div class="roundedContent">
+    <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
+    <td valign="top" class="titleText">Clover Coverage  Report -  Peaberry Coverage <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Tue Apr 1 2008 14:01:31 GMT+08:00</div>
+
+        
+    
+            <div class="navBar"><span class="navBarCurrent">Overview</span>&nbsp;&nbsp;&nbsp;Package&nbsp;&nbsp;&nbsp;File</div>
+    
+    <div class="navBarLink">
+        &nbsp;&nbsp;&nbsp;
+        <a href="index.html" target="_top">FRAMES</a>&nbsp;&nbsp;
+        <a href="dashboard.html" target="_top">NO FRAMES</a>&nbsp;&nbsp;
+        <label onclick="toggleHelp(this);" class="nonHelpItem">SHOW HELP</label>&nbsp;&nbsp;
+    </div>
+
+    </td>
+        
+        
+
+     <td  id="td-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: ;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Tue Apr 1 2008 14:01:29 GMT+08:00:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
+           <td >      2,447
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
+           <td >      14,960
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
+           <td >      1,461
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      2.3
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'project';">Branches:</label></td>
+           <td >      576
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'project';">NCLOC:</label></td>
+           <td >      7,692
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'project';">Cmp density:</label></td>
+           <td >      0.6
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      4.78
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'project';">Methods:</label></td>
+           <td >      1,066
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td  class="totalText"><label onkeyup="return help_files + 'project';">Files:</label></td>
+           <td >      158
+  </td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'project';">Avg method cmp:</label></td>
+           <td >      1.37
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                     <td  class="totalText"><label onkeyup="return help_classes_per_package;">Classes/Pkg:</label></td>
+           <td >      17.15
+  </td>
+          
+         </tr>
+         <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'project';">Classes:</label></td>
+            <td >      223
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td  class="totalText"><label onkeyup="return help_packages + 'project';">Packages:</label></td>
+            <td >      13
+  </td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+         <tr class="totalText">
+             <td colspan="1">
+                <a class="sortable totalText" onclick="toggleStats('td-header-stats', 'td-filtered-header-stats');"><label onkeyup="return help_filter_stats;">Filtered</label></a>
+             </td>
+             <td colspan="5">&nbsp;</td>
+
+         </tr>
+      </table>
+     </td>
+
+    
+    
+
+     <td  id="td-filtered-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: none;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Tue Apr 1 2008 14:01:29 GMT+08:00:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
+           <td >      2,447
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
+           <td >      14,960
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
+           <td >      1,461
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      2.3
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'project';">Branches:</label></td>
+           <td >      576
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'project';">NCLOC:</label></td>
+           <td >      7,692
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'project';">Cmp density:</label></td>
+           <td >      0.6
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      4.78
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'project';">Methods:</label></td>
+           <td >      1,066
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td  class="totalText"><label onkeyup="return help_files + 'project';">Files:</label></td>
+           <td >      158
+  </td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'project';">Avg method cmp:</label></td>
+           <td >      1.37
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                     <td  class="totalText"><label onkeyup="return help_classes_per_package;">Classes/Pkg:</label></td>
+           <td >      17.15
+  </td>
+          
+         </tr>
+         <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'project';">Classes:</label></td>
+            <td >      223
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td  class="totalText"><label onkeyup="return help_packages + 'project';">Packages:</label></td>
+            <td >      13
+  </td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+         <tr class="totalText">
+             <td colspan="1">
+                <a class="sortable totalText" onclick="toggleStats('td-filtered-header-stats', 'td-header-stats');"><label onkeyup="return help_filter_stats;">Unfiltered</label></a>
+             </td>
+             <td colspan="5">&nbsp;</td>
+
+         </tr>
+      </table>
+     </td>
+</tr>
+
+    </table>
+  </div>
+  <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+  </div>
+
+   </td>
+  </tr>
+
+
+<tr><td class="hbreak" colspan="2" ></td></tr>
+
+        
+<tr valign="top">
+
+    <td class="hbreak" colspan="1">
+    <div class="left">
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                
+            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_coverage;">Coverage</label></a><span> 223 classes, 1,476 / 4,089 elements</span>
+            <table><tr><td>36.1%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.36096844</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="63.9% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="36.1% Covered" class="barPositive $customBarPositive" style="width: 36.1%"></div>
+    </div>
+</div></td></tr></table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_packages;">Most Complex Packages</label></a>
+        
+        <table>
+                    
+                        <tr><td>1. </td><td>37.1%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.37114337</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="62.9% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="37.1% Covered" class="barPositive $customBarPositive" style="width: 37.1%"></div>
+    </div>
+</div></td><td><a class="tag" href="com/google/inject/pkg-summary.html">com.google.inject</a> (744)</td></tr>
+                    
+                        <tr><td>2. </td><td>43%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.42982456</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="57% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="43% Covered" class="barPositive $customBarPositive" style="width: 43%"></div>
+    </div>
+</div></td><td><a class="tag" href="com/google/inject/internal/pkg-summary.html">com.google.inject.internal</a> (248)</td></tr>
+                    
+                        <tr><td>3. </td><td>19%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.18976897</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="81% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="19% Covered" class="barPositive $customBarPositive" style="width: 19%"></div>
+    </div>
+</div></td><td><a class="tag" href="com/google/inject/commands/pkg-summary.html">com.google.inject.commands</a> (248)</td></tr>
+                    
+                        <tr><td>4. </td><td>61.9%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.61924684</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="38.1% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="61.9% Covered" class="barPositive $customBarPositive" style="width: 61.9%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/internal/pkg-summary.html">org.ops4j.peaberry.internal</a> (82)</td></tr>
+                    
+                        <tr><td>5. </td><td>15.8%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.15789473</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="84.2% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="15.8% Covered" class="barPositive $customBarPositive" style="width: 15.8%"></div>
+    </div>
+</div></td><td><a class="tag" href="com/google/inject/matcher/pkg-summary.html">com.google.inject.matcher</a> (53)</td></tr>
+                </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+                    <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_classes;">Most Complex Classes</label></a>
+        <table>
+                    
+                        <tr><td>1. </td><td>44.9%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.4486607</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="55.1% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="44.9% Covered" class="barPositive $customBarPositive" style="width: 44.9%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="com/google/inject/InjectorImpl.html#InjectorImpl"  title="com.google.inject.InjectorImpl">InjectorImpl</a>
+                (138)
+            </td></tr>
+                    
+                        <tr><td>2. </td><td>37.9%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.3791209</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="62.1% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="37.9% Covered" class="barPositive $customBarPositive" style="width: 37.9%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="com/google/inject/internal/ReferenceMap.html#ReferenceMap"  title="com.google.inject.internal.ReferenceMap">ReferenceMap</a>
+                (62)
+            </td></tr>
+                    
+                        <tr><td>3. </td><td>0%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.0</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="0% Covered" class="barPositive $customBarPositive" style="width: 0%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="com/google/inject/commands/BindConstantCommand.html#BindConstantCommand.BindingBuilder"  title="com.google.inject.commands.BindConstantCommand.BindingBuilder">BindConstantCommand.BindingBuilder</a>
+                (61)
+            </td></tr>
+                    
+                        <tr><td>4. </td><td>44.1%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.4413793</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="55.9% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="44.1% Covered" class="barPositive $customBarPositive" style="width: 44.1%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="com/google/inject/Key.html#Key"  title="com.google.inject.Key">Key</a>
+                (55)
+            </td></tr>
+                    
+                        <tr><td>5. </td><td>28%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.28</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="72% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="28% Covered" class="barPositive $customBarPositive" style="width: 28%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="com/google/inject/commands/BindCommand.html#BindCommand.BindingBuilder"  title="com.google.inject.commands.BindCommand.BindingBuilder">BindCommand.BindingBuilder</a>
+                (48)
+            </td></tr>
+                </table>
+        
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+    </div>
+    <div class="right">
+
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <a class="titleText" href="test-pkg-summary.html">
+                <label onkeyup="return help_dash_test_results;">Test Results</label></a>
+                <span> 1 / 1 tests 0.29 secs</span>
+            <table>
+                                <tr>
+                    <td>100%</td>
+                    <td style="width:200px">
+                                                
+
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+
+    <div title="0% Errors" style="min-width: 40px;" class="testBarError">
+        <div title="0% of Tests Failed" class="testBarFail" style="width: 100%">
+            <div title="100% of Tests Passed" class="testBarPass" style="width: 100%"></div>
+        </div>
+    </div>
+</div>                    </td>
+                </tr>
+                            </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <a href="proj-risks.html" class="titleText"><label onkeyup="return help_dash_risks;">Top 20 Project Risks</label></a>
+            <div>
+            
+                                           <a class="tag" href="com/google/inject/ConstructionContext.html#ConstructionContext.DelegatingInvocationHandler"
+               style="font-size: 22px;color:#e4051a"
+               title="Average Method Complexity - 3 , Coverage - 0% ">ConstructionContext.DelegatingInvocationHandler</a>
+                          
+                                           <a class="tag" href="com/google/inject/ProviderMethods.html#ProviderMethods.ProviderMethodsModule"
+               style="font-size: 21px;color:#e4051a"
+               title="Average Method Complexity - 2.7 , Coverage - 0% ">ProviderMethods.ProviderMethodsModule</a>
+                          
+                                           <a class="tag" href="com/google/inject/tools/jmx/Manager.html#Manager"
+               style="font-size: 20px;color:#e4051a"
+               title="Average Method Complexity - 2.5 , Coverage - 0% ">Manager</a>
+                          
+                                           <a class="tag" href="com/google/inject/InjectorImpl.html#InjectorImpl.SingleParameterInjector"
+               style="font-size: 20px;color:#e4051a"
+               title="Average Method Complexity - 2.5 , Coverage - 0% ">InjectorImpl.SingleParameterInjector</a>
+                          
+                                           <a class="tag" href="com/google/inject/InjectorImpl.html#InjectorImpl.SingleMethodInjector"
+               style="font-size: 19px;color:#e4051a"
+               title="Average Method Complexity - 2.2 , Coverage - 0% ">InjectorImpl.SingleMethodInjector</a>
+                          
+                                           <a class="tag" href="com/google/inject/ProvisionException.html#ProvisionException"
+               style="font-size: 18px;color:#e4051a"
+               title="Average Method Complexity - 2 , Coverage - 0% ">ProvisionException</a>
+                          
+                                           <a class="tag" href="com/google/inject/AbstractErrorHandler.html#AbstractErrorHandler"
+               style="font-size: 18px;color:#e4051a"
+               title="Average Method Complexity - 2 , Coverage - 0% ">AbstractErrorHandler</a>
+                          
+                                           <a class="tag" href="com/google/inject/internal/ReferenceMap.html#ReferenceMap.ReferenceIterator"
+               style="font-size: 16px;color:#e4051a"
+               title="Average Method Complexity - 1.6 , Coverage - 0% ">ReferenceMap.ReferenceIterator</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/StaticScope.html#StaticScope"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.5 , Coverage - 0% ">StaticScope</a>
+                          
+                                           <a class="tag" href="com/google/inject/BindCommandProcessor.html#BindCommandProcessor.EagerSingletonCreator"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.5 , Coverage - 0% ">BindCommandProcessor.EagerSingletonCreator</a>
+                          
+                                           <a class="tag" href="com/google/inject/jndi/JndiIntegration.html#JndiIntegration.JndiProvider"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.5 , Coverage - 0% ">JndiIntegration.JndiProvider</a>
+                          
+                                           <a class="tag" href="com/google/inject/internal/ReferenceMap.html#ReferenceMap.EntrySet"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.4 , Coverage - 0% ">ReferenceMap.EntrySet</a>
+                          
+                                           <a class="tag" href="com/google/inject/ErrorMessages.html#ErrorMessages"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.364 , Coverage - 0% ">ErrorMessages</a>
+                          
+                                           <a class="tag" href="com/google/inject/BoundProviderFactory.html#BoundProviderFactory"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.333 , Coverage - 0% ">BoundProviderFactory</a>
+                          
+                                           <a class="tag" href="com/google/inject/ProxyFactory.html#ProxyFactory.MethodInterceptorsPair"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.333 , Coverage - 0% ">ProxyFactory.MethodInterceptorsPair</a>
+                          
+                                           <a class="tag" href="com/google/inject/internal/ReferenceMap.html#ReferenceMap.PutStrategy"
+               style="font-size: 21px;color:#cb0533"
+               title="Average Method Complexity - 2.667 , Coverage - 7.1% ">ReferenceMap.PutStrategy</a>
+                          
+                                           <a class="tag" href="com/google/inject/name/Names.html#Names"
+               style="font-size: 14px;color:#e4051a"
+               title="Average Method Complexity - 1.286 , Coverage - 0% ">Names</a>
+                          
+                                           <a class="tag" href="com/google/inject/internal/Objects.html#Objects"
+               style="font-size: 22px;color:#990565"
+               title="Average Method Complexity - 3 , Coverage - 25% ">Objects</a>
+                          
+                                           <a class="tag" href="com/google/inject/spi/Message.html#Message"
+               style="font-size: 14px;color:#e4051a"
+               title="Average Method Complexity - 1.25 , Coverage - 0% ">Message</a>
+                          
+                                           <a class="tag" href="com/google/inject/internal/ToStringBuilder.html#ToStringBuilder"
+               style="font-size: 14px;color:#e4051a"
+               title="Average Method Complexity - 1.25 , Coverage - 0% ">ToStringBuilder</a>
+                                      </div>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+                        <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <a class="titleText" href="test-pkg-summary.html"><label onkeyup="return help_dash_untested_methods;">Least Tested Methods</label></a>
+            <table>
+                
+                <tr>
+                    <td align="right">1.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ProviderMethods.ProviderMethodsModule.bindProviderMethod(Method)&nbsp;:&nbsp;void" href="com/google/inject/ProviderMethods.html?line=82#src-82">ProviderMethods.ProviderMethodsModule.bindProviderMethod(Method)&nbsp;:&nbsp;void</a> (5)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">2.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="InjectorImpl.createImplementedByBinding(Class&lt;T&gt;,ImplementedBy)&nbsp;:&nbsp;BindingImpl&lt;T&gt;" href="com/google/inject/InjectorImpl.html?line=654#src-654">InjectorImpl.createImplementedByBinding(Class&lt;T&gt;,ImplementedBy)&nbsp;:&nbsp;BindingImpl&lt;T&gt;</a> (4)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">3.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="Manager.manage(MBeanServer,String,Injector)&nbsp;:&nbsp;void" href="com/google/inject/tools/jmx/Manager.html?line=51#src-51">Manager.manage(MBeanServer,String,Injector)&nbsp;:&nbsp;void</a> (6)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">4.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="InjectorImpl.getParentBinding(Key&lt;T&gt;)&nbsp;:&nbsp;BindingImpl&lt;T&gt;" href="com/google/inject/InjectorImpl.html?line=212#src-212">InjectorImpl.getParentBinding(Key&lt;T&gt;)&nbsp;:&nbsp;BindingImpl&lt;T&gt;</a> (6)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">5.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ReferenceMap.PutStrategy.execute(ReferenceMap,Object,Object)&nbsp;:&nbsp;Object" href="com/google/inject/internal/ReferenceMap.html?line=450#src-450">ReferenceMap.PutStrategy.execute(ReferenceMap,Object,Object)&nbsp;:&nbsp;Object</a> (5)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">6.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="InjectorImpl.createProvidedByBinding(Class&lt;T&gt;,ProvidedBy)&nbsp;:&nbsp;BindingImpl&lt;T&gt;" href="com/google/inject/InjectorImpl.html?line=603#src-603">InjectorImpl.createProvidedByBinding(Class&lt;T&gt;,ProvidedBy)&nbsp;:&nbsp;BindingImpl&lt;T&gt;</a> (3)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">7.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="InjectorImpl.createProviderBinding(Key&lt;Provider&lt;T&gt;&gt;)&nbsp;:&nbsp;BindingImpl&lt;Provider&lt;T&gt;&gt;" href="com/google/inject/InjectorImpl.html?line=293#src-293">InjectorImpl.createProviderBinding(Key&lt;Provider&lt;T&gt;&gt;)&nbsp;:&nbsp;BindingImpl&lt;Provider&lt;T&gt;&gt;</a> (3)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">8.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="InjectorImpl.createParameterInjector(Key&lt;T&gt;,Member,int,Annotation[])&nbsp;:&nbsp;SingleParameterInjector&lt;T&gt;" href="com/google/inject/InjectorImpl.html?line=959#src-959">InjectorImpl.createParameterInjector(Key&lt;T&gt;,Member,int,Annotation[])&nbsp;:&nbsp;SingleParameterInjector&lt;T&gt;</a> (5)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">9.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="AbstractReferenceCache.FutureValue.get()&nbsp;:&nbsp;V" href="com/google/inject/internal/AbstractReferenceCache.html?line=147#src-147">AbstractReferenceCache.FutureValue.get()&nbsp;:&nbsp;V</a> (4)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">10.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ProviderMethods.ProviderMethodsModule.findParameterProviders(Method)&nbsp;:&nbsp;List&lt;Provider&lt;?&gt;&gt;" href="com/google/inject/ProviderMethods.html?line=136#src-136">ProviderMethods.ProviderMethodsModule.findParameterProviders(Method)&nbsp;:&nbsp;List&lt;Provider&lt;?&gt;&gt;</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">11.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ProvisionException.contextToSnippet(InjectionPoint)&nbsp;:&nbsp;String" href="com/google/inject/ProvisionException.html?line=72#src-72">ProvisionException.contextToSnippet(InjectionPoint)&nbsp;:&nbsp;String</a> (4)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">12.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="InjectorImpl.SingleMethodInjector.SingleMethodInjector(InjectorImpl,Method)" href="com/google/inject/InjectorImpl.html?line=994#src-994">InjectorImpl.SingleMethodInjector.SingleMethodInjector(InjectorImpl,Method)</a> (3)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">13.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ConstructionContext.createProxy(Class&lt;?&gt;)&nbsp;:&nbsp;Object" href="com/google/inject/ConstructionContext.html?line=64#src-64">ConstructionContext.createProxy(Class&lt;?&gt;)&nbsp;:&nbsp;Object</a> (3)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">14.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ReferenceMap.writeObject(ObjectOutputStream)&nbsp;:&nbsp;void" href="com/google/inject/internal/ReferenceMap.html?line=623#src-623">ReferenceMap.writeObject(ObjectOutputStream)&nbsp;:&nbsp;void</a> (4)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">15.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="Scopes.getScopeForType(Class&lt;?&gt;,Map&lt;Class&lt;?&nbsp;extends&nbsp;Annotation&gt;,&nbsp;Scope&gt;,ErrorHandler)&nbsp;:&nbsp;Scope" href="com/google/inject/Scopes.html?line=98#src-98">Scopes.getScopeForType(Class&lt;?&gt;,Map&lt;Class&lt;?&nbsp;extends&nbsp;Annotation&gt;,&nbsp;Scope&gt;,ErrorHandler)&nbsp;:&nbsp;Scope</a> (4)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">16.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ProviderMethods.ProviderMethodsModule.findScopeAnnotation(Annotation[])&nbsp;:&nbsp;Class&lt;?&nbsp;extends&nbsp;Annotation&gt;" href="com/google/inject/ProviderMethods.html?line=154#src-154">ProviderMethods.ProviderMethodsModule.findScopeAnnotation(Annotation[])&nbsp;:&nbsp;Class&lt;?&nbsp;extends&nbsp;Annotation&gt;</a> (4)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">17.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ProviderMethods.ProviderMethodsModule.findBindingAnnotation(Annotation[])&nbsp;:&nbsp;Annotation" href="com/google/inject/ProviderMethods.html?line=174#src-174">ProviderMethods.ProviderMethodsModule.findBindingAnnotation(Annotation[])&nbsp;:&nbsp;Annotation</a> (4)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">18.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ReferenceMap.readObject(ObjectInputStream)&nbsp;:&nbsp;void" href="com/google/inject/internal/ReferenceMap.html?line=639#src-639">ReferenceMap.readObject(ObjectInputStream)&nbsp;:&nbsp;void</a> (3)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">19.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ErrorMessages.handleMissingBinding(InjectorImpl,Object,Key&lt;?&gt;)&nbsp;:&nbsp;void" href="com/google/inject/ErrorMessages.html?line=48#src-48">ErrorMessages.handleMissingBinding(InjectorImpl,Object,Key&lt;?&gt;)&nbsp;:&nbsp;void</a> (3)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">20.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="Manager.main(String[])&nbsp;:&nbsp;void" href="com/google/inject/tools/jmx/Manager.html?line=95#src-95">Manager.main(String[])&nbsp;:&nbsp;void</a> (2)
+                    </td>
+                </tr>
+                            </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+            
+    </div>
+        
+    </td>
+</tr>
+
+<tr><td class="hbreak" colspan="2">&nbsp;</td></tr>
+<tr><td class="hbreak" colspan="2">&nbsp;</td></tr>
+<tr><td class="footer" colspan="2">
+<table>
+<tr>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.1.0</a><i><br/>Tue Apr 1 2008 14:01:31 GMT+08:00</i>.</td>
+<td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Evaluation License registered to Peaberry Open Source Project (ASLv2). You have 29 day(s) before your license expires.</td>
+</tr>
+</table>
+</td>
+</tr></table>
+</body>
+</html>
