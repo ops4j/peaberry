@@ -1,18 +1,18 @@
-Bundle-ClassPath: junit.jar,.
+Bundle-ClassPath: junit.jar,clover.jar,.
 
 Include-Resource:\
- junit.jar=${junit.jar}
+ junit.jar=${junit.jar},\
+ clover.jar=${clover.jar}
 
 Private-Package:\
  org.ops4j.peaberry.test
 
+Export-Package: *
+
 Import-Package:\
- javax.sql; resolution:=optional,\
- javax.swing*; resolution:=optional,\
- org.springframework*; resolution:=optional,\
  org.osgi.framework; version="[1.3.0, 2.0.0)",\
  org.osgi.util.tracker; version="[1.3.0, 2.0.0)",\
- *
+ *; resolution:=optional
 
 Bundle-Activator:\
  org.ops4j.peaberry.test.Activator
