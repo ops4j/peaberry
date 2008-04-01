@@ -2,15 +2,15 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 4072, "sl" : 40, "el" : 74, "name" : "OSGiServiceBindingTest",
+    {"id" : 271, "sl" : 40, "el" : 74, "name" : "OSGiServiceBindingTest",
     "methods" : [
              {"sl" : 53, "el" : 55, "sc" : 3},  {"sl" : 66, "el" : 73, "sc" : 3}  ]}
     ,
-    {"id" : 4072, "sl" : 47, "el" : 47, "name" : "OSGiServiceBindingTest.TestService",
+    {"id" : 271, "sl" : 47, "el" : 47, "name" : "OSGiServiceBindingTest.TestService",
     "methods" : [
              ]}
     ,
-    {"id" : 4074, "sl" : 57, "el" : 64, "name" : "OSGiServiceBindingTest.Module",
+    {"id" : 273, "sl" : 57, "el" : 64, "name" : "OSGiServiceBindingTest.Module",
     "methods" : [
               {"sl" : 60, "el" : 63, "sc" : 5}  ]}
     

@@ -2,7 +2,7 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 4088, "sl" : 26, "el" : 42, "name" : "OSGiTests",
+    {"id" : 287, "sl" : 26, "el" : 42, "name" : "OSGiTests",
     "methods" : [
               {"sl" : 30, "el" : 32, "sc" : 3},  {"sl" : 34, "el" : 41, "sc" : 3}  ]}
     
