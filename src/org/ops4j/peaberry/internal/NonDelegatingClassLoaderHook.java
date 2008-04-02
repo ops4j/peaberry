@@ -34,7 +34,7 @@ public final class NonDelegatingClassLoaderHook
    * Weak cache of bridge classloaders that make the Guice implementation
    * classes visible to various code-generated proxies of client classes.
    */
-  private final ReferenceCache<ClassLoader, ClassLoader> m_classLoaderCache =
+  private final ReferenceCache<ClassLoader, ClassLoader> classLoaderCache =
       new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
         private static final long serialVersionUID = 1L;
 
@@ -80,11 +80,11 @@ public final class NonDelegatingClassLoaderHook
       return typeLoader;
     }
 
-    return m_classLoaderCache.get(typeLoader);
+    return classLoaderCache.get(typeLoader);
   }
 
   @Override
   public String toString() {
-    return "NonDelegatingClassLoaderHook[" + m_classLoaderCache + ']';
+    return "NonDelegatingClassLoaderHook[" + classLoaderCache + ']';
   }
 }

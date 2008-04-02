@@ -16,11 +16,12 @@
 
 package org.ops4j.peaberry.test;
 
-import junit.textui.TestRunner;
-
+import org.ops4j.peaberry.Peaberry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+
+import com.google.inject.Module;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
@@ -28,17 +29,17 @@ import org.osgi.framework.BundleException;
 public class Activator
     implements BundleActivator {
 
-  public void start(final BundleContext bc)
+  public void start(final BundleContext bundleContext)
       throws Exception {
 
-    // FIXME: need handshake?
     new Thread(new Runnable() {
       public void run() {
         try {
-          TestRunner.run(OSGiTests.suite(bc));
+          Module peaberry = Peaberry.getBundleModule(bundleContext);
+          PeaberryRunner.run(peaberry, new ServiceScopingTest());
         } finally {
           try {
-            bc.getBundle(0).stop();
+            bundleContext.getBundle(0).stop();
           } catch (BundleException e) {
             // don't mind this...
           }

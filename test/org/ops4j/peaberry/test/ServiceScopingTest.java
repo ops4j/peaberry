@@ -20,55 +20,54 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
-import junit.framework.TestCase;
-
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.ops4j.peaberry.Leased;
-import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.Service;
-import org.osgi.framework.BundleContext;
+import org.ops4j.peaberry.Static;
 import org.osgi.service.log.LogService;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Scopes;
+import com.google.inject.Module;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class OSGiServiceBindingTest
-    extends TestCase {
+@RunWith(PeaberryRunner.class)
+public class ServiceScopingTest
+    implements Module {
 
   @Service
   @Leased(seconds = 10)
   @BindingAnnotation
   @Retention(RUNTIME)
-  public @interface TestService {}
+  public @interface LeasedService {}
+
+  @Service
+  @Static
+  @Retention(RUNTIME)
+  public @interface StaticService {}
 
   @Inject
-  @TestService
+  @Service
   LogService m_logService;
 
-  public void log(String message) {
-    m_logService.log(LogService.LOG_INFO, message);
+  @Inject
+  @LeasedService
+  LogService m_leasedLogService;
+
+  @Inject
+  @StaticService
+  LogService m_staticLogService;
+
+  public void configure(Binder binder) {
+    binder.bind(ServiceScopingTest.class);
   }
 
-  class Module
-      extends AbstractModule {
-
-    @Override
-    protected void configure() {
-      bind(OSGiServiceBindingTest.class).in(Scopes.SINGLETON);
-    }
-  }
-
-  public void testInjection()
-      throws Exception {
-
-    BundleContext bc = OSGiTests.getBundleContext();
-    Injector injector = Peaberry.getOSGiInjector(bc, new Module());
-
-    injector.getInstance(OSGiServiceBindingTest.class).log("Hello World");
+  @Test
+  public void testMe() {
+    m_logService.log(LogService.LOG_INFO, "HELLO!");
   }
 }
