@@ -20,12 +20,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.Static;
 import org.osgi.service.log.LogService;
+import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
 import com.google.inject.BindingAnnotation;
@@ -35,7 +34,6 @@ import com.google.inject.Module;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@RunWith(PeaberryRunner.class)
 public class ServiceScopingTest
     implements Module {
 
@@ -68,6 +66,8 @@ public class ServiceScopingTest
 
   @Test
   public void testMe() {
-    m_logService.log(LogService.LOG_INFO, "HELLO!");
+    m_logService.log(LogService.LOG_INFO, "THIS");
+    m_leasedLogService.log(LogService.LOG_INFO, "IS A");
+    m_staticLogService.log(LogService.LOG_INFO, "TEST");
   }
 }

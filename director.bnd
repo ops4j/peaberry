@@ -1,7 +1,7 @@
-Bundle-ClassPath: junit.jar,clover.jar,.
+Bundle-ClassPath: testng.jar,clover.jar,.
 
 Include-Resource:\
- junit.jar=${junit.jar},\
+ testng.jar=${testng.jar},\
  clover.jar=${clover.jar}
 
 Private-Package:\

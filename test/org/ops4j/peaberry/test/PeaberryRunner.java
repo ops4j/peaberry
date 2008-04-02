@@ -16,10 +16,10 @@
 
 package org.ops4j.peaberry.test;
 
-import org.junit.internal.TextListener;
-import org.junit.internal.runners.InitializationError;
-import org.junit.internal.runners.JUnit4ClassRunner;
-import org.junit.runner.JUnitCore;
+import java.lang.reflect.Constructor;
+
+import org.testng.IObjectFactory;
+import org.testng.TestNG;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -29,32 +29,31 @@ import com.google.inject.Module;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public class PeaberryRunner
-    extends JUnit4ClassRunner {
+    implements IObjectFactory {
 
-  static volatile Injector injector;
+  private static final long serialVersionUID = 1L;
+  private static volatile Injector injector;
 
   public static void run(Module... modules) {
 
     injector = Guice.createInjector(modules);
 
-    JUnitCore junit = new JUnitCore();
-    junit.addListener(new TextListener());
-    for (Module module : modules) {
-      if (!module.getClass().isAnonymousClass()) {
-        junit.run(module.getClass());
-      }
+    Class<?>[] testClasses = new Class<?>[modules.length];
+    for (int i = 0; i < testClasses.length; i++) {
+      testClasses[i] = modules[i].getClass();
     }
+
+    TestNG testNG = new TestNG();
+    testNG.setDefaultTestName("OSGi");
+    testNG.setDefaultSuiteName("peaberry");
+    testNG.setOutputDirectory("reports/testNG");
+    testNG.setObjectFactory(PeaberryRunner.class);
+    testNG.setTestClasses(testClasses);
+    testNG.run();
   }
 
-  public PeaberryRunner(Class<?> clazz)
-      throws InitializationError {
-    super(clazz);
-  }
-
-  @Override
-  protected Object createTest()
-      throws Exception {
-
-    return injector.getInstance(getTestClass().getJavaClass());
+  @SuppressWarnings("unchecked")
+  public Object newInstance(Constructor constructor, Object... args) {
+    return injector.getInstance(constructor.getDeclaringClass());
   }
 }

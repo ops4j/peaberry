@@ -8,7 +8,7 @@
   </target>
 
   <target name="clover.report">
-    <clover-html-report outdir="coverage" title="peaberry"/>
+    <clover-html-report outdir="${doc}/coverage" title="peaberry"/>
   </target>
 
 </project>

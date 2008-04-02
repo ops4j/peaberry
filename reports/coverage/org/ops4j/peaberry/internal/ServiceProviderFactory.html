@@ -1,0 +1,2567 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>peaberry</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+<style type="text/css" media="screen">
+    @import url('../../../../style.css');
+    @import url('../../../../roundedcorners.css');
+</style>
+
+</head>
+<body onload="onLoad('peaberry: org.ops4j.peaberry.internal.ServiceProviderFactory.java');">
+ 
+ <table cellspacing="0" cellpadding="2" class="barGraph"><tbody>
+  <tr>
+    <td colspan="6">
+
+    <div class="roundedLarge">
+      <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+      <div class="roundedContent">
+    <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Thu Apr 3 2008 02:09:33 SGT</div>
+
+        
+    
+            <div class="navBar"><a href="../../../../pkg-summary.html"><b>Overview</b></a>&nbsp;&nbsp;&nbsp;<a href="pkg-summary.html"><b>Package</b></a>&nbsp;&nbsp;&nbsp;<span class="navBarCurrent">File</span></div>
+    
+    <div class="navBarLink">
+        &nbsp;&nbsp;&nbsp;
+        <a href="../../../../index.html" target="_top">FRAMES</a>&nbsp;&nbsp;
+        <a href="ServiceProviderFactory.html" target="_top">NO FRAMES</a>&nbsp;&nbsp;
+        <label onclick="toggleHelp(this);" class="nonHelpItem">SHOW HELP</label>&nbsp;&nbsp;
+    </div>
+
+    </td>
+        
+        
+
+     <td  id="td-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: ;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for file ServiceProviderFactory.java:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'file';">Stmts:</label></td>
+           <td >      18
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
+           <td >      134
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
+           <td >      12
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      2
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'file';">Branches:</label></td>
+           <td >      6
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'file';">NCLOC:</label></td>
+           <td >      64
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'file';">Cmp density:</label></td>
+           <td >      0.67
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      4.5
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'file';">Methods:</label></td>
+           <td >      9
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td colspan="2"></td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'file';">Avg method cmp:</label></td>
+           <td >      1.33
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+          
+         </tr>
+         <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'file';">Classes:</label></td>
+            <td >      2
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+         <tr class="totalText">
+             <td colspan="1">
+                <a class="sortable totalText" onclick="toggleStats('td-header-stats', 'td-filtered-header-stats');"><label onkeyup="return help_filter_stats;">Filtered</label></a>
+             </td>
+             <td colspan="5">&nbsp;</td>
+
+         </tr>
+      </table>
+     </td>
+
+    
+    
+
+     <td  id="td-filtered-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: none;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for file ServiceProviderFactory.java:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'file';">Stmts:</label></td>
+           <td >      18
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
+           <td >      134
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
+           <td >      12
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      2
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'file';">Branches:</label></td>
+           <td >      6
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'file';">NCLOC:</label></td>
+           <td >      64
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'file';">Cmp density:</label></td>
+           <td >      0.67
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      4.5
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'file';">Methods:</label></td>
+           <td >      9
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td colspan="2"></td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'file';">Avg method cmp:</label></td>
+           <td >      1.33
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+          
+         </tr>
+         <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'file';">Classes:</label></td>
+            <td >      2
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td colspan="2"></td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+         <tr class="totalText">
+             <td colspan="1">
+                <a class="sortable totalText" onclick="toggleStats('td-filtered-header-stats', 'td-header-stats');"><label onkeyup="return help_filter_stats;">Unfiltered</label></a>
+             </td>
+             <td colspan="5">&nbsp;</td>
+
+         </tr>
+      </table>
+     </td>
+</tr>
+
+    </table>
+  </div>
+  <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+  </div>
+
+   </td>
+  </tr>
+
+
+<tr id="legend" style="display:none;"><td colspan="6">
+    <div class="hbreak">&nbsp;</div>
+    <table class="legend" cellspacing="0" cellpadding="0">
+        <tr><td colspan="3" class="legendTitle">Legend</td></tr>
+
+        <tr><td class="methodToggle" align="right">line#</td><td class="methodToggle" align="right">hit count</td>
+            <td class="methodToggle"> </td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">1</td><td class="coverageCount Good hitByTest" align="right">86</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine">line hit by 1 or more tests which passed</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">2</td><td class="coverageCount Good missedByTest" align="right">17</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine">line was covered, but not by a test case</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">3</td><td class="coverageCount Good hitByFailedTest" align="right">7</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine">line hit by 1 or more tests which did not pass</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">4</td><td class="coverageCount Good hitByTest" align="right">5</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine coveredByTest">line hit by more than one (selected) test</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">5</td><td class="coverageCount Good hitByTest" align="right">3</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine coveredByTestUniq">line hit by one test only</span></td>
+        </tr>
+        <tr><td class="lineCount Good" align="right">6</td><td class="coverageCount Good hitByTest" align="right">2</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine coveredByFailedTest">line hit by one or more (selected) tests that failed</span></td>
+        </tr>
+        <tr><td class="lineCount Bad" align="right">7</td><td class="coverageCount Bad hitByTest" align="right">1</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine srcLineHilight">line has an expression (e.g. a branch) or statement that was not fully covered</span></td>
+        </tr>
+        <tr><td class="lineCount Bad" align="right">8</td><td class="coverageCount Bad missedByTest" align="right">0</td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLine srcLineHilight">line was not covered at all</span></td>
+        </tr>
+        <tr><td class="lineCount Filtered " align="right">9</td><td class="coverageCount Filtered" align="right"></td>
+               <td class="srcCell"><span class="spacer"/><span class="srcLineFiltered">line was filtered</span></td>
+        </tr>
+        
+    </table>
+    <div class="hbreak">&nbsp;</div>
+    
+    
+</td></tr>
+<tr><td class="hbreak" colspan="6">&nbsp; <label onkeyup="return help_src_file_expandall_summaries;" class="sortable" onclick="toggleAllClasses(this); return false;" id="stat-expander">Expand All</label></td></tr>
+</tbody>
+         <tbody>
+        <tr>             <td class="graphHeaderLeft" id="ServiceProviderFactory" >
+                                <span class="expand methodStart" id="span-ServiceProviderFactory" onclick="toggleClass(this, 'ServiceProviderFactory', 9);return false;">&nbsp;</span>
+                                <span class="titleText"> <a href="#40" title="ServiceProviderFactory">ServiceProviderFactory</a></span>
+                <span class="sortable" onclick="ts_resortTable(document.getElementById('ServiceProviderFactory'), 'alpha', 0);return false;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+
+            <td class="sortable graphHeader" onclick="ts_resortTable(this, 'number', 1);return false;">
+                Line # 40
+                <a name="sl-40"></a>
+            </td>
+
+                                        
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 2);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The total number of statements.';"  >Total Statements</label></span>
+                    18
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 3);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'Cyclomatic complexity is a measure of the number of paths in your code.';"  >Complexity</label></span>
+                    12
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 4);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The amount of code that was hit at least once during testing.';"  >TOTAL Coverage</label></span>
+                    39.4%
+</td>
+<td class="graphBar graphHeader" align="center">
+<span class="sortValue">0.3939394</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="60.6% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="39.4% Covered" class="barPositive $customBarPositive" style="width: 39.4%"></div>
+    </div>
+</div>
+                </td>
+                
+                                    </tr> 
+                <tr id="ServiceProviderFactory-1" style="display:none">
+            <td class="methodSummary" id="summary-43-3">
+                <span class="sortValue">ServiceProviderFactory()</span>
+                &nbsp;&nbsp;<a href="#43" title="ServiceProviderFactory()" name="sl-43">ServiceProviderFactory()</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">43</span>
+                43
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">-1.0</span>
+               - 
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">-1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="Empty" class="barEmpty" style="min-width: 200px;"></div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-2" style="display:none">
+            <td class="methodSummary" id="summary-60-3">
+                <span class="sortValue">resolve(Provider&lt;T&gt;)&nbsp;:&nbsp;T</span>
+                &nbsp;&nbsp;<a href="#60" title="resolve(Provider&lt;T&gt;)&nbsp;:&nbsp;T" name="sl-60">resolve(Provider&lt;T&gt;)&nbsp;:&nbsp;T</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">60</span>
+                60
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">3.0</span>
+              3
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.6</span>
+              60%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.6</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="40% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="60% Covered" class="barPositive $customBarPositive" style="width: 60%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-3" style="display:none">
+            <td class="methodSummary" id="summary-76-3">
+                <span class="sortValue">getServiceProvider(ServiceRegistry,TypeLiteral&lt;T&gt;,Service)&nbsp;:&nbsp;Provider&lt;T&gt;</span>
+                &nbsp;&nbsp;<a href="#76" title="getServiceProvider(ServiceRegistry,TypeLiteral&lt;T&gt;,Service)&nbsp;:&nbsp;Provider&lt;T&gt;" name="sl-76">getServiceProvider(ServiceRegistry,TypeLiteral&lt;T&gt;,Service)&nbsp;:&nbsp;Provider&lt;T&gt;</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">76</span>
+                76
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">6.0</span>
+              6
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.75</span>
+              75%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.75</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="25% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="75% Covered" class="barPositive $customBarPositive" style="width: 75%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-4" style="display:none">
+            <td class="methodSummary" id="summary-92-9">
+                <span class="sortValue">get()&nbsp;:&nbsp;Iterable</span>
+                &nbsp;&nbsp;<a href="#92" title="get()&nbsp;:&nbsp;Iterable" name="sl-92">get()&nbsp;:&nbsp;Iterable</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">92</span>
+                92
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="0% Covered" class="barPositive $customBarPositive" style="width: 0%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-5" style="display:none">
+            <td class="methodSummary" id="summary-95-13">
+                <span class="sortValue">iterator()&nbsp;:&nbsp;Iterator</span>
+                &nbsp;&nbsp;<a href="#95" title="iterator()&nbsp;:&nbsp;Iterator" name="sl-95">iterator()&nbsp;:&nbsp;Iterator</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">95</span>
+                95
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="0% Covered" class="barPositive $customBarPositive" style="width: 0%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-6" style="display:none">
+            <td class="methodSummary" id="summary-101-9">
+                <span class="sortValue">resolve()&nbsp;:&nbsp;Iterable</span>
+                &nbsp;&nbsp;<a href="#101" title="resolve()&nbsp;:&nbsp;Iterable" name="sl-101">resolve()&nbsp;:&nbsp;Iterable</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">101</span>
+                101
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="0% Covered" class="barPositive $customBarPositive" style="width: 0%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-7" style="display:none">
+            <td class="methodSummary" id="summary-111-9">
+                <span class="sortValue">get()&nbsp;:&nbsp;Object</span>
+                &nbsp;&nbsp;<a href="#111" title="get()&nbsp;:&nbsp;Object" name="sl-111">get()&nbsp;:&nbsp;Object</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">111</span>
+                111
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="100% Covered" class="barPositive $customBarPositive" style="width: 100%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-8" style="display:none">
+            <td class="methodSummary" id="summary-116-9">
+                <span class="sortValue">resolve()&nbsp;:&nbsp;Object</span>
+                &nbsp;&nbsp;<a href="#116" title="resolve()&nbsp;:&nbsp;Object" name="sl-116">resolve()&nbsp;:&nbsp;Object</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">116</span>
+                116
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">1.0</span>
+              1
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="0% Covered" class="barPositive $customBarPositive" style="width: 0%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+                <tr id="ServiceProviderFactory-9" style="display:none">
+            <td class="methodSummary" id="summary-127-3">
+                <span class="sortValue">asCollection(Iterator&lt;T&gt;)&nbsp;:&nbsp;Collection&lt;T&gt;</span>
+                &nbsp;&nbsp;<a href="#127" title="asCollection(Iterator&lt;T&gt;)&nbsp;:&nbsp;Collection&lt;T&gt;" name="sl-127">asCollection(Iterator&lt;T&gt;)&nbsp;:&nbsp;Collection&lt;T&gt;</a>
+                            </td>
+            <td class="graphPercent" align="right">
+                <span class="sortValue">127</span>
+                127
+            </td>
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">4.0</span>
+              4
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">2.0</span>
+              2
+            </td>
+              
+                        
+            <td class="graphPercent " align="right">
+                <span class="sortValue">0.0</span>
+              0%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="0% Covered" class="barPositive $customBarPositive" style="width: 0%"></div>
+    </div>
+</div>
+            </td>
+              
+                   </tr>
+             </tbody>
+         <tbody>
+        <tr>             <td class="graphHeaderLeft" id="ServiceProviderFactory.ServiceProvider" >
+                                <span class="spacer methodStart" id="span-ServiceProviderFactory.ServiceProvider">&nbsp;</span>
+                                <span class="titleText"> <a href="#48" title="ServiceProviderFactory.ServiceProvider">ServiceProviderFactory.ServiceProvider</a></span>
+                <span class="sortable" onclick="ts_resortTable(document.getElementById('ServiceProviderFactory.ServiceProvider'), 'alpha', 0);return false;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+
+            <td class="sortable graphHeader" onclick="ts_resortTable(this, 'number', 1);return false;">
+                Line # 48
+                <a name="sl-48"></a>
+            </td>
+
+                                        
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 2);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The total number of statements.';"  >Total Statements</label></span>
+                    0
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 3);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'Cyclomatic complexity is a measure of the number of paths in your code.';"  >Complexity</label></span>
+                    0
+                </td>
+                
+                                            
+                
+                <td class="sortable graphHeader "  onclick="ts_resortTable(this, 'number', 4);return false;">
+                    <span class="headerTitle"><label  onkeyup="return 'The amount of code that was hit at least once during testing.';"  >TOTAL Coverage</label></span>
+                     - 
+</td>
+<td class="graphBar graphHeader" align="center">
+<span class="sortValue">-1.0</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="Empty" class="barEmpty" style="min-width: 200px;"></div>
+</div>
+                </td>
+                
+                                    </tr> 
+             </tbody>
+     <tbody><tr><td class="hbreak" colspan="6">&nbsp;</td></tr></tbody>
+</table>
+
+<table cellspacing="0" cellpadding="0" class="barGraph">
+<tbody>
+
+    <tr>
+        <td class="hbreak hint" align="left" colspan="4">
+            No Tests
+        </td>
+    </tr>
+</tbody>    
+<tbody><tr><td class="hbreak" colspan="4">&nbsp;</td></tr></tbody>
+</table>
+
+<table cellspacing="0" cellpadding="0" class="srcView">
+<tbody>
+<tr><td colspan="2" class="sortable methodToggle"><label onkeyup="return help_src_file_expandall_src;" onclick="toggleAllInlineMethods(this); return false;" id="method-expander">Collapse All</label></td><th></th></tr>
+</tbody>
+<tbody>
+        
+
+<tr id="l1">
+<td align="right" class="lineCount NoHilight">1</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-1" class="srcLine"><span class="comment">/**</span></span></td>
+</tr>
+        
+
+<tr id="l2">
+<td align="right" class="lineCount NoHilight">2</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-2" class="srcLine"><span class="comment"> * Copyright (C) 2008 Stuart McCulloch</span></span></td>
+</tr>
+        
+
+<tr id="l3">
+<td align="right" class="lineCount NoHilight">3</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-3" class="srcLine"><span class="comment"> *</span></span></td>
+</tr>
+        
+
+<tr id="l4">
+<td align="right" class="lineCount NoHilight">4</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-4" class="srcLine"><span class="comment"> * Licensed under the Apache License, Version 2.0 (the "License");</span></span></td>
+</tr>
+        
+
+<tr id="l5">
+<td align="right" class="lineCount NoHilight">5</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-5" class="srcLine"><span class="comment"> * you may not use this file except in compliance with the License.</span></span></td>
+</tr>
+        
+
+<tr id="l6">
+<td align="right" class="lineCount NoHilight">6</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-6" class="srcLine"><span class="comment"> * You may obtain a copy of the License at</span></span></td>
+</tr>
+        
+
+<tr id="l7">
+<td align="right" class="lineCount NoHilight">7</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-7" class="srcLine"><span class="comment"> *</span></span></td>
+</tr>
+        
+
+<tr id="l8">
+<td align="right" class="lineCount NoHilight">8</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-8" class="srcLine"><span class="comment"> *      http://www.apache.org/licenses/LICENSE-2.0</span></span></td>
+</tr>
+        
+
+<tr id="l9">
+<td align="right" class="lineCount NoHilight">9</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-9" class="srcLine"><span class="comment"> *</span></span></td>
+</tr>
+        
+
+<tr id="l10">
+<td align="right" class="lineCount NoHilight">10</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-10" class="srcLine"><span class="comment"> * Unless required by applicable law or agreed to in writing, software</span></span></td>
+</tr>
+        
+
+<tr id="l11">
+<td align="right" class="lineCount NoHilight">11</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-11" class="srcLine"><span class="comment"> * distributed under the License is distributed on an "AS IS" BASIS,</span></span></td>
+</tr>
+        
+
+<tr id="l12">
+<td align="right" class="lineCount NoHilight">12</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-12" class="srcLine"><span class="comment"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></span></td>
+</tr>
+        
+
+<tr id="l13">
+<td align="right" class="lineCount NoHilight">13</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-13" class="srcLine"><span class="comment"> * See the License for the specific language governing permissions and</span></span></td>
+</tr>
+        
+
+<tr id="l14">
+<td align="right" class="lineCount NoHilight">14</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-14" class="srcLine"><span class="comment"> * limitations under the License.</span></span></td>
+</tr>
+        
+
+<tr id="l15">
+<td align="right" class="lineCount NoHilight">15</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-15" class="srcLine"><span class="comment"> */</span></span></td>
+</tr>
+        
+
+<tr id="l16">
+<td align="right" class="lineCount NoHilight">16</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-16" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l17">
+<td align="right" class="lineCount NoHilight">17</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-17" class="srcLine"><span class="keyword">package</span> org.ops4j.<a href="../../peaberry/pkg-summary.html">peaberry</a>.<a href="../internal/pkg-summary.html">internal</a>;</span></td>
+</tr>
+        
+
+<tr id="l18">
+<td align="right" class="lineCount NoHilight">18</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-18" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l19">
+<td align="right" class="lineCount NoHilight">19</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-19" class="srcLine"><span class="keyword">import</span> <span class="keyword">static</span> org.ops4j.peaberry.internal.ServiceFilterFactory.expectsSequence;</span></td>
+</tr>
+        
+
+<tr id="l20">
+<td align="right" class="lineCount NoHilight">20</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-20" class="srcLine"><span class="keyword">import</span> <span class="keyword">static</span> org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;</span></td>
+</tr>
+        
+
+<tr id="l21">
+<td align="right" class="lineCount NoHilight">21</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-21" class="srcLine"><span class="keyword">import</span> <span class="keyword">static</span> org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceType;</span></td>
+</tr>
+        
+
+<tr id="l22">
+<td align="right" class="lineCount NoHilight">22</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-22" class="srcLine"><span class="keyword">import</span> <span class="keyword">static</span> org.ops4j.peaberry.internal.ServiceProxyFactory.getServiceProxy;</span></td>
+</tr>
+        
+
+<tr id="l23">
+<td align="right" class="lineCount NoHilight">23</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-23" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l24">
+<td align="right" class="lineCount NoHilight">24</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-24" class="srcLine"><span class="keyword">import</span> java.lang.reflect.Type;</span></td>
+</tr>
+        
+
+<tr id="l25">
+<td align="right" class="lineCount NoHilight">25</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-25" class="srcLine"><span class="keyword">import</span> java.util.ArrayList;</span></td>
+</tr>
+        
+
+<tr id="l26">
+<td align="right" class="lineCount NoHilight">26</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-26" class="srcLine"><span class="keyword">import</span> java.util.Collection;</span></td>
+</tr>
+        
+
+<tr id="l27">
+<td align="right" class="lineCount NoHilight">27</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-27" class="srcLine"><span class="keyword">import</span> java.util.Iterator;</span></td>
+</tr>
+        
+
+<tr id="l28">
+<td align="right" class="lineCount NoHilight">28</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-28" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l29">
+<td align="right" class="lineCount NoHilight">29</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-29" class="srcLine"><span class="keyword">import</span> org.ops4j.<a href="../../peaberry/pkg-summary.html">peaberry</a>.<a href="../../../../org/ops4j/peaberry/Service.html#Service">Service</a>;</span></td>
+</tr>
+        
+
+<tr id="l30">
+<td align="right" class="lineCount NoHilight">30</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-30" class="srcLine"><span class="keyword">import</span> org.ops4j.<a href="../../peaberry/pkg-summary.html">peaberry</a>.<a href="../../../../org/ops4j/peaberry/ServiceRegistry.html#ServiceRegistry">ServiceRegistry</a>;</span></td>
+</tr>
+        
+
+<tr id="l31">
+<td align="right" class="lineCount NoHilight">31</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-31" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l32">
+<td align="right" class="lineCount NoHilight">32</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-32" class="srcLine"><span class="keyword">import</span> com.google.inject.Provider;</span></td>
+</tr>
+        
+
+<tr id="l33">
+<td align="right" class="lineCount NoHilight">33</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-33" class="srcLine"><span class="keyword">import</span> com.google.inject.TypeLiteral;</span></td>
+</tr>
+        
+
+<tr id="l34">
+<td align="right" class="lineCount NoHilight">34</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-34" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l35">
+<td align="right" class="lineCount NoHilight">35</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-35" class="srcLine"><span class="comment">/**</span></span></td>
+</tr>
+        
+
+<tr id="l36">
+<td align="right" class="lineCount NoHilight">36</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-36" class="srcLine"><span class="comment"> * Provide dynamic {</span><span class="javadoc">@link</span><span class="comment"> Service} {</span><span class="javadoc">@link</span><span class="comment"> Provider}s.</span></span></td>
+</tr>
+        
+
+<tr id="l37">
+<td align="right" class="lineCount NoHilight">37</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-37" class="srcLine"><span class="comment"> * </span></span></td>
+</tr>
+        
+
+<tr id="l38">
+<td align="right" class="lineCount NoHilight">38</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-38" class="srcLine"><span class="comment"> * </span><span class="javadoc">@author</span><span class="comment"> stuart.mcculloch</span><span class="comment">@jayway.net (Stuart McCulloch)</span></span></td>
+</tr>
+        
+
+<tr id="l39">
+<td align="right" class="lineCount NoHilight">39</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-39" class="srcLine"><span class="comment"> */</span></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="40" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-40' onclick="toggleInlineStats(this, 'inlinestats-40');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-40" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-40'), 'inlinestats-40');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="60.6% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="39.4% Covered" class="barPositive barPositive" style="width: 39.4%"></div>
+    </div>
+</div></td><td>39.4%</td>
+           <td class="inlineStat">Uncovered Elements: 20 (33)</td>
+           <td class="inlineStat">Complexity: 12</td>
+           <td class="inlineStat">Complexity Density: 0.67</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l40">
+<td align="right" class="lineCount NoHilight">40</td>
+<td align="right" class="coverageCount NoHilight "
+            >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell" id="id-40" >
+    <span class="spacer"></span><span id="src-40" class="srcLineClassStart"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> ServiceProviderFactory {</span></td>
+</tr>
+        
+
+<tr id="l41">
+<td align="right" class="lineCount NoHilight">41</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-41" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l42">
+<td align="right" class="lineCount NoHilight">42</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-42" class="srcLine">  <span class="comment">// utility: instances not allowed</span></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="43" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-43' onclick="toggleInlineStats(this, 'inlinestats-43');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-43" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-43'), 'inlinestats-43');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="Empty" class="barEmpty" style="min-width: 40px;"></div>
+</div></td><td> - </td>
+           <td class="inlineStat">Uncovered Elements: 0 (0)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: -</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l43">
+<td align="right" class="lineCount Bad">43</td>
+<td align="right" class="coverageCount Bad missedByTest"
+            >
+    <a title="Line 43, Col 3: method not entered." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-43" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 43,43);" id="img-43" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-43" class="srcLineHilight"><a class="nolink" title="Line 43, Col 3: method not entered.">  <span class="keyword">private</span> ServiceProviderFactory() {}</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-43'), 43,43);" id="e43" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l44">
+<td align="right" class="lineCount NoHilight">44</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-44" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l45">
+<td align="right" class="lineCount NoHilight">45</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-45" class="srcLine">  <span class="comment">/**</span></span></td>
+</tr>
+        
+
+<tr id="l46">
+<td align="right" class="lineCount NoHilight">46</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-46" class="srcLine"><span class="comment">   * {</span><span class="javadoc">@link</span><span class="comment"> Service} {</span><span class="javadoc">@link</span><span class="comment"> Provider} that provides a dynamic proxy.</span></span></td>
+</tr>
+        
+
+<tr id="l47">
+<td align="right" class="lineCount NoHilight">47</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-47" class="srcLine"><span class="comment">   */</span></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="48" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-48' onclick="toggleInlineStats(this, 'inlinestats-48');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-48" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-48'), 'inlinestats-48');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="Empty" class="barEmpty" style="min-width: 40px;"></div>
+</div></td><td> - </td>
+           <td class="inlineStat">Uncovered Elements: 0 (0)</td>
+           <td class="inlineStat">Complexity: 0</td>
+           <td class="inlineStat">Complexity Density: -</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l48">
+<td align="right" class="lineCount NoHilight">48</td>
+<td align="right" class="coverageCount NoHilight "
+            >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell" id="id-48" >
+    <span class="spacer"></span><span id="src-48" class="srcLineClassStart">  <span class="keyword">private</span> <span class="keyword">interface</span> ServiceProvider&lt;T&gt;</span></td>
+</tr>
+        
+
+<tr id="l49">
+<td align="right" class="lineCount NoHilight">49</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-49" class="srcLine">      <span class="keyword">extends</span> Provider&lt;T&gt; {</span></td>
+</tr>
+        
+
+<tr id="l50">
+<td align="right" class="lineCount NoHilight">50</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-50" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l51">
+<td align="right" class="lineCount NoHilight">51</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-51" class="srcLine">    T resolve(); <span class="comment">// resolves to the actual service, not the proxy</span></span></td>
+</tr>
+        
+
+<tr id="l52">
+<td align="right" class="lineCount NoHilight">52</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-52" class="srcLine">  }</span></td>
+</tr>
+        
+
+<tr id="l53">
+<td align="right" class="lineCount NoHilight">53</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-53" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l54">
+<td align="right" class="lineCount NoHilight">54</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-54" class="srcLine">  <span class="comment">/**</span></span></td>
+</tr>
+        
+
+<tr id="l55">
+<td align="right" class="lineCount NoHilight">55</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-55" class="srcLine"><span class="comment">   * Resolves to the current service instance, not the dynamic proxy.</span></span></td>
+</tr>
+        
+
+<tr id="l56">
+<td align="right" class="lineCount NoHilight">56</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-56" class="srcLine"><span class="comment">   * </span></span></td>
+</tr>
+        
+
+<tr id="l57">
+<td align="right" class="lineCount NoHilight">57</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-57" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> provider service provider</span></span></td>
+</tr>
+        
+
+<tr id="l58">
+<td align="right" class="lineCount NoHilight">58</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-58" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> current service instance</span></span></td>
+</tr>
+        
+
+<tr id="l59">
+<td align="right" class="lineCount NoHilight">59</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-59" class="srcLine"><span class="comment">   */</span></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="60" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-60' onclick="toggleInlineStats(this, 'inlinestats-60');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-60" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-60'), 'inlinestats-60');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="40% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="60% Covered" class="barPositive barPositive" style="width: 60%"></div>
+    </div>
+</div></td><td>60%</td>
+           <td class="inlineStat">Uncovered Elements: 2 (5)</td>
+           <td class="inlineStat">Complexity: 2</td>
+           <td class="inlineStat">Complexity Density: 0.67</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l60">
+<td align="right" class="lineCount Good">60</td>
+<td align="right" class="coverageCount Good missedByTest"
+            >
+    <a title="Line 60, Col 3: method entered 1 time." class="nolink">&nbsp;1</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-60" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 60,66);" id="img-60" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-60" class="srcLine"><a class="nolink" title="Line 60, Col 3: method entered 1 time.">  <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; T resolve(Provider&lt;T&gt; provider) {</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-60'), 60,66);" id="e60" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l61">
+<td align="right" class="lineCount Bad">61</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 61, Col 8: true branch executed 0 times, false branch executed 1 time." class="nolink">&nbsp;1</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-61" class="srcLineHilight"><a class="nolink" title="Line 61, Col 8: true branch executed 0 times, false branch executed 1 time.">    <span class="keyword">if</span> (provider <span class="keyword">instanceof</span> ServiceProvider) {</a></span></td>
+</tr>
+        
+
+<tr id="l62">
+<td align="right" class="lineCount Bad">62</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 62, Col 7: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-62" class="srcLineHilight"><a class="nolink" title="Line 62, Col 7: statement not executed.">      <span class="keyword">return</span> ((ServiceProvider&lt;T&gt;) provider).resolve();</a></span></td>
+</tr>
+        
+
+<tr id="l63">
+<td align="right" class="lineCount NoHilight">63</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-63" class="srcLine">    } <span class="keyword">else</span> {</span></td>
+</tr>
+        
+
+<tr id="l64">
+<td align="right" class="lineCount Good">64</td>
+<td align="right" class="coverageCount Good missedByTest"
+         >
+    <a title="Line 64, Col 7: statement executed 1 time." class="nolink">&nbsp;1</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-64" class="srcLine"><a class="nolink" title="Line 64, Col 7: statement executed 1 time.">      <span class="keyword">return</span> provider.get();</a></span></td>
+</tr>
+        
+
+<tr id="l65">
+<td align="right" class="lineCount NoHilight">65</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-65" class="srcLine">    }</span></td>
+</tr>
+        
+
+<tr id="l66">
+<td align="right" class="lineCount NoHilight">66</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-66" class="srcLine">  }</span></td>
+</tr>
+        
+
+<tr id="l67">
+<td align="right" class="lineCount NoHilight">67</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-67" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l68">
+<td align="right" class="lineCount NoHilight">68</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-68" class="srcLine">  <span class="comment">/**</span></span></td>
+</tr>
+        
+
+<tr id="l69">
+<td align="right" class="lineCount NoHilight">69</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-69" class="srcLine"><span class="comment">   * Create a new {</span><span class="javadoc">@link</span><span class="comment"> Service} {</span><span class="javadoc">@link</span><span class="comment"> Provider} for the target member.</span></span></td>
+</tr>
+        
+
+<tr id="l70">
+<td align="right" class="lineCount NoHilight">70</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-70" class="srcLine"><span class="comment">   * </span></span></td>
+</tr>
+        
+
+<tr id="l71">
+<td align="right" class="lineCount NoHilight">71</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-71" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> registry dynamic service registry</span></span></td>
+</tr>
+        
+
+<tr id="l72">
+<td align="right" class="lineCount NoHilight">72</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-72" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> target literal type of the member being injected</span></span></td>
+</tr>
+        
+
+<tr id="l73">
+<td align="right" class="lineCount NoHilight">73</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-73" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> spec annotation details for the injected service</span></span></td>
+</tr>
+        
+
+<tr id="l74">
+<td align="right" class="lineCount NoHilight">74</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-74" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> {</span><span class="javadoc">@link</span><span class="comment"> Service} {</span><span class="javadoc">@link</span><span class="comment"> Provider} for the target</span></span></td>
+</tr>
+        
+
+<tr id="l75">
+<td align="right" class="lineCount NoHilight">75</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-75" class="srcLine"><span class="comment">   */</span></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="76" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-76' onclick="toggleInlineStats(this, 'inlinestats-76');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-76" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-76'), 'inlinestats-76');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="25% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="75% Covered" class="barPositive barPositive" style="width: 75%"></div>
+    </div>
+</div></td><td>75%</td>
+           <td class="inlineStat">Uncovered Elements: 2 (8)</td>
+           <td class="inlineStat">Complexity: 2</td>
+           <td class="inlineStat">Complexity Density: 0.33</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l76">
+<td align="right" class="lineCount Good">76</td>
+<td align="right" class="coverageCount Good missedByTest"
+            >
+    <a title="Line 76, Col 3: method entered 2 times." class="nolink">&nbsp;2</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-76" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 76,122);" id="img-76" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-76" class="srcLine"><a class="nolink" title="Line 76, Col 3: method entered 2 times.">  @SuppressWarnings(<span class="string">"unchecked"</span>)</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-76'), 76,122);" id="e76" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l77">
+<td align="right" class="lineCount NoHilight">77</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-77" class="srcLine">  <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; Provider&lt;T&gt; getServiceProvider(</span></td>
+</tr>
+        
+
+<tr id="l78">
+<td align="right" class="lineCount NoHilight">78</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-78" class="srcLine">      <span class="keyword">final</span> ServiceRegistry registry, TypeLiteral&lt;T&gt; target, Service spec) {</span></td>
+</tr>
+        
+
+<tr id="l79">
+<td align="right" class="lineCount NoHilight">79</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-79" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l80">
+<td align="right" class="lineCount NoHilight">80</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-80" class="srcLine">    <span class="comment">// runtime type of the injectee</span></span></td>
+</tr>
+        
+
+<tr id="l81">
+<td align="right" class="lineCount Good">81</td>
+<td align="right" class="coverageCount Good missedByTest"
+         >
+    <a title="Line 81, Col 5: statement executed 2 times." class="nolink">&nbsp;2</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-81" class="srcLine"><a class="nolink" title="Line 81, Col 5: statement executed 2 times.">    Type targetType = target.getType();</a></span></td>
+</tr>
+        
+
+<tr id="l82">
+<td align="right" class="lineCount NoHilight">82</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-82" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l83">
+<td align="right" class="lineCount NoHilight">83</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-83" class="srcLine">    <span class="comment">// determine service proxy configuration</span></span></td>
+</tr>
+        
+
+<tr id="l84">
+<td align="right" class="lineCount Good">84</td>
+<td align="right" class="coverageCount Good missedByTest"
+         >
+    <a title="Line 84, Col 5: statement executed 2 times." class="nolink">&nbsp;2</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-84" class="srcLine"><a class="nolink" title="Line 84, Col 5: statement executed 2 times.">    <span class="keyword">final</span> Class&lt;?&gt; serviceType = getServiceType(targetType);</a></span></td>
+</tr>
+        
+
+<tr id="l85">
+<td align="right" class="lineCount Good">85</td>
+<td align="right" class="coverageCount Good missedByTest"
+         >
+    <a title="Line 85, Col 5: statement executed 2 times." class="nolink">&nbsp;2</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-85" class="srcLine"><a class="nolink" title="Line 85, Col 5: statement executed 2 times.">    <span class="keyword">final</span> String filter = getServiceFilter(spec, serviceType);</a></span></td>
+</tr>
+        
+
+<tr id="l86">
+<td align="right" class="lineCount NoHilight">86</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-86" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l87">
+<td align="right" class="lineCount Bad">87</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 87, Col 8: true branch executed 0 times, false branch executed 2 times." class="nolink">&nbsp;2</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-87" class="srcLineHilight"><a class="nolink" title="Line 87, Col 8: true branch executed 0 times, false branch executed 2 times.">    <span class="keyword">if</span> (expectsSequence(targetType)) {</a></span></td>
+</tr>
+        
+
+<tr id="l88">
+<td align="right" class="lineCount NoHilight">88</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-88" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l89">
+<td align="right" class="lineCount NoHilight">89</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-89" class="srcLine">      <span class="comment">// multiple service (..N)</span></span></td>
+</tr>
+        
+
+<tr id="l90">
+<td align="right" class="lineCount Bad">90</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 90, Col 7: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-90" class="srcLineHilight"><a class="nolink" title="Line 90, Col 7: statement not executed.">      <span class="keyword">return</span> <span class="keyword">new</span> ServiceProvider() {</a></span></td>
+</tr>
+        
+
+<tr id="l91">
+<td align="right" class="lineCount NoHilight">91</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-91" class="srcLine"></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="92" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-92' onclick="toggleInlineStats(this, 'inlinestats-92');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-92" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-92'), 'inlinestats-92');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="0% Covered" class="barPositive barPositive" style="width: 0%"></div>
+    </div>
+</div></td><td>0%</td>
+           <td class="inlineStat">Uncovered Elements: 1 (1)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 1</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l92">
+<td align="right" class="lineCount Bad">92</td>
+<td align="right" class="coverageCount Bad missedByTest"
+            >
+    <a title="Line 92, Col 9: method not entered." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-92" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 92,99);" id="img-92" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-92" class="srcLineHilight"><a class="nolink" title="Line 92, Col 9: method not entered.">        <span class="keyword">public</span> Iterable get() {</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-92'), 92,99);" id="e92" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l93">
+<td align="right" class="lineCount Bad">93</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 93, Col 11: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-93" class="srcLineHilight"><a class="nolink" title="Line 93, Col 11: statement not executed.">          <span class="keyword">return</span> <span class="keyword">new</span> Iterable() {</a></span></td>
+</tr>
+        
+
+<tr id="l94">
+<td align="right" class="lineCount NoHilight">94</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-94" class="srcLine">            <span class="comment">// fresh lookup each time</span></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="95" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-95' onclick="toggleInlineStats(this, 'inlinestats-95');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-95" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-95'), 'inlinestats-95');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="0% Covered" class="barPositive barPositive" style="width: 0%"></div>
+    </div>
+</div></td><td>0%</td>
+           <td class="inlineStat">Uncovered Elements: 1 (1)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 1</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l95">
+<td align="right" class="lineCount Bad">95</td>
+<td align="right" class="coverageCount Bad missedByTest"
+            >
+    <a title="Line 95, Col 13: method not entered." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-95" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 95,97);" id="img-95" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-95" class="srcLineHilight"><a class="nolink" title="Line 95, Col 13: method not entered.">            <span class="keyword">public</span> Iterator iterator() {</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-95'), 95,97);" id="e95" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l96">
+<td align="right" class="lineCount Bad">96</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 96, Col 15: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-96" class="srcLineHilight"><a class="nolink" title="Line 96, Col 15: statement not executed.">              <span class="keyword">return</span> registry.lookup(serviceType, filter);</a></span></td>
+</tr>
+        
+
+<tr id="l97">
+<td align="right" class="lineCount NoHilight">97</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-97" class="srcLine">            }</span></td>
+</tr>
+        
+
+<tr id="l98">
+<td align="right" class="lineCount NoHilight">98</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-98" class="srcLine">          };</span></td>
+</tr>
+        
+
+<tr id="l99">
+<td align="right" class="lineCount NoHilight">99</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-99" class="srcLine">        }</span></td>
+</tr>
+        
+
+<tr id="l100">
+<td align="right" class="lineCount NoHilight">100</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-100" class="srcLine"></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="101" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-101' onclick="toggleInlineStats(this, 'inlinestats-101');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-101" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-101'), 'inlinestats-101');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="0% Covered" class="barPositive barPositive" style="width: 0%"></div>
+    </div>
+</div></td><td>0%</td>
+           <td class="inlineStat">Uncovered Elements: 1 (1)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 1</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l101">
+<td align="right" class="lineCount Bad">101</td>
+<td align="right" class="coverageCount Bad missedByTest"
+            >
+    <a title="Line 101, Col 9: method not entered." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-101" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 101,104);" id="img-101" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-101" class="srcLineHilight"><a class="nolink" title="Line 101, Col 9: method not entered.">        <span class="keyword">public</span> Iterable resolve() {</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-101'), 101,104);" id="e101" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l102">
+<td align="right" class="lineCount NoHilight">102</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-102" class="srcLine">          <span class="comment">// provide static collection of currently available services</span></span></td>
+</tr>
+        
+
+<tr id="l103">
+<td align="right" class="lineCount Bad">103</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 103, Col 11: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-103" class="srcLineHilight"><a class="nolink" title="Line 103, Col 11: statement not executed.">          <span class="keyword">return</span> asCollection(registry.lookup(serviceType, filter));</a></span></td>
+</tr>
+        
+
+<tr id="l104">
+<td align="right" class="lineCount NoHilight">104</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-104" class="srcLine">        }</span></td>
+</tr>
+        
+
+<tr id="l105">
+<td align="right" class="lineCount NoHilight">105</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-105" class="srcLine">      };</span></td>
+</tr>
+        
+
+<tr id="l106">
+<td align="right" class="lineCount NoHilight">106</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-106" class="srcLine">    } <span class="keyword">else</span> {</span></td>
+</tr>
+        
+
+<tr id="l107">
+<td align="right" class="lineCount NoHilight">107</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-107" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l108">
+<td align="right" class="lineCount NoHilight">108</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-108" class="srcLine">      <span class="comment">// unary service (..1)</span></span></td>
+</tr>
+        
+
+<tr id="l109">
+<td align="right" class="lineCount Good">109</td>
+<td align="right" class="coverageCount Good missedByTest"
+         >
+    <a title="Line 109, Col 7: statement executed 2 times." class="nolink">&nbsp;2</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-109" class="srcLine"><a class="nolink" title="Line 109, Col 7: statement executed 2 times.">      <span class="keyword">return</span> <span class="keyword">new</span> ServiceProvider() {</a></span></td>
+</tr>
+        
+
+<tr id="l110">
+<td align="right" class="lineCount NoHilight">110</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-110" class="srcLine"></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="111" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-111' onclick="toggleInlineStats(this, 'inlinestats-111');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-111" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-111'), 'inlinestats-111');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="100% Covered" class="barPositive barPositive" style="width: 100%"></div>
+    </div>
+</div></td><td>100%</td>
+           <td class="inlineStat">Uncovered Elements: 0 (1)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 1</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l111">
+<td align="right" class="lineCount Good">111</td>
+<td align="right" class="coverageCount Good missedByTest"
+            >
+    <a title="Line 111, Col 9: method entered 3 times." class="nolink">&nbsp;3</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-111" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 111,114);" id="img-111" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-111" class="srcLine"><a class="nolink" title="Line 111, Col 9: method entered 3 times.">        <span class="keyword">public</span> Object get() {</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-111'), 111,114);" id="e111" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l112">
+<td align="right" class="lineCount NoHilight">112</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-112" class="srcLine">          <span class="comment">// provide dynamic dispatch to first service instance</span></span></td>
+</tr>
+        
+
+<tr id="l113">
+<td align="right" class="lineCount Good">113</td>
+<td align="right" class="coverageCount Good missedByTest"
+         >
+    <a title="Line 113, Col 11: statement executed 3 times." class="nolink">&nbsp;3</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-113" class="srcLine"><a class="nolink" title="Line 113, Col 11: statement executed 3 times.">          <span class="keyword">return</span> getServiceProxy(registry, serviceType, filter);</a></span></td>
+</tr>
+        
+
+<tr id="l114">
+<td align="right" class="lineCount NoHilight">114</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-114" class="srcLine">        }</span></td>
+</tr>
+        
+
+<tr id="l115">
+<td align="right" class="lineCount NoHilight">115</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-115" class="srcLine"></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="116" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-116' onclick="toggleInlineStats(this, 'inlinestats-116');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-116" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-116'), 'inlinestats-116');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="0% Covered" class="barPositive barPositive" style="width: 0%"></div>
+    </div>
+</div></td><td>0%</td>
+           <td class="inlineStat">Uncovered Elements: 1 (1)</td>
+           <td class="inlineStat">Complexity: 1</td>
+           <td class="inlineStat">Complexity Density: 1</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l116">
+<td align="right" class="lineCount Bad">116</td>
+<td align="right" class="coverageCount Bad missedByTest"
+            >
+    <a title="Line 116, Col 9: method not entered." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-116" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 116,119);" id="img-116" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-116" class="srcLineHilight"><a class="nolink" title="Line 116, Col 9: method not entered.">        <span class="keyword">public</span> Object resolve() {</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-116'), 116,119);" id="e116" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l117">
+<td align="right" class="lineCount NoHilight">117</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-117" class="srcLine">          <span class="comment">// provide static instance of the current service</span></span></td>
+</tr>
+        
+
+<tr id="l118">
+<td align="right" class="lineCount Bad">118</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 118, Col 11: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-118" class="srcLineHilight"><a class="nolink" title="Line 118, Col 11: statement not executed.">          <span class="keyword">return</span> registry.lookup(serviceType, filter).next();</a></span></td>
+</tr>
+        
+
+<tr id="l119">
+<td align="right" class="lineCount NoHilight">119</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-119" class="srcLine">        }</span></td>
+</tr>
+        
+
+<tr id="l120">
+<td align="right" class="lineCount NoHilight">120</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-120" class="srcLine">      };</span></td>
+</tr>
+        
+
+<tr id="l121">
+<td align="right" class="lineCount NoHilight">121</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-121" class="srcLine">    }</span></td>
+</tr>
+        
+
+<tr id="l122">
+<td align="right" class="lineCount NoHilight">122</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-122" class="srcLine">  }</span></td>
+</tr>
+        
+
+<tr id="l123">
+<td align="right" class="lineCount NoHilight">123</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-123" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l124">
+<td align="right" class="lineCount NoHilight">124</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-124" class="srcLine">  <span class="comment">/**</span></span></td>
+</tr>
+        
+
+<tr id="l125">
+<td align="right" class="lineCount NoHilight">125</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-125" class="srcLine"><span class="comment">   * Utility method to wrap an iterator up as a standard collection.</span></span></td>
+</tr>
+        
+
+<tr id="l126">
+<td align="right" class="lineCount NoHilight">126</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-126" class="srcLine"><span class="comment">   */</span></span></td>
+</tr>
+           <tr class="inlineStatsRow" align="right" valign="middle" >
+        <td colspan="1"  class="coverageCount">
+            <a name="127" class="nolink">&nbsp;</a>
+        </td>
+        
+       <td class="coverageCount imgbg more" id='inlineStatsToggle-127' onclick="toggleInlineStats(this, 'inlinestats-127');">
+       </td>
+       <td align="center" valign="middle">
+           <table id="inlinestats-127" style="display:none;" class="inlineStats" width="100%" cellspacing="1px" cellpadding="1px">
+           <tr onclick="toggleInlineStats(document.getElementById('inlineStatsToggle-127'), 'inlinestats-127');return true;">
+           <td><div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="100% Not Covered"  style="min-width: 40px;"  class="barNegative barNegative">
+       <div title="0% Covered" class="barPositive barPositive" style="width: 0%"></div>
+    </div>
+</div></td><td>0%</td>
+           <td class="inlineStat">Uncovered Elements: 6 (6)</td>
+           <td class="inlineStat">Complexity: 2</td>
+           <td class="inlineStat">Complexity Density: 0.5</td>
+                       </tr>
+           </table>
+       </td>
+    </tr>
+  
+
+<tr id="l127">
+<td align="right" class="lineCount Bad">127</td>
+<td align="right" class="coverageCount Bad missedByTest"
+            >
+    <a title="Line 127, Col 3: method not entered." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  methodStart  srcCell" id="id-127" >
+    <img title="Method Statistics" onclick="toggleSrcRowVis(this, 127,133);" id="img-127" src="../../../../img/collapse.gif"  alt="toggle" class="icon"/><span id="src-127" class="srcLineHilight"><a class="nolink" title="Line 127, Col 3: method not entered.">  <span class="keyword">private</span> <span class="keyword">static</span> &lt;T&gt; Collection&lt;T&gt; asCollection(Iterator&lt;T&gt; iterator) {</a><span class="foldControl" onclick="toggleSrcRowVis(document.getElementById('img-127'), 127,133);" id="e127" style="display:none;border:none;">...</span></span></td>
+</tr>
+        
+
+<tr id="l128">
+<td align="right" class="lineCount Bad">128</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 128, Col 5: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-128" class="srcLineHilight"><a class="nolink" title="Line 128, Col 5: statement not executed.">    Collection&lt;T&gt; collection = <span class="keyword">new</span> ArrayList&lt;T&gt;();</a></span></td>
+</tr>
+        
+
+<tr id="l129">
+<td align="right" class="lineCount Bad">129</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 129, Col 5: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-129" class="srcLineHilight"><a class="nolink" title="Line 129, Col 5: statement not executed.">    <span class="keyword">for</span> (; iterator.hasNext();) {</a></span></td>
+</tr>
+        
+
+<tr id="l130">
+<td align="right" class="lineCount Bad">130</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 130, Col 7: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-130" class="srcLineHilight"><a class="nolink" title="Line 130, Col 7: statement not executed.">      collection.add(iterator.next());</a></span></td>
+</tr>
+        
+
+<tr id="l131">
+<td align="right" class="lineCount NoHilight">131</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-131" class="srcLine">    }</span></td>
+</tr>
+        
+
+<tr id="l132">
+<td align="right" class="lineCount Bad">132</td>
+<td align="right" class="coverageCount Bad missedByTest"
+         >
+    <a title="Line 132, Col 5: statement not executed." class="nolink">&nbsp;0</a>
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-132" class="srcLineHilight"><a class="nolink" title="Line 132, Col 5: statement not executed.">    <span class="keyword">return</span> collection;</a></span></td>
+</tr>
+        
+
+<tr id="l133">
+<td align="right" class="lineCount NoHilight">133</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-133" class="srcLine">  }</span></td>
+</tr>
+        
+
+<tr id="l134">
+<td align="right" class="lineCount NoHilight">134</td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-134" class="srcLine">}</span></td>
+</tr>
+</tbody></table>
+<table width="100%"><tr><td class="hbreak" colspan="6">&nbsp;</td></tr>
+<tr><td class="footer" colspan="6">
+<table>
+<tr>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.1.0</a><i><br/>Thu Apr 3 2008 02:09:33 SGT</i>.</td>
+<td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Evaluation License registered to Peaberry Open Source Project (ASLv2). You have 28 day(s) before your license expires.</td>
+</tr>
+</table>
+</td>
+</tr></table>
+<script type="text/javascript">
+    var ol_bgclass = "overBG";
+    var ol_fgclass = "overFG";
+    var ol_captionfontclass= "overCaption";
+    var ol_closefontclass = "closeFont";
+    var ol_closeclick = 1;
+    var ol_close = 'X';
+    var ol_wrap = 1;
+    var rootRelPath = '../../../../';
+    var testsPerFile = -1;
+</script>
+<script src="ServiceProviderFactory.js" type="text/javascript"></script>
+<script src="../../../../help.js" type="text/javascript"></script>
+<script src="../../../../clover.js" type="text/javascript"></script>
+<script src="../../../../sorttable.js" type="text/javascript"></script>
+<script src="../../../../overlib.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
+<script src="../../../../overlib_shadow.js" type="text/javascript" ></script>
+<script src="../../../../utils.js" type="text/javascript"></script>
+</body>
+
+</html>

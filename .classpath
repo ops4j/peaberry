@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="lib/build/osgi.cmpn.jar"/>
 	<classpathentry kind="lib" path="lib/build/osgi.core.jar"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lib/test/junit4.jar"/>
+	<classpathentry kind="lib" path="lib/test/testng.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

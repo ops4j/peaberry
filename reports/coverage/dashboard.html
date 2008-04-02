@@ -1,0 +1,635 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>peaberry</title>    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="SHORTCUT ICON" href="img/clover.ico" />
+
+    <style type="text/css" media="screen">
+        @import url('style.css');
+        @import url('roundedcorners.css');
+            </style>
+    
+    <script src="sorttable.js" type="text/javascript"></script>
+    <script src="overlib.js" type="text/javascript"></script>
+    <script src="overlib_shadow.js" type="text/javascript" ></script>
+    <script src="clover.js" type="text/javascript"></script>
+    <script src="cloud.js" type="text/javascript"></script>
+    <script src="help.js" type="text/javascript"></script>
+  </head>
+<body onload="setBrowserTitle('peaberry: Dashboard')">
+<table cellspacing="0" cellpadding="2" class="barGraph">
+
+  <tr>
+    <td colspan="2">
+
+    <div class="roundedLarge">
+      <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+      <div class="roundedContent">
+    <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Thu Apr 3 2008 02:09:33 SGT</div>
+
+        
+    
+            <div class="navBar"><span class="navBarCurrent">Overview</span>&nbsp;&nbsp;&nbsp;Package&nbsp;&nbsp;&nbsp;File</div>
+    
+    <div class="navBarLink">
+        &nbsp;&nbsp;&nbsp;
+        <a href="index.html" target="_top">FRAMES</a>&nbsp;&nbsp;
+        <a href="dashboard.html" target="_top">NO FRAMES</a>&nbsp;&nbsp;
+        <label onclick="toggleHelp(this);" class="nonHelpItem">SHOW HELP</label>&nbsp;&nbsp;
+    </div>
+
+    </td>
+        
+        
+
+     <td  id="td-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: ;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Thu Apr 3 2008 02:09:20 SGT:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
+           <td >      166
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
+           <td >      1,434
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
+           <td >      98
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      2.63
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'project';">Branches:</label></td>
+           <td >      56
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'project';">NCLOC:</label></td>
+           <td >      627
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'project';">Cmp density:</label></td>
+           <td >      0.59
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      3.15
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'project';">Methods:</label></td>
+           <td >      63
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td  class="totalText"><label onkeyup="return help_files + 'project';">Files:</label></td>
+           <td >      18
+  </td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'project';">Avg method cmp:</label></td>
+           <td >      1.56
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                     <td  class="totalText"><label onkeyup="return help_classes_per_package;">Classes/Pkg:</label></td>
+           <td >      6.67
+  </td>
+          
+         </tr>
+         <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'project';">Classes:</label></td>
+            <td >      20
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td  class="totalText"><label onkeyup="return help_packages + 'project';">Packages:</label></td>
+            <td >      3
+  </td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+         <tr class="totalText">
+             <td colspan="1">
+                <a class="sortable totalText" onclick="toggleStats('td-header-stats', 'td-filtered-header-stats');"><label onkeyup="return help_filter_stats;">Filtered</label></a>
+             </td>
+             <td colspan="5">&nbsp;</td>
+
+         </tr>
+      </table>
+     </td>
+
+    
+    
+
+     <td  id="td-filtered-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: none;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Thu Apr 3 2008 02:09:20 SGT:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
+           <td >      166
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
+           <td >      1,434
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
+           <td >      98
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      2.63
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'project';">Branches:</label></td>
+           <td >      56
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'project';">NCLOC:</label></td>
+           <td >      627
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'project';">Cmp density:</label></td>
+           <td >      0.59
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      3.15
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'project';">Methods:</label></td>
+           <td >      63
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td  class="totalText"><label onkeyup="return help_files + 'project';">Files:</label></td>
+           <td >      18
+  </td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'project';">Avg method cmp:</label></td>
+           <td >      1.56
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                     <td  class="totalText"><label onkeyup="return help_classes_per_package;">Classes/Pkg:</label></td>
+           <td >      6.67
+  </td>
+          
+         </tr>
+         <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'project';">Classes:</label></td>
+            <td >      20
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td  class="totalText"><label onkeyup="return help_packages + 'project';">Packages:</label></td>
+            <td >      3
+  </td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+         <tr class="totalText">
+             <td colspan="1">
+                <a class="sortable totalText" onclick="toggleStats('td-filtered-header-stats', 'td-header-stats');"><label onkeyup="return help_filter_stats;">Unfiltered</label></a>
+             </td>
+             <td colspan="5">&nbsp;</td>
+
+         </tr>
+      </table>
+     </td>
+</tr>
+
+    </table>
+  </div>
+  <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+  </div>
+
+   </td>
+  </tr>
+
+
+<tr><td class="hbreak" colspan="2" ></td></tr>
+
+        
+<tr valign="top">
+
+    <td class="hbreak" colspan="1">
+    <div class="left">
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                
+            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_coverage;">Coverage</label></a><span> 20 classes, 182 / 285 elements</span>
+            <table><tr><td>63.9%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.6385965</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="36.1% Not Covered"  style="min-width: 200px;"  class="barNegative $customBarNegative">
+       <div title="63.9% Covered" class="barPositive $customBarPositive" style="width: 63.9%"></div>
+    </div>
+</div></td></tr></table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_packages;">Most Complex Packages</label></a>
+        
+        <table>
+                    
+                        <tr><td>1. </td><td>61.5%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.6150628</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="38.5% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="61.5% Covered" class="barPositive $customBarPositive" style="width: 61.5%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/internal/pkg-summary.html">org.ops4j.peaberry.internal</a> (82)</td></tr>
+                    
+                        <tr><td>2. </td><td>47.6%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.47619048</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="52.4% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="47.6% Covered" class="barPositive $customBarPositive" style="width: 47.6%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/pkg-summary.html">org.ops4j.peaberry</a> (9)</td></tr>
+                    
+                        <tr><td>3. </td><td>100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="100% Covered" class="barPositive $customBarPositive" style="width: 100%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/test/pkg-summary.html">org.ops4j.peaberry.test</a> (7)</td></tr>
+                </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+                    <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_classes;">Most Complex Classes</label></a>
+        <table>
+                    
+                        <tr><td>1. </td><td>63%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.6296296</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="37% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="63% Covered" class="barPositive $customBarPositive" style="width: 63%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/internal/ServiceFilterFactory.html#ServiceFilterFactory"  title="org.ops4j.peaberry.internal.ServiceFilterFactory">ServiceFilterFactory</a>
+                (16)
+            </td></tr>
+                    
+                        <tr><td>2. </td><td>85.7%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.85714287</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="14.3% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="85.7% Covered" class="barPositive $customBarPositive" style="width: 85.7%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/internal/ServiceMatcher.html#ServiceMatcher"  title="org.ops4j.peaberry.internal.ServiceMatcher">ServiceMatcher</a>
+                (14)
+            </td></tr>
+                    
+                        <tr><td>3. </td><td>39.4%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.3939394</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="60.6% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="39.4% Covered" class="barPositive $customBarPositive" style="width: 39.4%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/internal/ServiceProviderFactory.html#ServiceProviderFactory"  title="org.ops4j.peaberry.internal.ServiceProviderFactory">ServiceProviderFactory</a>
+                (12)
+            </td></tr>
+                    
+                        <tr><td>4. </td><td>47.6%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.47619048</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="52.4% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="47.6% Covered" class="barPositive $customBarPositive" style="width: 47.6%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/Peaberry.html#Peaberry"  title="org.ops4j.peaberry.Peaberry">Peaberry</a>
+                (9)
+            </td></tr>
+                    
+                        <tr><td>5. </td><td>73.9%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.73913044</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="26.1% Not Covered"  style="min-width: 40px;"  class="barNegative $customBarNegative">
+       <div title="73.9% Covered" class="barPositive $customBarPositive" style="width: 73.9%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/internal/NonDelegatingClassLoaderHook.html#NonDelegatingClassLoaderHook"  title="org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook">NonDelegatingClassLoaderHook</a>
+                (9)
+            </td></tr>
+                </table>
+        
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+    </div>
+    <div class="right">
+
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <a class="titleText" href="test-pkg-summary.html">
+                <label onkeyup="return help_dash_test_results;">Test Results</label></a>
+                <span> 1 / 1 tests 0.01 secs</span>
+            <table>
+                                <tr>
+                    <td>100%</td>
+                    <td style="width:200px">
+                                                
+
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+
+    <div title="0% Errors" style="min-width: 40px;" class="testBarError">
+        <div title="0% of Tests Failed" class="testBarFail" style="width: 100%">
+            <div title="100% of Tests Passed" class="testBarPass" style="width: 100%"></div>
+        </div>
+    </div>
+</div>                    </td>
+                </tr>
+                            </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <a href="proj-risks.html" class="titleText"><label onkeyup="return help_dash_risks;">Top 16 Project Risks</label></a>
+            <div>
+            
+                                           <a class="tag" href="org/ops4j/peaberry/internal/StaticScope.html#StaticScope"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.5 , Coverage - 0% ">StaticScope</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/ServiceFilterFactory.html#ServiceFilterFactory"
+               style="font-size: 21px;color:#4d05b1"
+               title="Average Method Complexity - 2.667 , Coverage - 63% ">ServiceFilterFactory</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/ServiceBindingFactory.html#ServiceBindingFactory"
+               style="font-size: 25px;color:#4d05b1"
+               title="Average Method Complexity - 3.5 , Coverage - 63.3% ">ServiceBindingFactory</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/ServiceProviderFactory.html#ServiceProviderFactory"
+               style="font-size: 15px;color:#80057e"
+               title="Average Method Complexity - 1.333 , Coverage - 39.4% ">ServiceProviderFactory</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/OSGiServiceRegistry.html#OSGiServiceRegistry"
+               style="font-size: 15px;color:#4d05b1"
+               title="Average Method Complexity - 1.4 , Coverage - 62.5% ">OSGiServiceRegistry</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/NonDelegatingClassLoaderHook.html#NonDelegatingClassLoaderHook"
+               style="font-size: 19px;color:#3405ca"
+               title="Average Method Complexity - 2.25 , Coverage - 73.9% ">NonDelegatingClassLoaderHook</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/Peaberry.html#Peaberry"
+               style="font-size: 13px;color:#660598"
+               title="Average Method Complexity - 1 , Coverage - 47.6% ">Peaberry</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/LeasedScope.html#LeasedScope"
+               style="font-size: 15px;color:#3405ca"
+               title="Average Method Complexity - 1.333 , Coverage - 72% ">LeasedScope</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/ServiceMatcher.html#ServiceMatcher"
+               style="font-size: 15px;color:#1b05e3"
+               title="Average Method Complexity - 1.4 , Coverage - 85.7% ">ServiceMatcher</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/ServiceProxyFactory.html#ServiceProxyFactory"
+               style="font-size: 13px;color:#1b05e3"
+               title="Average Method Complexity - 1 , Coverage - 85.7% ">ServiceProxyFactory</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/Service.html#Service"
+               style="font-size: 9px;color:#0205fc"
+               title="Average Method Complexity - 0 , Coverage -  -  ">Service</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/Mandatory.html#Mandatory"
+               style="font-size: 9px;color:#0205fc"
+               title="Average Method Complexity - 0 , Coverage -  -  ">Mandatory</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/Static.html#Static"
+               style="font-size: 9px;color:#0205fc"
+               title="Average Method Complexity - 0 , Coverage -  -  ">Static</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/test/ServiceScopingTest.html#ServiceScopingTest.LeasedService"
+               style="font-size: 9px;color:#0205fc"
+               title="Average Method Complexity - 0 , Coverage -  -  ">ServiceScopingTest.LeasedService</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/test/ServiceScopingTest.html#ServiceScopingTest.StaticService"
+               style="font-size: 9px;color:#0205fc"
+               title="Average Method Complexity - 0 , Coverage -  -  ">ServiceScopingTest.StaticService</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/Leased.html#Leased"
+               style="font-size: 9px;color:#0205fc"
+               title="Average Method Complexity - 0 , Coverage -  -  ">Leased</a>
+                                      </div>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+    
+                        <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <a class="titleText" href="test-pkg-summary.html"><label onkeyup="return help_dash_untested_methods;">Least Tested Methods</label></a>
+            <table>
+                
+                <tr>
+                    <td align="right">1.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="StaticScope.get()&nbsp;:&nbsp;T" href="org/ops4j/peaberry/internal/StaticScope.html?line=44#src-44">StaticScope.get()&nbsp;:&nbsp;T</a> (3)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">2.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ServiceProviderFactory.asCollection(Iterator&lt;T&gt;)&nbsp;:&nbsp;Collection&lt;T&gt;" href="org/ops4j/peaberry/internal/ServiceProviderFactory.html?line=127#src-127">ServiceProviderFactory.asCollection(Iterator&lt;T&gt;)&nbsp;:&nbsp;Collection&lt;T&gt;</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">3.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceRegistry.hasNext()&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/internal/OSGiServiceRegistry.html?line=64#src-64">OSGiServiceRegistry.hasNext()&nbsp;:&nbsp;boolean</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">4.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceRegistry.remove()&nbsp;:&nbsp;void" href="org/ops4j/peaberry/internal/OSGiServiceRegistry.html?line=76#src-76">OSGiServiceRegistry.remove()&nbsp;:&nbsp;void</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">5.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ServiceMatcher.toString()&nbsp;:&nbsp;String" href="org/ops4j/peaberry/internal/ServiceMatcher.html?line=54#src-54">ServiceMatcher.toString()&nbsp;:&nbsp;String</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">6.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ServiceMatcher.isMandatoryService(AnnotatedElement)&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/internal/ServiceMatcher.html?line=111#src-111">ServiceMatcher.isMandatoryService(AnnotatedElement)&nbsp;:&nbsp;boolean</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">7.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="NonDelegatingClassLoaderHook.toString()&nbsp;:&nbsp;String" href="org/ops4j/peaberry/internal/NonDelegatingClassLoaderHook.html?line=86#src-86">NonDelegatingClassLoaderHook.toString()&nbsp;:&nbsp;String</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">8.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="StaticScope.scope(Key&lt;T&gt;,Provider&lt;T&gt;)&nbsp;:&nbsp;Provider&lt;T&gt;" href="org/ops4j/peaberry/internal/StaticScope.html?line=36#src-36">StaticScope.scope(Key&lt;T&gt;,Provider&lt;T&gt;)&nbsp;:&nbsp;Provider&lt;T&gt;</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">9.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="StaticScope.toString()&nbsp;:&nbsp;String" href="org/ops4j/peaberry/internal/StaticScope.html?line=55#src-55">StaticScope.toString()&nbsp;:&nbsp;String</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">10.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="StaticScope.toString()&nbsp;:&nbsp;String" href="org/ops4j/peaberry/internal/StaticScope.html?line=62#src-62">StaticScope.toString()&nbsp;:&nbsp;String</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">11.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="LeasedScope.toString()&nbsp;:&nbsp;String" href="org/ops4j/peaberry/internal/LeasedScope.html?line=87#src-87">LeasedScope.toString()&nbsp;:&nbsp;String</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">12.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="LeasedScope.toString()&nbsp;:&nbsp;String" href="org/ops4j/peaberry/internal/LeasedScope.html?line=95#src-95">LeasedScope.toString()&nbsp;:&nbsp;String</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">13.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ServiceProviderFactory.get()&nbsp;:&nbsp;Iterable" href="org/ops4j/peaberry/internal/ServiceProviderFactory.html?line=92#src-92">ServiceProviderFactory.get()&nbsp;:&nbsp;Iterable</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">14.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ServiceProviderFactory.iterator()&nbsp;:&nbsp;Iterator" href="org/ops4j/peaberry/internal/ServiceProviderFactory.html?line=95#src-95">ServiceProviderFactory.iterator()&nbsp;:&nbsp;Iterator</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">15.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ServiceProviderFactory.resolve()&nbsp;:&nbsp;Iterable" href="org/ops4j/peaberry/internal/ServiceProviderFactory.html?line=101#src-101">ServiceProviderFactory.resolve()&nbsp;:&nbsp;Iterable</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">16.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ServiceProviderFactory.resolve()&nbsp;:&nbsp;Object" href="org/ops4j/peaberry/internal/ServiceProviderFactory.html?line=116#src-116">ServiceProviderFactory.resolve()&nbsp;:&nbsp;Object</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">17.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="Peaberry.service(String,Class&lt;?&gt;)&nbsp;:&nbsp;Service" href="org/ops4j/peaberry/Peaberry.html?line=64#src-64">Peaberry.service(String,Class&lt;?&gt;)&nbsp;:&nbsp;Service</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">18.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="Peaberry.interfaces()&nbsp;:&nbsp;Class&lt;?&gt;[]" href="org/ops4j/peaberry/Peaberry.html?line=67#src-67">Peaberry.interfaces()&nbsp;:&nbsp;Class&lt;?&gt;[]</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">19.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="Peaberry.value()&nbsp;:&nbsp;String" href="org/ops4j/peaberry/Peaberry.html?line=71#src-71">Peaberry.value()&nbsp;:&nbsp;String</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">20.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="Peaberry.annotationType()&nbsp;:&nbsp;Class&lt;?&nbsp;extends&nbsp;Annotation&gt;" href="org/ops4j/peaberry/Peaberry.html?line=75#src-75">Peaberry.annotationType()&nbsp;:&nbsp;Class&lt;?&nbsp;extends&nbsp;Annotation&gt;</a> (1)
+                    </td>
+                </tr>
+                            </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>    
+            
+    </div>
+        
+    </td>
+</tr>
+
+<tr><td class="hbreak" colspan="2">&nbsp;</td></tr>
+<tr><td class="hbreak" colspan="2">&nbsp;</td></tr>
+<tr><td class="footer" colspan="2">
+<table>
+<tr>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.1.0</a><i><br/>Thu Apr 3 2008 02:09:33 SGT</i>.</td>
+<td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Evaluation License registered to Peaberry Open Source Project (ASLv2). You have 28 day(s) before your license expires.</td>
+</tr>
+</table>
+</td>
+</tr></table>
+</body>
+</html>

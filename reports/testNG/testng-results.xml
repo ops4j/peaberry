@@ -1,0 +1,14 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="peaberry">
+    <groups>
+    </groups>
+    <test name="OSGi">
+      <class name="org.ops4j.peaberry.test.ServiceScopingTest">
+        <test-method status="PASS" signature="testMe()" name="testMe" duration-ms="15" started-at="2008-04-03T02:09:33Z" finished-at="2008-04-03T02:09:33Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>
