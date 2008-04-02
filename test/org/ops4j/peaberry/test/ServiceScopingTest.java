@@ -45,6 +45,7 @@ public class ServiceScopingTest
 
   @Service
   @Static
+  @BindingAnnotation
   @Retention(RUNTIME)
   public @interface StaticService {}
 
