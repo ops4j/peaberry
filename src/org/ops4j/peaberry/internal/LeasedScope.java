@@ -61,8 +61,9 @@ public final class LeasedScope
 
     return new Provider<T>() {
 
+      private T instance = null;
+
       private volatile Long expireTimeInMillis = 0L;
-      private volatile T instance = null;
 
       /**
        * Only re-resolve when the lease expires.
@@ -72,10 +73,11 @@ public final class LeasedScope
           synchronized (this) {
             if (expireTimeInMillis < System.currentTimeMillis()) {
 
+              // must be before volatile is updated
+              instance = resolve(unscoped);
+
               expireTimeInMillis =
                   System.currentTimeMillis() + leaseTimeInSeconds * 1000;
-
-              instance = resolve(unscoped);
             }
           }
         }
