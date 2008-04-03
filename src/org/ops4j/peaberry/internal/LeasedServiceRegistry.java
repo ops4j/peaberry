@@ -32,23 +32,23 @@ public final class LeasedServiceRegistry
     implements ServiceRegistry {
 
   private final ServiceRegistry registry;
-  private final int leaseInMillis;
+  private final long leaseMillis;
 
   private Collection<Object> services;
-
-  private volatile Long expireTimeInMillis = 0L;
+  private volatile Long expireMillis = 0L;
 
   public LeasedServiceRegistry(ServiceRegistry registry, Leased leased) {
     this.registry = registry;
-    this.leaseInMillis = leased.seconds() * 1000;
+    this.leaseMillis = leased.seconds() * 1000;
   }
 
   @SuppressWarnings("unchecked")
   public Iterator lookup(Class type, String filter) {
+    final long now = System.currentTimeMillis();
 
-    if (expireTimeInMillis < System.currentTimeMillis()) {
+    if (expireMillis < now) {
       synchronized (this) {
-        if (expireTimeInMillis < System.currentTimeMillis()) {
+        if (expireMillis < now) {
 
           Collection freshServices = new ArrayList();
           for (Iterator i = registry.lookup(type, filter); i.hasNext();) {
@@ -61,7 +61,7 @@ public final class LeasedServiceRegistry
             services = freshServices;
           }
 
-          expireTimeInMillis = System.currentTimeMillis() + leaseInMillis;
+          expireMillis = leaseMillis < 0 ? Long.MAX_VALUE : (now + leaseMillis);
         }
       }
     }

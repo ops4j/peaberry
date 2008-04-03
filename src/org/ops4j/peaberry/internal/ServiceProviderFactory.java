@@ -56,8 +56,12 @@ public final class ServiceProviderFactory {
 
     Type targetType = target.getType();
 
-    final ServiceRegistry leasedRegistry =
-        getLeasedServiceRegistry(registry, leased);
+    final ServiceRegistry leasedRegistry;
+    if (leased != null && leased.seconds() != 0) {
+      leasedRegistry = new LeasedServiceRegistry(registry, leased);
+    } else {
+      leasedRegistry = registry;
+    }
 
     final Class<?> serviceType = getServiceType(targetType);
     final String filter = getServiceFilter(spec, serviceType);
@@ -74,18 +78,6 @@ public final class ServiceProviderFactory {
           return getUnaryServiceProxy(leasedRegistry, serviceType, filter);
         }
       };
-    }
-  }
-
-  private static ServiceRegistry getLeasedServiceRegistry(
-      ServiceRegistry registry, Leased leased) {
-
-    if (null == leased || leased.seconds() == 0) {
-      return registry;
-    } else if (leased.seconds() > 0) {
-      return new LeasedServiceRegistry(registry, leased);
-    } else {
-      return new StaticServiceRegistry(registry);
     }
   }
 }

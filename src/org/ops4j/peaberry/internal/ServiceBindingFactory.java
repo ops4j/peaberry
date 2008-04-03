@@ -63,7 +63,7 @@ public final class ServiceBindingFactory
       element = (AnnotatedElement) member;
     } else if (member instanceof Constructor) {
       element = ((Constructor<?>) member).getParameterTypes()[i];
-    } else if (member instanceof Method) {
+    } else /* must be 'setter' method */{
       element = ((Method) member).getParameterTypes()[i];
     }
 

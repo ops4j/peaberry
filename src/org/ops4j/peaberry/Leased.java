@@ -39,5 +39,7 @@ import com.google.inject.ScopeAnnotation;
 @Retention(RUNTIME)
 @ScopeAnnotation
 public @interface Leased {
-  int seconds() default 0;
+  int seconds();
+
+  static final int FOREVER = -1;
 }

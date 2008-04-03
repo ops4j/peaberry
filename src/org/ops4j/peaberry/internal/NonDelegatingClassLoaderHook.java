@@ -82,9 +82,4 @@ public final class NonDelegatingClassLoaderHook
 
     return classLoaderCache.get(typeLoader);
   }
-
-  @Override
-  public String toString() {
-    return "NonDelegatingClassLoaderHook[" + classLoaderCache + ']';
-  }
 }
