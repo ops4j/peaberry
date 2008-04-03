@@ -82,7 +82,14 @@ public class AbstractServiceTest {
     int i = 0;
     for (TestService service : services) {
       assert names.length > i : "More services than expected";
-      checkService(service, names[i++]);
+      try {
+        checkService(service, names[i]);
+      } catch (Exception e) {
+        if (!names[i].equals("!")) {
+          throw new RuntimeException(e);
+        }
+      }
+      i++;
     }
     assert names.length == i : "Less services than expected";
   }

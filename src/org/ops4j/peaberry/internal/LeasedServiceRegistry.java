@@ -50,9 +50,15 @@ public final class LeasedServiceRegistry
       synchronized (this) {
         if (expireTimeInMillis < System.currentTimeMillis()) {
 
-          services = new ArrayList();
+          Collection freshServices = new ArrayList();
           for (Iterator i = registry.lookup(type, filter); i.hasNext();) {
-            services.add(i.next());
+            freshServices.add(i.next());
+          }
+
+          if (freshServices.size() == 0) {
+            return freshServices.iterator();
+          } else {
+            services = freshServices;
           }
 
           expireTimeInMillis = System.currentTimeMillis() + leaseInMillis;

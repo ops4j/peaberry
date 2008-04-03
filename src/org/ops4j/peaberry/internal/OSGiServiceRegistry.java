@@ -53,26 +53,28 @@ public final class OSGiServiceRegistry
 
       services = bundleContext.getServiceReferences(type.getName(), filter);
 
-      Arrays.sort(services, new Comparator<ServiceReference>() {
-        public int compare(ServiceReference lhs, ServiceReference rhs) {
+      if (services != null) {
+        Arrays.sort(services, new Comparator<ServiceReference>() {
+          public int compare(ServiceReference lhs, ServiceReference rhs) {
 
-          Long lhsId = (Long) lhs.getProperty(Constants.SERVICE_ID);
-          Long rhsId = (Long) rhs.getProperty(Constants.SERVICE_ID);
+            Long lhsId = (Long) lhs.getProperty(Constants.SERVICE_ID);
+            Long rhsId = (Long) rhs.getProperty(Constants.SERVICE_ID);
 
-          if (lhsId == rhsId) {
-            return 0;
+            if (lhsId == rhsId) {
+              return 0;
+            }
+
+            Long lhsRanking = (Long) lhs.getProperty(Constants.SERVICE_RANKING);
+            Long rhsRanking = (Long) rhs.getProperty(Constants.SERVICE_RANKING);
+
+            if (lhsRanking == rhsRanking) {
+              return rhsId.compareTo(lhsId);
+            } else {
+              return lhsRanking.compareTo(rhsRanking);
+            }
           }
-
-          Long lhsRanking = (Long) lhs.getProperty(Constants.SERVICE_RANKING);
-          Long rhsRanking = (Long) rhs.getProperty(Constants.SERVICE_RANKING);
-
-          if (lhsRanking == rhsRanking) {
-            return rhsId.compareTo(lhsId);
-          } else {
-            return lhsRanking.compareTo(rhsRanking);
-          }
-        }
-      });
+        });
+      }
 
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -87,7 +89,7 @@ public final class OSGiServiceRegistry
       int i = 0;
 
       public boolean hasNext() {
-        return i < services.length;
+        return services != null && i < services.length;
       }
 
       public T next() {

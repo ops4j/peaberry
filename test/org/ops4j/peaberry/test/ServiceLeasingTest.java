@@ -28,12 +28,12 @@ import com.google.inject.name.Named;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceScopingTest
+public class ServiceLeasingTest
     extends AbstractServiceTest
     implements Module {
 
   public void configure(Binder binder) {
-    binder.bind(ServiceScopingTest.class);
+    binder.bind(ServiceLeasingTest.class);
   }
 
   @Inject
@@ -102,14 +102,34 @@ public class ServiceScopingTest
     missingService(leasedService);
     sleep(2200);
     checkService(leasedService, "A");
+    disableService("A");
+    missingService(leasedService);
   }
 
   @Test
-  public void leasedMultiService() {}
+  public void leasedMultiService() {
+    disableAllServices();
+    checkServices(leasedServices);
+    enableService("A");
+    checkServices(leasedServices, "A");
+    enableService("B");
+    checkServices(leasedServices, "A");
+    sleep(2200);
+    checkServices(leasedServices, "B", "A");
+    disableService("B");
+    checkServices(leasedServices, "!", "A");
+    sleep(2200);
+    checkServices(leasedServices, "A");
+    disableService("A");
+    checkServices(leasedServices, "!");
+    sleep(2200);
+    checkServices(leasedServices);
+  }
 
   @Test
   public void staticUnaryService() {
     disableAllServices();
+    missingService(staticService);
     enableService("A");
     checkService(staticService, "A");
     enableService("B");
@@ -123,5 +143,18 @@ public class ServiceScopingTest
   }
 
   @Test
-  public void staticMultiService() {}
+  public void staticMultiService() {
+    disableAllServices();
+    checkServices(staticServices);
+    enableService("A");
+    checkServices(staticServices, "A");
+    enableService("B");
+    checkServices(staticServices, "A");
+    sleep(2200);
+    checkServices(staticServices, "A");
+    disableService("A");
+    checkServices(staticServices, "!");
+    sleep(2200);
+    checkServices(staticServices, "!");
+  }
 }

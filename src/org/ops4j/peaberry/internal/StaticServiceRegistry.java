@@ -45,10 +45,16 @@ public final class StaticServiceRegistry
       synchronized (this) {
         if (services == null) {
 
-          services = new ArrayList();
+          Collection freshServices = new ArrayList();
           for (Iterator i = registry.lookup(type, filter); i.hasNext();) {
-            services.add(i.next());
+            freshServices.add(i.next());
           }
+
+          if (freshServices.size() == 0) {
+            return freshServices.iterator();
+          }
+
+          services = freshServices;
         }
       }
     }

@@ -36,7 +36,7 @@ public class Activator
       public void run() {
         try {
           Module peaberry = Peaberry.getBundleModule(bundleContext);
-          PeaberryRunner.run(peaberry, new ServiceScopingTest());
+          PeaberryRunner.run(peaberry, new ServiceLeasingTest());
         } finally {
           try {
             bundleContext.getBundle(0).stop();
