@@ -5,6 +5,12 @@
 
   <target name="with.clover">
     <clover-setup initstring="${build}/instrument/coverage.db">
+      <files>
+        <exclude name="**/OSGiServiceRegistry.java"/>
+      </files>
+      <methodContext name="privateCtor" regexp="private \w+\(\).*"/>
+      <statementContext name="ldr1" regexp="^if \(resolve\) \{.*"/>
+      <statementContext name="ldr2" regexp="^if \(null == typeLoader .*"/>
       <testsources dir="${test}">
         <testclass package=".*test.*"/>
       </testsources>
@@ -12,7 +18,11 @@
   </target>
 
   <target name="clover.report">
-    <clover-html-report outdir="${doc}/coverage" title="peaberry"/>
+    <clover-report>
+      <current outfile="${doc}/coverage" title="peaberry">
+        <format type="html" filter="privateCtor,ldr1,ldr2"/>
+      </current>
+    </clover-report>
   </target>
 
 </project>
