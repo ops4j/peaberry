@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="OSGi" failures="0" tests="1" time="0.047" errors="0">
+<testsuite name="OSGi" failures="0" tests="5" time="19.919" errors="0">
   <properties/>
-  <testcase name="testMe" time="0.028" classname="org.ops4j.peaberry.test.ServiceScopingTest"/>
+  <testcase name="staticUnaryService" time="4.416" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="leasedUnaryService" time="4.409" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="leasedMultiService" time="6.641" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="staticMultiService" time="4.411" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="unleasedUnaryService" time="0.026" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
 </testsuite>

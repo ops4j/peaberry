@@ -5,8 +5,16 @@
     <groups>
     </groups>
     <test name="OSGi">
-      <class name="org.ops4j.peaberry.test.ServiceScopingTest">
-        <test-method status="PASS" signature="testMe()" name="testMe" duration-ms="28" started-at="2008-04-03T02:23:59Z" finished-at="2008-04-03T02:23:59Z">
+      <class name="org.ops4j.peaberry.test.ServiceLeasingTest">
+        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4411" started-at="2008-04-03T16:59:17Z" finished-at="2008-04-03T16:59:21Z">
+        </test-method>
+        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4416" started-at="2008-04-03T16:59:01Z" finished-at="2008-04-03T16:59:06Z">
+        </test-method>
+        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="4409" started-at="2008-04-03T16:59:06Z" finished-at="2008-04-03T16:59:10Z">
+        </test-method>
+        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="26" started-at="2008-04-03T16:59:21Z" finished-at="2008-04-03T16:59:21Z">
+        </test-method>
+        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6641" started-at="2008-04-03T16:59:10Z" finished-at="2008-04-03T16:59:17Z">
         </test-method>
       </class>
     </test>

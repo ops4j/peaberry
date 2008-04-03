@@ -2,20 +2,44 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 81, "sl" : 31, "el" : 81, "name" : "OSGiServiceRegistry",
+    {"id" : 182, "sl" : 33, "el" : 108, "name" : "OSGiServiceRegistry",
     "methods" : [
-              {"sl" : 39, "el" : 41, "sc" : 3},  {"sl" : 46, "el" : 80, "sc" : 3},  {"sl" : 64, "el" : 66, "sc" : 7},  {"sl" : 68, "el" : 74, "sc" : 7},  {"sl" : 76, "el" : 78, "sc" : 7}  ]}
+              {"sl" : 41, "el" : 43, "sc" : 3},  {"sl" : 48, "el" : 107, "sc" : 3},  {"sl" : 58, "el" : 75, "sc" : 11},  {"sl" : 91, "el" : 93, "sc" : 7},  {"sl" : 95, "el" : 101, "sc" : 7},  {"sl" : 103, "el" : 105, "sc" : 7}  ]}
     
  ]
 };
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_0" : {
-					  "name" : "testMe",
+		"test_2" : {
+					  "name" : "staticUnaryService",
 					  "pass" : true ,
-					  "methods" : [{"sl": 46 },{"sl": 68 },],
-					  "statements" : [{"sl": 48 },{"sl": 50 },{"sl": 51 },{"sl": 61 },{"sl": 69 },{"sl": 70 },]
+					  "methods" : [{"sl": 48 },{"sl": 91 },{"sl": 95 },],
+					  "statements" : [{"sl": 50 },{"sl": 52 },{"sl": 54 },{"sl": 56 },{"sl": 57 },{"sl": 88 },{"sl": 92 },{"sl": 96 },{"sl": 97 },]
+					  },
+		"test_4" : {
+					  "name" : "unleasedUnaryService",
+					  "pass" : true ,
+					  "methods" : [{"sl": 48 },{"sl": 58 },{"sl": 95 },],
+					  "statements" : [{"sl": 50 },{"sl": 52 },{"sl": 54 },{"sl": 56 },{"sl": 57 },{"sl": 60 },{"sl": 61 },{"sl": 63 },{"sl": 67 },{"sl": 68 },{"sl": 70 },{"sl": 71 },{"sl": 88 },{"sl": 96 },{"sl": 97 },{"sl": 99 },]
+					  },
+		"test_0" : {
+					  "name" : "leasedUnaryService",
+					  "pass" : true ,
+					  "methods" : [{"sl": 48 },{"sl": 58 },{"sl": 91 },{"sl": 95 },],
+					  "statements" : [{"sl": 50 },{"sl": 52 },{"sl": 54 },{"sl": 56 },{"sl": 57 },{"sl": 60 },{"sl": 61 },{"sl": 63 },{"sl": 67 },{"sl": 68 },{"sl": 70 },{"sl": 71 },{"sl": 88 },{"sl": 92 },{"sl": 96 },{"sl": 97 },]
+					  },
+		"test_1" : {
+					  "name" : "staticMultiService",
+					  "pass" : true ,
+					  "methods" : [{"sl": 48 },{"sl": 91 },{"sl": 95 },],
+					  "statements" : [{"sl": 50 },{"sl": 52 },{"sl": 54 },{"sl": 56 },{"sl": 57 },{"sl": 88 },{"sl": 92 },{"sl": 96 },{"sl": 97 },]
+					  },
+		"test_3" : {
+					  "name" : "leasedMultiService",
+					  "pass" : true ,
+					  "methods" : [{"sl": 48 },{"sl": 58 },{"sl": 91 },{"sl": 95 },],
+					  "statements" : [{"sl": 50 },{"sl": 52 },{"sl": 54 },{"sl": 56 },{"sl": 57 },{"sl": 60 },{"sl": 61 },{"sl": 63 },{"sl": 67 },{"sl": 68 },{"sl": 70 },{"sl": 71 },{"sl": 88 },{"sl": 92 },{"sl": 96 },{"sl": 97 },]
 					  }
  };
 
@@ -65,14 +89,32 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 0   ] ,
-  [  ] ,
-  [ 0   ] ,
-  [  ] ,
-  [ 0   ] ,
-  [ 0   ] ,
   [  ] ,
   [  ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [  ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [  ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [  ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [  ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [ 4 , 3 , 0   ] ,
+  [  ] ,
+  [ 4 , 3 , 0   ] ,
+  [ 4 , 3 , 0   ] ,
+  [  ] ,
+  [ 4 , 3 , 0   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [ 4 , 3 , 0   ] ,
+  [ 4 , 3 , 0   ] ,
+  [  ] ,
+  [ 4 , 3 , 0   ] ,
+  [ 4 , 3 , 0   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -80,18 +122,27 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 0   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
   [  ] ,
   [  ] ,
+  [  ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [  ] ,
+  [  ] ,
+  [ 2 , 1 , 3 , 0   ] ,
+  [ 2 , 1 , 3 , 0   ] ,
+  [  ] ,
+  [  ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [ 2 , 4 , 1 , 3 , 0   ] ,
+  [  ] ,
+  [ 4   ] ,
   [  ] ,
   [  ] ,
   [  ] ,

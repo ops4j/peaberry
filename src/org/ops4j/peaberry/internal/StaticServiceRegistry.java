@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.ServiceRegistry;
 
 /**
- * Provides a {@link Static} {@link ServiceRegistry}.
+ * Provides an infinitely {@link Leased} {@link ServiceRegistry}.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

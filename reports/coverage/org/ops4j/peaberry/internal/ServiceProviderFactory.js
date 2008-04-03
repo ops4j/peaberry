@@ -2,13 +2,9 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 97, "sl" : 40, "el" : 134, "name" : "ServiceProviderFactory",
+    {"id" : 0, "sl" : 39, "el" : 91, "name" : "ServiceProviderFactory",
     "methods" : [
-             {"sl" : 43, "el" : 43, "sc" : 3},  {"sl" : 60, "el" : 66, "sc" : 3},  {"sl" : 76, "el" : 122, "sc" : 3},  {"sl" : 92, "el" : 99, "sc" : 9},  {"sl" : 95, "el" : 97, "sc" : 13},  {"sl" : 101, "el" : 104, "sc" : 9},  {"sl" : 111, "el" : 114, "sc" : 9},  {"sl" : 116, "el" : 119, "sc" : 9},  {"sl" : 127, "el" : 133, "sc" : 3}  ]}
-    ,
-    {"id" : 98, "sl" : 48, "el" : 52, "name" : "ServiceProviderFactory.ServiceProvider",
-    "methods" : [
-              ]}
+              {"sl" : 42, "el" : 42, "sc" : 3},  {"sl" : 53, "el" : 78, "sc" : 3},  {"sl" : 67, "el" : 69, "sc" : 9},  {"sl" : 73, "el" : 75, "sc" : 9},  {"sl" : 80, "el" : 90, "sc" : 3}  ]}
     
  ]
 };
@@ -19,49 +15,6 @@ clover.testTargets = {
 
 // JSON: { lines : [{tests : [testid1, testid2, testid3, ...]}, ...]};
 clover.srcFileLines = [  [],   [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,

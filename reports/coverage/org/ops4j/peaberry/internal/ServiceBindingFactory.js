@@ -2,9 +2,9 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 130, "sl" : 45, "el" : 91, "name" : "ServiceBindingFactory",
+    {"id" : 216, "sl" : 41, "el" : 79, "name" : "ServiceBindingFactory",
     "methods" : [
-              {"sl" : 53, "el" : 55, "sc" : 3},  {"sl" : 60, "el" : 90, "sc" : 3}  ]}
+              {"sl" : 49, "el" : 51, "sc" : 3},  {"sl" : 56, "el" : 78, "sc" : 3}  ]}
     
  ]
 };
@@ -15,18 +15,6 @@ clover.testTargets = {
 
 // JSON: { lines : [{tests : [testid1, testid2, testid3, ...]}, ...]};
 clover.srcFileLines = [  [],   [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
