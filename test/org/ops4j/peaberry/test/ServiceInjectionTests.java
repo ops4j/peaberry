@@ -27,12 +27,12 @@ import com.google.inject.name.Named;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceInjectionTest
-    extends AbstractServiceTest
+public class ServiceInjectionTests
+    extends AbstractServiceTests
     implements Module {
 
   public void configure(Binder binder) {
-    binder.bind(ServiceInjectionTest.class);
+    binder.bind(ServiceInjectionTests.class);
   }
 
   @Inject
@@ -42,12 +42,12 @@ public class ServiceInjectionTest
 
   final TestService ctorService;
 
-  public ServiceInjectionTest() {
+  public ServiceInjectionTests() {
     ctorService = null;
   }
 
   @Inject
-  public ServiceInjectionTest(@Service
+  public ServiceInjectionTests(@Service
   @Named("ctor")
   TestService service) {
     ctorService = service;

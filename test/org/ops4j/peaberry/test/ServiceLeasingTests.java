@@ -28,12 +28,12 @@ import com.google.inject.name.Named;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceLeasingTest
-    extends AbstractServiceTest
+public class ServiceLeasingTests
+    extends AbstractServiceTests
     implements Module {
 
   public void configure(Binder binder) {
-    binder.bind(ServiceLeasingTest.class);
+    binder.bind(ServiceLeasingTests.class);
   }
 
   @Inject

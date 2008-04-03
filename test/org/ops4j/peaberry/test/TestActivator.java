@@ -37,9 +37,9 @@ public final class TestActivator
       public void run() {
         try {
           Module peaberry = getBundleModule(bundleContext);
-          PeaberryRunner.run(new ServiceInjectionTest(), peaberry);
-          PeaberryRunner.run(new ManualBindingTest(bundleContext));
-          PeaberryRunner.run(new ServiceLeasingTest(), peaberry);
+          PeaberryRunner.run(new ServiceInjectionTests(), peaberry);
+          PeaberryRunner.run(new ManualBindingTests(bundleContext));
+          PeaberryRunner.run(new ServiceLeasingTests(), peaberry);
         } finally {
           try {
             bundleContext.getBundle(0).stop();

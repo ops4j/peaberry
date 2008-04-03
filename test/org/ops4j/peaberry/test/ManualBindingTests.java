@@ -36,17 +36,17 @@ import com.google.inject.TypeLiteral;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ManualBindingTest
-    extends AbstractServiceTest
+public class ManualBindingTests
+    extends AbstractServiceTests
     implements Module {
 
   final BundleContext bundleContext;
 
-  public ManualBindingTest() {
+  public ManualBindingTests() {
     this.bundleContext = null;
   }
 
-  public ManualBindingTest(BundleContext bundleContext) {
+  public ManualBindingTests(BundleContext bundleContext) {
     this.bundleContext = bundleContext;
   }
 
