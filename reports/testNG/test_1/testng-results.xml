@@ -1,20 +1,12 @@
 <testng-results>
   <reporter-output>
   </reporter-output>
-  <suite name="ServiceLeasingTest">
+  <suite name="ServiceInjectionTests">
     <groups>
     </groups>
     <test name="peaberry">
-      <class name="org.ops4j.peaberry.test.ServiceLeasingTest">
-        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4465" started-at="2008-04-03T19:09:02Z" finished-at="2008-04-03T19:09:07Z">
-        </test-method>
-        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6655" started-at="2008-04-03T19:09:11Z" finished-at="2008-04-03T19:09:18Z">
-        </test-method>
-        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4438" started-at="2008-04-03T19:09:18Z" finished-at="2008-04-03T19:09:22Z">
-        </test-method>
-        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="49" started-at="2008-04-03T19:09:22Z" finished-at="2008-04-03T19:09:22Z">
-        </test-method>
-        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="4440" started-at="2008-04-03T19:09:07Z" finished-at="2008-04-03T19:09:11Z">
+      <class name="org.ops4j.peaberry.test.ServiceInjectionTests">
+        <test-method status="PASS" signature="checkInjection()" name="checkInjection" duration-ms="78" started-at="2008-04-04T02:51:41Z" finished-at="2008-04-04T02:51:41Z">
         </test-method>
       </class>
     </test>

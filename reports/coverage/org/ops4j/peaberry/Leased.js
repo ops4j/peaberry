@@ -2,7 +2,7 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 152, "sl" : 41, "el" : 43, "name" : "Leased",
+    {"id" : 210, "sl" : 41, "el" : 45, "name" : "Leased",
     "methods" : [
               ]}
     
@@ -15,6 +15,8 @@ clover.testTargets = {
 
 // JSON: { lines : [{tests : [testid1, testid2, testid3, ...]}, ...]};
 clover.srcFileLines = [  [],   [  ] ,
+  [  ] ,
+  [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
