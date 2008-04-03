@@ -13,6 +13,9 @@
         <propertyref name="director.jar"/>
         <propertyref name="testlib"/>
       </syspropertyset>
+      <assertions>
+        <enable/>
+      </assertions>
     </java>
   </target>
 

@@ -28,12 +28,12 @@
 
   <target name="compile">
     <mkdir dir="${build}/classes"/>
-    <javac debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
+    <javac source="1.5" target="1.5" debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
   </target>
 
   <target name="test.compile">
     <mkdir dir="${build}/test-classes"/>
-    <javac debug="on" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
+    <javac source="1.5" target="1.5" debug="on" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
   </target>
 
   <target name="clean">
