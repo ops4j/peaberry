@@ -29,6 +29,7 @@ import com.google.inject.ScopeAnnotation;
 /**
  * Denotes a {@link Service} that can be "leased" for a given amount of time.
  * That is, the same instance will always be returned during the lease period.
+ * Negative lease times are assumed to be infinite.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -38,5 +39,5 @@ import com.google.inject.ScopeAnnotation;
 @Retention(RUNTIME)
 @ScopeAnnotation
 public @interface Leased {
-  int seconds();
+  int seconds() default 0;
 }

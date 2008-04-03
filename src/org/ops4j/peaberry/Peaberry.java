@@ -18,22 +18,19 @@ package org.ops4j.peaberry;
 
 import static com.google.inject.matcher.Matchers.member;
 import static org.ops4j.peaberry.internal.ServiceMatcher.annotatedWithService;
+import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
 import java.lang.annotation.Annotation;
 
-import org.ops4j.peaberry.internal.LeasedScope;
 import org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
 import org.ops4j.peaberry.internal.ServiceBindingFactory;
-import org.ops4j.peaberry.internal.ServiceProviderFactory;
-import org.ops4j.peaberry.internal.StaticScope;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Binder;
 import com.google.inject.ClassLoaderHook;
 import com.google.inject.Module;
 import com.google.inject.Provider;
-import com.google.inject.Scope;
 import com.google.inject.TypeLiteral;
 import com.google.inject.internal.GuiceCodeGen;
 
@@ -43,13 +40,6 @@ import com.google.inject.internal.GuiceCodeGen;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class Peaberry {
-
-  private static final Scope STATIC_SERVICE_SCOPE = new StaticScope();
-  private static final Scope LEASED_SERVICE_SCOPE =
-      new LeasedScope(Integer.getInteger("peaberry.default.lease", 300));
-
-  private static final ClassLoaderHook OSGI_CLASSLOADER_HOOK =
-      new NonDelegatingClassLoaderHook();
 
   // instances not allowed
   private Peaberry() {}
@@ -79,18 +69,39 @@ public final class Peaberry {
   }
 
   /**
+   * Create a {@link Leased} setting on-the-fly.
+   * 
+   * @param seconds lease time in seconds
+   * @return {@link Leased} setting
+   */
+  public Leased leased(final int seconds) {
+    return new Leased() {
+
+      public int seconds() {
+        return seconds;
+      }
+
+      public Class<? extends Annotation> annotationType() {
+        return Leased.class;
+      }
+    };
+  }
+
+  /**
    * Creates a dynamic service provider for the given {@link ServiceRegistry}.
-   * The provider is configured to use the {@link Service} API and LDAP filter.
+   * The provider is configured with the {@link Service} specification and is
+   * optionally {@link Leased}.
    * 
    * @param registry dynamic service registry
    * @param target literal type of the target
-   * @param spec optional service specification
+   * @param spec custom service specification
+   * @param leased optionally leased
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      TypeLiteral<T> target, Service spec) {
+      TypeLiteral<T> target, Service spec, Leased leased) {
 
-    return ServiceProviderFactory.getServiceProvider(registry, target, spec);
+    return getServiceProvider(registry, target, spec, leased);
   }
 
   /**
@@ -105,6 +116,9 @@ public final class Peaberry {
     return new OSGiServiceRegistry(bundleContext);
   }
 
+  private static final ClassLoaderHook OSGI_CLASSLOADER_HOOK =
+      new NonDelegatingClassLoaderHook();
+
   /**
    * @param bundleContext current bundle context
    * @return OSGi service injection rules
@@ -115,9 +129,6 @@ public final class Peaberry {
       public void configure(Binder binder) {
 
         binder.bind(BundleContext.class).toInstance(bundleContext);
-
-        binder.bindScope(Static.class, STATIC_SERVICE_SCOPE);
-        binder.bindScope(Leased.class, LEASED_SERVICE_SCOPE);
 
         // auto-bind service dependencies and implementations
         binder.addBindingFactory(member(annotatedWithService()),

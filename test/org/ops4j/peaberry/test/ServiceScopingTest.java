@@ -16,59 +16,112 @@
 
 package org.ops4j.peaberry.test;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-
 import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
-import org.ops4j.peaberry.Static;
-import org.osgi.service.log.LogService;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
-import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Module;
+import com.google.inject.name.Named;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public class ServiceScopingTest
+    extends AbstractServiceTest
     implements Module {
-
-  @Service
-  @Leased(seconds = 10)
-  @BindingAnnotation
-  @Retention(RUNTIME)
-  public @interface LeasedService {}
-
-  @Service
-  @Static
-  @BindingAnnotation
-  @Retention(RUNTIME)
-  public @interface StaticService {}
-
-  @Inject
-  @Service
-  LogService m_logService;
-
-  @Inject
-  @LeasedService
-  LogService m_leasedLogService;
-
-  @Inject
-  @StaticService
-  LogService m_staticLogService;
 
   public void configure(Binder binder) {
     binder.bind(ServiceScopingTest.class);
   }
 
+  @Inject
+  @Leased
+  @Service
+  @Named("unleased")
+  TestService unleasedService;
+
+  @Inject
+  @Leased(seconds = 2)
+  @Service
+  @Named("leased")
+  TestService leasedService;
+
+  @Inject
+  @Leased(seconds = 2)
+  @Service
+  @Named("leased")
+  Iterable<TestService> leasedServices;
+
+  @Inject
+  @Leased(seconds = -1)
+  @Service
+  @Named("static")
+  TestService staticService;
+
+  @Inject
+  @Leased(seconds = -1)
+  @Service
+  @Named("static")
+  Iterable<TestService> staticServices;
+
   @Test
-  public void testMe() {
-    m_logService.log(LogService.LOG_INFO, "THIS");
-    m_leasedLogService.log(LogService.LOG_INFO, "IS A");
-    m_staticLogService.log(LogService.LOG_INFO, "TEST");
+  public void unleasedUnaryService() {
+    disableAllServices();
+    missingService(unleasedService);
+    enableService("A");
+    checkService(unleasedService, "A");
+    enableService("B");
+    checkService(unleasedService, "B");
+    disableService("B");
+    checkService(unleasedService, "A");
+    disableService("A");
+    missingService(unleasedService);
+    enableService("A");
+    checkService(unleasedService, "A");
+    enableService("B");
+    checkService(unleasedService, "B");
+    disableService("A");
+    checkService(unleasedService, "B");
+    disableService("B");
+    missingService(unleasedService);
   }
+
+  @Test
+  public void leasedUnaryService() {
+    disableAllServices();
+    missingService(leasedService);
+    enableService("A");
+    checkService(leasedService, "A");
+    enableService("B");
+    checkService(leasedService, "A");
+    sleep(2200);
+    checkService(leasedService, "B");
+    disableService("B");
+    missingService(leasedService);
+    sleep(2200);
+    checkService(leasedService, "A");
+  }
+
+  @Test
+  public void leasedMultiService() {}
+
+  @Test
+  public void staticUnaryService() {
+    disableAllServices();
+    enableService("A");
+    checkService(staticService, "A");
+    enableService("B");
+    checkService(staticService, "A");
+    sleep(2200);
+    checkService(staticService, "A");
+    disableService("A");
+    missingService(staticService);
+    sleep(2200);
+    missingService(staticService);
+  }
+
+  @Test
+  public void staticMultiService() {}
 }

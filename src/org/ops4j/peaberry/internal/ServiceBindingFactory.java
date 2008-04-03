@@ -16,9 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ServiceMatcher.getServiceSpec;
-import static org.ops4j.peaberry.internal.ServiceMatcher.isLeasedService;
-import static org.ops4j.peaberry.internal.ServiceMatcher.isStaticService;
+import static org.ops4j.peaberry.internal.ServiceMatcher.findMetaAnnotation;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
 import java.lang.reflect.AnnotatedElement;
@@ -29,12 +27,10 @@ import java.lang.reflect.Method;
 import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.Static;
 
 import com.google.inject.BindingFactory;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
-import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.spi.Dependency;
 
 /**
@@ -71,20 +67,12 @@ public final class ServiceBindingFactory
       element = ((Method) member).getParameterTypes()[i];
     }
 
-    // get service details from injectee
-    Service spec = getServiceSpec(element);
-
     TypeLiteral<T> target = dependency.getKey().getTypeLiteral();
 
-    ScopedBindingBuilder sbb =
-        lbb.toProvider(getServiceProvider(serviceRegistry, target, spec));
+    Service spec = findMetaAnnotation(element, Service.class);
+    Leased leased = findMetaAnnotation(element, Leased.class);
 
-    // apply service scoping
-    if (isStaticService(element)) {
-      sbb.in(Static.class);
-    } else if (isLeasedService(element)) {
-      sbb.in(Leased.class);
-    }
+    lbb.toProvider(getServiceProvider(serviceRegistry, target, spec, leased));
 
     return true;
   }

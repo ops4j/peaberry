@@ -19,13 +19,12 @@ package org.ops4j.peaberry.internal;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.expectsSequence;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceType;
-import static org.ops4j.peaberry.internal.ServiceProxyFactory.getServiceProxy;
+import static org.ops4j.peaberry.internal.ServiceProxyFactory.getMultiServiceProxy;
+import static org.ops4j.peaberry.internal.ServiceProxyFactory.getUnaryServiceProxy;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
+import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 
@@ -43,92 +42,50 @@ public final class ServiceProviderFactory {
   private ServiceProviderFactory() {}
 
   /**
-   * {@link Service} {@link Provider} that provides a dynamic proxy.
-   */
-  private interface ServiceProvider<T>
-      extends Provider<T> {
-
-    T resolve(); // resolves to the actual service, not the proxy
-  }
-
-  /**
-   * Resolves to the current service instance, not the dynamic proxy.
-   * 
-   * @param provider service provider
-   * @return current service instance
-   */
-  public static <T> T resolve(Provider<T> provider) {
-    if (provider instanceof ServiceProvider) {
-      return ((ServiceProvider<T>) provider).resolve();
-    } else {
-      return provider.get();
-    }
-  }
-
-  /**
    * Create a new {@link Service} {@link Provider} for the target member.
    * 
    * @param registry dynamic service registry
    * @param target literal type of the member being injected
-   * @param spec annotation details for the injected service
+   * @param spec custom service specification
+   * @param leased optionally leased
    * @return {@link Service} {@link Provider} for the target
    */
   @SuppressWarnings("unchecked")
-  public static <T> Provider<T> getServiceProvider(
-      final ServiceRegistry registry, TypeLiteral<T> target, Service spec) {
+  public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
+      TypeLiteral<T> target, Service spec, Leased leased) {
 
-    // runtime type of the injectee
     Type targetType = target.getType();
 
-    // determine service proxy configuration
+    final ServiceRegistry leasedRegistry =
+        getLeasedServiceRegistry(registry, leased);
+
     final Class<?> serviceType = getServiceType(targetType);
     final String filter = getServiceFilter(spec, serviceType);
 
     if (expectsSequence(targetType)) {
-
-      // multiple service (..N)
-      return new ServiceProvider() {
-
+      return new Provider() {
         public Iterable get() {
-          return new Iterable() {
-            // fresh lookup each time
-            public Iterator iterator() {
-              return registry.lookup(serviceType, filter);
-            }
-          };
-        }
-
-        public Iterable resolve() {
-          // provide static collection of currently available services
-          return asCollection(registry.lookup(serviceType, filter));
+          return getMultiServiceProxy(leasedRegistry, serviceType, filter);
         }
       };
     } else {
-
-      // unary service (..1)
-      return new ServiceProvider() {
-
+      return new Provider() {
         public Object get() {
-          // provide dynamic dispatch to first service instance
-          return getServiceProxy(registry, serviceType, filter);
-        }
-
-        public Object resolve() {
-          // provide static instance of the current service
-          return registry.lookup(serviceType, filter).next();
+          return getUnaryServiceProxy(leasedRegistry, serviceType, filter);
         }
       };
     }
   }
 
-  /**
-   * Utility method to wrap an iterator up as a standard collection.
-   */
-  private static <T> Collection<T> asCollection(Iterator<T> iterator) {
-    Collection<T> collection = new ArrayList<T>();
-    for (; iterator.hasNext();) {
-      collection.add(iterator.next());
+  private static ServiceRegistry getLeasedServiceRegistry(
+      ServiceRegistry registry, Leased leased) {
+
+    if (null == leased || leased.seconds() == 0) {
+      return registry;
+    } else if (leased.seconds() > 0) {
+      return new LeasedServiceRegistry(registry, leased);
+    } else {
+      return new StaticServiceRegistry(registry);
     }
-    return collection;
   }
 }

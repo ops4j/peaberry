@@ -44,11 +44,13 @@ public class PeaberryRunner
     }
 
     TestNG testNG = new TestNG();
+
     testNG.setDefaultTestName("OSGi");
     testNG.setDefaultSuiteName("peaberry");
     testNG.setOutputDirectory("reports/testNG");
     testNG.setObjectFactory(PeaberryRunner.class);
     testNG.setTestClasses(testClasses);
+
     testNG.run();
   }
 
