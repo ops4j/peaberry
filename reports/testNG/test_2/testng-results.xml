@@ -6,9 +6,9 @@
     </groups>
     <test name="peaberry">
       <class name="org.ops4j.peaberry.test.ManualBindingTest">
-        <test-method status="PASS" signature="testMultiService()" name="testMultiService" duration-ms="1104" started-at="2008-04-03T18:30:42Z" finished-at="2008-04-03T18:30:43Z">
+        <test-method status="PASS" signature="testUnaryService()" name="testUnaryService" duration-ms="6" started-at="2008-04-03T19:03:34Z" finished-at="2008-04-03T19:03:34Z">
         </test-method>
-        <test-method status="PASS" signature="testUnaryService()" name="testUnaryService" duration-ms="5" started-at="2008-04-03T18:30:43Z" finished-at="2008-04-03T18:30:43Z">
+        <test-method status="PASS" signature="testMultiService()" name="testMultiService" duration-ms="1107" started-at="2008-04-03T19:03:33Z" finished-at="2008-04-03T19:03:34Z">
         </test-method>
       </class>
     </test>

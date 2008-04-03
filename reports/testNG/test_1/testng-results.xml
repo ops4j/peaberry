@@ -6,15 +6,15 @@
     </groups>
     <test name="peaberry">
       <class name="org.ops4j.peaberry.test.ServiceLeasingTest">
-        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6607" started-at="2008-04-03T18:30:30Z" finished-at="2008-04-03T18:30:37Z">
+        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4410" started-at="2008-04-03T19:03:13Z" finished-at="2008-04-03T19:03:17Z">
         </test-method>
-        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="4432" started-at="2008-04-03T18:30:26Z" finished-at="2008-04-03T18:30:30Z">
+        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="25" started-at="2008-04-03T19:03:33Z" finished-at="2008-04-03T19:03:33Z">
         </test-method>
-        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="18" started-at="2008-04-03T18:30:41Z" finished-at="2008-04-03T18:30:41Z">
+        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="4415" started-at="2008-04-03T19:03:17Z" finished-at="2008-04-03T19:03:21Z">
         </test-method>
-        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4429" started-at="2008-04-03T18:30:21Z" finished-at="2008-04-03T18:30:26Z">
+        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4409" started-at="2008-04-03T19:03:28Z" finished-at="2008-04-03T19:03:33Z">
         </test-method>
-        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4405" started-at="2008-04-03T18:30:37Z" finished-at="2008-04-03T18:30:41Z">
+        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6613" started-at="2008-04-03T19:03:22Z" finished-at="2008-04-03T19:03:28Z">
         </test-method>
       </class>
     </test>

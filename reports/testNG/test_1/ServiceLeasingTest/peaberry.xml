@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="peaberry" failures="0" tests="5" time="19.908" errors="0">
+<testsuite name="peaberry" failures="0" tests="5" time="19.891" errors="0">
   <properties/>
-  <testcase name="staticUnaryService" time="4.429" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
-  <testcase name="leasedUnaryService" time="4.432" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
-  <testcase name="leasedMultiService" time="6.607" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
-  <testcase name="staticMultiService" time="4.405" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
-  <testcase name="unleasedUnaryService" time="0.018" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="staticUnaryService" time="4.41" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="leasedUnaryService" time="4.415" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="leasedMultiService" time="6.613" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="staticMultiService" time="4.409" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
+  <testcase name="unleasedUnaryService" time="0.025" classname="org.ops4j.peaberry.test.ServiceLeasingTest"/>
 </testsuite>

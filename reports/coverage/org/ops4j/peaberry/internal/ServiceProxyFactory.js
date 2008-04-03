@@ -11,48 +11,6 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_2" : {
-					  "name" : "unleasedUnaryService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 50 },],
-					  "statements" : [{"sl": 54 },]
-					  },
-		"test_6" : {
-					  "name" : "leasedUnaryService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 50 },],
-					  "statements" : [{"sl": 54 },]
-					  },
-		"test_3" : {
-					  "name" : "leasedMultiService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 73 },],
-					  "statements" : [{"sl": 74 },]
-					  },
-		"test_5" : {
-					  "name" : "testUnaryService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 50 },],
-					  "statements" : [{"sl": 54 },]
-					  },
-		"test_1" : {
-					  "name" : "staticMultiService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 73 },],
-					  "statements" : [{"sl": 74 },]
-					  },
-		"test_4" : {
-					  "name" : "testMultiService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 73 },],
-					  "statements" : [{"sl": 74 },]
-					  },
-		"test_0" : {
-					  "name" : "staticUnaryService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 50 },],
-					  "statements" : [{"sl": 54 },]
-					  }
  };
 
 // JSON: { lines : [{tests : [testid1, testid2, testid3, ...]}, ...]};
@@ -105,11 +63,6 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 0 , 6 , 5 , 2   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 0 , 6 , 5 , 2   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -128,8 +81,13 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 4 , 1 , 3   ] ,
-  [ 4 , 1 , 3   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
