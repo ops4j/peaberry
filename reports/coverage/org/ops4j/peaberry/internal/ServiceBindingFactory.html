@@ -24,7 +24,7 @@
       <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
       <div class="roundedContent">
     <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
-    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Thu Apr 3 2008 19:03:34 GMT+08:00</div>
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Thu Apr 3 2008 19:09:24 GMT+08:00</div>
 
         
     
@@ -361,14 +361,53 @@
 </table>
 
 <table cellspacing="0" cellpadding="0" class="barGraph">
-<tbody>
+    <tbody>
+<tr>
+    <td class="hbreak" align="left" colspan="4">
+        &nbsp; <label class="sortable" id="testsToggle" onclick="toggleAllTests(this); return false;" onkeyup="return help_src_file_show_tests;">Show Tests </label>(1) <label onkeyup="return help_select_all;" class="selectable unselected" id="selectalltests" onclick="selectAllTests(this);">Select All </label> <label onkeyup='return help_deselect_all;' class="selectable selected" id="deselectalltests" onclick="deselectAllTests(this);">Deselect All</label>
+    </td>
+</tr>
+</tbody>
+<tbody id="tests-body" style="display:none">
+<tr id="testHeaderRow">
+    <td class="graphHeaderLeft titleText" align="center" >
+        <label onkeyup="return help_hilight_test;" id="help_1">Highlight</label>
+    </td>
+    <td class="graphHeaderLeft titleText sortable" onclick="ts_resortTable(this, 'number', 1);return false;">
+        <label onkeyup="return help_test_contribution;" id="help_2">Test Contribution</label>
+    </td>
+    <td class="graphHeaderLeft titleText sortable" onclick="ts_resortTable(this, 'alpha', 2);return false;">
+        <label onkeyup="return help_src_file_test;" id="help_3">Test</label>
+    </td>
+    <td class="graphHeaderLeft titleText sortable" onclick="ts_resortTable(this, 'alpha', 3);return false;">Result</td>
+</tr>
 
-    <tr>
-        <td class="hbreak hint" align="left" colspan="4">
-            No Tests
+        <tr id="test-12">
+        <td class="graphPercent graphPercentLeft" align="center" title="checkbox">
+            <a name="testA-12"></a>
+            <input type="checkbox" id="cb-12" value="12" name="testMethod" onclick="hiLightByTest(this.value, this.checked); return true;"/>
         </td>
+        <td class="graphPercent link" onclick="window.location.href='../../../../org/ops4j/peaberry/test/TestActivator_run.html';">
+            <span class="sortValue">0.6086956</span>
+                        <div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="39.1% Not Covered"  style="min-width: 40px;"  class="barNegative testBarNegative">
+       <div title="60.9% Covered" class="barPositive testBarPositive" style="width: 60.9%"></div>
+    </div>
+</div>        </td>
+        <td class="testCase" id="tc-12">
+            <span class="sortValue">org.ops4j.peaberry.test.TestActivator.run</span>
+            <a href="../../../../org/ops4j/peaberry/test/TestActivator.html?line=40#src-40" title="View Test Source"><img class="icon" alt="test" src="../../../../img/test.gif"/></a>
+            <a href="../../../../org/ops4j/peaberry/test/TestActivator_run.html" title="Test Summary Page">org.ops4j.peaberry.test.TestActivator.run</a>
+        </td>
+        <td class="graphPercent">
+                  <span class="sortValue">1</span>
+    <span class="testResultSuccess">PASS</span>
+          </td>
+
     </tr>
-</tbody>    
+    
+</tbody>
 <tbody><tr><td class="hbreak" colspan="4">&nbsp;</td></tr></tbody>
 </table>
 
@@ -885,7 +924,8 @@
 <tr id="l41">
 <td align="right" class="lineCount NoHilight">41</td>
 <td align="right" class="coverageCount NoHilight "
-            >
+           onclick="return showTestsForLine(this, 41, 'Tests that hit &lt;span class=\'srcFragment\'&gt; ServiceBindingFactory &lt;/span&gt;');"
+       >
     &nbsp;&nbsp;
 
 </td>
@@ -1003,8 +1043,9 @@
 
 <tr id="l49">
 <td align="right" class="lineCount Good">49</td>
-<td align="right" class="coverageCount Good missedByTest"
-            >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 49, 'Tests that hit &lt;span class=\'srcFragment\'&gt; ServiceBindingFactory(ServiceRegistry) &lt;/span&gt;');"
+       >
     <a title="Line 49, Col 3: method entered 1 time." class="nolink">&nbsp;1</a>
 
 </td>
@@ -1015,8 +1056,9 @@
 
 <tr id="l50">
 <td align="right" class="lineCount Good">50</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 50, 'Tests that hit line # 50');"
+    >
     <a title="Line 50, Col 5: statement executed 1 time." class="nolink">&nbsp;1</a>
 
 </td>
@@ -1110,8 +1152,9 @@
 
 <tr id="l56">
 <td align="right" class="lineCount Good">56</td>
-<td align="right" class="coverageCount Good missedByTest"
-            >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 56, 'Tests that hit &lt;span class=\'srcFragment\'&gt; bind(Dependency&amp;lt;T&amp;gt;,LinkedBindingBuilder&amp;lt;T&amp;gt;)&amp;nbsp;:&amp;nbsp;boolean &lt;/span&gt;');"
+       >
     <a title="Line 56, Col 3: method entered 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1134,8 +1177,9 @@
 
 <tr id="l58">
 <td align="right" class="lineCount Good">58</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 58, 'Tests that hit line # 58');"
+    >
     <a title="Line 58, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1146,8 +1190,9 @@
 
 <tr id="l59">
 <td align="right" class="lineCount Good">59</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 59, 'Tests that hit line # 59');"
+    >
     <a title="Line 59, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1158,8 +1203,9 @@
 
 <tr id="l60">
 <td align="right" class="lineCount Good">60</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 60, 'Tests that hit line # 60');"
+    >
     <a title="Line 60, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1182,8 +1228,9 @@
 
 <tr id="l62">
 <td align="right" class="lineCount Bad">62</td>
-<td align="right" class="coverageCount Bad missedByTest"
-         >
+<td align="right" class="coverageCount Bad hitByTest"
+           onclick="return showTestsForLine(this, 62, 'Tests that hit line # 62');"
+    >
     <a title="Line 62, Col 8: true branch executed 5 times, false branch executed 0 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1194,8 +1241,9 @@
 
 <tr id="l63">
 <td align="right" class="lineCount Good">63</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 63, 'Tests that hit line # 63');"
+    >
     <a title="Line 63, Col 7: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1278,8 +1326,9 @@
 
 <tr id="l70">
 <td align="right" class="lineCount Good">70</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 70, 'Tests that hit line # 70');"
+    >
     <a title="Line 70, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1302,8 +1351,9 @@
 
 <tr id="l72">
 <td align="right" class="lineCount Good">72</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 72, 'Tests that hit line # 72');"
+    >
     <a title="Line 72, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1314,8 +1364,9 @@
 
 <tr id="l73">
 <td align="right" class="lineCount Good">73</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 73, 'Tests that hit line # 73');"
+    >
     <a title="Line 73, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1338,8 +1389,9 @@
 
 <tr id="l75">
 <td align="right" class="lineCount Good">75</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 75, 'Tests that hit line # 75');"
+    >
     <a title="Line 75, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1362,8 +1414,9 @@
 
 <tr id="l77">
 <td align="right" class="lineCount Good">77</td>
-<td align="right" class="coverageCount Good missedByTest"
-         >
+<td align="right" class="coverageCount Good hitByTest"
+           onclick="return showTestsForLine(this, 77, 'Tests that hit line # 77');"
+    >
     <a title="Line 77, Col 5: statement executed 5 times." class="nolink">&nbsp;5</a>
 
 </td>
@@ -1399,7 +1452,7 @@
 <tr><td class="footer" colspan="6">
 <table>
 <tr>
- <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.1.0</a><i><br/>Thu Apr 3 2008 19:03:34 GMT+08:00</i>.</td>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.1.0</a><i><br/>Thu Apr 3 2008 19:09:24 GMT+08:00</i>.</td>
 <td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Evaluation License registered to Peaberry Open Source Project (ASLv2). You have 27 day(s) before your license expires.</td>
 </tr>
 </table>

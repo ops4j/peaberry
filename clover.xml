@@ -5,7 +5,9 @@
 
   <target name="with.clover">
     <clover-setup initstring="${build}/instrument/coverage.db">
-      <fileset dir="${src}"/>
+      <testsources dir="${test}">
+        <testclass package=".*test.*"/>
+      </testsources>
     </clover-setup>
   </target>
 
