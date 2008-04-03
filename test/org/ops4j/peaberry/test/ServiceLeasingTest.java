@@ -37,7 +37,6 @@ public class ServiceLeasingTest
   }
 
   @Inject
-  @Leased
   @Service
   @Named("unleased")
   TestService unleasedService;
@@ -55,13 +54,13 @@ public class ServiceLeasingTest
   Iterable<TestService> leasedServices;
 
   @Inject
-  @Leased(seconds = -1)
+  @Leased(seconds = Leased.FOREVER)
   @Service
   @Named("static")
   TestService staticService;
 
   @Inject
-  @Leased(seconds = -1)
+  @Leased(seconds = Leased.FOREVER)
   @Service
   @Named("static")
   Iterable<TestService> staticServices;

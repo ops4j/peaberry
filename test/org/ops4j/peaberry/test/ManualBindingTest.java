@@ -17,11 +17,12 @@
 package org.ops4j.peaberry.test;
 
 import static org.ops4j.peaberry.Peaberry.getOSGiServiceRegistry;
+import static org.ops4j.peaberry.Peaberry.leased;
 import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
+import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.Peaberry.serviceProvider;
 
 import org.ops4j.peaberry.Leased;
-import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
@@ -39,23 +40,31 @@ public class ManualBindingTest
     extends AbstractServiceTest
     implements Module {
 
+  final BundleContext bundleContext;
+
+  public ManualBindingTest() {
+    this.bundleContext = null;
+  }
+
+  public ManualBindingTest(BundleContext bundleContext) {
+    this.bundleContext = bundleContext;
+  }
+
   public void configure(Binder binder) {
 
-    BundleContext bundleContext = TestActivator.getBundleContext();
-    ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
     binder.bind(BundleContext.class).toInstance(bundleContext);
+
+    ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
 
     TypeLiteral<TestService> unary = new TypeLiteral<TestService>() {};
     binder.bind(unary).toProvider(serviceProvider(registry, unary));
 
-    TypeLiteral<Iterable<TestService>> multi =
+    TypeLiteral<Iterable<TestService>> multiple =
         new TypeLiteral<Iterable<TestService>>() {};
 
-    Service spec = Peaberry.service("name=B", TestService.class);
-    Leased leased = Peaberry.leased(1);
-
-    binder.bind(multi).toProvider(
-        serviceProvider(registry, multi, spec, leased));
+    binder.bind(multiple).toProvider(
+        serviceProvider(registry, multiple,
+            service("name=B", TestService.class), leased(1)));
 
     nonDelegatingContainer();
   }
@@ -65,6 +74,12 @@ public class ManualBindingTest
 
   @Inject
   Iterable<TestService> testServices;
+
+  @Test
+  public void testAnnotations() {
+    assert service(null).annotationType().equals(Service.class);
+    assert leased(3).annotationType().equals(Leased.class);
+  }
 
   @Test
   public void testUnaryService() {

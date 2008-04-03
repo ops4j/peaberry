@@ -16,7 +16,8 @@
 
 package org.ops4j.peaberry.test;
 
-import org.ops4j.peaberry.Peaberry;
+import static org.ops4j.peaberry.Peaberry.getBundleModule;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -29,19 +30,16 @@ import com.google.inject.Module;
 public final class TestActivator
     implements BundleActivator {
 
-  static BundleContext bundleContext;
-
   public void start(final BundleContext bundleContext)
       throws Exception {
-
-    TestActivator.bundleContext = bundleContext;
 
     new Thread(new Runnable() {
       public void run() {
         try {
-          Module peaberry = Peaberry.getBundleModule(bundleContext);
+          Module peaberry = getBundleModule(bundleContext);
+          PeaberryRunner.run(new ServiceInjectionTest(), peaberry);
+          PeaberryRunner.run(new ManualBindingTest(bundleContext));
           PeaberryRunner.run(new ServiceLeasingTest(), peaberry);
-          PeaberryRunner.run(new ManualBindingTest());
         } finally {
           try {
             bundleContext.getBundle(0).stop();
@@ -51,10 +49,6 @@ public final class TestActivator
         }
       }
     }).start();
-  }
-
-  public static BundleContext getBundleContext() {
-    return bundleContext;
   }
 
   public void stop(BundleContext bc)

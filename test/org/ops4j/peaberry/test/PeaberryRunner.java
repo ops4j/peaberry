@@ -32,17 +32,17 @@ public final class PeaberryRunner
     implements IObjectFactory {
 
   private static final long serialVersionUID = 1L;
-
   private static volatile Injector injector;
   private static int iteration = 0;
 
-  public synchronized static void run(final Module... modules) {
+  public static void run(final Module... modules) {
 
-    PeaberryRunner.iteration++;
+    iteration++;
 
     Thread testThread = new Thread(new Runnable() {
       public void run() {
-        PeaberryRunner.injector = Guice.createInjector(modules);
+
+        injector = Guice.createInjector(modules);
 
         Class<?>[] testClasses = new Class<?>[modules.length];
         for (int i = 0; i < testClasses.length; i++) {

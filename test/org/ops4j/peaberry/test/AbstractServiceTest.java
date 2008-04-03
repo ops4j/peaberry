@@ -37,10 +37,10 @@ public class AbstractServiceTest {
   @Inject
   BundleContext bundleContext;
 
-  final Map<String, ServiceRegistration> registrations =
+  static final Map<String, ServiceRegistration> registrations =
       new HashMap<String, ServiceRegistration>();
 
-  protected synchronized void enableService(final String name) {
+  protected void enableService(final String name) {
     Properties properties = new Properties();
     properties.setProperty("name", name);
 
@@ -59,11 +59,11 @@ public class AbstractServiceTest {
     registrations.put(name, registration);
   }
 
-  protected synchronized void disableService(final String name) {
+  protected void disableService(final String name) {
     registrations.remove(name).unregister();
   }
 
-  protected synchronized void disableAllServices() {
+  protected void disableAllServices() {
     for (ServiceRegistration registration : registrations.values()) {
       registration.unregister();
     }
