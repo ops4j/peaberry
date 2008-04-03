@@ -1,0 +1,22 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="ServiceLeasingTest">
+    <groups>
+    </groups>
+    <test name="peaberry">
+      <class name="org.ops4j.peaberry.test.ServiceLeasingTest">
+        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6607" started-at="2008-04-03T18:30:30Z" finished-at="2008-04-03T18:30:37Z">
+        </test-method>
+        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="4432" started-at="2008-04-03T18:30:26Z" finished-at="2008-04-03T18:30:30Z">
+        </test-method>
+        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="18" started-at="2008-04-03T18:30:41Z" finished-at="2008-04-03T18:30:41Z">
+        </test-method>
+        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4429" started-at="2008-04-03T18:30:21Z" finished-at="2008-04-03T18:30:26Z">
+        </test-method>
+        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4405" started-at="2008-04-03T18:30:37Z" finished-at="2008-04-03T18:30:41Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

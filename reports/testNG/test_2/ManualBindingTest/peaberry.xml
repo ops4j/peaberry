@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="peaberry" failures="0" tests="2" time="1.112" errors="0">
+  <properties/>
+  <testcase name="testMultiService" time="1.104" classname="org.ops4j.peaberry.test.ManualBindingTest"/>
+  <testcase name="testUnaryService" time="0.0050" classname="org.ops4j.peaberry.test.ManualBindingTest"/>
+</testsuite>
