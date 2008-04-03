@@ -18,6 +18,7 @@ package org.ops4j.peaberry.test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -40,6 +41,9 @@ public class AbstractServiceTest {
       new HashMap<String, ServiceRegistration>();
 
   protected synchronized void enableService(final String name) {
+    Properties properties = new Properties();
+    properties.setProperty("name", name);
+
     ServiceRegistration registration =
         bundleContext.registerService(TestService.class.getName(),
             new TestService() {
@@ -50,7 +54,7 @@ public class AbstractServiceTest {
                   throw new RuntimeException("Missing Service");
                 }
               }
-            }, null);
+            }, properties);
 
     registrations.put(name, registration);
   }

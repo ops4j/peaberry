@@ -26,17 +26,22 @@ import com.google.inject.Module;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class Activator
+public final class TestActivator
     implements BundleActivator {
+
+  static BundleContext bundleContext;
 
   public void start(final BundleContext bundleContext)
       throws Exception {
+
+    TestActivator.bundleContext = bundleContext;
 
     new Thread(new Runnable() {
       public void run() {
         try {
           Module peaberry = Peaberry.getBundleModule(bundleContext);
-          PeaberryRunner.run(peaberry, new ServiceLeasingTest());
+          PeaberryRunner.run(new ServiceLeasingTest(), peaberry);
+          PeaberryRunner.run(new ManualBindingTest());
         } finally {
           try {
             bundleContext.getBundle(0).stop();
@@ -46,6 +51,10 @@ public class Activator
         }
       }
     }).start();
+  }
+
+  public static BundleContext getBundleContext() {
+    return bundleContext;
   }
 
   public void stop(BundleContext bc)

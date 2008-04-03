@@ -51,7 +51,8 @@ public final class Peaberry {
    * @param interfaces custom service API
    * @return {@link Service} specification
    */
-  public Service service(final String filter, final Class<?>... interfaces) {
+  public static Service service(final String filter,
+      final Class<?>... interfaces) {
     return new Service() {
 
       public Class<?>[] interfaces() {
@@ -74,7 +75,7 @@ public final class Peaberry {
    * @param seconds lease time in seconds
    * @return {@link Leased} setting
    */
-  public Leased leased(final int seconds) {
+  public static Leased leased(final int seconds) {
     return new Leased() {
 
       public int seconds() {
@@ -85,6 +86,21 @@ public final class Peaberry {
         return Leased.class;
       }
     };
+  }
+
+  /**
+   * Creates a dynamic service provider for the given {@link ServiceRegistry}.
+   * The provider is configured with the {@link Service} specification and is
+   * optionally {@link Leased}.
+   * 
+   * @param registry dynamic service registry
+   * @param target literal type of the target
+   * @return dynamic service provider
+   */
+  public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
+      TypeLiteral<T> target) {
+
+    return getServiceProvider(registry, target, null, null);
   }
 
   /**
@@ -120,6 +136,13 @@ public final class Peaberry {
       new NonDelegatingClassLoaderHook();
 
   /**
+   * Enable support for non-delegating containers, such as OSGi
+   */
+  public static void nonDelegatingContainer() {
+    GuiceCodeGen.setThreadClassLoaderHook(OSGI_CLASSLOADER_HOOK);
+  }
+
+  /**
    * @param bundleContext current bundle context
    * @return OSGi service injection rules
    */
@@ -134,7 +157,7 @@ public final class Peaberry {
         binder.addBindingFactory(member(annotatedWithService()),
             new ServiceBindingFactory(getOSGiServiceRegistry(bundleContext)));
 
-        GuiceCodeGen.setThreadClassLoaderHook(OSGI_CLASSLOADER_HOOK);
+        nonDelegatingContainer();
       }
     };
   }

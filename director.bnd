@@ -15,7 +15,7 @@ Import-Package:\
  *; resolution:=optional
 
 Bundle-Activator:\
- org.ops4j.peaberry.test.Activator
+ org.ops4j.peaberry.test.TestActivator
 
 -output:\
  ${director.jar}

@@ -28,30 +28,44 @@ import com.google.inject.Module;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class PeaberryRunner
+public final class PeaberryRunner
     implements IObjectFactory {
 
   private static final long serialVersionUID = 1L;
+
   private static volatile Injector injector;
+  private static int iteration = 0;
 
-  public static void run(Module... modules) {
+  public synchronized static void run(final Module... modules) {
 
-    injector = Guice.createInjector(modules);
+    PeaberryRunner.iteration++;
 
-    Class<?>[] testClasses = new Class<?>[modules.length];
-    for (int i = 0; i < testClasses.length; i++) {
-      testClasses[i] = modules[i].getClass();
-    }
+    Thread testThread = new Thread(new Runnable() {
+      public void run() {
+        PeaberryRunner.injector = Guice.createInjector(modules);
 
-    TestNG testNG = new TestNG();
+        Class<?>[] testClasses = new Class<?>[modules.length];
+        for (int i = 0; i < testClasses.length; i++) {
+          testClasses[i] = modules[i].getClass();
+        }
 
-    testNG.setDefaultTestName("OSGi");
-    testNG.setDefaultSuiteName("peaberry");
-    testNG.setOutputDirectory("reports/testNG");
-    testNG.setObjectFactory(PeaberryRunner.class);
-    testNG.setTestClasses(testClasses);
+        TestNG testNG = new TestNG();
 
-    testNG.run();
+        testNG.setTestClasses(testClasses);
+        testNG.setObjectFactory(PeaberryRunner.class);
+
+        testNG.setOutputDirectory("reports/testNG/test_" + iteration);
+        testNG.setDefaultSuiteName(testClasses[0].getSimpleName());
+        testNG.setDefaultTestName("peaberry");
+
+        testNG.run();
+      }
+    });
+
+    try {
+      testThread.start();
+      testThread.join();
+    } catch (InterruptedException e) {}
   }
 
   @SuppressWarnings("unchecked")
