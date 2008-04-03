@@ -40,6 +40,7 @@ public final class TestActivator
           PeaberryRunner.run(new ServiceInjectionTests(), peaberry);
           PeaberryRunner.run(new ManualBindingTests(bundleContext));
           PeaberryRunner.run(new ServiceLeasingTests(), peaberry);
+          PeaberryRunner.run(new ServiceFilterTests(), peaberry);
         } finally {
           try {
             bundleContext.getBundle(0).stop();
