@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <project name="peaberry" default="dist">
 
   <property file="build.properties"/>
@@ -47,5 +46,7 @@
   <target name="dist" depends="scm,patch,guice,peaberry"/>
 
   <target name="test.dist" depends="dist,test.guice,test.peaberry"/>
+
+  <target name="reports" depends="clean,with.clover,peaberry,test.peaberry,clover.report"/>
 
 </project>
