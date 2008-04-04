@@ -1,6 +1,20 @@
 <?xml version="1.0"?>
 <project name="test">
 
+  <taskdef resource="testngtasks" classpath="${testng.jar}"/>
+
+  <target name="test.peaberry" depends="test.compile">
+    <testng outputDir="${doc}/testNG" suitename="peaberry">
+      <classfileset dir="${build}/test-classes" includes="**/internal/*Tests.class" />
+      <classpath>
+        <pathelement location="${felix.jar}"/>
+        <pathelement location="${peaberry.jar}"/>
+        <pathelement location="${build}/test-classes"/>
+      </classpath>
+    </testng>
+  </target>
+
+<!--
   <target name="felix">
     <delete dir="${cache.dir}"/>
     <java fork="true" jar="${testlib}/felix.jar" timeout="${timeout}">
@@ -18,7 +32,6 @@
       </assertions>
     </java>
   </target>
-
-  <target name="test.peaberry" depends="director,felix"/>
+-->
 
 </project>
