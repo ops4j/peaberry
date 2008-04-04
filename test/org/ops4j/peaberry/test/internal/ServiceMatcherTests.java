@@ -35,15 +35,15 @@ import org.testng.annotations.Test;
 public final class ServiceMatcherTests {
 
   @Retention(RUNTIME)
-  @interface MetaAnnotation {}
+  private @interface MetaAnnotation {}
 
   @Service("meta")
   @Retention(RUNTIME)
-  @interface MetaService {}
+  private @interface MetaService {}
 
   @Leased(seconds = Leased.FOREVER)
   @Retention(RUNTIME)
-  @interface MetaLeased {}
+  private @interface MetaLeased {}
 
   Object a;
 
@@ -70,7 +70,7 @@ public final class ServiceMatcherTests {
   @Leased(seconds = 2)
   Object h;
 
-  AnnotatedElement getElement(String name) {
+  private AnnotatedElement getElement(String name) {
     try {
       return getClass().getDeclaredField(name);
     } catch (Exception e) {
@@ -79,19 +79,19 @@ public final class ServiceMatcherTests {
     }
   }
 
-  void checkNone(String name, Class<? extends Annotation> clazz) {
+  private  void checkNone(String name, Class<? extends Annotation> clazz) {
     Annotation a = findMetaAnnotation(getElement(name), clazz);
     assert null == a : "Expected no annotation, got " + a;
   }
 
-  void checkService(String name, String filter) {
+  private  void checkService(String name, String filter) {
     AnnotatedElement element = getElement(name);
     assert annotatedWithService().matches(element) : "Missing Service annotation";
     String result = findMetaAnnotation(element, Service.class).value();
     assert filter.equals(result) : "Expected " + filter + ", got " + result;
   }
 
-  void checkLeased(String name, int seconds) {
+  private void checkLeased(String name, int seconds) {
     AnnotatedElement element = getElement(name);
     int result = findMetaAnnotation(element, Leased.class).seconds();
     assert seconds == result : "Expected " + seconds + ", got " + result;

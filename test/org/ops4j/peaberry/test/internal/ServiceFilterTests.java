@@ -37,7 +37,7 @@ import com.google.inject.TypeLiteral;
 @Test(testName = "ServiceFilterTests")
 public final class ServiceFilterTests {
 
-  void checkType(Class<?> clazz, Type type) {
+  private void checkType(Class<?> clazz, Type type) {
     Class<?> result = getServiceType(type);
     assert clazz.equals(result) : "Expected " + clazz + ", got " + result;
   }
@@ -49,11 +49,11 @@ public final class ServiceFilterTests {
     checkType(Set.class, new TypeLiteral<Iterable<Set<Short>>>() {}.getType());
   }
 
-  void unary(Type type) {
+  private void unary(Type type) {
     assert !expectsSequence(type) : "Expected no sequence for " + type;
   }
 
-  void multi(Type type) {
+  private void multi(Type type) {
     assert expectsSequence(type) : "Expected sequence for " + type;
   }
 
@@ -67,20 +67,19 @@ public final class ServiceFilterTests {
     multi(new TypeLiteral<Iterable<Collection<Iterable<Byte>>>>() {}.getType());
   }
 
-  interface A {}
+  private interface A {}
 
-  interface B {}
+  private interface B {}
 
-  interface C {}
+  private interface C {}
 
-  void checkFilter(String filter, Service spec) {
+  private void checkFilter(String filter, Service spec) {
     String result = getServiceFilter(spec, A.class);
     assert filter.equals(result) : "Expected " + filter + ", got " + result;
   }
 
-  String objectclass(String name) {
-    return "objectclass=org.ops4j.peaberry.test.internal.ServiceFilterTests$"
-        + name;
+  private String objectclass(String name) {
+    return "objectclass=" + getClass().getName() + "$" + name;
   }
 
   public void serviceFilters() {
