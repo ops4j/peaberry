@@ -8,6 +8,7 @@
       <classfileset dir="${build}/test-classes" includes="**/internal/*Tests.class" />
       <classpath>
         <pathelement location="${felix.jar}"/>
+        <pathelement location="${clover.jar}"/>
         <pathelement location="${peaberry.jar}"/>
         <pathelement location="${build}/test-classes"/>
       </classpath>

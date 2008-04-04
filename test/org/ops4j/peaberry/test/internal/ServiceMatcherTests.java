@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.test.internal;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.ops4j.peaberry.internal.ServiceMatcher.annotatedWithService;
 import static org.ops4j.peaberry.internal.ServiceMatcher.findMetaAnnotation;
 
 import java.lang.annotation.Annotation;
@@ -84,13 +85,20 @@ public final class ServiceMatcherTests {
   }
 
   void checkService(String name, String filter) {
-    String result = findMetaAnnotation(getElement(name), Service.class).value();
+    AnnotatedElement element = getElement(name);
+    assert annotatedWithService().matches(element) : "Missing Service annotation";
+    String result = findMetaAnnotation(element, Service.class).value();
     assert filter.equals(result) : "Expected " + filter + ", got " + result;
   }
 
   void checkLeased(String name, int seconds) {
-    int result = findMetaAnnotation(getElement(name), Leased.class).seconds();
+    AnnotatedElement element = getElement(name);
+    int result = findMetaAnnotation(element, Leased.class).seconds();
     assert seconds == result : "Expected " + seconds + ", got " + result;
+  }
+
+  public void handlesNull() {
+    assert !annotatedWithService().matches(null);
   }
 
   public void missingAnnotations() {
