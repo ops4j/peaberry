@@ -4,7 +4,7 @@
   <taskdef resource="testngtasks" classpath="${testng.jar}"/>
 
   <target name="test.peaberry" depends="test.compile">
-    <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.Runner">
+    <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.OSGiTestNG">
       <classfileset dir="${build}/test-classes" includes="**/*Tests.class" />
       <classpath>
         <pathelement location="${felix.jar}"/>

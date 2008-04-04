@@ -5,6 +5,7 @@
 	<classpathentry exported="true" kind="lib" path="guice/build/dist/guice-snapshot.jar"/>
 	<classpathentry kind="lib" path="lib/build/osgi.cmpn.jar"/>
 	<classpathentry kind="lib" path="lib/build/osgi.core.jar"/>
+	<classpathentry kind="lib" path="lib/test/felix.jar"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/ant/testng.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

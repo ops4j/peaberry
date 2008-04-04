@@ -16,29 +16,49 @@
 
 package org.ops4j.peaberry.test;
 
+import static org.testng.TestNGCommandLineArgs.parseCommandLine;
+
 import java.util.Map;
 
+import org.testng.ISuite;
+import org.testng.ITestRunnerFactory;
 import org.testng.TestNG;
-import org.testng.TestNGCommandLineArgs;
 import org.testng.TestNGException;
+import org.testng.TestRunner;
+import org.testng.xml.XmlTest;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class Runner
+public final class OSGiTestNG
     extends TestNG {
 
-  public Runner() {
+  public OSGiTestNG() {
+    super();
+
+    System.out.println("=====================");
     System.out.println("peaberry test harness");
     System.out.println("=====================");
+
+    setTestRunnerFactory(new ITestRunnerFactory() {
+      public TestRunner newTestRunner(ISuite suite, XmlTest test) {
+        if (suite.getName().startsWith("OSGi")) {
+          return new OSGiTestRunner(suite, test);
+        } else {
+          return new TestRunner(suite, test, false);
+        }
+      }
+    });
   }
 
   @SuppressWarnings("unchecked")
   public static void main(String[] args) {
-    Map params = checkConditions(TestNGCommandLineArgs.parseCommandLine(args));
+    Map params = checkConditions(parseCommandLine(args));
 
-    TestNG testNG = new Runner();
+    TestNG testNG = new OSGiTestNG();
     testNG.configure(params);
+
+    testNG.setObjectFactory(GuiceObjectFactory.class);
 
     try {
       testNG.run();
