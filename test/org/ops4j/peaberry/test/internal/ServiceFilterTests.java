@@ -34,7 +34,7 @@ import com.google.inject.TypeLiteral;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Test(testName = "ServiceFilterTests")
+@Test(testName = "ServiceFilterTests", suiteName = "Internal")
 public final class ServiceFilterTests {
 
   private void checkType(Class<?> clazz, Type type) {

@@ -20,21 +20,15 @@ import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.testng.annotations.Test;
 
-import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.Module;
 import com.google.inject.name.Named;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
+@Test(testName = "ServiceLeasingTests", suiteName = "OSGi")
 public class ServiceLeasingTests
-    extends AbstractServiceTests
-    implements Module {
-
-  public void configure(Binder binder) {
-    binder.bind(ServiceLeasingTests.class);
-  }
+    extends OSGiServiceTester {
 
   @Inject
   @Service
@@ -65,7 +59,6 @@ public class ServiceLeasingTests
   @Named("static")
   Iterable<TestService> staticServices;
 
-  @Test
   public void unleasedUnaryService() {
     disableAllServices();
     missingService(unleasedService);
@@ -105,7 +98,6 @@ public class ServiceLeasingTests
     missingService(leasedService);
   }
 
-  @Test
   public void leasedMultiService() {
     disableAllServices();
     checkServices(leasedServices);
@@ -125,7 +117,6 @@ public class ServiceLeasingTests
     checkServices(leasedServices);
   }
 
-  @Test
   public void staticUnaryService() {
     disableAllServices();
     missingService(staticService);
@@ -141,7 +132,6 @@ public class ServiceLeasingTests
     missingService(staticService);
   }
 
-  @Test
   public void staticMultiService() {
     disableAllServices();
     checkServices(staticServices);

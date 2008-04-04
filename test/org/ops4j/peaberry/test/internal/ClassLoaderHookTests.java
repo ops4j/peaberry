@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Test(testName = "ClassLoaderHookTests")
+@Test(testName = "ClassLoaderHookTests", suiteName = "Internal")
 public final class ClassLoaderHookTests {
 
   public void standardDelegation() {

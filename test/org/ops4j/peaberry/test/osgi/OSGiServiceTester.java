@@ -28,7 +28,7 @@ import com.google.inject.Inject;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class AbstractServiceTests {
+public abstract class OSGiServiceTester {
 
   protected interface TestService {
     String check();

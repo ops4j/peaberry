@@ -19,21 +19,15 @@ package org.ops4j.peaberry.test.osgi;
 import org.ops4j.peaberry.Service;
 import org.testng.annotations.Test;
 
-import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.Module;
 import com.google.inject.name.Named;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
+@Test(testName = "ServiceInjectionTests", suiteName = "OSGi")
 public class ServiceInjectionTests
-    extends AbstractServiceTests
-    implements Module {
-
-  public void configure(Binder binder) {
-    binder.bind(ServiceInjectionTests.class);
-  }
+    extends OSGiServiceTester {
 
   @Inject
   @Service
@@ -42,15 +36,11 @@ public class ServiceInjectionTests
 
   final TestService ctorService;
 
-  public ServiceInjectionTests() {
-    ctorService = null;
-  }
-
   @Inject
-  public ServiceInjectionTests(@Service
+  public ServiceInjectionTests(/*@Service
   @Named("ctor")
-  TestService service) {
-    ctorService = service;
+  TestService service*/) {
+    ctorService = null;//service;
   }
 
   TestService setterService;
@@ -62,7 +52,6 @@ public class ServiceInjectionTests
     setterService = service;
   }
 
-  @Test
   public void checkInjection() {
     disableAllServices();
     missingService(ctorService);

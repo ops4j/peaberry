@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Test(testName = "ServiceMatcherTests")
+@Test(testName = "ServiceMatcherTests", suiteName = "Internal")
 public final class ServiceMatcherTests {
 
   @Retention(RUNTIME)

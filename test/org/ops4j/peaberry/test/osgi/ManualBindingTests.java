@@ -30,30 +30,19 @@ import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
+@Test(testName = "ManualBindingTests", suiteName = "OSGi")
 public class ManualBindingTests
-    extends AbstractServiceTests
-    implements Module {
+    extends OSGiServiceTester {
 
-  final BundleContext bundleContext;
-
-  public ManualBindingTests() {
-    this.bundleContext = null;
-  }
-
-  public ManualBindingTests(BundleContext bundleContext) {
-    this.bundleContext = bundleContext;
-  }
-
-  public void configure(Binder binder) {
+  @Test(enabled = false)
+  public static void setup(Binder binder, BundleContext bundleContext) {
 
     binder.bind(BundleContext.class).toInstance(bundleContext);
-
     ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
 
     TypeLiteral<TestService> unary = new TypeLiteral<TestService>() {};
@@ -75,20 +64,17 @@ public class ManualBindingTests
   @Inject
   Iterable<TestService> testServices;
 
-  @Test
   public void testAnnotations() {
     assert service(null).annotationType().equals(Service.class);
     assert leased(3).annotationType().equals(Leased.class);
   }
 
-  @Test
   public void testUnaryService() {
     disableAllServices();
     enableService("A");
     checkService(testService, "A");
   }
 
-  @Test
   public void testMultiService() {
     disableAllServices();
     enableService("A");
