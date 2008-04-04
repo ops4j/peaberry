@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test;
+package org.ops4j.peaberry.test.osgi;
 
 import org.ops4j.peaberry.Service;
 import org.testng.annotations.Test;

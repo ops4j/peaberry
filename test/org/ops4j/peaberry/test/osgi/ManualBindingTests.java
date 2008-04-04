@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test;
+package org.ops4j.peaberry.test.osgi;
 
 import static org.ops4j.peaberry.Peaberry.getOSGiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.leased;

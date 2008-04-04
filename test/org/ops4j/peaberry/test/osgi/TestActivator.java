@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test;
+package org.ops4j.peaberry.test.osgi;
 
 import static org.ops4j.peaberry.Peaberry.getBundleModule;
 
@@ -40,7 +40,6 @@ public final class TestActivator
           PeaberryRunner.run(new ServiceInjectionTests(), peaberry);
           PeaberryRunner.run(new ManualBindingTests(bundleContext));
           PeaberryRunner.run(new ServiceLeasingTests(), peaberry);
-          PeaberryRunner.run(new ServiceFilterTests(), peaberry);
         } finally {
           try {
             bundleContext.getBundle(0).stop();
