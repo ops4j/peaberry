@@ -60,7 +60,7 @@ public final class Peaberry {
       }
 
       public String value() {
-        return filter;
+        return null == filter ? "" : filter;
       }
 
       public Class<? extends Annotation> annotationType() {
