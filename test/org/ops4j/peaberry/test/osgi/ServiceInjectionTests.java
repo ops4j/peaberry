@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.test.osgi;
 
 import org.ops4j.peaberry.Service;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -37,16 +38,17 @@ public class ServiceInjectionTests
   final TestService ctorService;
 
   @Inject
-  public ServiceInjectionTests(/*@Service
+  @Parameters("null")
+  public ServiceInjectionTests(@Service
   @Named("ctor")
-  TestService service*/) {
-    ctorService = null;//service;
+  TestService service) {
+    ctorService = service;
   }
 
   TestService setterService;
 
   @Inject
-  public void setTestService(@Service
+  protected void setTestService(@Service
   @Named("setter")
   TestService service) {
     setterService = service;

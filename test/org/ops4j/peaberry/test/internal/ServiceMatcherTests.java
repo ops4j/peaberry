@@ -79,12 +79,12 @@ public final class ServiceMatcherTests {
     }
   }
 
-  private  void checkNone(String name, Class<? extends Annotation> clazz) {
+  private void checkNone(String name, Class<? extends Annotation> clazz) {
     Annotation a = findMetaAnnotation(getElement(name), clazz);
     assert null == a : "Expected no annotation, got " + a;
   }
 
-  private  void checkService(String name, String filter) {
+  private void checkService(String name, String filter) {
     AnnotatedElement element = getElement(name);
     assert annotatedWithService().matches(element) : "Missing Service annotation";
     String result = findMetaAnnotation(element, Service.class).value();

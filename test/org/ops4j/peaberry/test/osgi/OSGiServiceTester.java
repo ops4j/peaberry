@@ -98,7 +98,7 @@ public abstract class OSGiServiceTester {
     assert names.length == i : "Less services than expected";
   }
 
-  protected static void sleep(long millis) {
+  protected void sleep(long millis) {
     try {
       Thread.sleep(millis);
     } catch (InterruptedException e) {}

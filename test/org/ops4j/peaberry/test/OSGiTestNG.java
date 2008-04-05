@@ -16,16 +16,21 @@
 
 package org.ops4j.peaberry.test;
 
+import static org.apache.felix.main.Main.loadConfigProperties;
 import static org.testng.TestNGCommandLineArgs.parseCommandLine;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.testng.ISuite;
+import org.apache.felix.framework.Felix;
+import org.apache.felix.framework.util.StringMap;
+import org.apache.felix.main.AutoActivator;
+import org.osgi.framework.BundleContext;
 import org.testng.ITestRunnerFactory;
 import org.testng.TestNG;
 import org.testng.TestNGException;
-import org.testng.TestRunner;
-import org.testng.xml.XmlTest;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
@@ -33,22 +38,45 @@ import org.testng.xml.XmlTest;
 public final class OSGiTestNG
     extends TestNG {
 
-  public OSGiTestNG() {
-    super();
+  @Override
+  @SuppressWarnings("unchecked")
+  public void run() {
 
     System.out.println("=====================");
-    System.out.println("peaberry test harness");
+    System.out.println("Start Felix container");
     System.out.println("=====================");
 
-    setTestRunnerFactory(new ITestRunnerFactory() {
-      public TestRunner newTestRunner(ISuite suite, XmlTest test) {
-        if (suite.getName().startsWith("OSGi")) {
-          return new OSGiTestRunner(suite, test);
-        } else {
-          return new TestRunner(suite, test, false);
-        }
+    Map config = new StringMap(loadConfigProperties(), false);
+
+    List autoActivatorList = new ArrayList();
+    autoActivatorList.add(new AutoActivator(config));
+
+    Felix felix = new Felix(config, autoActivatorList);
+
+    try {
+      felix.start();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    try {
+
+      Class clazz = felix.loadClass(System.getProperty("runnerFactoryClass"));
+      Constructor ctor = clazz.getConstructor(BundleContext.class);
+      Object factory = ctor.newInstance(felix.getBundleContext());
+      setTestRunnerFactory((ITestRunnerFactory) factory);
+
+      super.run();
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        felix.stop();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
-    });
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -57,8 +85,6 @@ public final class OSGiTestNG
 
     TestNG testNG = new OSGiTestNG();
     testNG.configure(params);
-
-    testNG.setObjectFactory(GuiceObjectFactory.class);
 
     try {
       testNG.run();

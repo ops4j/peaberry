@@ -21,14 +21,11 @@ import static org.ops4j.peaberry.Peaberry.leased;
 import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.Peaberry.serviceProvider;
-import static org.ops4j.peaberry.test.GuiceObjectFactory.getBinder;
-import static org.ops4j.peaberry.test.OSGiTestRunner.getBundleContext;
 
 import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
@@ -38,14 +35,14 @@ import com.google.inject.TypeLiteral;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-//@Test(enabled = false, testName = "ManualBindingTests", suiteName = "OSGi")
+@Test(testName = "ManualBindingTests", suiteName = "OSGi")
 public class ManualBindingTests
     extends OSGiServiceTester {
 
   public static void setup() {
-    Binder binder = getBinder();
+    Binder binder = null;
 
-    BundleContext bundleContext = getBundleContext();
+    BundleContext bundleContext = null;
     binder.bind(BundleContext.class).toInstance(bundleContext);
 
     ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);

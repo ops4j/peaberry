@@ -18,29 +18,18 @@ package org.ops4j.peaberry.test;
 
 import java.lang.reflect.Constructor;
 
-import org.testng.IObjectFactory;
+import org.testng.internal.ObjectFactoryImpl;
 
-import com.google.inject.Binder;
 import com.google.inject.Injector;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class GuiceObjectFactory
-    implements IObjectFactory {
+    extends ObjectFactoryImpl {
 
   private static final long serialVersionUID = 1L;
-
-  private static volatile Binder binder;
   private static volatile Injector injector;
-
-  public static void setBinder(Binder binder) {
-    GuiceObjectFactory.binder = binder;
-  }
-
-  public static Binder getBinder() {
-    return binder;
-  }
 
   public static void setInjector(Injector injector) {
     GuiceObjectFactory.injector = injector;
@@ -51,12 +40,6 @@ public final class GuiceObjectFactory
     if (injector != null) {
       return injector.getInstance(ctor.getDeclaringClass());
     }
-
-    try {
-      return ctor.newInstance(initargs);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return null;
-    }
+    return super.newInstance(ctor, initargs);
   }
 }
