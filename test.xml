@@ -3,13 +3,14 @@
 
   <taskdef resource="testngtasks" classpath="${testng.jar}"/>
 
-  <target name="test.peaberry" depends="test.compile">
+  <target name="test.peaberry" depends="testcases">
     <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.OSGiTestNG">
 
       <classfileset dir="${build}/test-classes" includes="**/*Tests.class" />
 
       <classpath>
         <pathelement location="${felix.jar}"/>
+        <pathelement location="${peaberry.jar}"/>
         <pathelement location="${build}/test-classes"/>
         <pathelement location="${clover.jar}"/>
       </classpath>
@@ -21,6 +22,7 @@
       <sysproperty key="cmpn.jar" value="${cmpn.jar}"/>
 
       <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>
+      <sysproperty key="testcases.jar" value="${testcases.jar}"/>
 
       <sysproperty key="runnerFactoryClass" value="org.ops4j.peaberry.test.OSGiRunnerFactory"/>
 

@@ -12,4 +12,9 @@
     <bnd files="peaberry.bnd" classpath="${build}/classes"/>
   </target>
 
+  <target name="testcases" depends="test.compile">
+    <mkdir dir="${build}/test"/>
+    <bnd files="testcases.bnd" classpath="${build}/test-classes"/>
+  </target>
+
 </project>

@@ -19,7 +19,6 @@ package org.ops4j.peaberry.test;
 import static org.apache.felix.main.Main.loadConfigProperties;
 import static org.testng.TestNGCommandLineArgs.parseCommandLine;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,8 @@ import java.util.Map;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.main.AutoActivator;
-import org.osgi.framework.BundleContext;
-import org.testng.ITestRunnerFactory;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.testng.TestNG;
 import org.testng.TestNGException;
 
@@ -55,16 +54,18 @@ public final class OSGiTestNG
 
     try {
       felix.start();
-    } catch (Exception e) {
+    } catch (BundleException e) {
       throw new RuntimeException(e);
     }
 
     try {
 
-      Class clazz = felix.loadClass(System.getProperty("runnerFactoryClass"));
-      Constructor ctor = clazz.getConstructor(BundleContext.class);
-      Object factory = ctor.newInstance(felix.getBundleContext());
-      setTestRunnerFactory((ITestRunnerFactory) factory);
+      String testcasesURL = "file:" + System.getProperty("testcases.jar");
+      Bundle testBundle = felix.getBundleContext().installBundle(testcasesURL);
+      testBundle.start();
+
+      setTestRunnerFactory(new OSGiTestRunnerFactory(testBundle));
+      setObjectFactory(GuiceObjectFactory.class);
 
       super.run();
 
@@ -73,7 +74,7 @@ public final class OSGiTestNG
     } finally {
       try {
         felix.stop();
-      } catch (Exception e) {
+      } catch (BundleException e) {
         throw new RuntimeException(e);
       }
     }

@@ -39,10 +39,9 @@ import com.google.inject.TypeLiteral;
 public class ManualBindingTests
     extends OSGiServiceTester {
 
-  public static void setup() {
-    Binder binder = null;
+  @Test(enabled = false)
+  public static void setup(Binder binder, BundleContext bundleContext) {
 
-    BundleContext bundleContext = null;
     binder.bind(BundleContext.class).toInstance(bundleContext);
 
     ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
