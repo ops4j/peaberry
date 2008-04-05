@@ -1,0 +1,16 @@
+
+Export-Package:\
+ org.ops4j.peaberry.test.osgi
+
+-nouses: true
+
+-removeheaders:\
+ Bnd-LastModified,\
+ Ignore-Package,\
+ Include-Resource,\
+ Private-Package,\
+ Tool
+
+-output:\
+ ${testcases.jar}
+

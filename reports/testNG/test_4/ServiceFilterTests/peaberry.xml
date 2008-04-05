@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="peaberry" failures="0" tests="1" time="0.032" errors="0">
-  <properties/>
-  <testcase name="checkFilters" time="0.032" classname="org.ops4j.peaberry.test.ServiceFilterTests"/>
-</testsuite>
