@@ -34,7 +34,7 @@ public final class LeasedServiceRegistry
   private final ServiceRegistry registry;
   private final long leaseMillis;
 
-  private Collection<Object> services;
+  private Collection<?> services;
   private volatile Long expireMillis = 0L;
 
   public LeasedServiceRegistry(ServiceRegistry registry, Leased leased) {
@@ -43,7 +43,7 @@ public final class LeasedServiceRegistry
   }
 
   @SuppressWarnings("unchecked")
-  public Iterator lookup(Class type, String filter) {
+  public <T> Iterator<T> lookup(Class<? extends T> type, String filter) {
     final long now = System.currentTimeMillis();
 
     // double-checked locking is ok on Java 5 runtimes
@@ -51,8 +51,8 @@ public final class LeasedServiceRegistry
       synchronized (this) {
         if (expireMillis < now) {
 
-          Collection freshServices = new ArrayList();
-          for (Iterator i = registry.lookup(type, filter); i.hasNext();) {
+          Collection<T> freshServices = new ArrayList<T>();
+          for (Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
             freshServices.add(i.next());
           }
 
@@ -69,6 +69,6 @@ public final class LeasedServiceRegistry
       }
     }
 
-    return services.iterator();
+    return (Iterator<T>) services.iterator();
   }
 }
