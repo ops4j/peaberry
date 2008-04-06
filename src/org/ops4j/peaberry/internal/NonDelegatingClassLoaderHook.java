@@ -19,6 +19,7 @@ package org.ops4j.peaberry.internal;
 import static com.google.inject.internal.ReferenceType.WEAK;
 
 import com.google.inject.ClassLoaderHook;
+import com.google.inject.internal.GuiceCodeGen;
 import com.google.inject.internal.ReferenceCache;
 
 /**
@@ -53,7 +54,8 @@ public final class NonDelegatingClassLoaderHook
 
               if (name.startsWith(CGLIB_PACKAGE)) {
                 try {
-                  Class<?> clazz = getClass().getClassLoader().loadClass(name);
+                  ClassLoader loader = GuiceCodeGen.class.getClassLoader();
+                  final Class<?> clazz = loader.loadClass(name);
                   if (resolve) {
                     super.resolveClass(clazz);
                   }
@@ -76,7 +78,7 @@ public final class NonDelegatingClassLoaderHook
     ClassLoader typeLoader = type.getClassLoader();
 
     // optimisation: no need to bridge between sibling or bootstrap types
-    if (null == typeLoader || getClass().getClassLoader() == typeLoader) {
+    if (null == typeLoader || GuiceCodeGen.class.getClassLoader() == typeLoader) {
       return typeLoader;
     }
 

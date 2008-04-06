@@ -7,7 +7,12 @@
     </classpath>
   </taskdef>
 
-  <target name="peaberry" depends="compile">
+  <target name="extension" depends="compile">
+    <mkdir dir="${build}/dist"/>
+    <bnd files="extension.bnd" classpath="${build}/classes"/>
+  </target>
+
+  <target name="peaberry" depends="extension">
     <mkdir dir="${build}/dist"/>
     <bnd files="peaberry.bnd" classpath="${build}/classes"/>
   </target>

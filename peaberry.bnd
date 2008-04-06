@@ -2,23 +2,21 @@
 Include-Resource:\
  @${aop.jar}!/org/aopalliance/**,\
  @${guice.jar}!/com/google/**,\
- META-INF/LICENSE.asm=LICENSE.asm,\
- META-INF/LICENSE=LICENSE,\
- META-INF/NOTICE=NOTICE
+ NOTICE, LICENSE, LICENSE.asm,\
+ OSGI-OPT/src=guice/src,\
+ OSGI-OPT/src=src
 
 Export-Package:\
  org.ops4j.peaberry
 
 Private-Package:\
- org.ops4j.peaberry.internal,\
- org.osgi.util.tracker
+ org.ops4j.peaberry.internal
 
 Import-Package:\
  !com.google.inject.asm.util,\
  javax.management; resolution:=optional,\
  javax.naming; resolution:=optional,\
  org.osgi.framework; version="[1.3.0, 2.0.0)",\
- org.osgi.util.tracker; version="[1.3.0, 2.0.0)",\
  *
 
 -exportcontents:\
