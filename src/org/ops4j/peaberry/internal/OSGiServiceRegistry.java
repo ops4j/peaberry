@@ -47,6 +47,12 @@ public final class OSGiServiceRegistry
    */
   public <T> Iterator<T> lookup(final Class<? extends T> type, String filter) {
 
+    /*
+     * This is just a quick "proof-of-concept" implementation, it doesn't track
+     * services and suffers from potential race conditions. A production ready
+     * implementation will be available soon.
+     */
+
     final ServiceReference[] services;
 
     try {
@@ -80,11 +86,6 @@ public final class OSGiServiceRegistry
       throw new RuntimeException(e);
     }
 
-    /*
-     * This is just a quick proof-of-concept implementation, it doesn't tracks
-     * services and suffers from potential race conditions. A production ready
-     * implementation will be available soon.
-     */
     return new Iterator<T>() {
       int i = 0;
 

@@ -46,6 +46,7 @@ public final class LeasedServiceRegistry
   public Iterator lookup(Class type, String filter) {
     final long now = System.currentTimeMillis();
 
+    // double-checked locking is ok on Java 5 runtimes
     if (expireMillis < now) {
       synchronized (this) {
         if (expireMillis < now) {
@@ -55,12 +56,14 @@ public final class LeasedServiceRegistry
             freshServices.add(i.next());
           }
 
+          // lease only starts when there are services
           if (freshServices.size() == 0) {
             return freshServices.iterator();
           } else {
             services = freshServices;
           }
 
+          // negative lease times are treated as 'forever', ie. static lookup
           expireMillis = leaseMillis < 0 ? Long.MAX_VALUE : (now + leaseMillis);
         }
       }

@@ -64,7 +64,7 @@ final class ServiceProxyFactory {
    * @param registry dynamic service registry
    * @param type expected service type
    * @param filter RFC-1960 (LDAP) filter
-   * @return proxy that delegates to the registry
+   * @return iterable proxy that delegates to the registry
    */
   public static <T> Iterable<T> getMultiServiceProxy(
       final ServiceRegistry registry, final Class<T> type, final String filter) {
