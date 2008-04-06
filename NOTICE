@@ -1,0 +1,38 @@
+peaberry extension library for Google-Guice
+Copyright 2008 Stuart McCulloch
+
+
+I. Included Software
+
+This product includes software developed by
+The OPS4J Community (http://www.ops4j.org/).
+Copyright (C) 2008 Stuart McCulloch.
+Licensed under the Apache License 2.0.
+
+This product includes software developed by
+Google Inc. (http://www.google.com/).
+Copyright (C) 2006-2008 Google Inc.
+Licensed under the Apache License 2.0.
+
+This product includes software developed by
+The OW2 Consortium (http://asm.objectweb.org/).
+Copyright (c) 2000-2005 INRIA, France Telecom
+Licensed under the BSD License.
+
+This product includes software developed by
+The AOP Alliance (http://aopalliance.sourceforge.net/).
+Available in the Public Domain.
+
+
+II. Used Software
+
+This product uses software developed at
+The OSGi Alliance (http://www.osgi.org/).
+Copyright 2006-2008 The OSGi Alliance.
+Licensed under the Apache License 2.0.
+
+
+III. License Summary
+- Apache License 2.0
+- BSD License
+

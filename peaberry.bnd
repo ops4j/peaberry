@@ -1,7 +1,10 @@
 
 Include-Resource:\
  @${aop.jar}!/org/aopalliance/**,\
- @${guice.jar}!/com/google/**
+ @${guice.jar}!/com/google/**,\
+ META-INF/LICENSE.asm=LICENSE.asm,\
+ META-INF/LICENSE=LICENSE,\
+ META-INF/NOTICE=NOTICE
 
 Export-Package:\
  org.ops4j.peaberry
