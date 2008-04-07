@@ -1,4 +1,7 @@
 
+Bundle-SymbolicName: peaberry
+Bundle-Version: ${version}
+
 Include-Resource:\
  @${aop.jar}!/org/aopalliance/**,\
  @${guice.jar}!/com/google/**,\

@@ -1,5 +1,6 @@
 
 Bundle-SymbolicName: peaberry-lib
+Bundle-Version: ${version}
 
 Include-Resource:\
  NOTICE, LICENSE,\
