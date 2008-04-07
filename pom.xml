@@ -43,6 +43,4 @@ limitations under the License.
     can be dropped into any R4 framework, such as Eclipse/Equinox. 
   </description>
 
-  <packaging>pom</packaging>
-
 </project>
