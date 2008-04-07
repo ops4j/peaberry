@@ -151,7 +151,7 @@ Index: src/com/google/inject/InjectorBuilder.java
 
      // If we're in the tool stage, stop here. Don't eagerly inject or load
      // anything.
-@@ -135,13 +142,19 @@
+@@ -138,13 +142,19 @@
      bindCommandProcesor = new BindCommandProcessor(
          injector, injector.scopes, stage, injector.explicitBindings,
          injector.outstandingInjections);
@@ -201,10 +201,10 @@ Index: src/com/google/inject/InjectorBuilder.java
 +    }
 +  }
  }
-Index: ../guice/src/com/google/inject/BindCommandProcessor.java
+Index: src/com/google/inject/BindCommandProcessor.java
 ===================================================================
---- ../guice/src/com/google/inject/BindCommandProcessor.java    (revision 433)
-+++ ../guice/src/com/google/inject/BindCommandProcessor.java    (working copy)
+--- src/com/google/inject/BindCommandProcessor.java    (revision 433)
++++ src/com/google/inject/BindCommandProcessor.java    (working copy)
 @@ -302,6 +302,7 @@
            original.getSource());
      } else {
