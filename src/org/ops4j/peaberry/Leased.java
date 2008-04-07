@@ -24,8 +24,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.google.inject.ScopeAnnotation;
-
 /**
  * Denotes a {@link Service} that can be "leased" for a given amount of time.
  * That is, the same instance will always be returned during the lease period.
@@ -37,7 +35,6 @@ import com.google.inject.ScopeAnnotation;
     TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
-@ScopeAnnotation
 public @interface Leased {
   int seconds();
 
