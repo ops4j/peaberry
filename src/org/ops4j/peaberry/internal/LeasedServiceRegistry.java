@@ -55,7 +55,9 @@ public final class LeasedServiceRegistry
 
           Collection<T> freshServices = new ArrayList<T>();
           for (Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
-            freshServices.add(i.next());
+            try {
+              freshServices.add(i.next());
+            } catch (Exception e) {}
           }
 
           // lease only starts when there are services
