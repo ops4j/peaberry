@@ -57,7 +57,7 @@ public final class OSGiServiceRegistry
 
     try {
 
-      services = bundleContext.getServiceReferences(type.getName(), filter);
+      services = bundleContext.getServiceReferences(null, filter);
 
       if (services != null) {
         Arrays.sort(services, new Comparator<ServiceReference>() {
