@@ -10,7 +10,9 @@
   <import file="doc.xml"/>
 
   <target name="guice">
-    <ant dir="${guice}" target="jar"/>
+    <ant dir="${guice}" target="jar">
+      <property name="version" value="patched"/>
+    </ant>
   </target>
 
   <target name="test.guice">
