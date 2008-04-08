@@ -12,9 +12,7 @@
       <methodContext name="toString" regexp="public String toString\(\).*"/>
       <methodContext name="privateCtor" regexp="private \w+\(\).*"/>
       <statementContext name="resolve" regexp="^if \(resolve\) \{.*"/>
-      <testsources dir="${test}">
-        <testclass package="org.ops4j.peaberry.test.*"/>
-      </testsources>
+      <testsources dir="${test}"/>
     </clover-setup>
   </target>
 
@@ -22,6 +20,7 @@
     <clover-report>
       <current outfile="${doc}/coverage" title="peaberry">
         <format type="html" filter="toString,privateCtor,resolve"/>
+        <testsources dir="${test}"/>
       </current>
     </clover-report>
   </target>
