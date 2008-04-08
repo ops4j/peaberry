@@ -90,11 +90,24 @@ public final class Peaberry {
 
   /**
    * Creates a dynamic service provider for the given {@link ServiceRegistry}.
-   * The provider is configured with the {@link Service} specification and is
-   * optionally {@link Leased}.
+   * The provider is configured to find matching services that are not leased.
    * 
    * @param registry dynamic service registry
-   * @param target literal type of the target
+   * @param target current binding target
+   * @return dynamic service provider
+   */
+  public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
+      Class<T> target) {
+
+    return getServiceProvider(registry, TypeLiteral.get(target), null, null);
+  }
+
+  /**
+   * Creates a dynamic service provider for the given {@link ServiceRegistry}.
+   * The provider is configured to find matching services that are not leased.
+   * 
+   * @param registry dynamic service registry
+   * @param target current binding target
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
@@ -109,7 +122,24 @@ public final class Peaberry {
    * optionally {@link Leased}.
    * 
    * @param registry dynamic service registry
-   * @param target literal type of the target
+   * @param target current binding target
+   * @param spec custom service specification
+   * @param leased optionally leased
+   * @return dynamic service provider
+   */
+  public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
+      Class<T> target, Service spec, Leased leased) {
+
+    return getServiceProvider(registry, TypeLiteral.get(target), spec, leased);
+  }
+
+  /**
+   * Creates a dynamic service provider for the given {@link ServiceRegistry}.
+   * The provider is configured with the {@link Service} specification and is
+   * optionally {@link Leased}.
+   * 
+   * @param registry dynamic service registry
+   * @param target current binding target
    * @param spec custom service specification
    * @param leased optionally leased
    * @return dynamic service provider

@@ -46,8 +46,8 @@ public class ManualBindingTests
 
     ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
 
-    TypeLiteral<TestService> unary = new TypeLiteral<TestService>() {};
-    binder.bind(unary).toProvider(serviceProvider(registry, unary));
+    binder.bind(TestService.class).toProvider(
+        serviceProvider(registry, TestService.class));
 
     TypeLiteral<Iterable<TestService>> multiple =
         new TypeLiteral<Iterable<TestService>>() {};
