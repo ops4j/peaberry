@@ -59,7 +59,7 @@ final class ServiceProxyFactory {
 
     // apply custom service API to generated proxy
     final Class<?>[] interfaces = spec.interfaces();
-    if (interfaces != null && interfaces.length > 0) {
+    if (interfaces.length > 0) {
       proxy.setInterfaces(interfaces);
     }
 

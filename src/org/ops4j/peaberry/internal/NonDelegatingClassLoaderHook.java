@@ -42,7 +42,7 @@ public final class NonDelegatingClassLoaderHook
         private static final String CGLIB_PACKAGE = "com.google.inject.cglib";
 
         @Override
-        protected final ClassLoader create(ClassLoader typeClassLoader) {
+        protected ClassLoader create(ClassLoader typeClassLoader) {
           return new ClassLoader(typeClassLoader) {
 
             /**

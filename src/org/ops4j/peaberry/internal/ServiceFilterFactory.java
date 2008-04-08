@@ -18,7 +18,7 @@ package org.ops4j.peaberry.internal;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.regex.Pattern;
+import java.lang.reflect.WildcardType;
 
 import org.ops4j.peaberry.Service;
 
@@ -29,31 +29,36 @@ import org.ops4j.peaberry.Service;
  */
 public final class ServiceFilterFactory {
 
-  private static final Pattern SEQUENCE =
-      Pattern.compile(Pattern.quote(Iterable.class.getName()) + "<[^?].*>");
-
   // utility: instances not allowed
   private ServiceFilterFactory() {}
 
   /**
    * Extract the expected service type from the member being injected.
    * 
-   * @param memberType runtime type of member being injected
+   * @param type runtime type of member being injected
    * @return expected service type
    */
-  public static Class<?> getServiceType(Type memberType) {
+  public static Class<?> getServiceType(Type type) {
 
-    // service type inside Iterable<T>
-    if (expectsSequence(memberType)) {
-      memberType = ((ParameterizedType) memberType).getActualTypeArguments()[0];
+    if (expectsSequence(type)) {
+      if (type instanceof ParameterizedType) {
+        // service type inside Iterable<T>
+        type = ((ParameterizedType) type).getActualTypeArguments()[0];
+      } else {
+        // plain Iterable, ie. Iterable<Object>
+        type = Object.class;
+      }
     }
 
-    // remove remaining generic parameters
-    if (memberType instanceof ParameterizedType) {
-      memberType = ((ParameterizedType) memberType).getRawType();
+    if (type instanceof ParameterizedType) {
+      // use raw type for generic service types
+      type = ((ParameterizedType) type).getRawType();
+    } else if (type instanceof WildcardType) {
+      // use upper bound for wildcard service types
+      type = ((WildcardType) type).getUpperBounds()[0];
     }
 
-    return (Class<?>) memberType;
+    return (Class<?>) type;
   }
 
   /**
@@ -136,11 +141,14 @@ public final class ServiceFilterFactory {
   /**
    * Check to see if service type is hidden inside a sequence like Iterable<T>.
    * 
-   * @param memberType runtime type of member being injected
+   * @param type runtime type of member being injected
    * @return true if member expects a sequence of services
    */
-  public static boolean expectsSequence(Type memberType) {
-    return SEQUENCE.matcher(memberType.toString()).matches();
+  public static boolean expectsSequence(Type type) {
+    if (type instanceof ParameterizedType) {
+      type = ((ParameterizedType) type).getRawType();
+    }
+    return Iterable.class == type;
   }
 
   /**
