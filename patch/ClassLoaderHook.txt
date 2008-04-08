@@ -69,7 +69,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 ===================================================================
 --- src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
 +++ src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,93 @@
 +/**
 + * Copyright (C) 2007 Google Inc.
 + *
@@ -106,7 +106,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +
 +  private static final ClassLoaderHook DEFAULT_CLASSLOADER_HOOK =
 +      new ClassLoaderHook() {
-+        public final ClassLoader get(Class<?> type) {return type.getClassLoader();}
++        public final ClassLoader intercept(ClassLoader loader) {return loader;}
 +      };
 +
 +  private static final ThreadLocal<ClassLoaderHook> THREAD_CLASS_LOADER_HOOK =
@@ -129,7 +129,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +  }
 +
 +  public static ClassLoader getClassLoader(Class<?> type) {
-+    return getThreadClassLoaderHook().get(type);
++    return getThreadClassLoaderHook().intercept(type.getClassLoader());
 +  }
 +
 +  public static FastClass getFastClass(Class<?> type) {
@@ -145,7 +145,8 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +  public static Enhancer getEnhancer(final Class<?> type) {
 +    Enhancer enhancer = new Enhancer() {
 +        protected ClassLoader getDefaultClassLoader() {
-+          return GuiceCodeGen.getClassLoader(type);
++          return getThreadClassLoaderHook().intercept(
++              super.getDefaultClassLoader());
 +        }
 +      };
 +
@@ -300,12 +301,12 @@ Index: src/com/google/inject/ClassLoaderHook.java
 +public interface ClassLoaderHook {
 +
 +  /**
-+   * Intercept classloading of enhanced class/proxy based on user type.
++   * Intercept classloading request.
 +   * 
-+   * @param type user type being enhanced/proxied
-+   * @return classloader to use for the enhanced class/proxy
++   * @param loader classloader involved in request
++   * @return potentially intercepted classloader
 +   */
-+  ClassLoader get(Class<?> type);
++  ClassLoader intercept(ClassLoader loader);
 +}
 
 Property changes on: src/com/google/inject/ClassLoaderHook.java

@@ -74,8 +74,7 @@ public final class NonDelegatingClassLoaderHook
   /**
    * Use weak cache to avoid explosion of classloaders.
    */
-  public ClassLoader get(Class<?> type) {
-    ClassLoader typeLoader = type.getClassLoader();
+  public ClassLoader intercept(ClassLoader typeLoader) {
 
     // optimisation: no need to bridge between sibling or bootstrap types
     if (null == typeLoader || GuiceCodeGen.class.getClassLoader() == typeLoader) {
