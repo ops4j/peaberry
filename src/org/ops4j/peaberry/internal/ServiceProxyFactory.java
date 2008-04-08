@@ -58,9 +58,8 @@ final class ServiceProxyFactory {
     });
 
     // apply custom service API to generated proxy
-    final Class<?>[] interfaces = spec.interfaces();
-    if (interfaces.length > 0) {
-      proxy.setInterfaces(interfaces);
+    if (spec != null && spec.interfaces().length > 0) {
+      proxy.setInterfaces(spec.interfaces());
     }
 
     return type.cast(proxy.create());
