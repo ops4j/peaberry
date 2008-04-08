@@ -49,7 +49,9 @@ public final class LeasedServiceRegistry
     // double-checked locking is ok on Java 5 runtimes
     if (expireMillis < now) {
       synchronized (this) {
+        // /CLOVER:OFF
         if (expireMillis < now) {
+          // /CLOVER:ON
 
           Collection<T> freshServices = new ArrayList<T>();
           for (Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
