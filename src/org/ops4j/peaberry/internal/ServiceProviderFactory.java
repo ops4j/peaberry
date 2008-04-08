@@ -52,7 +52,7 @@ public final class ServiceProviderFactory {
    */
   @SuppressWarnings("unchecked")
   public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
-      TypeLiteral<T> target, Service spec, Leased leased) {
+      TypeLiteral<T> target, final Service spec, Leased leased) {
 
     Type targetType = target.getType();
 
@@ -69,13 +69,13 @@ public final class ServiceProviderFactory {
     if (expectsSequence(targetType)) {
       return new Provider() {
         public Iterable get() {
-          return getMultiServiceProxy(leasedRegistry, serviceType, filter);
+          return getMultiServiceProxy(spec, leasedRegistry, serviceType, filter);
         }
       };
     } else {
       return new Provider() {
         public Object get() {
-          return getUnaryServiceProxy(leasedRegistry, serviceType, filter);
+          return getUnaryServiceProxy(spec, leasedRegistry, serviceType, filter);
         }
       };
     }

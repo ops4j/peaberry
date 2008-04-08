@@ -18,6 +18,7 @@ package org.ops4j.peaberry.internal;
 
 import java.util.Iterator;
 
+import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.cglib.proxy.Dispatcher;
@@ -37,13 +38,14 @@ final class ServiceProxyFactory {
   /**
    * Create a proxy that delegates to a single service from the registry.
    * 
+   * @param spec custom service specification
    * @param registry dynamic service registry
    * @param type expected service type
    * @param filter RFC-1960 (LDAP) filter
    * @return proxy that delegates to the registry
    */
-  public static <T> T getUnaryServiceProxy(final ServiceRegistry registry,
-      final Class<T> type, final String filter) {
+  public static <T> T getUnaryServiceProxy(Service spec,
+      final ServiceRegistry registry, final Class<T> type, final String filter) {
 
     Enhancer proxy = GuiceCodeGen.getEnhancer(type);
     proxy.setCallback(new Dispatcher() {
@@ -55,18 +57,25 @@ final class ServiceProxyFactory {
       }
     });
 
+    // apply custom service API to generated proxy
+    final Class<?>[] interfaces = spec.interfaces();
+    if (interfaces != null && interfaces.length > 0) {
+      proxy.setInterfaces(interfaces);
+    }
+
     return type.cast(proxy.create());
   }
 
   /**
    * Create a proxy that delegates to a sequence of services from the registry.
    * 
+   * @param spec custom service specification
    * @param registry dynamic service registry
    * @param type expected service type
    * @param filter RFC-1960 (LDAP) filter
    * @return iterable proxy that delegates to the registry
    */
-  public static <T> Iterable<T> getMultiServiceProxy(
+  public static <T> Iterable<T> getMultiServiceProxy(Service spec,
       final ServiceRegistry registry, final Class<T> type, final String filter) {
 
     return new Iterable<T>() {
