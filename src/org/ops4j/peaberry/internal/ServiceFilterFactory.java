@@ -132,11 +132,14 @@ public final class ServiceFilterFactory {
   /**
    * Check to see if service type is hidden inside a sequence like Iterable<T>.
    * 
-   * @param memberType runtime type of member being injected
+   * @param type runtime type of member being injected
    * @return true if member expects a sequence of services
    */
-  public static boolean expectsSequence(Type memberType) {
-    return memberType.toString().startsWith("java.lang.Iterable");
+  public static boolean expectsSequence(Type type) {
+    if (type instanceof ParameterizedType) {
+      return Iterable.class.equals(((ParameterizedType) type).getRawType());
+    }
+    return false;
   }
 
   /**

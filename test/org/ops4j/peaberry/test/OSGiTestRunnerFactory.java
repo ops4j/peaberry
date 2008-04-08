@@ -75,12 +75,17 @@ public final class OSGiTestRunnerFactory
       public void configure(Binder binder) {
         boolean manualSetup = false;
         for (XmlClass xmlClazz : test.getXmlClasses()) {
-          Class c = xmlClazz.getSupportClass();
-          binder.bind(c);
+          Class clazz = xmlClazz.getSupportClass();
+          binder.bind(clazz);
+          Method setup;
           try {
-            Method m = c.getMethod("setup", Binder.class, BundleContext.class);
-            m.invoke(null, binder, testBundle.getBundleContext());
+            setup = clazz.getMethod("setup", Binder.class, BundleContext.class);
             manualSetup = true;
+            try {
+              setup.invoke(null, binder, testBundle.getBundleContext());
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
           } catch (Exception e) {}
         }
         if (!manualSetup) {
