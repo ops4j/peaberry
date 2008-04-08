@@ -22,7 +22,7 @@ import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceType;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,22 +49,41 @@ public final class ServiceFilterTests {
     checkType(Set.class, new TypeLiteral<Iterable<Set<Short>>>() {}.getType());
   }
 
-  private void unary(Type type) {
-    assert !expectsSequence(type) : "Expected no sequence for " + type;
+  private void unary(Type memberType, Class<?> serviceType) {
+    boolean unary = !expectsSequence(memberType);
+    assert unary : "Expected " + memberType + " to be unary";
+
+    Class<?> type = getServiceType(memberType);
+    assert serviceType.equals(type) : "Expected " + serviceType + " got "
+        + type;
   }
 
-  private void multi(Type type) {
-    assert expectsSequence(type) : "Expected sequence for " + type;
+  private void multi(Type memberType, Class<?> serviceType) {
+    boolean multi = expectsSequence(memberType);
+    assert multi : "Expected " + memberType + " to be multi";
+
+    Class<?> type = getServiceType(memberType);
+    assert serviceType.equals(type) : "Expected " + serviceType + " got "
+        + type;
   }
 
+  @SuppressWarnings("unchecked")
   public void sequenceCheck() {
-    unary(new TypeLiteral<String>() {}.getType());
-    unary(new TypeLiteral<Map<String, Iterable<?>>>() {}.getType());
-    unary(new TypeLiteral<Collection<Iterable<Byte>>>() {}.getType());
 
-    multi(new TypeLiteral<Iterable<String>>() {}.getType());
-    multi(new TypeLiteral<Iterable<Map<String, Iterable<?>>>>() {}.getType());
-    multi(new TypeLiteral<Iterable<Collection<Iterable<Byte>>>>() {}.getType());
+    unary(new TypeLiteral<String>() {}.getType(), String.class);
+    unary(new TypeLiteral<Map<String, Iterable<?>>>() {}.getType(), Map.class);
+    unary(new TypeLiteral<List<Iterable<Byte>>>() {}.getType(), List.class);
+
+    multi(new TypeLiteral<Iterable>() {}.getType(), Object.class);
+    multi(new TypeLiteral<Iterable<?>>() {}.getType(), Object.class);
+    multi(new TypeLiteral<Iterable<? super List>>() {}.getType(), Object.class);
+    multi(new TypeLiteral<Iterable<? extends String>>() {}.getType(),
+        String.class);
+
+    multi(new TypeLiteral<Iterable<String>>() {}.getType(), String.class);
+    multi(new TypeLiteral<Iterable<List<Iterable>>>() {}.getType(), List.class);
+    multi(new TypeLiteral<Iterable<Map<String, Iterable>>>() {}.getType(),
+        Map.class);
   }
 
   private interface A {}

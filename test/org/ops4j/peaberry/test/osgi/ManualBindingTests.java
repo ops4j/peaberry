@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static org.ops4j.peaberry.Leased.FOREVER;
 import static org.ops4j.peaberry.Peaberry.getOSGiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.leased;
 import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
@@ -49,12 +50,18 @@ public class ManualBindingTests
     binder.bind(TestService.class).toProvider(
         serviceProvider(registry, TestService.class));
 
+    binder.bind(String.class).toProvider(
+        serviceProvider(registry, String.class, null, leased(FOREVER)));
+
     TypeLiteral<Iterable<TestService>> multiple =
         new TypeLiteral<Iterable<TestService>>() {};
 
     binder.bind(multiple).toProvider(
         serviceProvider(registry, multiple,
             service("name=B", TestService.class), leased(1)));
+
+    binder.bind(Integer.class).toProvider(
+        serviceProvider(registry, TypeLiteral.get(Integer.class)));
 
     nonDelegatingContainer();
   }

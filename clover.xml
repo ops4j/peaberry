@@ -12,7 +12,9 @@
       <methodContext name="toString" regexp="public String toString\(\).*"/>
       <methodContext name="privateCtor" regexp="private \w+\(\).*"/>
       <statementContext name="resolve" regexp="^if \(resolve\) \{.*"/>
-      <testsources dir="${test}"/>
+      <testsources dir="${test}">
+        <testclass package=".*\.test\..*"/>
+      </testsources>
     </clover-setup>
   </target>
 
