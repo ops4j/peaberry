@@ -18,6 +18,7 @@ package org.ops4j.peaberry.internal;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.regex.Pattern;
 
 import org.ops4j.peaberry.Service;
 
@@ -27,6 +28,9 @@ import org.ops4j.peaberry.Service;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class ServiceFilterFactory {
+
+  private static final Pattern SEQUENCE =
+      Pattern.compile(Pattern.quote(Iterable.class.getName()) + "<[^?].*>");
 
   // utility: instances not allowed
   private ServiceFilterFactory() {}
@@ -132,14 +136,11 @@ public final class ServiceFilterFactory {
   /**
    * Check to see if service type is hidden inside a sequence like Iterable<T>.
    * 
-   * @param type runtime type of member being injected
+   * @param memberType runtime type of member being injected
    * @return true if member expects a sequence of services
    */
-  public static boolean expectsSequence(Type type) {
-    if (type instanceof ParameterizedType) {
-      return Iterable.class.equals(((ParameterizedType) type).getRawType());
-    }
-    return false;
+  public static boolean expectsSequence(Type memberType) {
+    return SEQUENCE.matcher(memberType.toString()).matches();
   }
 
   /**
