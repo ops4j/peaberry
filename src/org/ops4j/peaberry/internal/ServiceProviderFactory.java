@@ -16,8 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ServiceFilterFactory.expectsSequence;
 import static com.google.inject.internal.Objects.nonNull;
+import static org.ops4j.peaberry.internal.ServiceFilterFactory.expectsSequence;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceType;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.getMultiServiceProxy;
@@ -38,6 +38,9 @@ import com.google.inject.TypeLiteral;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class ServiceProviderFactory {
+
+  private static final String SERVICE_PROVIDER_DESCRIPTION =
+      "%s lookup(%s,\"%s\") from %s";
 
   // utility: instances not allowed
   private ServiceProviderFactory() {}
@@ -75,11 +78,23 @@ public final class ServiceProviderFactory {
         public Iterable get() {
           return getMultiServiceProxy(spec, leasedRegistry, serviceType, filter);
         }
+
+        @Override
+        public String toString() {
+          return String.format(SERVICE_PROVIDER_DESCRIPTION,
+              "MultiServiceProvider", serviceType, filter, leasedRegistry);
+        }
       };
     } else {
       return new Provider() {
         public Object get() {
           return getUnaryServiceProxy(spec, leasedRegistry, serviceType, filter);
+        }
+
+        @Override
+        public String toString() {
+          return String.format(SERVICE_PROVIDER_DESCRIPTION,
+              "UnaryServiceProvider", serviceType, filter, leasedRegistry);
         }
       };
     }
