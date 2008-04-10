@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -97,7 +98,7 @@ public final class OSGiServiceRegistry
         try {
           return type.cast(bundleContext.getService(services[i++]));
         } catch (Exception e) {
-          return null; // FIXME: provide some sort of Nil object?
+          throw new ServiceUnavailableException(e);
         }
       }
 

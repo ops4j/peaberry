@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -51,7 +52,7 @@ public abstract class OSGiServiceTester {
                 if (registrations.containsKey(name)) {
                   return name;
                 } else {
-                  throw new RuntimeException("Missing Service");
+                  throw new ServiceUnavailableException();
                 }
               }
             }, properties);
@@ -79,7 +80,7 @@ public abstract class OSGiServiceTester {
     try {
       service.check();
       assert false : "Expected service exception";
-    } catch (Exception e) {}
+    } catch (ServiceUnavailableException e) {}
   }
 
   protected void checkServices(Iterable<TestService> services, String... names) {

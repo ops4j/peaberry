@@ -8,6 +8,7 @@
       <files>
         <!-- temporary: this is placeholder code -->
         <exclude name="**/OSGiServiceRegistry.java"/>
+        <exclude name="**/*Exception.java"/>
       </files>
       <methodContext name="toString" regexp="(.* )?public String toString\(\).*"/>
       <methodContext name="privateCtor" regexp="(.* )?private \w+\(\).*"/>

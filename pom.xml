@@ -31,7 +31,7 @@ limitations under the License.
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j</groupId>
   <artifactId>peaberry</artifactId>
-  <version>0.3</version>
+  <version>0.5</version>
 
   <name>peaberry - dynamic service injection with Google-Guice</name>
 

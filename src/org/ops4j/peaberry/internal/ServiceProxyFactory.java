@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceUnavailableException;
 
 import com.google.inject.cglib.proxy.Dispatcher;
 import com.google.inject.cglib.proxy.Enhancer;
@@ -52,8 +53,12 @@ final class ServiceProxyFactory {
       public Object loadObject()
           throws Exception {
 
-        // use first matching service from registry
-        return registry.lookup(type, filter).next();
+        try {
+          // use first matching service from registry
+          return registry.lookup(type, filter).next();
+        } catch (Exception e) {
+          throw new ServiceUnavailableException(e);
+        }
       }
     });
 
