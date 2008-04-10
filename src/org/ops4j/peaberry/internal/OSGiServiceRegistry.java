@@ -19,7 +19,9 @@ package org.ops4j.peaberry.internal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Map;
 
+import org.ops4j.peaberry.ServiceHandle;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
@@ -106,5 +108,12 @@ public final class OSGiServiceRegistry
         throw new UnsupportedOperationException();
       }
     };
+  }
+
+  /**
+   * TODO
+   */
+  public ServiceHandle add(Object service, Map<?, ?> properties) {
+    throw new UnsupportedOperationException();
   }
 }
