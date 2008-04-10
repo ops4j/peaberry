@@ -16,11 +16,13 @@
 
 package org.ops4j.peaberry;
 
+import static com.google.inject.internal.Objects.nonNull;
 import static com.google.inject.matcher.Matchers.member;
 import static org.ops4j.peaberry.internal.ServiceMatcher.annotatedWithService;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 
 import org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
@@ -60,11 +62,22 @@ public final class Peaberry {
       }
 
       public String value() {
-        return null == filter ? "" : filter;
+        return filter;
       }
 
       public Class<? extends Annotation> annotationType() {
         return Service.class;
+      }
+
+      @Override
+      public String toString() {
+        String api = Arrays.toString(interfaces);
+
+        if (filter != null) {
+          return String.format("@Service(\"%s\",%s)", filter, api);
+        } else {
+          return String.format("@Service(null,%s)", api);
+        }
       }
     };
   }
@@ -84,6 +97,15 @@ public final class Peaberry {
 
       public Class<? extends Annotation> annotationType() {
         return Leased.class;
+      }
+
+      @Override
+      public String toString() {
+        if (seconds < 0) {
+          return "@Leased(FOREVER)";
+        } else {
+          return String.format("@Leased(%s)", seconds);
+        }
       }
     };
   }
@@ -159,6 +181,8 @@ public final class Peaberry {
   public static ServiceRegistry getOSGiServiceRegistry(
       BundleContext bundleContext) {
 
+    nonNull(bundleContext, "bundle context");
+
     return new OSGiServiceRegistry(bundleContext);
   }
 
@@ -178,6 +202,8 @@ public final class Peaberry {
    */
   public static Module getBundleModule(final BundleContext bundleContext) {
 
+    nonNull(bundleContext, "bundle context");
+
     return new Module() {
       public void configure(Binder binder) {
 
@@ -188,6 +214,11 @@ public final class Peaberry {
             new ServiceBindingFactory(getOSGiServiceRegistry(bundleContext)));
 
         nonDelegatingContainer();
+      }
+
+      @Override
+      public String toString() {
+        return String.format("BundleModule(%s)", bundleContext.getBundle());
       }
     };
   }

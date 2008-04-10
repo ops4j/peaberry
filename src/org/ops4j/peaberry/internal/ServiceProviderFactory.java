@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.internal;
 
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.expectsSequence;
+import static com.google.inject.internal.Objects.nonNull;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceType;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.getMultiServiceProxy;
@@ -53,6 +54,9 @@ public final class ServiceProviderFactory {
   @SuppressWarnings("unchecked")
   public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
       TypeLiteral<T> target, final Service spec, Leased leased) {
+
+    nonNull(registry, "service registry");
+    nonNull(target, "injection target");
 
     Type targetType = target.getType();
 

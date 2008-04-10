@@ -75,4 +75,10 @@ public final class LeasedServiceRegistry
 
     return (Iterator<T>) services.iterator();
   }
+
+  @Override
+  public String toString() {
+    String lease = leaseMillis < 0 ? "STATIC" : leaseMillis + "ms";
+    return String.format("%s[%s]", registry, lease);
+  }
 }
