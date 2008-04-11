@@ -19,10 +19,10 @@ package org.ops4j.peaberry.internal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.felix.framework.util.MapToDictionary;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
@@ -116,7 +116,7 @@ public final class OSGiServiceRegistry
    * {@inheritDoc}
    */
   public <T> Handle<T> add(T service, Map<?, ?> properties) {
-    Dictionary<?, ?> props = new MapToDictionary(properties);
+    Dictionary<?, ?> props = new Hashtable<Object, Object>(properties);
     String clazz = service.getClass().getName();
 
     final ServiceRegistration registration =
@@ -125,7 +125,7 @@ public final class OSGiServiceRegistry
     return new Handle<T>() {
 
       public void modify(Map<?, ?> properties) {
-        registration.setProperties(new MapToDictionary(properties));
+        registration.setProperties(new Hashtable<Object, Object>(properties));
       }
 
       public void remove() {
