@@ -117,10 +117,15 @@ public final class OSGiServiceRegistry
    */
   public <T> Handle<T> add(T service, Map<?, ?> properties) {
     Dictionary<?, ?> props = new Hashtable<Object, Object>(properties);
-    String clazz = service.getClass().getName();
+    Class<?>[] interfaces = service.getClass().getInterfaces();
+
+    String[] api = new String[interfaces.length];
+    for (int i = 0; i < api.length; i++) {
+      api[i] = interfaces[i].getName();
+    }
 
     final ServiceRegistration registration =
-        bundleContext.registerService(clazz, service, props);
+        bundleContext.registerService(api, service, props);
 
     return new Handle<T>() {
 
