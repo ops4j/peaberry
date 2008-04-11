@@ -227,11 +227,14 @@ public final class Peaberry {
     return new Module() {
       public void configure(Binder binder) {
 
+        ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
+
         binder.bind(BundleContext.class).toInstance(bundleContext);
+        binder.bind(ServiceRegistry.class).toInstance(registry);
 
         // auto-bind service dependencies and implementations
         binder.addBindingFactory(member(annotatedWithService()),
-            new ServiceBindingFactory(getOSGiServiceRegistry(bundleContext)));
+            new ServiceBindingFactory(registry));
 
         nonDelegatingContainer();
       }

@@ -43,9 +43,10 @@ public class ManualBindingTests
   @Test(enabled = false)
   public static void setup(Binder binder, BundleContext bundleContext) {
 
-    binder.bind(BundleContext.class).toInstance(bundleContext);
-
     ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
+
+    binder.bind(BundleContext.class).toInstance(bundleContext);
+    binder.bind(ServiceRegistry.class).toInstance(registry);
 
     binder.bind(TestService.class).toProvider(
         serviceProvider(registry, TestService.class));

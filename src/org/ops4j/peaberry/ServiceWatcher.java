@@ -44,7 +44,7 @@ public interface ServiceWatcher {
   /**
    * Handle to a watched service.
    */
-  interface Handle<T> {
+  public interface Handle<T> {
 
     /**
      * Modify the properties of the watched service.

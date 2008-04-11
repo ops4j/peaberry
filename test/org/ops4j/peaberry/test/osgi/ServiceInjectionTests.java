@@ -16,10 +16,12 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static org.osgi.framework.Constants.OBJECTCLASS;
+
 import java.util.Properties;
 
 import org.ops4j.peaberry.Service;
-import org.osgi.framework.ServiceRegistration;
+import org.ops4j.peaberry.ServiceWatcher.Handle;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -113,29 +115,31 @@ public class ServiceInjectionTests
 
   protected void enableExtendedService(final String name) {
     Properties properties = new Properties();
+
     properties.setProperty("name", name);
 
-    ServiceRegistration registration =
-        bundleContext.registerService(new String[] {
-            TestService.class.getName(), ExtendedTestService.class.getName()
-        }, new ExtendedTestService() {
-          public String check() {
-            if (registrations.containsKey(name)) {
-              return name;
-            } else {
-              throw new RuntimeException("Missing Service");
-            }
-          }
+    properties.put(OBJECTCLASS, new String[] {
+        TestService.class.getName(), ExtendedTestService.class.getName()
+    });
 
-          public int encode() {
-            if (registrations.containsKey(name)) {
-              return name.hashCode();
-            } else {
-              throw new RuntimeException("Missing Service");
-            }
-          }
-        }, properties);
+    Handle<?> handle = registry.add(new ExtendedTestService() {
+      public String check() {
+        if (handles.containsKey(name)) {
+          return name;
+        } else {
+          throw new RuntimeException("Missing Service");
+        }
+      }
 
-    registrations.put(name, registration);
+      public int encode() {
+        if (handles.containsKey(name)) {
+          return name.hashCode();
+        } else {
+          throw new RuntimeException("Missing Service");
+        }
+      }
+    }, properties);
+
+    handles.put(name, handle);
   }
 }

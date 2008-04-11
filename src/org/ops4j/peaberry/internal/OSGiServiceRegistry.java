@@ -16,6 +16,9 @@
 
 package org.ops4j.peaberry.internal;
 
+import static com.google.inject.internal.Objects.nonNull;
+import static org.osgi.framework.Constants.OBJECTCLASS;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -119,15 +122,34 @@ public final class OSGiServiceRegistry
    */
   public <T> Handle<T> add(T service, Map<?, ?> properties) {
 
-    // browse class hierarchy for declared interfaces
-    Collection<String> api = new HashSet<String>();
-    for (Class<?> c = service.getClass(); c != null; c = c.getSuperclass()) {
-      for (Class<?> i : c.getInterfaces()) {
-        api.add(i.getName());
+    nonNull(service, "service");
+
+    String[] interfaces;
+
+    /*
+     * investigate various ways to determine service API...
+     */
+    Object objectclass = properties.get(OBJECTCLASS);
+    if (objectclass instanceof String[]) {
+      interfaces = (String[]) objectclass;
+    } else if (objectclass instanceof String) {
+      interfaces = ((String) objectclass).split(",");
+      for (int i = 0; i < interfaces.length; i++) {
+        interfaces[i] = interfaces[i].trim();
       }
+    } else {
+      Collection<String> api = new HashSet<String>();
+      Class<?> clazz = service.getClass();
+      if (clazz.isInterface()) {
+        api.add(clazz.getName());
+      } else {
+        for (Class<?> i : service.getClass().getInterfaces()) {
+          api.add(i.getName());
+        }
+      }
+      interfaces = api.toArray(new String[api.size()]);
     }
 
-    String[] interfaces = api.toArray(new String[api.size()]);
     Dictionary<?, ?> props = new Hashtable<Object, Object>(properties);
 
     final ServiceRegistration registration =

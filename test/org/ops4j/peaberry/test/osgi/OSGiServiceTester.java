@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+import org.ops4j.peaberry.ServiceWatcher.Handle;
 
 import com.google.inject.Inject;
 
@@ -36,39 +36,37 @@ public abstract class OSGiServiceTester {
   }
 
   @Inject
-  BundleContext bundleContext;
+  ServiceRegistry registry;
 
-  static final Map<String, ServiceRegistration> registrations =
-      new HashMap<String, ServiceRegistration>();
+  static final Map<String, Handle<?>> handles =
+      new HashMap<String, Handle<?>>();
 
   protected void enableService(final String name) {
     Properties properties = new Properties();
     properties.setProperty("name", name);
 
-    ServiceRegistration registration =
-        bundleContext.registerService(TestService.class.getName(),
-            new TestService() {
-              public String check() {
-                if (registrations.containsKey(name)) {
-                  return name;
-                } else {
-                  throw new ServiceUnavailableException();
-                }
-              }
-            }, properties);
+    Handle<?> handle = registry.add(new TestService() {
+      public String check() {
+        if (handles.containsKey(name)) {
+          return name;
+        } else {
+          throw new ServiceUnavailableException();
+        }
+      }
+    }, properties);
 
-    registrations.put(name, registration);
+    handles.put(name, handle);
   }
 
   protected void disableService(final String name) {
-    registrations.remove(name).unregister();
+    handles.remove(name).remove();
   }
 
   protected void disableAllServices() {
-    for (ServiceRegistration registration : registrations.values()) {
-      registration.unregister();
+    for (Handle<?> handle : handles.values()) {
+      handle.remove();
     }
-    registrations.clear();
+    handles.clear();
   }
 
   protected void checkService(TestService service, String name) {
