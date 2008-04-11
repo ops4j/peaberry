@@ -16,11 +16,11 @@
 
 package org.ops4j.peaberry.internal;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Dictionary;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -120,7 +120,7 @@ public final class OSGiServiceRegistry
   public <T> Handle<T> add(T service, Map<?, ?> properties) {
 
     // browse class hierarchy for declared interfaces
-    Collection<String> api = new ArrayList<String>();
+    Collection<String> api = new HashSet<String>();
     for (Class<?> c = service.getClass(); c != null; c = c.getSuperclass()) {
       for (Class<?> i : c.getInterfaces()) {
         api.add(i.getName());
