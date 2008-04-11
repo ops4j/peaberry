@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.ops4j.peaberry.Leased;
-import org.ops4j.peaberry.ServiceHandle;
 import org.ops4j.peaberry.ServiceRegistry;
 
 /**
@@ -78,7 +77,7 @@ public final class LeasedServiceRegistry
     return (Iterator<T>) services.iterator();
   }
 
-  public ServiceHandle add(Object service, Map<?, ?> properties) {
+  public <T> Handle<T> add(T service, Map<?, ?> properties) {
     return registry.add(service, properties);
   }
 

@@ -19,11 +19,43 @@ package org.ops4j.peaberry;
 import java.util.Map;
 
 /**
+ * Something that watches for services.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface ServiceWatcher {
 
+  /**
+   * Service property (&quot;service.filter&quot;) set by {@link ServiceWatcher}
+   * services to an LDAP filter that matches services they are interested in.
+   */
   static final String SERVICE_FILTER = "service.filter";
 
-  ServiceHandle add(Object service, Map<?, ?> properties);
+  /**
+   * Ask the watcher to start watching the given service.
+   * 
+   * @param service service instance
+   * @param properties service properties
+   * 
+   * @return handle to watched service, null if the watcher is not interested
+   */
+  <T> Handle<T> add(T service, Map<?, ?> properties);
+
+  /**
+   * Handle to a watched service.
+   */
+  interface Handle<T> {
+
+    /**
+     * Modify the properties of the watched service.
+     * 
+     * @param properties service properties
+     */
+    void modify(Map<?, ?> properties);
+
+    /**
+     * Remove the service from being watched.
+     */
+    void remove();
+  }
 }

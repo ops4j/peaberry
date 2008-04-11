@@ -25,9 +25,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Denotes a {@link Service} that can be "leased" for a given amount of time.
- * That is, the same instance will always be returned during the lease period.
- * Negative lease times are assumed to be infinite.
+ * Denotes a {@link Service} that can be &quot;leased&quot; for a given amount
+ * of time. That is, the same instance will always be returned during the lease
+ * period. Negative lease times are assumed to be infinite.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

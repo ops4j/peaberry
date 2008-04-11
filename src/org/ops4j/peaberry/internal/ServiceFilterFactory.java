@@ -36,6 +36,7 @@ public final class ServiceFilterFactory {
    * Extract the expected service type from the member being injected.
    * 
    * @param type runtime type of member being injected
+   * 
    * @return expected service type
    */
   public static Class<?> getServiceType(Type type) {
@@ -66,6 +67,7 @@ public final class ServiceFilterFactory {
    * 
    * @param spec annotation details for the injected service
    * @param serviceType runtime type of service being injected
+   * 
    * @return LDAP filter
    */
   public static String getServiceFilter(Service spec, Class<?> serviceType) {
@@ -122,6 +124,7 @@ public final class ServiceFilterFactory {
    * Create LDAP filter to find a service with specific interfaces.
    * 
    * @param spec annotation details for the injected service
+   * 
    * @return an LDAP filter for the specific interfaces
    */
   private static String getInterfaceFilter(Service spec) {
@@ -147,6 +150,7 @@ public final class ServiceFilterFactory {
    * Check to see if service type is hidden inside a sequence like Iterable<T>.
    * 
    * @param type runtime type of member being injected
+   * 
    * @return true if member expects a sequence of services
    */
   public static boolean expectsSequence(Type type) {
@@ -160,6 +164,7 @@ public final class ServiceFilterFactory {
    * Create LDAP filter to find the service being injected.
    * 
    * @param serviceType runtime type of service being injected
+   * 
    * @return an LDAP filter for the injected service
    */
   private static String getServiceTypeFilter(Class<?> serviceType) {

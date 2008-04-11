@@ -43,6 +43,7 @@ final class ServiceProxyFactory {
    * @param registry dynamic service registry
    * @param type expected service type
    * @param filter RFC-1960 (LDAP) filter
+   * 
    * @return proxy that delegates to the registry
    */
   public static <T> T getUnaryServiceProxy(Service spec,
@@ -50,9 +51,7 @@ final class ServiceProxyFactory {
 
     Enhancer proxy = GuiceCodeGen.getEnhancer(type);
     proxy.setCallback(new Dispatcher() {
-      public Object loadObject()
-          throws Exception {
-
+      public Object loadObject() {
         try {
           // use first matching service from registry
           return registry.lookup(type, filter).next();
@@ -77,6 +76,7 @@ final class ServiceProxyFactory {
    * @param registry dynamic service registry
    * @param type expected service type
    * @param filter RFC-1960 (LDAP) filter
+   * 
    * @return iterable proxy that delegates to the registry
    */
   public static <T> Iterable<T> getMultiServiceProxy(Service spec,

@@ -60,6 +60,7 @@ public final class ServiceMatcher {
    * 
    * @param element annotated element
    * @param annotationType annotated type to search for
+   * 
    * @return attached annotation, or null if none exists
    */
   public static <T extends Annotation> T findMetaAnnotation(

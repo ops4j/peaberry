@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.ops4j.peaberry.ServiceHandle;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
@@ -51,7 +50,7 @@ public final class OSGiServiceRegistry
   public <T> Iterator<T> lookup(final Class<? extends T> type, String filter) {
 
     /*
-     * This is just a quick "proof-of-concept" implementation, it doesn't track
+     * This is just a quick proof-of-concept implementation, it doesn't track
      * services and suffers from potential race conditions. A production ready
      * implementation will be available soon.
      */
@@ -113,7 +112,7 @@ public final class OSGiServiceRegistry
   /**
    * TODO
    */
-  public ServiceHandle add(Object service, Map<?, ?> properties) {
+  public <T> Handle<T> add(T service, Map<?, ?> properties) {
     throw new UnsupportedOperationException();
   }
 }

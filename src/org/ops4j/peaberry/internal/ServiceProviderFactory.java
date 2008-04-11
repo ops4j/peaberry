@@ -52,6 +52,7 @@ public final class ServiceProviderFactory {
    * @param target literal type of the member being injected
    * @param spec custom service specification
    * @param leased optionally leased
+   * 
    * @return {@link Service} {@link Provider} for the target
    */
   @SuppressWarnings("unchecked")

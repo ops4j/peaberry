@@ -30,6 +30,7 @@ import org.ops4j.peaberry.internal.ServiceBindingFactory;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Binder;
+import com.google.inject.BindingFactory;
 import com.google.inject.ClassLoaderHook;
 import com.google.inject.Module;
 import com.google.inject.Provider;
@@ -51,6 +52,7 @@ public final class Peaberry {
    * 
    * @param filter RFC-1960 (LDAP) filter
    * @param interfaces custom service API
+   * 
    * @return {@link Service} specification
    */
   public static Service service(final String filter,
@@ -86,6 +88,7 @@ public final class Peaberry {
    * Create a {@link Leased} setting on-the-fly.
    * 
    * @param seconds lease time in seconds
+   * 
    * @return {@link Leased} setting
    */
   public static Leased leased(final int seconds) {
@@ -112,10 +115,11 @@ public final class Peaberry {
 
   /**
    * Creates a dynamic service provider for the given {@link ServiceRegistry}.
-   * The provider is configured to find matching services that are not leased.
+   * The provider is configured to find all services compatible with the target.
    * 
    * @param registry dynamic service registry
    * @param target current binding target
+   * 
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
@@ -126,10 +130,11 @@ public final class Peaberry {
 
   /**
    * Creates a dynamic service provider for the given {@link ServiceRegistry}.
-   * The provider is configured to find matching services that are not leased.
+   * The provider is configured to find all services compatible with the target.
    * 
    * @param registry dynamic service registry
    * @param target current binding target
+   * 
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
@@ -147,6 +152,7 @@ public final class Peaberry {
    * @param target current binding target
    * @param spec custom service specification
    * @param leased optionally leased
+   * 
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
@@ -164,6 +170,7 @@ public final class Peaberry {
    * @param target current binding target
    * @param spec custom service specification
    * @param leased optionally leased
+   * 
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
@@ -176,6 +183,7 @@ public final class Peaberry {
    * Create a new OSGi {@link ServiceRegistry} adaptor for the given bundle.
    * 
    * @param bundleContext current bundle context
+   * 
    * @return OSGi specific {@link ServiceRegistry}
    */
   public static ServiceRegistry getOSGiServiceRegistry(
@@ -186,18 +194,30 @@ public final class Peaberry {
     return new OSGiServiceRegistry(bundleContext);
   }
 
+  /**
+   * Shared Guice classloader hook for use with OSGi frameworks
+   */
   private static final ClassLoaderHook OSGI_CLASSLOADER_HOOK =
       new NonDelegatingClassLoaderHook();
 
   /**
-   * Enable support for non-delegating containers, such as OSGi
+   * Enable support for using Guice in non-delegating containers, such as OSGi,
+   * both in the current thread and any threads created by it after this point.
    */
   public static void nonDelegatingContainer() {
     GuiceCodeGen.setThreadClassLoaderHook(OSGI_CLASSLOADER_HOOK);
   }
 
   /**
+   * Creates a Guice module for the current OSGi bundle with useful bindings,
+   * such as the {@link BundleContext} and registers a {@link BindingFactory}
+   * that binds unbound injection points annotated with {@link Service} to
+   * matching OSGi services.
+   * 
+   * An OSGi classloader hook is also set for the thread creating this module.
+   * 
    * @param bundleContext current bundle context
+   * 
    * @return OSGi service injection rules
    */
   public static Module getBundleModule(final BundleContext bundleContext) {
