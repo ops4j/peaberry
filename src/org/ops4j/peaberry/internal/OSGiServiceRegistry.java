@@ -18,14 +18,17 @@ package org.ops4j.peaberry.internal;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.felix.framework.util.MapToDictionary;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * OSGi {@link ServiceRegistry} adaptor (proof-of-concept, not optimised)
@@ -110,9 +113,24 @@ public final class OSGiServiceRegistry
   }
 
   /**
-   * TODO
+   * {@inheritDoc}
    */
   public <T> Handle<T> add(T service, Map<?, ?> properties) {
-    throw new UnsupportedOperationException();
+    Dictionary<?, ?> props = new MapToDictionary(properties);
+    String clazz = service.getClass().getName();
+
+    final ServiceRegistration registration =
+        bundleContext.registerService(clazz, service, props);
+
+    return new Handle<T>() {
+
+      public void modify(Map<?, ?> properties) {
+        registration.setProperties(new MapToDictionary(properties));
+      }
+
+      public void remove() {
+        registration.unregister();
+      }
+    };
   }
 }
