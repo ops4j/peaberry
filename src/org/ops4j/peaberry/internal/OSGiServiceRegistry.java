@@ -16,7 +16,9 @@
 
 package org.ops4j.peaberry.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -116,16 +118,20 @@ public final class OSGiServiceRegistry
    * {@inheritDoc}
    */
   public <T> Handle<T> add(T service, Map<?, ?> properties) {
-    Dictionary<?, ?> props = new Hashtable<Object, Object>(properties);
-    Class<?>[] interfaces = service.getClass().getInterfaces();
 
-    String[] api = new String[interfaces.length];
-    for (int i = 0; i < api.length; i++) {
-      api[i] = interfaces[i].getName();
+    // browse class hierarchy for declared interfaces
+    Collection<String> api = new ArrayList<String>();
+    for (Class<?> c = service.getClass(); c != null; c = c.getSuperclass()) {
+      for (Class<?> i : c.getInterfaces()) {
+        api.add(i.getName());
+      }
     }
 
+    String[] interfaces = api.toArray(new String[api.size()]);
+    Dictionary<?, ?> props = new Hashtable<Object, Object>(properties);
+
     final ServiceRegistration registration =
-        bundleContext.registerService(api, service, props);
+        bundleContext.registerService(interfaces, service, props);
 
     return new Handle<T>() {
 
