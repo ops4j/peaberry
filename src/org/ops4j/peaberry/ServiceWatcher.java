@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import java.util.Map;
 
 /**
- * Something that watches for services.
+ * Something that watches services.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
