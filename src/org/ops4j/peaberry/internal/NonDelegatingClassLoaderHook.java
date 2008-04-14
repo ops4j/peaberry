@@ -17,6 +17,9 @@
 package org.ops4j.peaberry.internal;
 
 import static com.google.inject.internal.ReferenceType.WEAK;
+import static java.security.AccessController.doPrivileged;
+
+import java.security.PrivilegedAction;
 
 import com.google.inject.ClassLoaderHook;
 import com.google.inject.internal.GuiceCodeGen;
@@ -35,39 +38,43 @@ public final class NonDelegatingClassLoaderHook
    * Weak cache of bridge classloaders that make the Guice implementation
    * classes visible to various code-generated proxies of client classes.
    */
-  private final ReferenceCache<ClassLoader, ClassLoader> classLoaderCache =
+  private static final ReferenceCache<ClassLoader, ClassLoader> CLASS_LOADER_CACHE =
       new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
         private static final long serialVersionUID = 1L;
 
         private static final String CGLIB_PACKAGE = "com.google.inject.cglib";
 
         @Override
-        protected ClassLoader create(ClassLoader typeClassLoader) {
-          return new ClassLoader(typeClassLoader) {
+        protected ClassLoader create(final ClassLoader typeClassLoader) {
+          return doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+              return new ClassLoader(typeClassLoader) {
 
-            /**
-             * Bridge between client classloader and Peaberry classloader.
-             */
-            @Override
-            protected Class<?> loadClass(String name, boolean resolve)
-                throws ClassNotFoundException {
+                /**
+                 * Bridge between client classloader and Peaberry classloader.
+                 */
+                @Override
+                protected Class<?> loadClass(String name, boolean resolve)
+                    throws ClassNotFoundException {
 
-              if (name.startsWith(CGLIB_PACKAGE)) {
-                try {
-                  ClassLoader loader = GuiceCodeGen.class.getClassLoader();
-                  final Class<?> clazz = loader.loadClass(name);
-                  if (resolve) {
-                    super.resolveClass(clazz);
+                  if (name.startsWith(CGLIB_PACKAGE)) {
+                    try {
+                      ClassLoader loader = GuiceCodeGen.class.getClassLoader();
+                      final Class<?> clazz = loader.loadClass(name);
+                      if (resolve) {
+                        super.resolveClass(clazz);
+                      }
+                      return clazz;
+                    } catch (Exception e) {
+                      // fall back to classic delegation
+                    }
                   }
-                  return clazz;
-                } catch (Exception e) {
-                  // fall back to classic delegation
-                }
-              }
 
-              return super.loadClass(name, resolve);
-            }
-          };
+                  return super.loadClass(name, resolve);
+                }
+              };
+            };
+          });
         }
       };
 
@@ -81,6 +88,6 @@ public final class NonDelegatingClassLoaderHook
       return typeLoader;
     }
 
-    return classLoaderCache.get(typeLoader);
+    return CLASS_LOADER_CACHE.get(typeLoader);
   }
 }
