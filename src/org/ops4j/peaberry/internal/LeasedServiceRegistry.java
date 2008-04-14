@@ -77,9 +77,10 @@ public final class LeasedServiceRegistry
     return (Iterator<T>) services.iterator();
   }
 
+  // /CLOVER:OFF
   public <T> Handle<T> add(T service, Map<?, ?> properties) {
     return registry.add(service, properties);
-  }
+  } // /CLOVER:ON
 
   @Override
   public String toString() {

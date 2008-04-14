@@ -33,31 +33,31 @@ public class ServiceLeasingTests
   @Inject
   @Service
   @Named("unleased")
-  TestService unleasedService;
+  SimpleService unleasedService;
 
   @Inject
   @Leased(seconds = 2)
   @Service
   @Named("leased")
-  TestService leasedService;
+  SimpleService leasedService;
 
   @Inject
   @Leased(seconds = 2)
   @Service
   @Named("leased")
-  Iterable<TestService> leasedServices;
+  Iterable<SimpleService> leasedServices;
 
   @Inject
   @Leased(seconds = Leased.FOREVER)
   @Service
   @Named("static")
-  TestService staticService;
+  SimpleService staticService;
 
   @Inject
   @Leased(seconds = Leased.FOREVER)
   @Service
   @Named("static")
-  Iterable<TestService> staticServices;
+  Iterable<SimpleService> staticServices;
 
   public void unleasedUnaryService() {
     disableAllServices();

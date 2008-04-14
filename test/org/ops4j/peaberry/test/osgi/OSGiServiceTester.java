@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
+import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
 
@@ -31,7 +32,7 @@ import com.google.inject.Inject;
  */
 public abstract class OSGiServiceTester {
 
-  protected interface TestService {
+  protected interface SimpleService {
     String check();
   }
 
@@ -45,7 +46,8 @@ public abstract class OSGiServiceTester {
     Properties properties = new Properties();
     properties.setProperty("name", name);
 
-    Handle<?> handle = registry.add(new TestService() {
+    Handle<?> handle = registry.add(new SimpleService() {
+      @Test(expectedExceptions = ServiceUnavailableException.class)
       public String check() {
         if (handles.containsKey(name)) {
           return name;
@@ -69,21 +71,22 @@ public abstract class OSGiServiceTester {
     handles.clear();
   }
 
-  protected void checkService(TestService service, String name) {
+  protected void checkService(SimpleService service, String name) {
     String result = service.check();
     assert name.equals(result) : "Expected " + name + ", got " + result;
   }
 
-  protected void missingService(TestService service) {
+  protected void missingService(SimpleService service) {
     try {
       service.check();
       assert false : "Expected service exception";
     } catch (ServiceUnavailableException e) {}
   }
 
-  protected void checkServices(Iterable<TestService> services, String... names) {
+  protected void checkServices(Iterable<SimpleService> services,
+      String... names) {
     int i = 0;
-    for (TestService service : services) {
+    for (SimpleService service : services) {
       assert names.length > i : "More services than expected";
       try {
         checkService(service, names[i]);

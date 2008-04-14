@@ -48,18 +48,18 @@ public class ManualBindingTests
     binder.bind(BundleContext.class).toInstance(bundleContext);
     binder.bind(ServiceRegistry.class).toInstance(registry);
 
-    binder.bind(TestService.class).toProvider(
-        serviceProvider(registry, TestService.class));
+    binder.bind(SimpleService.class).toProvider(
+        serviceProvider(registry, SimpleService.class));
 
     binder.bind(String.class).toProvider(
         serviceProvider(registry, String.class, null, leased(FOREVER)));
 
-    TypeLiteral<Iterable<TestService>> multiple =
-        new TypeLiteral<Iterable<TestService>>() {};
+    TypeLiteral<Iterable<SimpleService>> multiple =
+        new TypeLiteral<Iterable<SimpleService>>() {};
 
     binder.bind(multiple).toProvider(
-        serviceProvider(registry, multiple,
-            service("name=B", TestService.class), leased(1)));
+        serviceProvider(registry, multiple, service("name=B",
+            SimpleService.class), leased(1)));
 
     binder.bind(Integer.class).toProvider(
         serviceProvider(registry, TypeLiteral.get(Integer.class)));
@@ -68,10 +68,10 @@ public class ManualBindingTests
   }
 
   @Inject
-  TestService testService;
+  SimpleService testService;
 
   @Inject
-  Iterable<TestService> testServices;
+  Iterable<SimpleService> testServices;
 
   public void testAnnotations() {
     assert service(null).annotationType().equals(Service.class);

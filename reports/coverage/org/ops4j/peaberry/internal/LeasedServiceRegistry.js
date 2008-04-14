@@ -2,44 +2,44 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 70, "sl" : 31, "el" : 84, "name" : "LeasedServiceRegistry",
+    {"id" : 135, "sl" : 32, "el" : 90, "name" : "LeasedServiceRegistry",
     "methods" : [
-              {"sl" : 40, "el" : 43, "sc" : 3},  {"sl" : 45, "el" : 77, "sc" : 3},  {"sl" : 79, "el" : 83, "sc" : 3}  ]}
+              {"sl" : 41, "el" : 44, "sc" : 3},  {"sl" : 46, "el" : 78, "sc" : 3},  {"sl" : 81, "el" : 83, "sc" : 3},  {"sl" : 85, "el" : 89, "sc" : 3}  ]}
     
  ]
 };
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_7" : {
-					  "name" : "leasedMultiService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 45 },],
-					  "statements" : [{"sl": 47 },{"sl": 50 },{"sl": 51 },{"sl": 56 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 64 },{"sl": 65 },{"sl": 67 },{"sl": 71 },{"sl": 76 },]
-					  },
-		"test_14" : {
-					  "name" : "staticMultiService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 45 },],
-					  "statements" : [{"sl": 47 },{"sl": 50 },{"sl": 51 },{"sl": 56 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 64 },{"sl": 65 },{"sl": 67 },{"sl": 71 },{"sl": 76 },]
-					  },
-		"test_4" : {
-					  "name" : "staticUnaryService",
-					  "pass" : true ,
-					  "methods" : [{"sl": 45 },],
-					  "statements" : [{"sl": 47 },{"sl": 50 },{"sl": 51 },{"sl": 56 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 64 },{"sl": 65 },{"sl": 67 },{"sl": 71 },{"sl": 76 },]
-					  },
 		"test_12" : {
 					  "name" : "testMultiService",
 					  "pass" : true ,
-					  "methods" : [{"sl": 45 },],
-					  "statements" : [{"sl": 47 },{"sl": 50 },{"sl": 51 },{"sl": 56 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 64 },{"sl": 65 },{"sl": 67 },{"sl": 71 },{"sl": 76 },]
+					  "methods" : [{"sl": 46 },],
+					  "statements" : [{"sl": 48 },{"sl": 51 },{"sl": 52 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 60 },{"sl": 65 },{"sl": 66 },{"sl": 68 },{"sl": 72 },{"sl": 77 },]
 					  },
-		"test_5" : {
+		"test_6" : {
+					  "name" : "staticUnaryService",
+					  "pass" : true ,
+					  "methods" : [{"sl": 46 },],
+					  "statements" : [{"sl": 48 },{"sl": 51 },{"sl": 52 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 60 },{"sl": 65 },{"sl": 66 },{"sl": 68 },{"sl": 72 },{"sl": 77 },]
+					  },
+		"test_7" : {
 					  "name" : "leasedUnaryService",
 					  "pass" : true ,
-					  "methods" : [{"sl": 45 },],
-					  "statements" : [{"sl": 47 },{"sl": 50 },{"sl": 51 },{"sl": 56 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 64 },{"sl": 65 },{"sl": 67 },{"sl": 71 },{"sl": 76 },]
+					  "methods" : [{"sl": 46 },],
+					  "statements" : [{"sl": 48 },{"sl": 51 },{"sl": 52 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 60 },{"sl": 65 },{"sl": 66 },{"sl": 68 },{"sl": 72 },{"sl": 77 },]
+					  },
+		"test_16" : {
+					  "name" : "leasedMultiService",
+					  "pass" : true ,
+					  "methods" : [{"sl": 46 },],
+					  "statements" : [{"sl": 48 },{"sl": 51 },{"sl": 52 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 60 },{"sl": 65 },{"sl": 66 },{"sl": 68 },{"sl": 72 },{"sl": 77 },]
+					  },
+		"test_21" : {
+					  "name" : "staticMultiService",
+					  "pass" : true ,
+					  "methods" : [{"sl": 46 },],
+					  "statements" : [{"sl": 48 },{"sl": 51 },{"sl": 52 },{"sl": 57 },{"sl": 58 },{"sl": 59 },{"sl": 60 },{"sl": 65 },{"sl": 66 },{"sl": 68 },{"sl": 72 },{"sl": 77 },]
 					  }
  };
 
@@ -88,38 +88,44 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
   [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
   [  ] ,
-  [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
   [  ] ,
   [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
-  [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 14 , 5 , 4 , 12 , 7   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [  ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [ 6 , 16 , 7 , 12 , 21   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,

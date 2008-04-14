@@ -37,9 +37,9 @@ public class ServiceInjectionTests
   @Inject
   @Service
   @Named("field")
-  TestService fieldService;
+  SimpleService fieldService;
 
-  final TestService ctorService;
+  final SimpleService ctorService;
 
   public ServiceInjectionTests() {
     ctorService = null;
@@ -48,39 +48,39 @@ public class ServiceInjectionTests
   @Inject
   public ServiceInjectionTests(@Service
   @Named("ctor")
-  TestService service) {
+  SimpleService service) {
     ctorService = service;
   }
 
-  TestService setterService;
+  SimpleService setterService;
 
   @Inject
   protected void setTestService(@Service
   @Named("setter")
-  TestService service) {
+  SimpleService service) {
     setterService = service;
   }
 
-  protected static interface ExtendedTestService
-      extends TestService {
+  protected static interface ExtendedService
+      extends SimpleService {
     int encode();
   }
 
   @Inject
-  @Service(interfaces = ExtendedTestService.class)
+  @Service(interfaces = ExtendedService.class)
   @Named("extended1")
   Object extendedService1;
 
   @Inject
   @Service(interfaces = {
-      TestService.class, ExtendedTestService.class
+      SimpleService.class, ExtendedService.class
   })
   @Named("extended2")
   Object extendedService2;
 
   @Inject
   @Service(interfaces = {
-      TestService.class, ExtendedTestService.class
+      SimpleService.class, ExtendedService.class
   })
   @Named("extendedSequence")
   Iterable<?> extendedServices;
@@ -97,20 +97,20 @@ public class ServiceInjectionTests
 
     enableExtendedService("B");
 
-    assert "B".equals(((TestService) extendedService1).check());
-    assert "B".equals(((TestService) extendedService2).check());
+    assert "B".equals(((SimpleService) extendedService1).check());
+    assert "B".equals(((SimpleService) extendedService2).check());
 
-    assert extendedService1 instanceof TestService;
-    assert extendedService1 instanceof ExtendedTestService;
+    assert extendedService1 instanceof SimpleService;
+    assert extendedService1 instanceof ExtendedService;
 
-    assert extendedService2 instanceof TestService;
-    assert extendedService2 instanceof ExtendedTestService;
+    assert extendedService2 instanceof SimpleService;
+    assert extendedService2 instanceof ExtendedService;
 
-    assert ((ExtendedTestService) extendedService1).encode() == "B".hashCode();
-    assert ((ExtendedTestService) extendedService2).encode() == "B".hashCode();
+    assert ((ExtendedService) extendedService1).encode() == "B".hashCode();
+    assert ((ExtendedService) extendedService2).encode() == "B".hashCode();
 
-    assert extendedServices.iterator().next() instanceof TestService;
-    assert extendedServices.iterator().next() instanceof ExtendedTestService;
+    assert extendedServices.iterator().next() instanceof SimpleService;
+    assert extendedServices.iterator().next() instanceof ExtendedService;
   }
 
   protected void enableExtendedService(final String name) {
@@ -119,10 +119,10 @@ public class ServiceInjectionTests
     properties.setProperty("name", name);
 
     properties.put(OBJECTCLASS, new String[] {
-        TestService.class.getName(), ExtendedTestService.class.getName()
+        SimpleService.class.getName(), ExtendedService.class.getName()
     });
 
-    Handle<?> handle = registry.add(new ExtendedTestService() {
+    Handle<?> handle = registry.add(new ExtendedService() {
       public String check() {
         if (handles.containsKey(name)) {
           return name;
