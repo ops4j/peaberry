@@ -41,6 +41,8 @@
     <delete dir="${build}"/>
   </target>
 
+  <target name="clean.all" depends="clean.guice,clean"/>
+
   <target name="wipe" depends="clean">
     <delete dir="${guice}"/>
   </target>

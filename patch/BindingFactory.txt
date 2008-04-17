@@ -30,16 +30,16 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 433)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -94,6 +94,8 @@
- 
-   ErrorHandler errorHandler = new InvalidErrorHandler();
+@@ -93,6 +93,8 @@
+   };
+   Reflection reflection;
  
 +  MissingDependencyHandler missingDependencyHandler;
 +
    InjectorImpl(Injector parentInjector) {
      this.parentInjector = parentInjector;
    }
-@@ -174,6 +176,10 @@
+@@ -173,6 +175,10 @@
      this.errorHandler = errorHandler;
    }
  
@@ -50,9 +50,9 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Gets a binding implementation.  First, it check to see if the parent has
     * a binding.  If the parent has a binding and the binding is scoped, it
-@@ -865,20 +871,31 @@
+@@ -885,20 +891,31 @@
  
-       final Key<?> key = Key.get(
+       final Key<?> key = Keys.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
 -      factory = SourceProviders.withDefault(StackTraceElements.forMember(field),
 +      Object source = StackTraceElements.forMember(field);
@@ -87,9 +87,9 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -942,21 +959,30 @@
+@@ -953,21 +970,30 @@
    <T> SingleParameterInjector<T> createParameterInjector(
-       final Key<T> key, Member member, int index, Annotation[] annotations)
+       final Parameter<T> parameter, Member member)
        throws MissingDependencyException {
 -    InternalFactory<? extends T> factory =
 -        SourceProviders.withDefault(StackTraceElements.forMember(member),
@@ -97,7 +97,7 @@ Index: src/com/google/inject/InjectorImpl.java
 +    Callable<InternalFactory<? extends T>> lookupCall =
        new Callable<InternalFactory<? extends T>>() {
          public InternalFactory<? extends T> call() throws Exception {
-           return getInternalFactory(key);
+           return getInternalFactory(parameter.getKey());
          }
 -      }
 -    );
@@ -107,7 +107,7 @@ Index: src/com/google/inject/InjectorImpl.java
 +        SourceProviders.withDefault(source, lookupCall);
 +
 +    InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
-+        member, index, Nullability.forAnnotations(annotations), key, this);
++        member, parameter.getIndex(), parameter.getNullability(), parameter.getKey(), this);
 +
 +    // try to handle missing dependencies and check again...
 +    if (null == factory && null != missingDependencyHandler &&
@@ -116,11 +116,11 @@ Index: src/com/google/inject/InjectorImpl.java
 +    }
 +
      if (factory == null) {
-       throw new MissingDependencyException(key, member);
+       throw new MissingDependencyException(parameter.getKey(), member);
      }
  
 -    InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
--        member, index, Nullability.forAnnotations(annotations), key, this);
+-        member, parameter.getIndex(), parameter.getNullability(), parameter.getKey(), this);
      return new SingleParameterInjector<T>(injectionPoint, factory);
    }
  
@@ -128,7 +128,7 @@ Index: src/com/google/inject/InjectorBuilder.java
 ===================================================================
 --- src/com/google/inject/InjectorBuilder.java	(revision 433)
 +++ src/com/google/inject/InjectorBuilder.java	(working copy)
-@@ -17,11 +17,14 @@
+@@ -17,10 +17,13 @@
  package com.google.inject;
  
  import static com.google.inject.Scopes.SINGLETON;
@@ -137,21 +137,20 @@ Index: src/com/google/inject/InjectorBuilder.java
  import com.google.inject.commands.Command;
  import com.google.inject.commands.CommandRecorder;
  import com.google.inject.commands.FutureInjector;
- import com.google.inject.internal.Objects;
- import com.google.inject.internal.Stopwatch;
+ import com.google.inject.internal.*;
 +import com.google.inject.spi.Dependency;
  import com.google.inject.spi.Message;
  import com.google.inject.spi.SourceProviders;
  
-@@ -97,6 +100,7 @@
+@@ -102,6 +105,7 @@
      validate();
 
-     injector.setErrorHandler(RuntimeErrorHandler.INSTANCE);
+     injector.setErrorHandler(ErrorHandlers.RUNTIME);
 +    injector.setMissingDependencyHandler(null);
 
      // If we're in the tool stage, stop here. Don't eagerly inject or load
      // anything.
-@@ -138,13 +142,19 @@
+@@ -144,13 +148,19 @@
      bindCommandProcesor = new BindCommandProcessor(
          injector, injector.scopes, stage, injector.explicitBindings,
          injector.outstandingInjections);
@@ -174,8 +173,8 @@ Index: src/com/google/inject/InjectorBuilder.java
      requestStaticInjectionCommandProcessor = new RequestStaticInjectionCommandProcessor();
      requestStaticInjectionCommandProcessor
          .processCommands(commands, configurationErrorHandler);
-@@ -270,4 +280,26 @@
-       throw new ConfigurationException("Error at " + source + " " + message);
+@@ -265,4 +275,26 @@
+       }
      }
    }
 +
@@ -205,7 +204,7 @@ Index: src/com/google/inject/BindCommandProcessor.java
 ===================================================================
 --- src/com/google/inject/BindCommandProcessor.java    (revision 433)
 +++ src/com/google/inject/BindCommandProcessor.java    (working copy)
-@@ -302,6 +302,7 @@
+@@ -303,6 +303,7 @@
            original.getSource());
      } else {
        bindings.put(key, binding);
@@ -407,7 +406,7 @@ Index: src/com/google/inject/CommandProcessor.java
 ===================================================================
 --- src/com/google/inject/CommandProcessor.java	(revision 433)
 +++ src/com/google/inject/CommandProcessor.java	(working copy)
-@@ -91,4 +91,8 @@
+@@ -92,4 +92,8 @@
    public <T> Boolean visitGetProvider(GetProviderCommand<T> command) {
      return false;
    }

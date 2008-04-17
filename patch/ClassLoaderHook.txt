@@ -2,17 +2,16 @@ Index: src/com/google/inject/DefaultConstructionProxyFactory.java
 ===================================================================
 --- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 423)
 +++ src/com/google/inject/DefaultConstructionProxyFactory.java	(working copy)
-@@ -16,8 +16,7 @@
- 
+@@ -17,7 +17,7 @@
  package com.google.inject;
  
+ import com.google.inject.internal.ErrorHandler;
 -import com.google.inject.internal.GuiceFastClass;
--import com.google.inject.internal.Objects;
 +import com.google.inject.internal.GuiceCodeGen;
- import java.lang.reflect.Constructor;
- import java.lang.reflect.InvocationTargetException;
- import java.lang.reflect.Modifier;
-@@ -55,7 +54,7 @@
+ import com.google.inject.internal.ConstructionProxy;
+ import com.google.inject.internal.ConstructionProxyFactory;
+ import net.sf.cglib.reflect.FastClass;
+@@ -72,7 +71,7 @@
      }
  
      Class<T> classToConstruct = constructor.getDeclaringClass();
@@ -173,16 +172,7 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 423)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -17,7 +17,7 @@
- package com.google.inject;
- 
- import com.google.inject.internal.Classes;
--import com.google.inject.internal.GuiceFastClass;
-+import com.google.inject.internal.GuiceCodeGen;
- import com.google.inject.internal.ReferenceCache;
- import com.google.inject.internal.StackTraceElements;
- import com.google.inject.internal.ToStringBuilder;
-@@ -1005,7 +1005,7 @@
+@@ -1016,7 +1016,7 @@
          };
        }
        else {
@@ -191,7 +181,7 @@ Index: src/com/google/inject/InjectorImpl.java
          final FastMethod fastMethod = fastClass.getMethod(method);
  
          this.methodInvoker = new MethodInvoker() {
-@@ -1244,7 +1244,7 @@
+@@ -1235,7 +1235,7 @@
        }
        finally {
          // Only remove the context if this call created it.
@@ -204,18 +194,7 @@ Index: src/com/google/inject/ProxyFactory.java
 ===================================================================
 --- src/com/google/inject/ProxyFactory.java	(revision 423)
 +++ src/com/google/inject/ProxyFactory.java	(working copy)
-@@ -16,9 +16,7 @@
- 
- package com.google.inject;
- 
--import com.google.inject.internal.GuiceFastClass;
--import com.google.inject.internal.GuiceNamingPolicy;
--import com.google.inject.internal.Objects;
-+import com.google.inject.internal.GuiceCodeGen;
- import com.google.inject.internal.ReferenceCache;
- import java.lang.reflect.Constructor;
- import java.lang.reflect.InvocationTargetException;
-@@ -140,17 +138,13 @@
+@@ -141,17 +139,13 @@
      }
  
      // Create the proxied class.
@@ -234,7 +213,7 @@ Index: src/com/google/inject/ProxyFactory.java
  
      Class<?> proxied = enhancer.createClass();
  
-@@ -165,7 +159,7 @@
+@@ -166,7 +160,7 @@
     */
    <T> ConstructionProxy<T> createConstructionProxy(Class<?> clazz,
        Class[] parameterTypes) {
