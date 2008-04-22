@@ -46,7 +46,7 @@ public final class OSGiServiceRegistry
   /**
    * Current bundle context, used to interrogate the registry.
    */
-  final BundleContext bundleContext;
+  private final BundleContext bundleContext;
 
   public OSGiServiceRegistry(BundleContext bundleContext) {
     this.bundleContext = bundleContext;

@@ -44,7 +44,7 @@ public final class ServiceBindingFactory
   /**
    * Underlying {@link ServiceRegistry} that provides dynamic services.
    */
-  final ServiceRegistry serviceRegistry;
+  private final ServiceRegistry serviceRegistry;
 
   public ServiceBindingFactory(ServiceRegistry serviceRegistry) {
     this.serviceRegistry = serviceRegistry;

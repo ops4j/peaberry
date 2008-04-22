@@ -128,7 +128,7 @@ Index: src/com/google/inject/InjectorBuilder.java
 ===================================================================
 --- src/com/google/inject/InjectorBuilder.java	(revision 433)
 +++ src/com/google/inject/InjectorBuilder.java	(working copy)
-@@ -17,12 +17,17 @@
+@@ -17,6 +17,8 @@
  package com.google.inject;
  
  import static com.google.inject.Scopes.SINGLETON;
@@ -137,10 +137,9 @@ Index: src/com/google/inject/InjectorBuilder.java
  import com.google.inject.commands.Command;
  import com.google.inject.commands.CommandRecorder;
  import com.google.inject.commands.FutureInjector;
+@@ -23,6 +25,7 @@
  import com.google.inject.internal.ConstructionProxyFactory;
  import com.google.inject.internal.Objects;
-+import com.google.inject.internal.Reflection;
-+import com.google.inject.internal.RuntimeReflectionFactory;
  import com.google.inject.internal.Stopwatch;
 +import com.google.inject.spi.Dependency;
  import com.google.inject.spi.Message;
@@ -209,7 +208,7 @@ Index: src/com/google/inject/BindCommandProcessor.java
 ===================================================================
 --- src/com/google/inject/BindCommandProcessor.java    (revision 433)
 +++ src/com/google/inject/BindCommandProcessor.java    (working copy)
-@@ -303,6 +303,7 @@
+@@ -301,6 +301,7 @@
            original.getSource());
      } else {
        bindings.put(key, binding);
@@ -557,10 +556,10 @@ Index: src/com/google/inject/commands/BindCommand.java
  import com.google.inject.binder.ScopedBindingBuilder;
  import static com.google.inject.internal.Objects.nonNull;
 +import static com.google.inject.spi.SourceProviders.defaultSource;
+ import com.google.inject.internal.ErrorMessages;
  
  import java.lang.annotation.Annotation;
- 
-@@ -122,18 +124,18 @@
+@@ -123,18 +125,18 @@
      }
    }
  
@@ -584,7 +583,7 @@ Index: src/com/google/inject/commands/BindCommand.java
      }
  
      public LinkedBindingBuilder<T> annotatedWith(
-@@ -318,26 +320,49 @@
+@@ -316,26 +318,49 @@
  
      private void checkNotTargetted() {
        if (bindTarget != EMPTY_BIND_TARGET) {
