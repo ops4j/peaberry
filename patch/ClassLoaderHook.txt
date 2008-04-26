@@ -215,12 +215,12 @@ Index: src/com/google/inject/ProxyFactory.java
  
 @@ -166,7 +160,7 @@
     */
-   <T> ConstructionProxy<T> createConstructionProxy(Class<?> clazz,
-       Class[] parameterTypes) {
+   private <T> ConstructionProxy<T> createConstructionProxy(final Class<?> clazz,
+       final Constructor standardConstructor) {
 -    FastClass fastClass = GuiceFastClass.create(clazz);
 +    FastClass fastClass = GuiceCodeGen.getFastClass(clazz);
      final FastConstructor fastConstructor
-         = fastClass.getConstructor(parameterTypes);
+         = fastClass.getConstructor(standardConstructor.getParameterTypes());
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/ConstructionContext.java
 ===================================================================
