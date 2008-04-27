@@ -30,17 +30,17 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 433)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -93,6 +93,8 @@
-   };
+@@ -89,6 +89,8 @@
+   final ErrorHandler errorHandler;
    Reflection reflection;
  
 +  MissingDependencyHandler missingDependencyHandler;
 +
-   InjectorImpl(Injector parentInjector) {
+   InjectorImpl(Injector parentInjector, ErrorHandler errorHandler) {
      this.parentInjector = parentInjector;
-   }
-@@ -173,6 +175,10 @@
      this.errorHandler = errorHandler;
+@@ -166,6 +168,10 @@
+     SourceProviders.withDefault(defaultSource, runnable);
    }
  
 +  void setMissingDependencyHandler(MissingDependencyHandler dependencyHandler) {
@@ -50,7 +50,7 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Gets a binding implementation.  First, it check to see if the parent has
     * a binding.  If the parent has a binding and the binding is scoped, it
-@@ -885,20 +891,31 @@
+@@ -874,20 +880,31 @@
  
        final Key<?> key = Keys.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
@@ -87,7 +87,7 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -953,21 +970,30 @@
+@@ -942,21 +959,30 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Parameter<T> parameter, Member member)
        throws MissingDependencyException {
@@ -142,31 +142,31 @@ Index: src/com/google/inject/InjectorBuilder.java
  import com.google.inject.internal.Objects;
  import com.google.inject.internal.Stopwatch;
 +import com.google.inject.spi.Dependency;
- import com.google.inject.spi.Message;
  import com.google.inject.spi.SourceProviders;
  
-@@ -104,6 +107,7 @@
+ import java.lang.reflect.Member;
+@@ -99,6 +102,7 @@
      validate();
 
-     injector.setErrorHandler(ErrorHandlers.RUNTIME);
+     errorHandler.switchToRuntime();
 +    injector.setMissingDependencyHandler(null);
 
      // If we're in the tool stage, stop here. Don't eagerly inject or load
      // anything.
-@@ -147,13 +151,19 @@
+@@ -142,13 +146,19 @@
      bindCommandProcesor = new BindCommandProcessor(
          injector, injector.scopes, stage, injector.explicitBindings,
          injector.outstandingInjections);
 +
 +    AddBindingFactoryCommandProcessor addBindingFactoryCommandProcessor
 +        = new AddBindingFactoryCommandProcessor();
-+    addBindingFactoryCommandProcessor.processCommands(commands, configurationErrorHandler);
++    addBindingFactoryCommandProcessor.processCommands(commands, errorHandler);
 +    stopwatch.resetAndLog("Binding factory creation");
 +
 +    injector.setMissingDependencyHandler(new AddLateBindingHandler(
 +        addBindingFactoryCommandProcessor.getBindingFactories()));
 +
-     bindCommandProcesor.processCommands(commands, configurationErrorHandler);
+     bindCommandProcesor.processCommands(commands, errorHandler);
      bindCommandProcesor.createUntargettedBindings();
      stopwatch.resetAndLog("Binding creation");
  
@@ -175,12 +175,11 @@ Index: src/com/google/inject/InjectorBuilder.java
 -
      requestStaticInjectionCommandProcessor = new RequestStaticInjectionCommandProcessor();
      requestStaticInjectionCommandProcessor
-         .processCommands(commands, configurationErrorHandler);
-@@ -282,4 +292,26 @@
-       }
+         .processCommands(commands, errorHandler);
+@@ -261,4 +271,25 @@
      }
    }
-+
+
 +  private class AddLateBindingHandler implements MissingDependencyHandler {
 +    final List<BindingFactory<?>> bindingFactories;
 +

@@ -172,7 +172,7 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 423)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -1016,7 +1016,7 @@
+@@ -1005,7 +1005,7 @@
          };
        }
        else {
@@ -181,7 +181,7 @@ Index: src/com/google/inject/InjectorImpl.java
          final FastMethod fastMethod = fastClass.getMethod(method);
  
          this.methodInvoker = new MethodInvoker() {
-@@ -1235,7 +1235,7 @@
+@@ -1224,7 +1224,7 @@
        }
        finally {
          // Only remove the context if this call created it.
