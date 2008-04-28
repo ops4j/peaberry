@@ -30,7 +30,7 @@ Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
 --- src/com/google/inject/InjectorImpl.java	(revision 433)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -89,6 +89,8 @@
+@@ -78,6 +78,8 @@
    final ErrorHandler errorHandler;
    Reflection reflection;
  
@@ -39,7 +39,7 @@ Index: src/com/google/inject/InjectorImpl.java
    InjectorImpl(Injector parentInjector, ErrorHandler errorHandler) {
      this.parentInjector = parentInjector;
      this.errorHandler = errorHandler;
-@@ -166,6 +168,10 @@
+@@ -155,6 +157,10 @@
      SourceProviders.withDefault(defaultSource, runnable);
    }
  
@@ -48,8 +48,8 @@ Index: src/com/google/inject/InjectorImpl.java
 +  }
 +
    /**
-    * Gets a binding implementation.  First, it check to see if the parent has
-    * a binding.  If the parent has a binding and the binding is scoped, it
+    * Returns the binding for {@code key}, or {@code null} if that binding
+    * cannot be resolved.
 @@ -874,20 +880,31 @@
  
        final Key<?> key = Keys.get(
@@ -166,17 +166,17 @@ Index: src/com/google/inject/InjectorBuilder.java
 +    injector.setMissingDependencyHandler(new AddLateBindingHandler(
 +        addBindingFactoryCommandProcessor.getBindingFactories()));
 +
-     bindCommandProcesor.processCommands(commands, errorHandler);
+     bindCommandProcesor.processCommands(commands);
      bindCommandProcesor.createUntargettedBindings();
      stopwatch.resetAndLog("Binding creation");
  
 -    injector.index();
 -    stopwatch.resetAndLog("Binding indexing");
 -
-     requestStaticInjectionCommandProcessor = new RequestStaticInjectionCommandProcessor();
      requestStaticInjectionCommandProcessor
-         .processCommands(commands, errorHandler);
-@@ -261,4 +271,25 @@
+         = new RequestStaticInjectionCommandProcessor(errorHandler);
+     requestStaticInjectionCommandProcessor
+@@ -262,4 +272,25 @@
      }
    }
 
@@ -206,7 +206,7 @@ Index: src/com/google/inject/BindCommandProcessor.java
 ===================================================================
 --- src/com/google/inject/BindCommandProcessor.java    (revision 433)
 +++ src/com/google/inject/BindCommandProcessor.java    (working copy)
-@@ -297,6 +297,7 @@
+@@ -290,6 +290,7 @@
            original.getSource());
      } else {
        bindings.put(key, binding);
@@ -408,7 +408,7 @@ Index: src/com/google/inject/CommandProcessor.java
 ===================================================================
 --- src/com/google/inject/CommandProcessor.java	(revision 433)
 +++ src/com/google/inject/CommandProcessor.java	(working copy)
-@@ -92,4 +92,8 @@
+@@ -91,4 +91,8 @@
    public <T> Boolean visitGetProvider(GetProviderCommand<T> command) {
      return false;
    }
