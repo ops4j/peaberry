@@ -50,74 +50,49 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Returns the binding for {@code key}, or {@code null} if that binding
     * cannot be resolved.
-@@ -874,20 +880,31 @@
+@@ -847,14 +847,20 @@
  
        final Key<?> key = Keys.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
--      factory = SourceProviders.withDefault(StackTraceElements.forMember(field),
-+      Object source = StackTraceElements.forMember(field);
-+      Callable<InternalFactory<?>> lookupCall =
-         new Callable<InternalFactory<?>>() {
-           public InternalFactory<?> call() throws Exception {
-             return injector.getInternalFactory(key);
-           }
--        }
--      );
-+        };
- 
-+      InternalFactory<?> factory =
-+          SourceProviders.withDefault(source, lookupCall);
 +
 +      this.injectionPoint = InjectionPoint.newInstance(field,
 +          Nullability.forAnnotations(field.getAnnotations()), key, injector);
 +
-+      // try to handle missing dependencies and check again...
-+      if (null == factory && null != missingDependencyHandler &&
-+          missingDependencyHandler.handle(injectionPoint)) {
-+        factory = SourceProviders.withDefault(source, lookupCall);
-+      }
++      final MissingDependencyHandler handler = missingDependencyHandler;
 +
-       if (factory == null) {
-         throw new MissingDependencyException(key, field);
-       }
- 
+       factory = new ResolvingCallable<InternalFactory<?>>() {
+           public InternalFactory<?> call() throws ResolveFailedException {
+             return injector.getInternalFactory(key);
+           }
++          public boolean retry() {
++            return null == handler ? false : handler.handle(injectionPoint);
++          }
+         }.runWithDefaultSource(StackTraceElements.forMember(field));
+-
 -      this.injectionPoint = InjectionPoint.newInstance(field,
 -          Nullability.forAnnotations(field.getAnnotations()), key, injector);
-+      this.factory = factory;
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -942,21 +959,30 @@
+@@ -909,15 +915,22 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Parameter<T> parameter, Member member)
-       throws MissingDependencyException {
--    InternalFactory<? extends T> factory =
--        SourceProviders.withDefault(StackTraceElements.forMember(member),
-+    Object source = StackTraceElements.forMember(member);
-+    Callable<InternalFactory<? extends T>> lookupCall =
-       new Callable<InternalFactory<? extends T>>() {
-         public InternalFactory<? extends T> call() throws Exception {
-           return getInternalFactory(parameter.getKey());
-         }
--      }
--    );
-+      };
- 
-+    InternalFactory<? extends T> factory =
-+        SourceProviders.withDefault(source, lookupCall);
+       throws ResolveFailedException {
 +
-+    InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
++    final InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
 +        member, parameter.getIndex(), parameter.getNullability(), parameter.getKey(), this);
 +
-+    // try to handle missing dependencies and check again...
-+    if (null == factory && null != missingDependencyHandler &&
-+        missingDependencyHandler.handle(injectionPoint)) {
-+      factory = SourceProviders.withDefault(source, lookupCall);
-+    }
++    final MissingDependencyHandler handler = missingDependencyHandler;
 +
-     if (factory == null) {
-       throw new MissingDependencyException(parameter.getKey(), member);
-     }
+     InternalFactory<? extends T> factory
+         = new ResolvingCallable<InternalFactory<? extends T>>() {
+           public InternalFactory<? extends T> call() throws ResolveFailedException {
+             return getInternalFactory(parameter.getKey());
+           }
++          public boolean retry() {
++            return null == handler ? false : handler.handle(injectionPoint);
++          }
+     }.runWithDefaultSource(StackTraceElements.forMember(member));
  
 -    InjectionPoint<T> injectionPoint = InjectionPoint.newInstance(
 -        member, parameter.getIndex(), parameter.getNullability(), parameter.getKey(), this);
@@ -159,8 +134,8 @@ Index: src/com/google/inject/InjectorBuilder.java
          injector.outstandingInjections);
 +
 +    AddBindingFactoryCommandProcessor addBindingFactoryCommandProcessor
-+        = new AddBindingFactoryCommandProcessor();
-+    addBindingFactoryCommandProcessor.processCommands(commands, errorHandler);
++        = new AddBindingFactoryCommandProcessor(errorHandler);
++    addBindingFactoryCommandProcessor.processCommands(commands);
 +    stopwatch.resetAndLog("Binding factory creation");
 +
 +    injector.setMissingDependencyHandler(new AddLateBindingHandler(
@@ -339,7 +314,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 ===================================================================
 --- src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
 +++ src/com/google/inject/AddBindingFactoryCommandProcessor.java	(revision 0)
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,63 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -360,6 +335,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 +
 +import com.google.inject.binder.LinkedBindingBuilder;
 +import com.google.inject.commands.AddBindingFactoryCommand;
++import com.google.inject.internal.ErrorHandler;
 +import com.google.inject.matcher.Matcher;
 +import com.google.inject.spi.Dependency;
 +import java.util.ArrayList;
@@ -375,6 +351,10 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 +
 +  private final List<BindingFactory<?>> bindingFactories =
 +      new ArrayList<BindingFactory<?>>();
++
++  public AddBindingFactoryCommandProcessor(ErrorHandler errorHandler) {
++    super(errorHandler);
++  }
 +
 +  @Override public <B> Boolean visitAddBindingFactory(
 +      final AddBindingFactoryCommand<B> command) {
@@ -882,3 +862,30 @@ Index: test/com/google/inject/commands/CommandRecorderTest.java
    }
 
    @Retention(RUNTIME)
+Index: src/com/google/inject/internal/ResolvingCallable.java
+===================================================================
+--- src/com/google/inject/internal/ResolvingCallable.java	(revision 450)
++++ src/com/google/inject/internal/ResolvingCallable.java	(working copy)
+@@ -29,9 +29,22 @@
+  */
+ public abstract class ResolvingCallable<T> implements Callable<T> {
+   public abstract T call() throws ResolveFailedException;
++  public abstract boolean retry();
+
+   public T runWithDefaultSource(Object source) throws ResolveFailedException {
+     try {
++      return run(source);
++    } catch (ResolveFailedException e) {
++      if (retry()) {
++        return run(source);
++      } else {
++        throw e;
++      }
++    }
++  }
++
++  private T run(Object source) throws ResolveFailedException {
++    try {
+       return SourceProviders.withDefaultChecked(source, this);
+     } catch (ResolveFailedException e) {
+       throw e;
