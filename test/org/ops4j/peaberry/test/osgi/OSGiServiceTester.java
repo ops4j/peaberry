@@ -47,7 +47,6 @@ public abstract class OSGiServiceTester {
     properties.setProperty("name", name);
 
     Handle<?> handle = registry.add(new SimpleService() {
-      @Test(expectedExceptions = ServiceUnavailableException.class)
       public String check() {
         if (handles.containsKey(name)) {
           return name;
