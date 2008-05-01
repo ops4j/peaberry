@@ -23,7 +23,6 @@ import java.util.Properties;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
-import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
 

@@ -120,7 +120,7 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T> Handle<T> add(T service, Map<?, ?> properties) {
+  public <T> Handle<T> add(T service, Map<?, ?> attributes) {
 
     nonNull(service, "service");
 
@@ -129,7 +129,7 @@ public final class OSGiServiceRegistry
     /*
      * investigate various ways to determine service API...
      */
-    Object objectclass = properties.get(OBJECTCLASS);
+    Object objectclass = attributes.get(OBJECTCLASS);
     if (objectclass instanceof String[]) {
       interfaces = (String[]) objectclass;
     } else if (objectclass instanceof String) {
@@ -150,15 +150,15 @@ public final class OSGiServiceRegistry
       interfaces = api.toArray(new String[api.size()]);
     }
 
-    Dictionary<?, ?> props = new Hashtable<Object, Object>(properties);
+    Dictionary<?, ?> props = new Hashtable<Object, Object>(attributes);
 
     final ServiceRegistration registration =
         bundleContext.registerService(interfaces, service, props);
 
     return new Handle<T>() {
 
-      public void modify(Map<?, ?> properties) {
-        registration.setProperties(new Hashtable<Object, Object>(properties));
+      public void modify(Map<?, ?> attributes) {
+        registration.setProperties(new Hashtable<Object, Object>(attributes));
       }
 
       public void remove() {

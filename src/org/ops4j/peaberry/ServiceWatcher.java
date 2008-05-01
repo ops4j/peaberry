@@ -26,7 +26,7 @@ import java.util.Map;
 public interface ServiceWatcher {
 
   /**
-   * Service property (&quot;service.filter&quot;) set by {@link ServiceWatcher}
+   * LDAP attribute (&quot;service.filter&quot;) set by {@link ServiceWatcher}
    * services to an LDAP filter that matches services they are interested in.
    */
   static final String SERVICE_FILTER = "service.filter";
@@ -35,11 +35,11 @@ public interface ServiceWatcher {
    * Ask the watcher to start watching the given service.
    * 
    * @param service service instance
-   * @param properties service properties
+   * @param attributes service attributes
    * 
    * @return handle to watched service, null if the watcher is not interested
    */
-  <T> Handle<T> add(T service, Map<?, ?> properties);
+  <T> Handle<T> add(T service, Map<?, ?> attributes);
 
   /**
    * Handle to a watched service.
@@ -47,11 +47,11 @@ public interface ServiceWatcher {
   public interface Handle<T> {
 
     /**
-     * Modify the properties of the watched service.
+     * Modify the attributes of the watched service.
      * 
-     * @param properties service properties
+     * @param attributes service attributes
      */
-    void modify(Map<?, ?> properties);
+    void modify(Map<?, ?> attributes);
 
     /**
      * Stop the service from being watched.
