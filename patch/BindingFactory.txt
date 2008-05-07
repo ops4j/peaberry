@@ -1,6 +1,119 @@
+Index: test/com/google/inject/commands/CommandRecorderTest.java
+===================================================================
+--- test/com/google/inject/commands/CommandRecorderTest.java	(revision 466)
++++ test/com/google/inject/commands/CommandRecorderTest.java	(working copy)
+@@ -759,6 +759,10 @@
+     public Void visitGetProvider(GetProviderCommand command) {
+       throw new AssertionFailedError();
+     }
++
++    public Void visitAddBindingFactory(AddBindingFactoryCommand command) {
++      throw new AssertionFailedError();
++    }
+   }
+ 
+   @Retention(RUNTIME)
+Index: src/com/google/inject/matcher/Matchers.java
+===================================================================
+--- src/com/google/inject/matcher/Matchers.java	(revision 466)
++++ src/com/google/inject/matcher/Matchers.java	(working copy)
+@@ -17,10 +17,14 @@
+ package com.google.inject.matcher;
+ 
+ import com.google.inject.internal.Objects;
++import com.google.inject.spi.Dependency;
++
+ import java.lang.annotation.Annotation;
+ import java.lang.annotation.Retention;
+ import java.lang.annotation.RetentionPolicy;
+ import java.lang.reflect.AnnotatedElement;
++import java.lang.reflect.Constructor;
++import java.lang.reflect.Member;
+ import java.lang.reflect.Method;
+ 
+ /**
+@@ -196,4 +200,78 @@
+       }
+     };
+   }
++
++  /**
++   * Helper class to allow matching of annotations decoupled from their element
++   */
++  private static class AnnotationBucket implements AnnotatedElement {
++    final Annotation[] annotations;
++    public AnnotationBucket(Annotation... annotations) {
++      this.annotations = annotations;
++    }
++    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
++      for (int i = 0; i < annotations.length; i++) {
++        if (annotationClass.isInstance(annotations[i])) {
++          return annotationClass.cast(annotations[i]);
++        }
++      }
++      return null;
++    }
++    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
++      return getAnnotation(annotationClass) != null;
++    }
++    public Annotation[] getAnnotations() {
++      return annotations;
++    }
++    public Annotation[] getDeclaredAnnotations() {
++      return annotations;
++    }
++  }
++
++  /**
++   * Returns a matcher which matches dependencies with matching key annotations.
++   */
++  public static Matcher<Dependency<?>> key(
++      final Matcher<AnnotatedElement> keyAnnotation) {
++    Objects.nonNull(keyAnnotation, "key annotation matcher");
++    return new AbstractMatcher<Dependency<?>>() {
++      public boolean matches(Dependency<?> d) {
++        return keyAnnotation.matches(
++            new AnnotationBucket(d.getKey().getAnnotation()));
++      }
++
++      public String toString() {
++        return "key(" + keyAnnotation + ")";
++      }
++    };
++  }
++
++  /**
++   * Returns a matcher which matches dependencies with matching member annotations.
++   */
++  public static Matcher<Dependency<?>> member(
++      final Matcher<AnnotatedElement> memberAnnotation) {
++    Objects.nonNull(memberAnnotation, "member annotation matcher");
++    return new AbstractMatcher<Dependency<?>>() {
++      public boolean matches(Dependency<?> d) {
++        Member m = d.getMember();
++        int i = d.getParameterIndex();
++        Annotation[] as = new Annotation[0];
++
++        if (i < 0) {
++          as = ((AnnotatedElement)m).getAnnotations();
++        } else if (m instanceof Constructor) {
++          as = ((Constructor<?>)m).getParameterAnnotations()[i];
++        } else if (m instanceof Method) {
++          as = ((Method)m).getParameterAnnotations()[i];
++        }
++
++        return memberAnnotation.matches(new AnnotationBucket(as));
++      }
++
++      public String toString() {
++        return "member(" + memberAnnotation + ")";
++      }
++    };
++  }
+ }
 Index: src/com/google/inject/Binder.java
 ===================================================================
---- src/com/google/inject/Binder.java	(revision 433)
+--- src/com/google/inject/Binder.java	(revision 466)
 +++ src/com/google/inject/Binder.java	(working copy)
 @@ -20,6 +20,7 @@
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
@@ -26,9 +139,36 @@ Index: src/com/google/inject/Binder.java
 +      Matcher<? super Dependency<? extends T>> dependencyMatcher,
 +          BindingFactory<T> bindingFactory);
  }
+Index: src/com/google/inject/internal/ResolvingCallable.java
+===================================================================
+--- src/com/google/inject/internal/ResolvingCallable.java	(revision 466)
++++ src/com/google/inject/internal/ResolvingCallable.java	(working copy)
+@@ -29,9 +29,22 @@
+  */
+ public abstract class ResolvingCallable<T> implements Callable<T> {
+   public abstract T call() throws ResolveFailedException;
++  public abstract boolean retry();
+ 
+   public T runWithDefaultSource(Object source) throws ResolveFailedException {
+     try {
++      return run(source);
++    } catch (ResolveFailedException e) {
++      if (retry()) {
++        return run(source);
++      } else {
++        throw e;
++      }
++    }
++  }
++
++  private T run(Object source) throws ResolveFailedException {
++    try {
+       return SourceProviders.withDefaultChecked(source, this);
+     } catch (ResolveFailedException e) {
+       throw e;
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 433)
+--- src/com/google/inject/InjectorImpl.java	(revision 466)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -78,6 +78,8 @@
    final ErrorHandler errorHandler;
@@ -50,7 +190,7 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Returns the binding for {@code key}, or {@code null} if that binding
     * cannot be resolved.
-@@ -847,14 +847,20 @@
+@@ -847,14 +853,20 @@
  
        final Key<?> key = Keys.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
@@ -74,7 +214,7 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -909,15 +915,22 @@
+@@ -909,15 +921,22 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Parameter<T> parameter, Member member)
        throws ResolveFailedException {
@@ -99,11 +239,340 @@ Index: src/com/google/inject/InjectorImpl.java
      return new SingleParameterInjector<T>(injectionPoint, factory);
    }
  
+Index: src/com/google/inject/commands/CommandRecorder.java
+===================================================================
+--- src/com/google/inject/commands/CommandRecorder.java	(revision 466)
++++ src/com/google/inject/commands/CommandRecorder.java	(working copy)
+@@ -21,6 +21,8 @@
+ import com.google.inject.binder.AnnotatedConstantBindingBuilder;
+ import com.google.inject.matcher.Matcher;
+ import static com.google.inject.spi.SourceProviders.defaultSource;
++import com.google.inject.internal.ErrorHandler;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.TypeConverter;
+ import com.google.inject.spi.SourceProviders;
+ import org.aopalliance.intercept.MethodInterceptor;
+@@ -115,10 +117,19 @@
+       commands.add(new AddThrowableErrorCommand(defaultSource(), t));
+     }
+ 
++    private class BindingErrorHandler implements ErrorHandler {
++      public void handle(Object source, String message) {
++        commands.add(new AddMessageErrorCommand(source, message, new Object[0]));
++      }
++      public void handle(Object source, String message, Object... arguments) {
++        commands.add(new AddMessageErrorCommand(source, message, arguments));
++      }
++    }
++
+     public <T> BindCommand<T>.BindingBuilder bind(Key<T> key) {
+       BindCommand<T> bindCommand = new BindCommand<T>(defaultSource(), key);
+       commands.add(bindCommand);
+-      return bindCommand.bindingBuilder(RecordingBinder.this);
++      return bindCommand.bindingBuilder(new BindingErrorHandler());
+     }
+ 
+     public <T> AnnotatedBindingBuilder<T> bind(TypeLiteral<T> typeLiteral) {
+@@ -132,7 +143,7 @@
+     public AnnotatedConstantBindingBuilder bindConstant() {
+       BindConstantCommand bindConstantCommand = new BindConstantCommand(defaultSource());
+       commands.add(bindConstantCommand);
+-      return bindConstantCommand.bindingBuilder(RecordingBinder.this);
++      return bindConstantCommand.bindingBuilder(new BindingErrorHandler());
+     }
+ 
+     public <T> Provider<T> getProvider(final Key<T> key) {
+@@ -152,5 +163,12 @@
+         TypeConverter converter) {
+       commands.add(new ConvertToTypesCommand(defaultSource(), typeMatcher, converter));
+     }
++
++    public <T> void addBindingFactory(
++        Matcher<? super Dependency<? extends T>> dependencyMatcher,
++            BindingFactory<T> bindingFactory) {
++      commands.add(new AddBindingFactoryCommand<T>(
++          defaultSource(), dependencyMatcher, bindingFactory));
++    }
+   }
+ }
+Index: src/com/google/inject/commands/AddBindingFactoryCommand.java
+===================================================================
+--- src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
++++ src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
+@@ -0,0 +1,58 @@
++/**
++ * Copyright (C) 2008 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject.commands;
++
++import com.google.inject.BindingFactory;
++import static com.google.inject.internal.Objects.nonNull;
++import com.google.inject.matcher.Matcher;
++import com.google.inject.spi.Dependency;
++
++/**
++ * Immutable snapshot of a request to add a binding factory.
++ *
++ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ */
++public final class AddBindingFactoryCommand<T> implements Command {
++  private final Object source;
++  private final Matcher<? super Dependency<? extends T>> dependencyMatcher;
++  private final BindingFactory<T> bindingFactory;
++
++  AddBindingFactoryCommand(
++      Object source,
++      Matcher<? super Dependency<? extends T>> dependencyMatcher,
++      BindingFactory<T> bindingFactory) {
++    this.source = nonNull(source, "source");
++    this.dependencyMatcher = nonNull(dependencyMatcher, "dependencyMatcher");
++    this.bindingFactory = nonNull(bindingFactory, "bindingFactory");
++  }
++
++  public Object getSource() {
++    return source;
++  }
++
++  public Matcher<? super Dependency<? extends T>> getDependencyMatcher() {
++    return dependencyMatcher;
++  }
++
++  public BindingFactory<T> getBindingFactory() {
++    return bindingFactory;
++  }
++
++  public <V> V acceptVisitor(Visitor<V> visitor) {
++    return visitor.visitAddBindingFactory(this);
++  }
++}
+
+Property changes on: src/com/google/inject/commands/AddBindingFactoryCommand.java
+___________________________________________________________________
+Name: svn:eol-style
+   + native
+
+Index: src/com/google/inject/commands/BindCommand.java
+===================================================================
+--- src/com/google/inject/commands/BindCommand.java	(revision 466)
++++ src/com/google/inject/commands/BindCommand.java	(working copy)
+@@ -17,12 +17,15 @@
+ package com.google.inject.commands;
+ 
+ import com.google.inject.*;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.SourceProviders;
+ import com.google.inject.binder.AnnotatedBindingBuilder;
+ import com.google.inject.binder.ConstantBindingBuilder;
+ import com.google.inject.binder.LinkedBindingBuilder;
+ import com.google.inject.binder.ScopedBindingBuilder;
+ import static com.google.inject.internal.Objects.nonNull;
++import static com.google.inject.spi.SourceProviders.defaultSource;
++import com.google.inject.internal.ErrorHandler;
+ import com.google.inject.internal.ErrorMessages;
+ 
+ import java.lang.annotation.Annotation;
+@@ -123,18 +126,18 @@
+     }
+   }
+ 
+-  BindingBuilder bindingBuilder(Binder binder) {
+-    return new BindingBuilder(binder);
++  BindingBuilder bindingBuilder(ErrorHandler errorHandler) {
++    return new BindingBuilder(errorHandler);
+   }
+ 
+   /**
+    * Package-private write access to the internal state of this command.
+    */
+   class BindingBuilder implements AnnotatedBindingBuilder<T> {
+-    private final Binder binder;
++    private final ErrorHandler errorHandler;
+ 
+-    BindingBuilder(Binder binder) {
+-      this.binder = binder;
++    BindingBuilder(ErrorHandler errorHandler) {
++      this.errorHandler = errorHandler;
+     }
+ 
+     public LinkedBindingBuilder<T> annotatedWith(
+@@ -316,26 +319,44 @@
+ 
+     private void checkNotTargetted() {
+       if (bindTarget != EMPTY_BIND_TARGET) {
+-        binder.addError(IMPLEMENTATION_ALREADY_SET);
++        errorHandler.handle(source, IMPLEMENTATION_ALREADY_SET);
+       }
+     }
+ 
+     private void checkNotAnnotated() {
+       if (BindCommand.this.key.getAnnotationType() != null) {
+-        binder.addError(ANNOTATION_ALREADY_SPECIFIED);
++         errorHandler.handle(source, ANNOTATION_ALREADY_SPECIFIED);
+       }
+     }
+ 
+     private void checkNotScoped() {
+       // Scoping isn't allowed when we have only one instance.
+       if (bindTarget.get() != null) {
+-        binder.addError(SINGLE_INSTANCE_AND_SCOPE);
++        errorHandler.handle(source, SINGLE_INSTANCE_AND_SCOPE);
+         return;
+       }
+ 
+       if (bindScoping != EMPTY_SCOPING) {
+-        binder.addError(SCOPE_ALREADY_SET);
++        errorHandler.handle(source, SCOPE_ALREADY_SET);
+       }
+     }
+   }
++
++  /**
++   * Attempt to add a missing binding to the injector by using a binding factory
++   */
++  public static <B, T extends B> BindCommand<T> lateBinding(ErrorHandler errorHandler,
++      Dependency<T> dependency, BindingFactory<B> bindingFactory) {
++
++    BindCommand<T> bindCommand = new BindCommand<T>(
++        defaultSource(), dependency.getKey());
++
++    LinkedBindingBuilder<T> lbb = bindCommand.bindingBuilder(errorHandler);
++
++    if (bindingFactory.bind(dependency, lbb)) {
++      return bindCommand;
++    } else {
++      return null;
++    }
++  }
+ }
+Index: src/com/google/inject/commands/Command.java
+===================================================================
+--- src/com/google/inject/commands/Command.java	(revision 466)
++++ src/com/google/inject/commands/Command.java	(working copy)
+@@ -38,5 +38,6 @@
+     V visitConvertToTypes(ConvertToTypesCommand command);
+     <T> V visitBind(BindCommand<T> command);
+     <T> V visitGetProvider(GetProviderCommand<T> command);
++    <T> V visitAddBindingFactory(AddBindingFactoryCommand<T> command);
+   }
+ }
+Index: src/com/google/inject/commands/CommandReplayer.java
+===================================================================
+--- src/com/google/inject/commands/CommandReplayer.java	(revision 466)
++++ src/com/google/inject/commands/CommandReplayer.java	(working copy)
+@@ -100,6 +100,11 @@
+         replayGetProvider(binder, command);
+         return null;
+       }
++
++      public <T> Void visitAddBindingFactory(AddBindingFactoryCommand<T> command) {
++        replayAddBindingFactory(binder, command);
++        return null;
++      }
+     };
+ 
+     for (Command command : commands) {
+@@ -199,4 +204,12 @@
+       }
+     });
+   }
++
++  public <T> void replayAddBindingFactory(final Binder binder, final AddBindingFactoryCommand<T> command) {
++    SourceProviders.withDefault(command.getSource(), new Runnable() {
++      public void run() {
++        binder.addBindingFactory(command.getDependencyMatcher(), command.getBindingFactory());
++      }
++    });
++  }
+ }
+Index: src/com/google/inject/commands/BindConstantCommand.java
+===================================================================
+--- src/com/google/inject/commands/BindConstantCommand.java	(revision 466)
++++ src/com/google/inject/commands/BindConstantCommand.java	(working copy)
+@@ -18,12 +18,12 @@
+ 
+ import com.google.inject.Key;
+ import com.google.inject.Provider;
+-import com.google.inject.Binder;
+ import com.google.inject.spi.SourceProviders;
+ import com.google.inject.binder.AnnotatedConstantBindingBuilder;
+ import com.google.inject.binder.ConstantBindingBuilder;
+ import com.google.inject.binder.LinkedBindingBuilder;
+ import com.google.inject.binder.ScopedBindingBuilder;
++import com.google.inject.internal.ErrorHandler;
+ import com.google.inject.internal.Objects;
+ import static com.google.inject.internal.Objects.nonNull;
+ 
+@@ -102,8 +102,8 @@
+     abstract <T> Key<T> getKey();
+   }
+ 
+-  BindingBuilder bindingBuilder(Binder binder) {
+-    return new BindingBuilder(binder);
++  BindingBuilder bindingBuilder(ErrorHandler errorHandler) {
++    return new BindingBuilder(errorHandler);
+   }
+ 
+   /**
+@@ -111,10 +111,10 @@
+    */
+   class BindingBuilder
+       implements AnnotatedConstantBindingBuilder, ConstantBindingBuilder {
+-    private final Binder binder;
++    private final ErrorHandler errorHandler;
+ 
+-    BindingBuilder(Binder binder) {
+-      this.binder = binder;
++    BindingBuilder(ErrorHandler errorHandler) {
++      this.errorHandler = errorHandler;
+     }
+ 
+     public ConstantBindingBuilder annotatedWith(final Class<? extends Annotation> annotationType) {
+@@ -349,13 +349,13 @@
+ 
+     private void assertNoBindingAnnotation() {
+       if (bindingAnnotation != null) {
+-        binder.addError(ANNOTATION_ALREADY_SPECIFIED);
++        errorHandler.handle(source, ANNOTATION_ALREADY_SPECIFIED);
+       }
+     }
+ 
+     private void assertNoTarget() {
+       if (target != null) {
+-        binder.addError(CONSTANT_VALUE_ALREADY_SET);
++        errorHandler.handle(source, CONSTANT_VALUE_ALREADY_SET);
+       }
+     }
+   }
+Index: src/com/google/inject/BindCommandProcessor.java
+===================================================================
+--- src/com/google/inject/BindCommandProcessor.java	(revision 466)
++++ src/com/google/inject/BindCommandProcessor.java	(working copy)
+@@ -290,6 +290,7 @@
+           original.getSource());
+     } else {
+       bindings.put(key, binding);
++      injector.index(binding);
+     }
+   }
+ 
 Index: src/com/google/inject/InjectorBuilder.java
 ===================================================================
---- src/com/google/inject/InjectorBuilder.java	(revision 433)
+--- src/com/google/inject/InjectorBuilder.java	(revision 466)
 +++ src/com/google/inject/InjectorBuilder.java	(working copy)
-@@ -17,6 +17,8 @@
+@@ -17,11 +17,14 @@
  package com.google.inject;
  
  import static com.google.inject.Scopes.SINGLETON;
@@ -112,23 +581,21 @@ Index: src/com/google/inject/InjectorBuilder.java
  import com.google.inject.commands.Command;
  import com.google.inject.commands.CommandRecorder;
  import com.google.inject.commands.FutureInjector;
-@@ -23,6 +25,7 @@
- import com.google.inject.internal.ConstructionProxyFactory;
  import com.google.inject.internal.Objects;
  import com.google.inject.internal.Stopwatch;
 +import com.google.inject.spi.Dependency;
  import com.google.inject.spi.SourceProviders;
  
  import java.lang.reflect.Member;
-@@ -99,6 +102,7 @@
+@@ -98,6 +101,7 @@
      validate();
-
+ 
      errorHandler.switchToRuntime();
 +    injector.setMissingDependencyHandler(null);
-
+ 
      // If we're in the tool stage, stop here. Don't eagerly inject or load
      // anything.
-@@ -142,13 +146,19 @@
+@@ -141,13 +145,19 @@
      bindCommandProcesor = new BindCommandProcessor(
          injector, injector.scopes, stage, injector.explicitBindings,
          injector.outstandingInjections);
@@ -151,10 +618,10 @@ Index: src/com/google/inject/InjectorBuilder.java
      requestStaticInjectionCommandProcessor
          = new RequestStaticInjectionCommandProcessor(errorHandler);
      requestStaticInjectionCommandProcessor
-@@ -262,4 +272,25 @@
+@@ -261,4 +271,25 @@
      }
    }
-
+ 
 +  private class AddLateBindingHandler implements MissingDependencyHandler {
 +    final List<BindingFactory<?>> bindingFactories;
 +
@@ -167,7 +634,7 @@ Index: src/com/google/inject/InjectorBuilder.java
 +
 +      // search in order of registration...
 +      for (final BindingFactory bindingFactory : bindingFactories) {
-+        BindCommand command = BindCommand.lateBinding(dependency, bindingFactory);
++        BindCommand command = BindCommand.lateBinding(errorHandler, dependency, bindingFactory);
 +        if (command != null) {
 +          bindCommandProcesor.visitBind(command);
 +          return true;
@@ -177,18 +644,6 @@ Index: src/com/google/inject/InjectorBuilder.java
 +    }
 +  }
  }
-Index: src/com/google/inject/BindCommandProcessor.java
-===================================================================
---- src/com/google/inject/BindCommandProcessor.java    (revision 433)
-+++ src/com/google/inject/BindCommandProcessor.java    (working copy)
-@@ -290,6 +290,7 @@
-           original.getSource());
-     } else {
-       bindings.put(key, binding);
-+      injector.index(binding);
-     }
-   }
-
 Index: src/com/google/inject/BindingFactory.java
 ===================================================================
 --- src/com/google/inject/BindingFactory.java	(revision 0)
@@ -286,7 +741,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/AbstractModule.java
 ===================================================================
---- src/com/google/inject/AbstractModule.java	(revision 433)
+--- src/com/google/inject/AbstractModule.java	(revision 466)
 +++ src/com/google/inject/AbstractModule.java	(working copy)
 @@ -21,6 +21,7 @@
  import com.google.inject.binder.LinkedBindingBuilder;
@@ -386,7 +841,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/CommandProcessor.java
 ===================================================================
---- src/com/google/inject/CommandProcessor.java	(revision 433)
+--- src/com/google/inject/CommandProcessor.java	(revision 466)
 +++ src/com/google/inject/CommandProcessor.java	(working copy)
 @@ -91,4 +91,8 @@
    public <T> Boolean visitGetProvider(GetProviderCommand<T> command) {
@@ -397,495 +852,3 @@ Index: src/com/google/inject/CommandProcessor.java
 +    return false;
 +  }
  }
-Index: src/com/google/inject/commands/CommandRecorder.java
-===================================================================
---- src/com/google/inject/commands/CommandRecorder.java	(revision 433)
-+++ src/com/google/inject/commands/CommandRecorder.java	(working copy)
-@@ -21,6 +21,7 @@
- import com.google.inject.binder.AnnotatedConstantBindingBuilder;
- import com.google.inject.matcher.Matcher;
- import static com.google.inject.spi.SourceProviders.defaultSource;
-+import com.google.inject.spi.Dependency;
- import com.google.inject.spi.TypeConverter;
- import com.google.inject.spi.SourceProviders;
- import org.aopalliance.intercept.MethodInterceptor;
-@@ -115,10 +117,16 @@
-       commands.add(new AddThrowableErrorCommand(defaultSource(), t));
-     }
- 
-+    private class BindingErrorHandler implements ErrorHandler {
-+      public void handle(Object source, String message, Object... arguments) {
-+        commands.add(new AddMessageErrorCommand(source, message, arguments));
-+      }
-+    }
-+
-     public <T> BindCommand<T>.BindingBuilder bind(Key<T> key) {
-       BindCommand<T> bindCommand = new BindCommand<T>(defaultSource(), key);
-       commands.add(bindCommand);
--      return bindCommand.bindingBuilder(RecordingBinder.this);
-+      return bindCommand.bindingBuilder(new BindingErrorHandler());
-     }
- 
-     public <T> AnnotatedBindingBuilder<T> bind(TypeLiteral<T> typeLiteral) {
-@@ -132,7 +140,7 @@
-     public AnnotatedConstantBindingBuilder bindConstant() {
-       BindConstantCommand bindConstantCommand = new BindConstantCommand(defaultSource());
-       commands.add(bindConstantCommand);
--      return bindConstantCommand.bindingBuilder(RecordingBinder.this);
-+      return bindConstantCommand.bindingBuilder(new BindingErrorHandler());
-     }
- 
-     public <T> Provider<T> getProvider(final Key<T> key) {
-@@ -152,5 +160,12 @@
-         TypeConverter converter) {
-       commands.add(new ConvertToTypesCommand(defaultSource(), typeMatcher, converter));
-     }
-+
-+    public <T> void addBindingFactory(
-+        Matcher<? super Dependency<? extends T>> dependencyMatcher,
-+            BindingFactory<T> bindingFactory) {
-+      commands.add(new AddBindingFactoryCommand<T>(defaultSource(), dependencyMatcher,
-+          bindingFactory));
-+    }
-   }
- }
-Index: src/com/google/inject/commands/AddBindingFactoryCommand.java
-===================================================================
---- src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
-+++ src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
-@@ -0,0 +1,58 @@
-+/**
-+ * Copyright (C) 2008 Google Inc.
-+ *
-+ * Licensed under the Apache License, Version 2.0 (the "License");
-+ * you may not use this file except in compliance with the License.
-+ * You may obtain a copy of the License at
-+ *
-+ * http://www.apache.org/licenses/LICENSE-2.0
-+ *
-+ * Unless required by applicable law or agreed to in writing, software
-+ * distributed under the License is distributed on an "AS IS" BASIS,
-+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-+ * See the License for the specific language governing permissions and
-+ * limitations under the License.
-+ */
-+
-+package com.google.inject.commands;
-+
-+import com.google.inject.BindingFactory;
-+import static com.google.inject.internal.Objects.nonNull;
-+import com.google.inject.matcher.Matcher;
-+import com.google.inject.spi.Dependency;
-+
-+/**
-+ * Immutable snapshot of a request to add a binding factory.
-+ *
-+ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
-+ */
-+public final class AddBindingFactoryCommand<T> implements Command {
-+  private final Object source;
-+  private final Matcher<? super Dependency<? extends T>> dependencyMatcher;
-+  private final BindingFactory<T> bindingFactory;
-+
-+  AddBindingFactoryCommand(
-+      Object source,
-+      Matcher<? super Dependency<? extends T>> dependencyMatcher,
-+      BindingFactory<T> bindingFactory) {
-+    this.source = nonNull(source, "source");
-+    this.dependencyMatcher = nonNull(dependencyMatcher, "dependencyMatcher");
-+    this.bindingFactory = nonNull(bindingFactory, "bindingFactory");
-+  }
-+
-+  public Object getSource() {
-+    return source;
-+  }
-+
-+  public Matcher<? super Dependency<? extends T>> getDependencyMatcher() {
-+    return dependencyMatcher;
-+  }
-+
-+  public BindingFactory<T> getBindingFactory() {
-+    return bindingFactory;
-+  }
-+
-+  public <V> V acceptVisitor(Visitor<V> visitor) {
-+    return visitor.visitAddBindingFactory(this);
-+  }
-+}
-
-Property changes on: src/com/google/inject/commands/AddBindingFactoryCommand.java
-___________________________________________________________________
-Name: svn:eol-style
-   + native
-
-Index: src/com/google/inject/commands/BindCommand.java
-===================================================================
---- src/com/google/inject/commands/BindCommand.java	(revision 433)
-+++ src/com/google/inject/commands/BindCommand.java	(working copy)
-@@ -17,12 +17,14 @@
- package com.google.inject.commands;
- 
- import com.google.inject.*;
-+import com.google.inject.spi.Dependency;
- import com.google.inject.spi.SourceProviders;
- import com.google.inject.binder.AnnotatedBindingBuilder;
- import com.google.inject.binder.ConstantBindingBuilder;
- import com.google.inject.binder.LinkedBindingBuilder;
- import com.google.inject.binder.ScopedBindingBuilder;
- import static com.google.inject.internal.Objects.nonNull;
-+import static com.google.inject.spi.SourceProviders.defaultSource;
- import com.google.inject.internal.ErrorMessages;
- 
- import java.lang.annotation.Annotation;
-@@ -123,18 +125,18 @@
-     }
-   }
- 
--  BindingBuilder bindingBuilder(Binder binder) {
--    return new BindingBuilder(binder);
-+  BindingBuilder bindingBuilder(ErrorHandler errorHandler) {
-+    return new BindingBuilder(errorHandler);
-   }
- 
-   /**
-    * Package-private write access to the internal state of this command.
-    */
-   class BindingBuilder implements AnnotatedBindingBuilder<T> {
--    private final Binder binder;
-+    private final ErrorHandler errorHandler;
- 
--    BindingBuilder(Binder binder) {
--      this.binder = binder;
-+    BindingBuilder(ErrorHandler errorHandler) {
-+      this.errorHandler = errorHandler;
-     }
- 
-     public LinkedBindingBuilder<T> annotatedWith(
-@@ -316,26 +318,49 @@
- 
-     private void checkNotTargetted() {
-       if (bindTarget != EMPTY_BIND_TARGET) {
--        binder.addError(IMPLEMENTATION_ALREADY_SET);
-+        errorHandler.handle(source, IMPLEMENTATION_ALREADY_SET);
-       }
-     }
- 
-     private void checkNotAnnotated() {
-       if (BindCommand.this.key.getAnnotationType() != null) {
--        binder.addError(ANNOTATION_ALREADY_SPECIFIED);
-+         errorHandler.handle(source, ANNOTATION_ALREADY_SPECIFIED);
-       }
-     }
- 
-     private void checkNotScoped() {
-       // Scoping isn't allowed when we have only one instance.
-       if (bindTarget.get() != null) {
--        binder.addError(SINGLE_INSTANCE_AND_SCOPE);
-+        errorHandler.handle(source, SINGLE_INSTANCE_AND_SCOPE);
-         return;
-       }
- 
-       if (bindScoping != EMPTY_SCOPING) {
--        binder.addError(SCOPE_ALREADY_SET);
-+        errorHandler.handle(source, SCOPE_ALREADY_SET);
-       }
-     }
-   }
-+
-+  /**
-+   * Attempt to add a missing binding to the injector by using a binding factory
-+   */
-+  public static <B, T extends B> BindCommand<T> lateBinding(
-+      Dependency<T> dependency, BindingFactory<B> bindingFactory) {
-+
-+    BindCommand<T> bindCommand = new BindCommand<T>(
-+        defaultSource(), dependency.getKey());
-+
-+    LinkedBindingBuilder<T> lbb = bindCommand.bindingBuilder(
-+      new ErrorHandler() {
-+        public void handle(Object source, String message, Object... arguments) {
-+          throw new RuntimeException("Error at " + source + " " +
-+              String.format(message, arguments));
-+        }});
-+
-+    if (bindingFactory.bind(dependency, lbb)) {
-+      return bindCommand;
-+    } else {
-+      return null;
-+    }
-+  }
- }
-Index: src/com/google/inject/commands/Command.java
-===================================================================
---- src/com/google/inject/commands/Command.java	(revision 433)
-+++ src/com/google/inject/commands/Command.java	(working copy)
-@@ -38,5 +38,6 @@
-     V visitConvertToTypes(ConvertToTypesCommand command);
-     <T> V visitBind(BindCommand<T> command);
-     <T> V visitGetProvider(GetProviderCommand<T> command);
-+    <T> V visitAddBindingFactory(AddBindingFactoryCommand<T> command);
-   }
- }
-Index: src/com/google/inject/commands/CommandReplayer.java
-===================================================================
---- src/com/google/inject/commands/CommandReplayer.java	(revision 433)
-+++ src/com/google/inject/commands/CommandReplayer.java	(working copy)
-@@ -100,6 +100,11 @@
-         replayGetProvider(binder, command);
-         return null;
-       }
-+
-+      public <T> Void visitAddBindingFactory(AddBindingFactoryCommand<T> command) {
-+        replayAddBindingFactory(binder, command);
-+        return null;
-+      }
-     };
- 
-     for (Command command : commands) {
-@@ -199,4 +204,12 @@
-       }
-     });
-   }
-+
-+  public <T> void replayAddBindingFactory(final Binder binder, final AddBindingFactoryCommand<T> command) {
-+    SourceProviders.withDefault(command.getSource(), new Runnable() {
-+      public void run() {
-+        binder.addBindingFactory(command.getDependencyMatcher(), command.getBindingFactory());
-+      }
-+    });
-+  }
- }
-Index: src/com/google/inject/commands/BindConstantCommand.java
-===================================================================
---- src/com/google/inject/commands/BindConstantCommand.java	(revision 433)
-+++ src/com/google/inject/commands/BindConstantCommand.java	(working copy)
-@@ -18,7 +18,6 @@
- 
- import com.google.inject.Key;
- import com.google.inject.Provider;
--import com.google.inject.Binder;
- import com.google.inject.spi.SourceProviders;
- import com.google.inject.binder.AnnotatedConstantBindingBuilder;
- import com.google.inject.binder.ConstantBindingBuilder;
-@@ -102,8 +101,8 @@
-     abstract <T> Key<T> getKey();
-   }
- 
--  BindingBuilder bindingBuilder(Binder binder) {
--    return new BindingBuilder(binder);
-+  BindingBuilder bindingBuilder(ErrorHandler errorHandler) {
-+    return new BindingBuilder(errorHandler);
-   }
- 
-   /**
-@@ -111,10 +110,10 @@
-    */
-   class BindingBuilder
-       implements AnnotatedConstantBindingBuilder, ConstantBindingBuilder {
--    private final Binder binder;
-+    private final ErrorHandler errorHandler;
- 
--    BindingBuilder(Binder binder) {
--      this.binder = binder;
-+    BindingBuilder(ErrorHandler errorHandler) {
-+      this.errorHandler = errorHandler;
-     }
- 
-     public ConstantBindingBuilder annotatedWith(final Class<? extends Annotation> annotationType) {
-@@ -349,13 +348,13 @@
- 
-     private void assertNoBindingAnnotation() {
-       if (bindingAnnotation != null) {
--        binder.addError(ANNOTATION_ALREADY_SPECIFIED);
-+        errorHandler.handle(source, ANNOTATION_ALREADY_SPECIFIED);
-       }
-     }
- 
-     private void assertNoTarget() {
-       if (target != null) {
--        binder.addError(CONSTANT_VALUE_ALREADY_SET);
-+        errorHandler.handle(source, CONSTANT_VALUE_ALREADY_SET);
-       }
-     }
-   }
-Index: src/com/google/inject/commands/ErrorHandler.java
-===================================================================
---- src/com/google/inject/commands/ErrorHandler.java	(revision 0)
-+++ src/com/google/inject/commands/ErrorHandler.java	(revision 0)
-@@ -0,0 +1,30 @@
-+/**
-+ * Copyright (C) 2008 Google Inc.
-+ *
-+ * Licensed under the Apache License, Version 2.0 (the "License");
-+ * you may not use this file except in compliance with the License.
-+ * You may obtain a copy of the License at
-+ *
-+ * http://www.apache.org/licenses/LICENSE-2.0
-+ *
-+ * Unless required by applicable law or agreed to in writing, software
-+ * distributed under the License is distributed on an "AS IS" BASIS,
-+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-+ * See the License for the specific language governing permissions and
-+ * limitations under the License.
-+ */
-+
-+package com.google.inject.commands;
-+
-+/**
-+ * Handles errors in the Binder.
-+ *
-+ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
-+ */
-+interface ErrorHandler {
-+
-+  /**
-+   * Handles an error.
-+   */
-+  void handle(Object source, String message, Object... arguments);
-+}
-
-Property changes on: src/com/google/inject/commands/ErrorHandler.java
-___________________________________________________________________
-Name: svn:eol-style
-   + native
-
-Index: src/com/google/inject/matcher/Matchers.java
-===================================================================
---- src/com/google/inject/matcher/Matchers.java (revision 433)
-+++ src/com/google/inject/matcher/Matchers.java (working copy)
-@@ -17,10 +17,14 @@
- package com.google.inject.matcher;
-
- import com.google.inject.internal.Objects;
-+import com.google.inject.spi.Dependency;
-+
- import java.lang.annotation.Annotation;
- import java.lang.annotation.Retention;
- import java.lang.annotation.RetentionPolicy;
- import java.lang.reflect.AnnotatedElement;
-+import java.lang.reflect.Constructor;
-+import java.lang.reflect.Member;
- import java.lang.reflect.Method;
-
- /**
-@@ -196,4 +200,78 @@
-       }
-     };
-   }
-+
-+  /**
-+   * Helper class to allow matching of annotations decoupled from their element
-+   */
-+  private static class AnnotationBucket implements AnnotatedElement {
-+    final Annotation[] annotations;
-+    public AnnotationBucket(Annotation... annotations) {
-+      this.annotations = annotations;
-+    }
-+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-+      for (int i = 0; i < annotations.length; i++) {
-+        if (annotationClass.isInstance(annotations[i])) {
-+          return annotationClass.cast(annotations[i]);
-+        }
-+      }
-+      return null;
-+    }
-+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
-+      return getAnnotation(annotationClass) != null;
-+    }
-+    public Annotation[] getAnnotations() {
-+      return annotations;
-+    }
-+    public Annotation[] getDeclaredAnnotations() {
-+      return annotations;
-+    }
-+  }
-+
-+  /**
-+   * Returns a matcher which matches dependencies with matching key annotations.
-+   */
-+  public static Matcher<Dependency<?>> key(
-+      final Matcher<AnnotatedElement> keyAnnotation) {
-+    Objects.nonNull(keyAnnotation, "key annotation matcher");
-+    return new AbstractMatcher<Dependency<?>>() {
-+      public boolean matches(Dependency<?> d) {
-+        return keyAnnotation.matches(
-+            new AnnotationBucket(d.getKey().getAnnotation()));
-+      }
-+
-+      public String toString() {
-+        return "key(" + keyAnnotation + ")";
-+      }
-+    };
-+  }
-+
-+  /**
-+   * Returns a matcher which matches dependencies with matching member annotations.
-+   */
-+  public static Matcher<Dependency<?>> member(
-+      final Matcher<AnnotatedElement> memberAnnotation) {
-+    Objects.nonNull(memberAnnotation, "member annotation matcher");
-+    return new AbstractMatcher<Dependency<?>>() {
-+      public boolean matches(Dependency<?> d) {
-+        Member m = d.getMember();
-+        int i = d.getParameterIndex();
-+        Annotation[] as = new Annotation[0];
-+
-+        if (i < 0) {
-+          as = ((AnnotatedElement)m).getAnnotations();
-+        } else if (m instanceof Constructor) {
-+          as = ((Constructor<?>)m).getParameterAnnotations()[i];
-+        } else if (m instanceof Method) {
-+          as = ((Method)m).getParameterAnnotations()[i];
-+        }
-+
-+        return memberAnnotation.matches(new AnnotationBucket(as));
-+      }
-+
-+      public String toString() {
-+        return "member(" + memberAnnotation + ")";
-+      }
-+    };
-+  }
- }
-Index: test/com/google/inject/commands/CommandRecorderTest.java
-===================================================================
---- test/com/google/inject/commands/CommandRecorderTest.java   (revision 433)
-+++ test/com/google/inject/commands/CommandRecorderTest.java   (working copy)
-@@ -759,6 +759,10 @@
-     public Void visitGetProvider(GetProviderCommand command) {
-       throw new AssertionFailedError();
-     }
-+
-+    public Void visitAddBindingFactory(AddBindingFactoryCommand command) {
-+      throw new AssertionFailedError();
-+    }
-   }
-
-   @Retention(RUNTIME)
-Index: src/com/google/inject/internal/ResolvingCallable.java
-===================================================================
---- src/com/google/inject/internal/ResolvingCallable.java	(revision 450)
-+++ src/com/google/inject/internal/ResolvingCallable.java	(working copy)
-@@ -29,9 +29,22 @@
-  */
- public abstract class ResolvingCallable<T> implements Callable<T> {
-   public abstract T call() throws ResolveFailedException;
-+  public abstract boolean retry();
-
-   public T runWithDefaultSource(Object source) throws ResolveFailedException {
-     try {
-+      return run(source);
-+    } catch (ResolveFailedException e) {
-+      if (retry()) {
-+        return run(source);
-+      } else {
-+        throw e;
-+      }
-+    }
-+  }
-+
-+  private T run(Object source) throws ResolveFailedException {
-+    try {
-       return SourceProviders.withDefaultChecked(source, this);
-     } catch (ResolveFailedException e) {
-       throw e;

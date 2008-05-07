@@ -1,6 +1,6 @@
 Index: src/com/google/inject/DefaultConstructionProxyFactory.java
 ===================================================================
---- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 423)
+--- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 466)
 +++ src/com/google/inject/DefaultConstructionProxyFactory.java	(working copy)
 @@ -17,7 +17,7 @@
  package com.google.inject;
@@ -8,10 +8,10 @@ Index: src/com/google/inject/DefaultConstructionProxyFactory.java
  import com.google.inject.internal.ErrorHandler;
 -import com.google.inject.internal.GuiceFastClass;
 +import com.google.inject.internal.GuiceCodeGen;
- import com.google.inject.internal.ConstructionProxy;
- import com.google.inject.internal.ConstructionProxyFactory;
  import net.sf.cglib.reflect.FastClass;
-@@ -72,7 +71,7 @@
+ import net.sf.cglib.reflect.FastConstructor;
+ 
+@@ -70,7 +70,7 @@
      }
  
      Class<T> classToConstruct = constructor.getDeclaringClass();
@@ -22,7 +22,7 @@ Index: src/com/google/inject/DefaultConstructionProxyFactory.java
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/internal/GuiceFastClass.java
 ===================================================================
---- src/com/google/inject/internal/GuiceFastClass.java	(revision 423)
+--- src/com/google/inject/internal/GuiceFastClass.java	(revision 466)
 +++ src/com/google/inject/internal/GuiceFastClass.java	(working copy)
 @@ -1,39 +0,0 @@
 -/**
@@ -170,7 +170,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 423)
+--- src/com/google/inject/InjectorImpl.java	(revision 466)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -959,7 +959,7 @@
          };
@@ -192,9 +192,9 @@ Index: src/com/google/inject/InjectorImpl.java
      else {
 Index: src/com/google/inject/ProxyFactory.java
 ===================================================================
---- src/com/google/inject/ProxyFactory.java	(revision 423)
+--- src/com/google/inject/ProxyFactory.java	(revision 466)
 +++ src/com/google/inject/ProxyFactory.java	(working copy)
-@@ -141,17 +139,13 @@
+@@ -141,17 +141,13 @@
      }
  
      // Create the proxied class.
@@ -213,7 +213,7 @@ Index: src/com/google/inject/ProxyFactory.java
  
      Class<?> proxied = enhancer.createClass();
  
-@@ -166,7 +160,7 @@
+@@ -166,7 +162,7 @@
     */
    private <T> ConstructionProxy<T> createConstructionProxy(final Class<?> clazz,
        final Constructor standardConstructor) {
@@ -224,7 +224,7 @@ Index: src/com/google/inject/ProxyFactory.java
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/ConstructionContext.java
 ===================================================================
---- src/com/google/inject/ConstructionContext.java	(revision 423)
+--- src/com/google/inject/ConstructionContext.java	(revision 466)
 +++ src/com/google/inject/ConstructionContext.java	(working copy)
 @@ -19,10 +19,11 @@
  import java.lang.reflect.InvocationHandler;
