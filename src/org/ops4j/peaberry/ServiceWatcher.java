@@ -54,7 +54,7 @@ public interface ServiceWatcher {
     void modify(Map<?, ?> attributes);
 
     /**
-     * Stop the service from being watched.
+     * Ask the watcher to stop watching this service.
      */
     void remove();
   }

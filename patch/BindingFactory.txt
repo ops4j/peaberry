@@ -190,7 +190,7 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Returns the binding for {@code key}, or {@code null} if that binding
     * cannot be resolved.
-@@ -847,14 +853,20 @@
+@@ -850,14 +856,20 @@
  
        final Key<?> key = Keys.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
@@ -214,7 +214,7 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -909,15 +921,22 @@
+@@ -912,15 +924,22 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Parameter<T> parameter, Member member)
        throws ResolveFailedException {
@@ -560,7 +560,7 @@ Index: src/com/google/inject/BindCommandProcessor.java
 ===================================================================
 --- src/com/google/inject/BindCommandProcessor.java	(revision 466)
 +++ src/com/google/inject/BindCommandProcessor.java	(working copy)
-@@ -290,6 +290,7 @@
+@@ -297,6 +297,7 @@
            original.getSource());
      } else {
        bindings.put(key, binding);
