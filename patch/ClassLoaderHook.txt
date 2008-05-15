@@ -194,7 +194,16 @@ Index: src/com/google/inject/ProxyFactory.java
 ===================================================================
 --- src/com/google/inject/ProxyFactory.java	(revision 466)
 +++ src/com/google/inject/ProxyFactory.java	(working copy)
-@@ -141,17 +141,13 @@
+@@ -17,7 +17,7 @@
+ package com.google.inject;
+
+ import com.google.inject.internal.ErrorHandler;
+-import com.google.inject.internal.GuiceFastClass;
++import com.google.inject.internal.GuiceCodeGen;
+ import com.google.inject.internal.GuiceNamingPolicy;
+ import com.google.inject.internal.ReferenceCache;
+ import net.sf.cglib.proxy.Callback;
+@@ -144,17 +144,13 @@
      }
  
      // Create the proxied class.
@@ -213,7 +222,7 @@ Index: src/com/google/inject/ProxyFactory.java
  
      Class<?> proxied = enhancer.createClass();
  
-@@ -166,7 +162,7 @@
+@@ -169,7 +165,7 @@
     */
    private <T> ConstructionProxy<T> createConstructionProxy(final Class<?> clazz,
        final Constructor standardConstructor) {
