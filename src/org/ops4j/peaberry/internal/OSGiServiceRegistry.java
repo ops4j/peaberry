@@ -22,7 +22,6 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -120,7 +119,7 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T> Handle<T> add(T service, Map<?, ?> attributes) {
+  public <T> Handle<T> add(T service, Map<? super String, Object> attributes) {
 
     nonNull(service, "service");
 
@@ -150,14 +149,13 @@ public final class OSGiServiceRegistry
       interfaces = api.toArray(new String[api.size()]);
     }
 
-    Dictionary<?, ?> props = new Hashtable<Object, Object>(attributes);
-
     final ServiceRegistration registration =
-        bundleContext.registerService(interfaces, service, props);
+        bundleContext.registerService(interfaces, service,
+            new Hashtable<Object, Object>(attributes));
 
     return new Handle<T>() {
 
-      public void modify(Map<?, ?> attributes) {
+      public void modify(Map<? super String, Object> attributes) {
         registration.setProperties(new Hashtable<Object, Object>(attributes));
       }
 
