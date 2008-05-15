@@ -39,7 +39,7 @@ public interface ServiceWatcher {
    * 
    * @return handle to watched service, null if the watcher is not interested
    */
-  <T> Handle<T> add(T service, Map<? super String, Object> attributes);
+  <T> Handle<T> add(T service, Map<String, ?> attributes);
 
   /**
    * Handle to a watched service.
@@ -51,7 +51,7 @@ public interface ServiceWatcher {
      * 
      * @param attributes service attributes
      */
-    void modify(Map<? super String, Object> attributes);
+    void modify(Map<String, ?> attributes);
 
     /**
      * Ask the watcher to stop watching this service.

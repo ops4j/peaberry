@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static org.ops4j.peaberry.Peaberry.attributes;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Properties;
@@ -138,7 +139,7 @@ public class ServiceInjectionTests
           throw new RuntimeException("Missing Service");
         }
       }
-    }, properties);
+    }, attributes(properties));
 
     handles.put(name, handle);
   }

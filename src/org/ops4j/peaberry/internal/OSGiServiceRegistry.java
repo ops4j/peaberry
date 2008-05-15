@@ -119,7 +119,7 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T> Handle<T> add(T service, Map<? super String, Object> attributes) {
+  public <T> Handle<T> add(T service, Map<String, ?> attributes) {
 
     nonNull(service, "service");
 
@@ -151,12 +151,12 @@ public final class OSGiServiceRegistry
 
     final ServiceRegistration registration =
         bundleContext.registerService(interfaces, service,
-            new Hashtable<Object, Object>(attributes));
+            new Hashtable<String, Object>(attributes));
 
     return new Handle<T>() {
 
-      public void modify(Map<? super String, Object> attributes) {
-        registration.setProperties(new Hashtable<Object, Object>(attributes));
+      public void modify(Map<String, ?> attributes) {
+        registration.setProperties(new Hashtable<String, Object>(attributes));
       }
 
       public void remove() {

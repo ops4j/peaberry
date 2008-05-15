@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static org.ops4j.peaberry.Peaberry.attributes;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -53,7 +55,7 @@ public abstract class OSGiServiceTester {
           throw new ServiceUnavailableException();
         }
       }
-    }, properties);
+    }, attributes(properties));
 
     handles.put(name, handle);
   }
