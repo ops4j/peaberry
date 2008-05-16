@@ -155,6 +155,15 @@ public final class OSGiServiceRegistry
 
     return new Handle<T>() {
 
+      @SuppressWarnings("unchecked")
+      public T get() {
+        try {
+          return (T) bundleContext.getService(registration.getReference());
+        } catch (IllegalStateException e) {
+          return null;
+        }
+      }
+
       public void modify(Map<String, ?> attributes) {
         registration.setProperties(new Hashtable<String, Object>(attributes));
       }

@@ -2,19 +2,19 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 558, "sl" : 35, "el" : 128, "name" : "ServiceMatcherTests",
+    {"id" : 317, "sl" : 35, "el" : 128, "name" : "ServiceMatcherTests",
     "methods" : [
              {"sl" : 73, "el" : 80, "sc" : 3},  {"sl" : 82, "el" : 85, "sc" : 3},  {"sl" : 87, "el" : 92, "sc" : 3},  {"sl" : 94, "el" : 98, "sc" : 3},  {"sl" : 100, "el" : 102, "sc" : 3},  {"sl" : 104, "el" : 115, "sc" : 3},  {"sl" : 117, "el" : 121, "sc" : 3},  {"sl" : 123, "el" : 127, "sc" : 3}  ]}
     ,
-    {"id" : 558, "sl" : 38, "el" : 38, "name" : "ServiceMatcherTests.MetaAnnotation",
+    {"id" : 317, "sl" : 38, "el" : 38, "name" : "ServiceMatcherTests.MetaAnnotation",
     "methods" : [
              ]}
     ,
-    {"id" : 558, "sl" : 42, "el" : 42, "name" : "ServiceMatcherTests.MetaService",
+    {"id" : 317, "sl" : 42, "el" : 42, "name" : "ServiceMatcherTests.MetaService",
     "methods" : [
              ]}
     ,
-    {"id" : 558, "sl" : 46, "el" : 46, "name" : "ServiceMatcherTests.MetaLeased",
+    {"id" : 317, "sl" : 46, "el" : 46, "name" : "ServiceMatcherTests.MetaLeased",
     "methods" : [
               ]}
     
@@ -23,29 +23,29 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_17" : {
+		"test_7" : {
 					  "name" : "handlesNull",
 					  "pass" : true,
 					  "methods" : [{"sl": 100 },],
 					  "statements" : [{"sl": 101 },]
 					  },
-		"test_14" : {
+		"test_1" : {
+					  "name" : "serviceSpec",
+					  "pass" : true,
+					  "methods" : [{"sl": 73 },{"sl": 87 },{"sl": 117 },],
+					  "statements" : [{"sl": 74 },{"sl": 75 },{"sl": 88 },{"sl": 89 },{"sl": 90 },{"sl": 91 },{"sl": 118 },{"sl": 119 },{"sl": 120 },]
+					  },
+		"test_18" : {
 					  "name" : "leasedSpec",
 					  "pass" : true,
 					  "methods" : [{"sl": 73 },{"sl": 94 },{"sl": 123 },],
 					  "statements" : [{"sl": 74 },{"sl": 75 },{"sl": 95 },{"sl": 96 },{"sl": 97 },{"sl": 124 },{"sl": 125 },{"sl": 126 },]
 					  },
-		"test_3" : {
+		"test_9" : {
 					  "name" : "missingAnnotations",
 					  "pass" : true,
 					  "methods" : [{"sl": 73 },{"sl": 82 },{"sl": 104 },],
 					  "statements" : [{"sl": 74 },{"sl": 75 },{"sl": 83 },{"sl": 84 },{"sl": 105 },{"sl": 106 },{"sl": 107 },{"sl": 108 },{"sl": 109 },{"sl": 110 },{"sl": 111 },{"sl": 112 },{"sl": 113 },{"sl": 114 },]
-					  },
-		"test_12" : {
-					  "name" : "serviceSpec",
-					  "pass" : true,
-					  "methods" : [{"sl": 73 },{"sl": 87 },{"sl": 117 },],
-					  "statements" : [{"sl": 74 },{"sl": 75 },{"sl": 88 },{"sl": 89 },{"sl": 90 },{"sl": 91 },{"sl": 118 },{"sl": 119 },{"sl": 120 },]
 					  }
  };
 
@@ -122,60 +122,60 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 3 , 14 , 12   ] ,
-  [ 3 , 14 , 12   ] ,
-  [ 3 , 14 , 12   ] ,
+  [ 18 , 1 , 9   ] ,
+  [ 18 , 1 , 9   ] ,
+  [ 18 , 1 , 9   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
   [  ] ,
   [  ] ,
-  [ 12   ] ,
-  [ 12   ] ,
-  [ 12   ] ,
-  [ 12   ] ,
-  [ 12   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
   [  ] ,
   [  ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [ 14   ] ,
+  [ 18   ] ,
+  [ 18   ] ,
+  [ 18   ] ,
+  [ 18   ] ,
   [  ] ,
   [  ] ,
-  [ 17   ] ,
-  [ 17   ] ,
+  [ 7   ] ,
+  [ 7   ] ,
   [  ] ,
   [  ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
+  [ 9   ] ,
   [  ] ,
   [  ] ,
-  [ 12   ] ,
-  [ 12   ] ,
-  [ 12   ] ,
-  [ 12   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
   [  ] ,
   [  ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [ 14   ] ,
+  [ 18   ] ,
+  [ 18   ] ,
+  [ 18   ] ,
+  [ 18   ] ,
   [  ] ,
   [  ] 
 ];

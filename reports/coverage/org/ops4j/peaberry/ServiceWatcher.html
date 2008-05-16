@@ -30,7 +30,7 @@
       <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
       <div class="roundedContent">
     <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
-    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Wed May 14 2008 12:36:22 SGT</div>
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Fri May 16 2008 16:10:59 GMT+08:00</div>
 
         
     
@@ -59,7 +59,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
-           <td >      61
+           <td >      68
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
@@ -76,7 +76,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_ncloc + 'file';">NCLOC:</label></td>
-           <td >      10
+           <td >      11
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp_density + 'file';">Cmp density:</label></td>
@@ -127,7 +127,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
-           <td >      61
+           <td >      68
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
@@ -144,7 +144,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_ncloc + 'file';">NCLOC:</label></td>
-           <td >      10
+           <td >      11
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp_density + 'file';">Cmp density:</label></td>
@@ -862,7 +862,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-42" class="srcLine">  &lt;T&gt; Handle&lt;T&gt; add(T service, Map&lt;?, ?&gt; attributes);</span></td>
+    <span class="spacer"></span><span id="src-42" class="srcLine">  &lt;T&gt; Handle&lt;T&gt; add(T service, Map&lt;String, ?&gt; attributes);</span></td>
 </tr>
         
 
@@ -979,7 +979,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-50" class="srcLine"><span class="comment">     * Modify the attributes of the watched service.</span></span></td>
+    <span class="spacer"></span><span id="src-50" class="srcLine"><span class="comment">     * Get the watched service instance (may be decorated by the watcher).</span></span></td>
 </tr>
         
 
@@ -1003,7 +1003,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-52" class="srcLine"><span class="comment">     * </span><span class="javadoc">@param</span><span class="comment"> attributes service attributes</span></span></td>
+    <span class="spacer"></span><span id="src-52" class="srcLine"><span class="comment">     * </span><span class="javadoc">@return</span><span class="comment"> service instance, null if it is no longer being watched</span></span></td>
 </tr>
         
 
@@ -1027,7 +1027,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-54" class="srcLine">    <span class="keyword">void</span> modify(Map&lt;?, ?&gt; attributes);</span></td>
+    <span class="spacer"></span><span id="src-54" class="srcLine">    T get();</span></td>
 </tr>
         
 
@@ -1063,7 +1063,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-57" class="srcLine"><span class="comment">     * Ask the watcher to stop watching this service.</span></span></td>
+    <span class="spacer"></span><span id="src-57" class="srcLine"><span class="comment">     * Modify the attributes of the watched service.</span></span></td>
 </tr>
         
 
@@ -1075,7 +1075,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-58" class="srcLine"><span class="comment">     */</span></span></td>
+    <span class="spacer"></span><span id="src-58" class="srcLine"><span class="comment">     * </span></span></td>
 </tr>
         
 
@@ -1087,7 +1087,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-59" class="srcLine">    <span class="keyword">void</span> remove();</span></td>
+    <span class="spacer"></span><span id="src-59" class="srcLine"><span class="comment">     * </span><span class="javadoc">@param</span><span class="comment"> attributes service attributes</span></span></td>
 </tr>
         
 
@@ -1099,7 +1099,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-60" class="srcLine">  }</span></td>
+    <span class="spacer"></span><span id="src-60" class="srcLine"><span class="comment">     */</span></span></td>
 </tr>
         
 
@@ -1111,14 +1111,98 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-61" class="srcLine">}</span></td>
+    <span class="spacer"></span><span id="src-61" class="srcLine">    <span class="keyword">void</span> modify(Map&lt;String, ?&gt; attributes);</span></td>
+</tr>
+        
+
+<tr id="l62">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=62#src-62">62</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-62" class="srcLine"></span></td>
+</tr>
+        
+
+<tr id="l63">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=63#src-63">63</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-63" class="srcLine">    <span class="comment">/**</span></span></td>
+</tr>
+        
+
+<tr id="l64">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=64#src-64">64</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-64" class="srcLine"><span class="comment">     * Ask the watcher to stop watching this service.</span></span></td>
+</tr>
+        
+
+<tr id="l65">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=65#src-65">65</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-65" class="srcLine"><span class="comment">     */</span></span></td>
+</tr>
+        
+
+<tr id="l66">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=66#src-66">66</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-66" class="srcLine">    <span class="keyword">void</span> remove();</span></td>
+</tr>
+        
+
+<tr id="l67">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=67#src-67">67</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-67" class="srcLine">  }</span></td>
+</tr>
+        
+
+<tr id="l68">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=68#src-68">68</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-68" class="srcLine">}</span></td>
 </tr>
 </tbody></table>
 <table width="100%"><tr><td class="hbreak" colspan="6">&nbsp;</td></tr>
 <tr><td class="footer" colspan="6">
 <table>
 <tr>
- <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Wed May 14 2008 12:36:23 SGT</i>.</td>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Fri May 16 2008 16:10:59 GMT+08:00</i>.</td>
 <td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Open Source License registered to peaberry 	. </td>
 </tr>
 </table>

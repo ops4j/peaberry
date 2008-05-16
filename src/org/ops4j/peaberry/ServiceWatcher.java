@@ -47,6 +47,13 @@ public interface ServiceWatcher {
   public interface Handle<T> {
 
     /**
+     * Get the watched service instance (may be decorated by the watcher).
+     * 
+     * @return service instance, null if it is no longer being watched
+     */
+    T get();
+
+    /**
      * Modify the attributes of the watched service.
      * 
      * @param attributes service attributes

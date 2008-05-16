@@ -14,7 +14,7 @@
       <methodContext name="privateCtor" regexp="(.* )?private \w+\(\).*"/>
       <statementContext name="resolve" regexp="^if \(resolve\) \{.*"/>
       <testsources dir="${test}">
-        <testclass package=".*\.test\..*"/>
+        <testclass annotation="Test"/>
       </testsources>
     </clover-setup>
   </target>

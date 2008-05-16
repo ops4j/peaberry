@@ -10,7 +10,8 @@ Include-Resource:\
  OSGI-OPT/src=src
 
 Export-Package:\
- org.ops4j.peaberry
+ org.ops4j.peaberry,\
+ org.ops4j.peaberry.util
 
 Private-Package:\
  org.ops4j.peaberry.internal

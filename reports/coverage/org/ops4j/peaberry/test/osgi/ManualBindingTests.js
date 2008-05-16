@@ -2,7 +2,7 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 349, "sl" : 40, "el" : 98, "name" : "ManualBindingTests",
+    {"id" : 288, "sl" : 40, "el" : 98, "name" : "ManualBindingTests",
     "methods" : [
               {"sl" : 43, "el" : 68, "sc" : 3},  {"sl" : 76, "el" : 79, "sc" : 3},  {"sl" : 81, "el" : 85, "sc" : 3},  {"sl" : 87, "el" : 97, "sc" : 3}  ]}
     
@@ -11,23 +11,23 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_15" : {
+		"test_10" : {
 					  "name" : "testAnnotations",
 					  "pass" : true,
 					  "methods" : [{"sl": 76 },],
 					  "statements" : [{"sl": 77 },{"sl": 78 },]
 					  },
-		"test_16" : {
-					  "name" : "testMultiService",
-					  "pass" : true,
-					  "methods" : [{"sl": 87 },],
-					  "statements" : [{"sl": 88 },{"sl": 89 },{"sl": 90 },{"sl": 91 },{"sl": 92 },{"sl": 93 },{"sl": 94 },{"sl": 95 },{"sl": 96 },]
-					  },
-		"test_19" : {
+		"test_13" : {
 					  "name" : "testUnaryService",
 					  "pass" : true,
 					  "methods" : [{"sl": 81 },],
 					  "statements" : [{"sl": 82 },{"sl": 83 },{"sl": 84 },]
+					  },
+		"test_5" : {
+					  "name" : "testMultiService",
+					  "pass" : true,
+					  "methods" : [{"sl": 87 },],
+					  "statements" : [{"sl": 88 },{"sl": 89 },{"sl": 90 },{"sl": 91 },{"sl": 92 },{"sl": 93 },{"sl": 94 },{"sl": 95 },{"sl": 96 },]
 					  }
  };
 
@@ -107,27 +107,27 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 15   ] ,
-  [ 15   ] ,
-  [ 15   ] ,
+  [ 10   ] ,
+  [ 10   ] ,
+  [ 10   ] ,
   [  ] ,
   [  ] ,
-  [ 19   ] ,
-  [ 19   ] ,
-  [ 19   ] ,
-  [ 19   ] ,
+  [ 13   ] ,
+  [ 13   ] ,
+  [ 13   ] ,
+  [ 13   ] ,
   [  ] ,
   [  ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
+  [ 5   ] ,
   [  ] ,
   [  ] 
 ];

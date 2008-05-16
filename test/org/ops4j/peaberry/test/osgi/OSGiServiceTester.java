@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.test.osgi;
 
-import static org.ops4j.peaberry.Peaberry.attributes;
+import static org.ops4j.peaberry.util.Attributes.attributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,8 +46,9 @@ public abstract class OSGiServiceTester {
   protected void enableService(final String name) {
     Properties properties = new Properties();
     properties.setProperty("name", name);
+    properties.put(new Object(), "bogus");
 
-    Handle<?> handle = registry.add(new SimpleService() {
+    Handle<? extends SimpleService> handle = registry.add(new SimpleService() {
       public String check() {
         if (handles.containsKey(name)) {
           return name;
@@ -58,6 +59,9 @@ public abstract class OSGiServiceTester {
     }, attributes(properties));
 
     handles.put(name, handle);
+
+    String result = handle.get().check();
+    assert name.equals(result) : "Expected " + name + ", got " + result;
   }
 
   protected void disableService(final String name) {
