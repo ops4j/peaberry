@@ -1,6 +1,6 @@
 Index: test/com/google/inject/commands/CommandRecorderTest.java
 ===================================================================
---- test/com/google/inject/commands/CommandRecorderTest.java	(revision 466)
+--- test/com/google/inject/commands/CommandRecorderTest.java	(revision 486)
 +++ test/com/google/inject/commands/CommandRecorderTest.java	(working copy)
 @@ -759,6 +759,10 @@
      public Void visitGetProvider(GetProviderCommand command) {
@@ -15,7 +15,7 @@ Index: test/com/google/inject/commands/CommandRecorderTest.java
    @Retention(RUNTIME)
 Index: src/com/google/inject/matcher/Matchers.java
 ===================================================================
---- src/com/google/inject/matcher/Matchers.java	(revision 466)
+--- src/com/google/inject/matcher/Matchers.java	(revision 486)
 +++ src/com/google/inject/matcher/Matchers.java	(working copy)
 @@ -17,10 +17,14 @@
  package com.google.inject.matcher;
@@ -113,7 +113,7 @@ Index: src/com/google/inject/matcher/Matchers.java
  }
 Index: src/com/google/inject/Binder.java
 ===================================================================
---- src/com/google/inject/Binder.java	(revision 466)
+--- src/com/google/inject/Binder.java	(revision 486)
 +++ src/com/google/inject/Binder.java	(working copy)
 @@ -20,6 +20,7 @@
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
@@ -141,13 +141,13 @@ Index: src/com/google/inject/Binder.java
  }
 Index: src/com/google/inject/internal/ResolvingCallable.java
 ===================================================================
---- src/com/google/inject/internal/ResolvingCallable.java	(revision 466)
+--- src/com/google/inject/internal/ResolvingCallable.java	(revision 486)
 +++ src/com/google/inject/internal/ResolvingCallable.java	(working copy)
 @@ -29,9 +29,22 @@
   */
  public abstract class ResolvingCallable<T> implements Callable<T> {
    public abstract T call() throws ResolveFailedException;
-+  public abstract boolean retry();
++  public boolean retry() {return false;}
  
    public T runWithDefaultSource(Object source) throws ResolveFailedException {
      try {
@@ -168,7 +168,7 @@ Index: src/com/google/inject/internal/ResolvingCallable.java
        throw e;
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 466)
+--- src/com/google/inject/InjectorImpl.java	(revision 486)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -78,6 +78,8 @@
    final ErrorHandler errorHandler;
@@ -190,7 +190,7 @@ Index: src/com/google/inject/InjectorImpl.java
    /**
     * Returns the binding for {@code key}, or {@code null} if that binding
     * cannot be resolved.
-@@ -850,14 +856,20 @@
+@@ -854,14 +860,20 @@
  
        final Key<?> key = Keys.get(
            field.getGenericType(), field, field.getAnnotations(), errorHandler);
@@ -214,7 +214,7 @@ Index: src/com/google/inject/InjectorImpl.java
      }
  
      public Collection<Dependency<?>> getDependencies() {
-@@ -912,15 +924,22 @@
+@@ -916,15 +928,22 @@
    <T> SingleParameterInjector<T> createParameterInjector(
        final Parameter<T> parameter, Member member)
        throws ResolveFailedException {
@@ -241,17 +241,17 @@ Index: src/com/google/inject/InjectorImpl.java
  
 Index: src/com/google/inject/commands/CommandRecorder.java
 ===================================================================
---- src/com/google/inject/commands/CommandRecorder.java	(revision 466)
+--- src/com/google/inject/commands/CommandRecorder.java	(revision 486)
 +++ src/com/google/inject/commands/CommandRecorder.java	(working copy)
-@@ -21,6 +21,8 @@
- import com.google.inject.binder.AnnotatedConstantBindingBuilder;
+@@ -22,6 +22,8 @@
  import com.google.inject.matcher.Matcher;
+ import com.google.inject.spi.SourceProviders;
  import static com.google.inject.spi.SourceProviders.defaultSource;
 +import com.google.inject.internal.ErrorHandler;
 +import com.google.inject.spi.Dependency;
  import com.google.inject.spi.TypeConverter;
- import com.google.inject.spi.SourceProviders;
  import org.aopalliance.intercept.MethodInterceptor;
+ 
 @@ -115,10 +117,19 @@
        commands.add(new AddThrowableErrorCommand(defaultSource(), t));
      }
@@ -282,19 +282,20 @@ Index: src/com/google/inject/commands/CommandRecorder.java
      }
  
      public <T> Provider<T> getProvider(final Key<T> key) {
-@@ -152,5 +163,12 @@
-         TypeConverter converter) {
+@@ -157,6 +168,13 @@
        commands.add(new ConvertToTypesCommand(defaultSource(), typeMatcher, converter));
      }
-+
+ 
 +    public <T> void addBindingFactory(
 +        Matcher<? super Dependency<? extends T>> dependencyMatcher,
 +            BindingFactory<T> bindingFactory) {
 +      commands.add(new AddBindingFactoryCommand<T>(
 +          defaultSource(), dependencyMatcher, bindingFactory));
 +    }
-   }
- }
++
+     @Override public String toString() {
+       return "Binder";
+     }
 Index: src/com/google/inject/commands/AddBindingFactoryCommand.java
 ===================================================================
 --- src/com/google/inject/commands/AddBindingFactoryCommand.java	(revision 0)
@@ -366,24 +367,20 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/commands/BindCommand.java
 ===================================================================
---- src/com/google/inject/commands/BindCommand.java	(revision 466)
+--- src/com/google/inject/commands/BindCommand.java	(revision 486)
 +++ src/com/google/inject/commands/BindCommand.java	(working copy)
-@@ -17,12 +17,15 @@
- package com.google.inject.commands;
- 
- import com.google.inject.*;
-+import com.google.inject.spi.Dependency;
- import com.google.inject.spi.SourceProviders;
- import com.google.inject.binder.AnnotatedBindingBuilder;
- import com.google.inject.binder.ConstantBindingBuilder;
+@@ -22,8 +22,11 @@
  import com.google.inject.binder.LinkedBindingBuilder;
  import com.google.inject.binder.ScopedBindingBuilder;
- import static com.google.inject.internal.Objects.nonNull;
-+import static com.google.inject.spi.SourceProviders.defaultSource;
-+import com.google.inject.internal.ErrorHandler;
  import com.google.inject.internal.ErrorMessages;
++import com.google.inject.internal.ErrorHandler;
+ import static com.google.inject.internal.Objects.nonNull;
++import com.google.inject.spi.Dependency;
+ import com.google.inject.spi.SourceProviders;
++import static com.google.inject.spi.SourceProviders.defaultSource;
  
  import java.lang.annotation.Annotation;
+ 
 @@ -123,18 +126,18 @@
      }
    }
@@ -408,7 +405,7 @@ Index: src/com/google/inject/commands/BindCommand.java
      }
  
      public LinkedBindingBuilder<T> annotatedWith(
-@@ -316,26 +319,44 @@
+@@ -316,25 +319,25 @@
  
      private void checkNotTargetted() {
        if (bindTarget != EMPTY_BIND_TARGET) {
@@ -437,6 +434,10 @@ Index: src/com/google/inject/commands/BindCommand.java
 +        errorHandler.handle(source, SCOPE_ALREADY_SET);
        }
      }
+ 
+@@ -345,4 +348,22 @@
+       return type + key.getTypeLiteral() + ">";
+     }
    }
 +
 +  /**
@@ -459,7 +460,7 @@ Index: src/com/google/inject/commands/BindCommand.java
  }
 Index: src/com/google/inject/commands/Command.java
 ===================================================================
---- src/com/google/inject/commands/Command.java	(revision 466)
+--- src/com/google/inject/commands/Command.java	(revision 486)
 +++ src/com/google/inject/commands/Command.java	(working copy)
 @@ -38,5 +38,6 @@
      V visitConvertToTypes(ConvertToTypesCommand command);
@@ -470,7 +471,7 @@ Index: src/com/google/inject/commands/Command.java
  }
 Index: src/com/google/inject/commands/CommandReplayer.java
 ===================================================================
---- src/com/google/inject/commands/CommandReplayer.java	(revision 466)
+--- src/com/google/inject/commands/CommandReplayer.java	(revision 486)
 +++ src/com/google/inject/commands/CommandReplayer.java	(working copy)
 @@ -100,6 +100,11 @@
          replayGetProvider(binder, command);
@@ -499,14 +500,15 @@ Index: src/com/google/inject/commands/CommandReplayer.java
  }
 Index: src/com/google/inject/commands/BindConstantCommand.java
 ===================================================================
---- src/com/google/inject/commands/BindConstantCommand.java	(revision 466)
+--- src/com/google/inject/commands/BindConstantCommand.java	(revision 486)
 +++ src/com/google/inject/commands/BindConstantCommand.java	(working copy)
-@@ -18,12 +18,12 @@
+@@ -16,13 +16,13 @@
  
+ package com.google.inject.commands;
+ 
+-import com.google.inject.Binder;
  import com.google.inject.Key;
  import com.google.inject.Provider;
--import com.google.inject.Binder;
- import com.google.inject.spi.SourceProviders;
  import com.google.inject.binder.AnnotatedConstantBindingBuilder;
  import com.google.inject.binder.ConstantBindingBuilder;
  import com.google.inject.binder.LinkedBindingBuilder;
@@ -514,7 +516,7 @@ Index: src/com/google/inject/commands/BindConstantCommand.java
 +import com.google.inject.internal.ErrorHandler;
  import com.google.inject.internal.Objects;
  import static com.google.inject.internal.Objects.nonNull;
- 
+ import com.google.inject.spi.SourceProviders;
 @@ -102,8 +102,8 @@
      abstract <T> Key<T> getKey();
    }
@@ -555,12 +557,12 @@ Index: src/com/google/inject/commands/BindConstantCommand.java
 +        errorHandler.handle(source, CONSTANT_VALUE_ALREADY_SET);
        }
      }
-   }
+ 
 Index: src/com/google/inject/BindCommandProcessor.java
 ===================================================================
---- src/com/google/inject/BindCommandProcessor.java	(revision 466)
+--- src/com/google/inject/BindCommandProcessor.java	(revision 486)
 +++ src/com/google/inject/BindCommandProcessor.java	(working copy)
-@@ -297,6 +297,7 @@
+@@ -299,6 +299,7 @@
            original.getSource());
      } else {
        bindings.put(key, binding);
@@ -570,7 +572,7 @@ Index: src/com/google/inject/BindCommandProcessor.java
  
 Index: src/com/google/inject/InjectorBuilder.java
 ===================================================================
---- src/com/google/inject/InjectorBuilder.java	(revision 466)
+--- src/com/google/inject/InjectorBuilder.java	(revision 486)
 +++ src/com/google/inject/InjectorBuilder.java	(working copy)
 @@ -17,11 +17,14 @@
  package com.google.inject;
@@ -741,7 +743,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/AbstractModule.java
 ===================================================================
---- src/com/google/inject/AbstractModule.java	(revision 466)
+--- src/com/google/inject/AbstractModule.java	(revision 486)
 +++ src/com/google/inject/AbstractModule.java	(working copy)
 @@ -21,6 +21,7 @@
  import com.google.inject.binder.LinkedBindingBuilder;
@@ -841,7 +843,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/CommandProcessor.java
 ===================================================================
---- src/com/google/inject/CommandProcessor.java	(revision 466)
+--- src/com/google/inject/CommandProcessor.java	(revision 486)
 +++ src/com/google/inject/CommandProcessor.java	(working copy)
 @@ -91,4 +91,8 @@
    public <T> Boolean visitGetProvider(GetProviderCommand<T> command) {
@@ -850,5 +852,18 @@ Index: src/com/google/inject/CommandProcessor.java
 +
 +  public <T> Boolean visitAddBindingFactory(AddBindingFactoryCommand<T> command) {
 +    return false;
++  }
+ }
+Index: ../guice/src/com/google/inject/commands/DefaultCommandVisitor.java
+===================================================================
+--- ../guice/src/com/google/inject/commands/DefaultCommandVisitor.java  (revision 486)
++++ ../guice/src/com/google/inject/commands/DefaultCommandVisitor.java  (working copy)
+@@ -70,4 +70,8 @@
+       RequestStaticInjectionCommand command) {
+     return visitCommand(command);
+   }
++
++  public <T> V visitAddBindingFactory(AddBindingFactoryCommand<T> command) {
++    return visitCommand(command);
 +  }
  }

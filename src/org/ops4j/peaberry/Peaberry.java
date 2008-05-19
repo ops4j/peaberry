@@ -186,8 +186,7 @@ public final class Peaberry {
    * 
    * @return OSGi specific {@link ServiceRegistry}
    */
-  public static ServiceRegistry getOSGiServiceRegistry(
-      BundleContext bundleContext) {
+  public static ServiceRegistry osgiServiceRegistry(BundleContext bundleContext) {
 
     nonNull(bundleContext, "bundle context");
 
@@ -214,20 +213,20 @@ public final class Peaberry {
    * that binds unbound injection points annotated with {@link Service} to
    * matching OSGi services.
    * 
-   * An OSGi classloader hook is also set for the thread creating this module.
+   * An OSGi classloader hook is also set for the thread using this module.
    * 
    * @param bundleContext current bundle context
    * 
    * @return OSGi service injection rules
    */
-  public static Module getBundleModule(final BundleContext bundleContext) {
+  public static Module osgiModule(final BundleContext bundleContext) {
 
     nonNull(bundleContext, "bundle context");
 
     return new Module() {
       public void configure(Binder binder) {
 
-        ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
+        ServiceRegistry registry = osgiServiceRegistry(bundleContext);
 
         binder.bind(BundleContext.class).toInstance(bundleContext);
         binder.bind(ServiceRegistry.class).toInstance(registry);
@@ -241,7 +240,7 @@ public final class Peaberry {
 
       @Override
       public String toString() {
-        return String.format("BundleModule(%s)", bundleContext.getBundle());
+        return String.format("OSGiModule(%s)", bundleContext.getBundle());
       }
     };
   }

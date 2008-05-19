@@ -17,7 +17,7 @@
 package org.ops4j.peaberry.test.osgi;
 
 import static org.ops4j.peaberry.Leased.FOREVER;
-import static org.ops4j.peaberry.Peaberry.getOSGiServiceRegistry;
+import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.leased;
 import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
 import static org.ops4j.peaberry.Peaberry.service;
@@ -43,7 +43,7 @@ public class ManualBindingTests
   @Test(enabled = false)
   public static void setup(Binder binder, BundleContext bundleContext) {
 
-    ServiceRegistry registry = getOSGiServiceRegistry(bundleContext);
+    ServiceRegistry registry = osgiServiceRegistry(bundleContext);
 
     binder.bind(BundleContext.class).toInstance(bundleContext);
     binder.bind(ServiceRegistry.class).toInstance(registry);

@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.test;
 
-import static org.ops4j.peaberry.Peaberry.getBundleModule;
+import static org.ops4j.peaberry.Peaberry.osgiModule;
 
 import java.lang.reflect.Method;
 
@@ -89,7 +89,7 @@ public final class OSGiTestRunnerFactory
           } catch (Exception e) {}
         }
         if (!manualSetup) {
-          binder.install(getBundleModule(testBundle.getBundleContext()));
+          binder.install(osgiModule(testBundle.getBundleContext()));
         }
       }
     };

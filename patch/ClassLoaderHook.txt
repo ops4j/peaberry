@@ -1,6 +1,6 @@
 Index: src/com/google/inject/DefaultConstructionProxyFactory.java
 ===================================================================
---- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 466)
+--- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 486)
 +++ src/com/google/inject/DefaultConstructionProxyFactory.java	(working copy)
 @@ -17,7 +17,7 @@
  package com.google.inject;
@@ -22,7 +22,7 @@ Index: src/com/google/inject/DefaultConstructionProxyFactory.java
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/internal/GuiceFastClass.java
 ===================================================================
---- src/com/google/inject/internal/GuiceFastClass.java	(revision 466)
+--- src/com/google/inject/internal/GuiceFastClass.java	(revision 486)
 +++ src/com/google/inject/internal/GuiceFastClass.java	(working copy)
 @@ -1,39 +0,0 @@
 -/**
@@ -105,7 +105,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +
 +  private static final ClassLoaderHook DEFAULT_CLASSLOADER_HOOK =
 +      new ClassLoaderHook() {
-+        public final ClassLoader intercept(ClassLoader loader) {return loader;}
++        public ClassLoader intercept(ClassLoader loader) {return loader;}
 +      };
 +
 +  private static final ThreadLocal<ClassLoaderHook> THREAD_CLASS_LOADER_HOOK =
@@ -170,9 +170,9 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 466)
+--- src/com/google/inject/InjectorImpl.java	(revision 486)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -962,7 +962,7 @@
+@@ -966,7 +966,7 @@
          };
        }
        else {
@@ -181,7 +181,7 @@ Index: src/com/google/inject/InjectorImpl.java
          final FastMethod fastMethod = fastClass.getMethod(method);
  
          this.methodInvoker = new MethodInvoker() {
-@@ -1172,7 +1172,7 @@
+@@ -1176,7 +1176,7 @@
        }
        finally {
          // Only remove the context if this call created it.
@@ -192,11 +192,11 @@ Index: src/com/google/inject/InjectorImpl.java
      else {
 Index: src/com/google/inject/ProxyFactory.java
 ===================================================================
---- src/com/google/inject/ProxyFactory.java	(revision 466)
+--- src/com/google/inject/ProxyFactory.java	(revision 486)
 +++ src/com/google/inject/ProxyFactory.java	(working copy)
 @@ -17,7 +17,7 @@
  package com.google.inject;
-
+ 
  import com.google.inject.internal.ErrorHandler;
 -import com.google.inject.internal.GuiceFastClass;
 +import com.google.inject.internal.GuiceCodeGen;
@@ -233,7 +233,7 @@ Index: src/com/google/inject/ProxyFactory.java
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/ConstructionContext.java
 ===================================================================
---- src/com/google/inject/ConstructionContext.java	(revision 466)
+--- src/com/google/inject/ConstructionContext.java	(revision 486)
 +++ src/com/google/inject/ConstructionContext.java	(working copy)
 @@ -19,10 +19,11 @@
  import java.lang.reflect.InvocationHandler;

@@ -43,8 +43,8 @@ public final class Attributes {
     Map<String, Object> attributes = new HashMap<String, Object>();
 
     /*
-     * Sigh, Properties is a really screwed-up class... in Java5 there is only
-     * one method that looks up all keys (including default keys) and that can
+     * Sigh, Properties is a really messed-up class... in Java5 there is only
+     * one method that looks up all keys *including default keys* and that can
      * throw a ClassCastException if there happen to be any non-String keys.
      * (Java6 adds stringPropertyNames, but we're currently targetting Java5)
      */
