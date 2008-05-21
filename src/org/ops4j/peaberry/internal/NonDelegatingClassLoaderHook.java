@@ -73,7 +73,7 @@ public final class NonDelegatingClassLoaderHook
                   return super.loadClass(name, resolve);
                 }
               };
-            };
+            }
           });
         }
       };

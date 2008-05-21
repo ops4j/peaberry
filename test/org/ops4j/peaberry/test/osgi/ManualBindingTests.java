@@ -17,9 +17,9 @@
 package org.ops4j.peaberry.test.osgi;
 
 import static org.ops4j.peaberry.Leased.FOREVER;
-import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.leased;
 import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
+import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.Peaberry.serviceProvider;
 

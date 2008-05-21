@@ -35,7 +35,7 @@ public final class LeasedServiceRegistry
   private final ServiceRegistry registry;
   private final long leaseMillis;
 
-  private Collection<?> services;
+  private volatile Collection<?> services;
   private volatile Long expireMillis = 0L;
 
   public LeasedServiceRegistry(ServiceRegistry registry, Leased leased) {
@@ -47,7 +47,7 @@ public final class LeasedServiceRegistry
   public <T> Iterator<T> lookup(Class<? extends T> type, String filter) {
     final long now = System.currentTimeMillis();
 
-    // double-checked locking is ok on Java 5 runtimes
+    // double-checked locking is OK on Java 5 runtimes
     if (expireMillis < now) {
       synchronized (this) {
         // /CLOVER:OFF
@@ -64,11 +64,11 @@ public final class LeasedServiceRegistry
           // lease only starts when there are services
           if (freshServices.size() == 0) {
             return freshServices.iterator();
-          } else {
-            services = freshServices;
           }
 
-          // negative lease times are treated as 'forever', ie. static lookup
+          services = freshServices;
+
+          // negative lease times are treated as 'forever', i.e. static lookup
           expireMillis = leaseMillis < 0 ? Long.MAX_VALUE : (now + leaseMillis);
         }
       }

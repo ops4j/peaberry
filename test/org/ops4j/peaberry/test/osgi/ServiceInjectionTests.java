@@ -127,17 +127,17 @@ public class ServiceInjectionTests
       public String check() {
         if (handles.containsKey(name)) {
           return name;
-        } else {
-          throw new RuntimeException("Missing Service");
         }
+
+        throw new RuntimeException("Missing Service");
       }
 
       public int encode() {
         if (handles.containsKey(name)) {
           return name.hashCode();
-        } else {
-          throw new RuntimeException("Missing Service");
         }
+
+        throw new RuntimeException("Missing Service");
       }
     }, attributes(properties));
 

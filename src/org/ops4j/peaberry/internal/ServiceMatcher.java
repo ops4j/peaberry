@@ -48,6 +48,7 @@ public final class ServiceMatcher {
         return findMetaAnnotation(element, Service.class) != null;
       }
 
+      @Override
       public String toString() {
         return "annotatedWithService()";
       }

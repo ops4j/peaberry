@@ -52,9 +52,9 @@ public abstract class OSGiServiceTester {
       public String check() {
         if (handles.containsKey(name)) {
           return name;
-        } else {
-          throw new ServiceUnavailableException();
         }
+
+        throw new ServiceUnavailableException();
       }
     }, attributes(properties));
 

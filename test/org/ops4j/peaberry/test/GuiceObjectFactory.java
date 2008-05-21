@@ -35,6 +35,7 @@ public final class GuiceObjectFactory
     GuiceObjectFactory.injector = injector;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public Object newInstance(Constructor ctor, Object... initargs) {
     if (injector != null) {

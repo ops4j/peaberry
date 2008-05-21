@@ -77,9 +77,9 @@ public final class Peaberry {
 
         if (filter != null) {
           return String.format("@Service(\"%s\",%s)", filter, api);
-        } else {
-          return String.format("@Service(null,%s)", api);
         }
+
+        return String.format("@Service(null,%s)", api);
       }
     };
   }
@@ -106,9 +106,9 @@ public final class Peaberry {
       public String toString() {
         if (seconds < 0) {
           return "@Leased(FOREVER)";
-        } else {
-          return String.format("@Leased(%s)", seconds);
         }
+
+        return String.format("@Leased(%s)", seconds);
       }
     };
   }

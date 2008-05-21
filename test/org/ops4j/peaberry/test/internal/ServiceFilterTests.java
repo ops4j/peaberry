@@ -17,9 +17,9 @@
 package org.ops4j.peaberry.test.internal;
 
 import static org.ops4j.peaberry.Peaberry.service;
-import static org.ops4j.peaberry.internal.ServiceFilterFactory.expectsSequence;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
-import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceType;
+import static org.ops4j.peaberry.internal.ServiceTypes.expectsSequence;
+import static org.ops4j.peaberry.internal.ServiceTypes.getServiceType;
 
 import java.lang.reflect.Type;
 import java.util.List;

@@ -45,7 +45,7 @@ public final class OSGiServiceRegistry
   /**
    * Current bundle context, used to interrogate the registry.
    */
-  private final BundleContext bundleContext;
+  final BundleContext bundleContext;
 
   public OSGiServiceRegistry(BundleContext bundleContext) {
     this.bundleContext = bundleContext;
@@ -84,9 +84,9 @@ public final class OSGiServiceRegistry
 
             if (lhsRanking == rhsRanking) {
               return rhsId.compareTo(lhsId);
-            } else {
-              return lhsRanking.compareTo(rhsRanking);
             }
+
+            return lhsRanking.compareTo(rhsRanking);
           }
         });
       }
@@ -102,6 +102,7 @@ public final class OSGiServiceRegistry
         return services != null && i < services.length;
       }
 
+      @SuppressWarnings("null")
       public T next() {
         try {
           return type.cast(bundleContext.getService(services[i++]));
@@ -164,8 +165,8 @@ public final class OSGiServiceRegistry
         }
       }
 
-      public void modify(Map<String, ?> attributes) {
-        registration.setProperties(new Hashtable<String, Object>(attributes));
+      public void modify(Map<String, ?> attrs) {
+        registration.setProperties(new Hashtable<String, Object>(attrs));
       }
 
       public void remove() {

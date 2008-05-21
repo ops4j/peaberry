@@ -73,15 +73,15 @@ public final class ServiceMatcherTests {
   private AnnotatedElement getElement(String name) {
     try {
       return getClass().getDeclaredField(name);
-    } catch (Exception e) {
+    } catch (Exception ex) {
       assert false : "Missing field " + name;
       return null;
     }
   }
 
   private void checkNone(String name, Class<? extends Annotation> clazz) {
-    Annotation a = findMetaAnnotation(getElement(name), clazz);
-    assert null == a : "Expected no annotation, got " + a;
+    Annotation anno = findMetaAnnotation(getElement(name), clazz);
+    assert null == anno : "Expected no annotation, got " + anno;
   }
 
   private void checkService(String name, String filter) {
