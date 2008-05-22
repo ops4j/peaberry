@@ -19,7 +19,7 @@ package org.ops4j.peaberry.test.internal;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
 import static org.ops4j.peaberry.internal.ServiceTypes.expectsSequence;
-import static org.ops4j.peaberry.internal.ServiceTypes.getServiceType;
+import static org.ops4j.peaberry.internal.ServiceTypes.getServiceClass;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -38,7 +38,7 @@ import com.google.inject.TypeLiteral;
 public final class ServiceFilterTests {
 
   private void checkType(Class<?> clazz, Type type) {
-    Class<?> result = getServiceType(type);
+    Class<?> result = getServiceClass(type);
     assert clazz.equals(result) : "Expected " + clazz + ", got " + result;
   }
 
@@ -53,7 +53,7 @@ public final class ServiceFilterTests {
     boolean unary = !expectsSequence(memberType);
     assert unary : "Expected " + memberType + " to be unary";
 
-    Class<?> type = getServiceType(memberType);
+    Class<?> type = getServiceClass(memberType);
     assert serviceType.equals(type) : "Expected " + serviceType + " got "
         + type;
   }
@@ -62,7 +62,7 @@ public final class ServiceFilterTests {
     boolean multi = expectsSequence(memberType);
     assert multi : "Expected " + memberType + " to be multi";
 
-    Class<?> type = getServiceType(memberType);
+    Class<?> type = getServiceClass(memberType);
     assert serviceType.equals(type) : "Expected " + serviceType + " got "
         + type;
   }

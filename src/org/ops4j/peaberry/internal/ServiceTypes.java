@@ -39,7 +39,7 @@ public final class ServiceTypes {
    * 
    * @return expected service type
    */
-  public static Class<?> getServiceType(Type type) {
+  public static Type getServiceType(Type type) {
 
     if (expectsSequence(type) || expectsHandle(type)) {
       if (type instanceof ParameterizedType) {
@@ -50,6 +50,20 @@ public final class ServiceTypes {
         type = Object.class;
       }
     }
+
+    return type;
+  }
+
+  /**
+   * Extract the expected service class from the given member type.
+   * 
+   * @param type runtime type of member being injected
+   * 
+   * @return expected service class
+   */
+  public static Class<?> getServiceClass(Type type) {
+
+    type = getServiceType(type);
 
     if (type instanceof ParameterizedType) {
       // use raw type for generic service types
@@ -77,7 +91,7 @@ public final class ServiceTypes {
   }
 
   /**
-   * Is the service type is hidden inside a handle, like Handle<T>.
+   * Is the service type hidden inside a handle, like Handle<T>.
    * 
    * @param type runtime type of member being injected
    * 

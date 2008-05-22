@@ -41,20 +41,20 @@ final class ServiceProxyFactory {
    * 
    * @param spec custom service specification
    * @param registry dynamic service registry
-   * @param type expected service type
+   * @param clazz expected service class
    * @param filter RFC-1960 (LDAP) filter
    * 
    * @return proxy that delegates to the registry
    */
   public static <T> T getUnaryServiceProxy(Service spec,
-      final ServiceRegistry registry, final Class<T> type, final String filter) {
+      final ServiceRegistry registry, final Class<T> clazz, final String filter) {
 
-    Enhancer proxy = GuiceCodeGen.getEnhancer(type);
+    Enhancer proxy = GuiceCodeGen.getEnhancer(clazz);
     proxy.setCallback(new Dispatcher() {
       public Object loadObject() {
         try {
           // use first matching service from registry
-          return registry.lookup(type, filter).next();
+          return registry.lookup(clazz, filter).next();
         } catch (Exception e) {
           throw new ServiceUnavailableException(e);
         }
@@ -66,7 +66,7 @@ final class ServiceProxyFactory {
       proxy.setInterfaces(spec.interfaces());
     }
 
-    return type.cast(proxy.create());
+    return clazz.cast(proxy.create());
   }
 
   /**
@@ -74,17 +74,17 @@ final class ServiceProxyFactory {
    * 
    * @param spec custom service specification
    * @param registry dynamic service registry
-   * @param type expected service type
+   * @param clazz expected service class
    * @param filter RFC-1960 (LDAP) filter
    * 
    * @return iterable proxy that delegates to the registry
    */
   public static <T> Iterable<T> getMultiServiceProxy(Service spec,
-      final ServiceRegistry registry, final Class<T> type, final String filter) {
+      final ServiceRegistry registry, final Class<T> clazz, final String filter) {
 
     return new Iterable<T>() {
       public Iterator<T> iterator() {
-        return registry.lookup(type, filter);
+        return registry.lookup(clazz, filter);
       }
     };
   }

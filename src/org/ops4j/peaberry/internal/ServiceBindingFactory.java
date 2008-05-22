@@ -29,7 +29,7 @@ import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.BindingFactory;
-import com.google.inject.TypeLiteral;
+import com.google.inject.Key;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.spi.Dependency;
 
@@ -67,12 +67,12 @@ public final class ServiceBindingFactory
       element = ((Method) member).getParameterTypes()[i];
     }
 
-    TypeLiteral<T> target = dependency.getKey().getTypeLiteral();
+    Key<T> key = dependency.getKey();
 
     Service spec = findMetaAnnotation(element, Service.class);
     Leased leased = findMetaAnnotation(element, Leased.class);
 
-    lbb.toProvider(getServiceProvider(serviceRegistry, target, spec, leased));
+    lbb.toProvider(getServiceProvider(serviceRegistry, key, spec, leased));
 
     return true;
   }

@@ -29,10 +29,10 @@ public interface ServiceRegistry
   /**
    * Lookup service instances from registry, constrained by LDAP filter.
    * 
-   * @param type expected service type
+   * @param clazz expected service class
    * @param filter RFC-1960 (LDAP) filter
    * 
    * @return sequence of service instances
    */
-  <T> Iterator<T> lookup(Class<? extends T> type, String filter);
+  <T> Iterator<T> lookup(Class<? extends T> clazz, String filter);
 }

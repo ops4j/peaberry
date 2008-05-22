@@ -32,6 +32,7 @@ import org.osgi.framework.BundleContext;
 import com.google.inject.Binder;
 import com.google.inject.BindingFactory;
 import com.google.inject.ClassLoaderHook;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
@@ -125,7 +126,7 @@ public final class Peaberry {
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
       Class<T> target) {
 
-    return getServiceProvider(registry, TypeLiteral.get(target), null, null);
+    return getServiceProvider(registry, Key.get(target), null, null);
   }
 
   /**
@@ -140,7 +141,7 @@ public final class Peaberry {
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
       TypeLiteral<T> target) {
 
-    return getServiceProvider(registry, target, null, null);
+    return getServiceProvider(registry, Key.get(target), null, null);
   }
 
   /**
@@ -158,7 +159,7 @@ public final class Peaberry {
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
       Class<T> target, Service spec, Leased leased) {
 
-    return getServiceProvider(registry, TypeLiteral.get(target), spec, leased);
+    return getServiceProvider(registry, Key.get(target), spec, leased);
   }
 
   /**
@@ -176,7 +177,7 @@ public final class Peaberry {
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
       TypeLiteral<T> target, Service spec, Leased leased) {
 
-    return getServiceProvider(registry, target, spec, leased);
+    return getServiceProvider(registry, Key.get(target), spec, leased);
   }
 
   /**

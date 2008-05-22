@@ -20,17 +20,23 @@ import static com.google.inject.internal.Objects.nonNull;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.getMultiServiceProxy;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.getUnaryServiceProxy;
+import static org.ops4j.peaberry.internal.ServiceTypes.expectsHandle;
 import static org.ops4j.peaberry.internal.ServiceTypes.expectsSequence;
+import static org.ops4j.peaberry.internal.ServiceTypes.getServiceClass;
 import static org.ops4j.peaberry.internal.ServiceTypes.getServiceType;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceWatcher.Handle;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.TypeLiteral;
 
 /**
  * Provide dynamic {@link Service} {@link Provider}s.
@@ -42,6 +48,9 @@ public final class ServiceProviderFactory {
   private static final String SERVICE_PROVIDER_DESCRIPTION =
       "%s lookup(%s,\"%s\") from %s";
 
+  private static final String HANDLE_PROVIDER_DESCRIPTION =
+      "%s register(%s,\"%s\") with %s";
+
   // utility: instances not allowed
   private ServiceProviderFactory() {}
 
@@ -49,54 +58,99 @@ public final class ServiceProviderFactory {
    * Create a new {@link Service} {@link Provider} for the target member.
    * 
    * @param registry dynamic service registry
-   * @param target literal type of the member being injected
+   * @param key key of the member being injected
    * @param spec custom service specification
    * @param leased optionally leased
    * 
    * @return {@link Service} {@link Provider} for the target
    */
-  @SuppressWarnings("unchecked")
   public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
-      TypeLiteral<T> target, final Service spec, Leased leased) {
+      Key<T> key, Service spec, Leased leased) {
 
     nonNull(registry, "service registry");
-    nonNull(target, "injection target");
+    nonNull(key, "injection key");
 
-    Type targetType = target.getType();
+    Type memberType = key.getTypeLiteral().getType();
 
-    final ServiceRegistry leasedRegistry;
+    if (expectsHandle(memberType)) {
+
+      Type serviceType = getServiceType(memberType);
+      Key<?> serviceKey = Key.get(serviceType, key.getAnnotation());
+
+      return getHandleProvider(spec, registry, serviceKey);
+    }
+
+    ServiceRegistry leasedRegistry;
     if (leased != null && leased.seconds() != 0) {
       leasedRegistry = new LeasedServiceRegistry(registry, leased);
     } else {
       leasedRegistry = registry;
     }
 
-    final Class<?> serviceType = getServiceType(targetType);
-    final String filter = getServiceFilter(spec, serviceType);
+    Class<?> serviceClass = getServiceClass(memberType);
+    String filter = getServiceFilter(spec, serviceClass);
 
-    if (expectsSequence(targetType)) {
-      return new Provider() {
-        public Iterable get() {
-          return getMultiServiceProxy(spec, leasedRegistry, serviceType, filter);
-        }
-
-        @Override
-        public String toString() {
-          return String.format(SERVICE_PROVIDER_DESCRIPTION,
-              "MultiServiceProvider", serviceType, filter, leasedRegistry);
-        }
-      };
+    if (expectsSequence(memberType)) {
+      return getMultiProvider(spec, leasedRegistry, serviceClass, filter);
     }
+
+    return getUnaryProvider(spec, leasedRegistry, serviceClass, filter);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> Provider<T> getUnaryProvider(final Service spec,
+      final ServiceRegistry registry, final Class clazz, final String filter) {
 
     return new Provider() {
       public Object get() {
-        return getUnaryServiceProxy(spec, leasedRegistry, serviceType, filter);
+        return getUnaryServiceProxy(spec, registry, clazz, filter);
       }
 
       @Override
       public String toString() {
         return String.format(SERVICE_PROVIDER_DESCRIPTION,
-            "UnaryServiceProvider", serviceType, filter, leasedRegistry);
+            "UnaryServiceProvider", clazz, filter, registry);
+      }
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> Provider<T> getMultiProvider(final Service spec,
+      final ServiceRegistry registry, final Class clazz, final String filter) {
+
+    return new Provider() {
+      public Iterable get() {
+        return getMultiServiceProxy(spec, registry, clazz, filter);
+      }
+
+      @Override
+      public String toString() {
+        return String.format(SERVICE_PROVIDER_DESCRIPTION,
+            "MultiServiceProvider", clazz, filter, registry);
+      }
+    };
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> Provider<T> getHandleProvider(Service spec,
+      final ServiceRegistry registry, final Key serviceKey) {
+
+    // TODO: custom interfaces and properties
+    final Map<String, ?> attributes = null;
+
+    return new Provider() {
+
+      @Inject
+      Injector injector;
+
+      public Handle get() {
+        return registry.add(injector.getInstance(serviceKey), attributes);
+      }
+
+      @Override
+      public String toString() {
+        return String.format(HANDLE_PROVIDER_DESCRIPTION,
+            "ServiceHandleProvider", serviceKey, attributes, registry);
       }
     };
   }
