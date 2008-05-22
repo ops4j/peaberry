@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry;
 
+import static com.google.inject.internal.Objects.equal;
 import static com.google.inject.internal.Objects.nonNull;
 import static com.google.inject.matcher.Matchers.member;
 import static org.ops4j.peaberry.internal.ServiceMatcher.annotatedWithService;
@@ -60,16 +61,32 @@ public final class Peaberry {
       final Class<?>... interfaces) {
     return new Service() {
 
-      public Class<?>[] interfaces() {
-        return interfaces;
-      }
-
       public String value() {
         return filter;
       }
 
+      public Class<?>[] interfaces() {
+        return interfaces;
+      }
+
       public Class<? extends Annotation> annotationType() {
         return Service.class;
+      }
+
+      public int hashCode() {
+        return ((127 * "value".hashCode()) ^ filter.hashCode())
+            + ((127 * "interfaces".hashCode()) ^ Arrays.hashCode(interfaces));
+      }
+
+      public boolean equals(Object o) {
+        if (!(o instanceof Service)) {
+          return false;
+        }
+
+        Service other = (Service) o;
+
+        return equal(filter, other.value())
+            && Arrays.equals(interfaces, other.interfaces());
       }
 
       @Override
@@ -101,6 +118,19 @@ public final class Peaberry {
 
       public Class<? extends Annotation> annotationType() {
         return Leased.class;
+      }
+
+      public int hashCode() {
+        return (127 * "seconds".hashCode())
+            ^ Integer.valueOf(seconds).hashCode();
+      }
+
+      public boolean equals(Object o) {
+        if (!(o instanceof Leased)) {
+          return false;
+        }
+
+        return seconds == ((Leased) o).seconds();
       }
 
       @Override
