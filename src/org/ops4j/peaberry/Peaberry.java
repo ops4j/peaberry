@@ -16,17 +16,15 @@
 
 package org.ops4j.peaberry;
 
-import static com.google.inject.internal.Objects.equal;
 import static com.google.inject.internal.Objects.nonNull;
 import static com.google.inject.matcher.Matchers.member;
 import static org.ops4j.peaberry.internal.ServiceMatcher.annotatedWithService;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-
+import org.ops4j.peaberry.internal.LeasedAnnotation;
 import org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
+import org.ops4j.peaberry.internal.ServiceAnnotation;
 import org.ops4j.peaberry.internal.ServiceBindingFactory;
 import org.osgi.framework.BundleContext;
 
@@ -52,54 +50,13 @@ public final class Peaberry {
   /**
    * Create a {@link Service} specification on-the-fly.
    * 
-   * @param filter RFC-1960 (LDAP) filter
+   * @param value RFC-1960 LDAP filter, or RFC-2253 LDAP name
    * @param interfaces custom service API
    * 
    * @return {@link Service} specification
    */
-  public static Service service(final String filter,
-      final Class<?>... interfaces) {
-    return new Service() {
-
-      public String value() {
-        return filter;
-      }
-
-      public Class<?>[] interfaces() {
-        return interfaces;
-      }
-
-      public Class<? extends Annotation> annotationType() {
-        return Service.class;
-      }
-
-      public int hashCode() {
-        return ((127 * "value".hashCode()) ^ filter.hashCode())
-            + ((127 * "interfaces".hashCode()) ^ Arrays.hashCode(interfaces));
-      }
-
-      public boolean equals(Object o) {
-        if (!(o instanceof Service)) {
-          return false;
-        }
-
-        Service other = (Service) o;
-
-        return equal(filter, other.value())
-            && Arrays.equals(interfaces, other.interfaces());
-      }
-
-      @Override
-      public String toString() {
-        String api = Arrays.toString(interfaces);
-
-        if (filter != null) {
-          return String.format("@Service(\"%s\",%s)", filter, api);
-        }
-
-        return String.format("@Service(null,%s)", api);
-      }
-    };
+  public static Service service(String value, Class<?>... interfaces) {
+    return new ServiceAnnotation(value, interfaces);
   }
 
   /**
@@ -109,39 +66,8 @@ public final class Peaberry {
    * 
    * @return {@link Leased} setting
    */
-  public static Leased leased(final int seconds) {
-    return new Leased() {
-
-      public int seconds() {
-        return seconds;
-      }
-
-      public Class<? extends Annotation> annotationType() {
-        return Leased.class;
-      }
-
-      public int hashCode() {
-        return (127 * "seconds".hashCode())
-            ^ Integer.valueOf(seconds).hashCode();
-      }
-
-      public boolean equals(Object o) {
-        if (!(o instanceof Leased)) {
-          return false;
-        }
-
-        return seconds == ((Leased) o).seconds();
-      }
-
-      @Override
-      public String toString() {
-        if (seconds < 0) {
-          return "@Leased(FOREVER)";
-        }
-
-        return String.format("@Leased(%s)", seconds);
-      }
-    };
+  public static Leased leased(int seconds) {
+    return new LeasedAnnotation(seconds);
   }
 
   /**

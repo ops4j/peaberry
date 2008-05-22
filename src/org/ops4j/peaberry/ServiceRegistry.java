@@ -30,7 +30,7 @@ public interface ServiceRegistry
    * Lookup service instances from registry, constrained by LDAP filter.
    * 
    * @param clazz expected service class
-   * @param filter RFC-1960 (LDAP) filter
+   * @param filter RFC-1960 LDAP filter
    * 
    * @return sequence of service instances
    */

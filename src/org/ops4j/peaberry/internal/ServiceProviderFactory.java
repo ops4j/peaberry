@@ -24,6 +24,7 @@ import static org.ops4j.peaberry.internal.ServiceTypes.expectsHandle;
 import static org.ops4j.peaberry.internal.ServiceTypes.expectsSequence;
 import static org.ops4j.peaberry.internal.ServiceTypes.getServiceClass;
 import static org.ops4j.peaberry.internal.ServiceTypes.getServiceType;
+import static org.ops4j.peaberry.util.Attributes.attributes;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -77,7 +78,7 @@ public final class ServiceProviderFactory {
       Type serviceType = getServiceType(memberType);
       Key<?> serviceKey = Key.get(serviceType, key.getAnnotation());
 
-      return getHandleProvider(spec, registry, serviceKey);
+      return getHandleProvider(registry, serviceKey, attributes(spec));
     }
 
     ServiceRegistry leasedRegistry;
@@ -132,11 +133,9 @@ public final class ServiceProviderFactory {
   }
 
   @SuppressWarnings("unchecked")
-  private static <T> Provider<T> getHandleProvider(Service spec,
-      final ServiceRegistry registry, final Key serviceKey) {
-
-    // TODO: custom interfaces and properties
-    final Map<String, ?> attributes = null;
+  private static <T> Provider<T> getHandleProvider(
+      final ServiceRegistry registry, final Key serviceKey,
+      final Map<String, ?> attributes) {
 
     return new Provider() {
 

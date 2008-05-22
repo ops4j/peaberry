@@ -25,7 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Denotes a dynamic service with an optional LDAP filter.
+ * Denotes a dynamic service with an optional LDAP filter or name.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
 public @interface Service {
 
   /**
-   * RFC-1960 (LDAP) filter
+   * RFC-1960 LDAP filter, or RFC-2253 LDAP name
    */
   String value() default "";
 

@@ -22,6 +22,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
+
+import org.ops4j.peaberry.Service;
+
 /**
  * Collection of utility methods for dealing with service attributes.
  * 
@@ -33,7 +39,7 @@ public final class Attributes {
   private Attributes() {}
 
   /**
-   * Converts a Properties object to a type-safe attribute map.
+   * Converts a {@link Properties} object to a type-safe attribute map.
    * 
    * @param properties service properties
    * @return type-safe map of service attributes
@@ -62,6 +68,26 @@ public final class Attributes {
         attributes.put((String) key, entry.getValue());
       }
     }
+
+    return attributes;
+  }
+
+  /**
+   * Converts a {@link Service) specification to a type-safe attribute map.
+   * 
+   * @param spec service specification
+   * @return type-safe map of service attributes
+   */
+  public static Map<String, ?> attributes(Service spec) {
+
+    Map<String, Object> attributes = new HashMap<String, Object>();
+
+    try {
+      // parse the service string as a RFC-2253 LDAP name
+      for (Rdn rdn : new LdapName(spec.value()).getRdns()) {
+        attributes.put(rdn.getType(), rdn.getValue());
+      }
+    } catch (InvalidNameException e) {/* TODO */}
 
     return attributes;
   }

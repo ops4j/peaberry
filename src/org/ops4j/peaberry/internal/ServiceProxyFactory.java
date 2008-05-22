@@ -42,7 +42,7 @@ final class ServiceProxyFactory {
    * @param spec custom service specification
    * @param registry dynamic service registry
    * @param clazz expected service class
-   * @param filter RFC-1960 (LDAP) filter
+   * @param filter RFC-1960 LDAP filter
    * 
    * @return proxy that delegates to the registry
    */
@@ -75,7 +75,7 @@ final class ServiceProxyFactory {
    * @param spec custom service specification
    * @param registry dynamic service registry
    * @param clazz expected service class
-   * @param filter RFC-1960 (LDAP) filter
+   * @param filter RFC-1960 LDAP filter
    * 
    * @return iterable proxy that delegates to the registry
    */
