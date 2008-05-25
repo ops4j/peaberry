@@ -854,10 +854,10 @@ Index: src/com/google/inject/CommandProcessor.java
 +    return false;
 +  }
  }
-Index: ../guice/src/com/google/inject/commands/DefaultCommandVisitor.java
+Index: src/com/google/inject/commands/DefaultCommandVisitor.java
 ===================================================================
---- ../guice/src/com/google/inject/commands/DefaultCommandVisitor.java  (revision 486)
-+++ ../guice/src/com/google/inject/commands/DefaultCommandVisitor.java  (working copy)
+--- src/com/google/inject/commands/DefaultCommandVisitor.java  (revision 486)
++++ src/com/google/inject/commands/DefaultCommandVisitor.java  (working copy)
 @@ -70,4 +70,8 @@
        RequestStaticInjectionCommand command) {
      return visitCommand(command);
