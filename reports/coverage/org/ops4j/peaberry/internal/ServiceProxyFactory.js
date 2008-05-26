@@ -11,53 +11,53 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_15" : {
-					  "name" : "unleasedUnaryService",
-					  "pass" : true,
-					  "methods" : [{"sl": 54 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
-					  },
-		"test_13" : {
+		"test_3" : {
 					  "name" : "staticMultiService",
 					  "pass" : true,
 					  "methods" : [{"sl": 86 },],
 					  "statements" : [{"sl": 87 },]
 					  },
-		"test_18" : {
-					  "name" : "leasedUnaryService",
-					  "pass" : true,
-					  "methods" : [{"sl": 54 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
-					  },
-		"test_12" : {
+		"test_7" : {
 					  "name" : "staticUnaryService",
 					  "pass" : true,
 					  "methods" : [{"sl": 54 },],
 					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
 					  },
-		"test_14" : {
-					  "name" : "testUnaryService",
+		"test_0" : {
+					  "name" : "unleasedUnaryService",
 					  "pass" : true,
 					  "methods" : [{"sl": 54 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },]
+					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
 					  },
-		"test_0" : {
+		"test_11" : {
+					  "name" : "leasedMultiService",
+					  "pass" : true,
+					  "methods" : [{"sl": 86 },],
+					  "statements" : [{"sl": 87 },]
+					  },
+		"test_8" : {
+					  "name" : "leasedUnaryService",
+					  "pass" : true,
+					  "methods" : [{"sl": 54 },],
+					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
+					  },
+		"test_16" : {
 					  "name" : "testMultiService",
 					  "pass" : true,
 					  "methods" : [{"sl": 86 },],
 					  "statements" : [{"sl": 87 },]
 					  },
-		"test_9" : {
+		"test_4" : {
 					  "name" : "checkInjection",
 					  "pass" : true,
 					  "methods" : [{"sl": 54 },{"sl": 86 },],
 					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },{"sl": 87 },]
 					  },
-		"test_6" : {
-					  "name" : "leasedMultiService",
+		"test_20" : {
+					  "name" : "testUnaryService",
 					  "pass" : true,
-					  "methods" : [{"sl": 86 },],
-					  "statements" : [{"sl": 87 },]
+					  "methods" : [{"sl": 54 },],
+					  "statements" : [{"sl": 55 },{"sl": 57 },]
 					  }
  };
 
@@ -115,14 +115,12 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 12 , 14 , 15 , 9 , 18   ] ,
-  [ 12 , 14 , 15 , 9 , 18   ] ,
+  [ 4 , 8 , 20 , 7 , 0   ] ,
+  [ 4 , 8 , 20 , 7 , 0   ] ,
   [  ] ,
-  [ 12 , 14 , 15 , 9 , 18   ] ,
+  [ 4 , 8 , 20 , 7 , 0   ] ,
   [  ] ,
-  [ 12 , 15 , 9 , 18   ] ,
-  [  ] ,
-  [  ] ,
+  [ 4 , 8 , 7 , 0   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -147,8 +145,10 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 6 , 13 , 9 , 0   ] ,
-  [ 6 , 13 , 9 , 0   ] ,
+  [  ] ,
+  [  ] ,
+  [ 3 , 4 , 16 , 11   ] ,
+  [ 3 , 4 , 16 , 11   ] ,
   [  ] ,
   [  ] ,
   [  ] ,

@@ -35,7 +35,7 @@ public final class ServiceAnnotation
   private final Class<?>[] interfaces;
 
   public ServiceAnnotation(String value, Class<?>... interfaces) {
-    this.value = value;
+    this.value = (null == value ? "" : value);
     this.interfaces = interfaces;
   }
 
@@ -72,11 +72,6 @@ public final class ServiceAnnotation
   @Override
   public String toString() {
     String api = Arrays.toString(interfaces);
-
-    if (value != null) {
-      return String.format("@Service(\"%s\",%s)", value, api);
-    }
-
-    return String.format("@Service(null,%s)", api);
+    return String.format("@Service(\"%s\",%s)", value, api);
   }
 }

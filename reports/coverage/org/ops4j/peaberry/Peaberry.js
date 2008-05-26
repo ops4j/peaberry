@@ -11,23 +11,35 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_11" : {
+		"test_10" : {
 					  "name" : "standardDelegation",
 					  "pass" : true,
 					  "methods" : [{"sl": 163 },],
 					  "statements" : [{"sl": 164 },]
 					  },
-		"test_3" : {
-					  "name" : "serviceFilters",
-					  "pass" : true,
-					  "methods" : [{"sl": 58 },],
-					  "statements" : [{"sl": 59 },]
-					  },
-		"test_4" : {
+		"test_15" : {
 					  "name" : "testAnnotations",
 					  "pass" : true,
 					  "methods" : [{"sl": 58 },{"sl": 69 },],
 					  "statements" : [{"sl": 59 },{"sl": 70 },]
+					  },
+		"test_2" : {
+					  "name" : "checkLeasedAnnotation",
+					  "pass" : true,
+					  "methods" : [{"sl": 69 },],
+					  "statements" : [{"sl": 70 },]
+					  },
+		"test_14" : {
+					  "name" : "checkServiceAnnotation",
+					  "pass" : true,
+					  "methods" : [{"sl": 58 },],
+					  "statements" : [{"sl": 59 },]
+					  },
+		"test_6" : {
+					  "name" : "serviceFilters",
+					  "pass" : true,
+					  "methods" : [{"sl": 58 },],
+					  "statements" : [{"sl": 59 },]
 					  }
  };
 
@@ -89,8 +101,8 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 4 , 3   ] ,
-  [ 4 , 3   ] ,
+  [ 15 , 6 , 14   ] ,
+  [ 15 , 6 , 14   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -100,8 +112,8 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 4   ] ,
-  [ 4   ] ,
+  [ 15 , 2   ] ,
+  [ 15 , 2   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -194,8 +206,8 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 11   ] ,
-  [ 11   ] ,
+  [ 10   ] ,
+  [ 10   ] ,
   [  ] ,
   [  ] ,
   [  ] ,

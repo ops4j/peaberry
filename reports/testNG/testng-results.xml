@@ -6,31 +6,31 @@
     </groups>
     <test name="ManualBindingTests">
       <class name="org.ops4j.peaberry.test.osgi.ManualBindingTests">
-        <test-method status="PASS" signature="testUnaryService()" name="testUnaryService" duration-ms="40" started-at="2008-05-26T12:41:59Z" finished-at="2008-05-26T12:41:59Z">
+        <test-method status="PASS" signature="testMultiService()" name="testMultiService" duration-ms="1118" started-at="2008-05-26T16:11:04Z" finished-at="2008-05-26T16:11:05Z">
         </test-method>
-        <test-method status="PASS" signature="testAnnotations()" name="testAnnotations" duration-ms="9" started-at="2008-05-26T12:42:00Z" finished-at="2008-05-26T12:42:00Z">
+        <test-method status="PASS" signature="testAnnotations()" name="testAnnotations" duration-ms="8" started-at="2008-05-26T16:11:05Z" finished-at="2008-05-26T16:11:05Z">
         </test-method>
-        <test-method status="PASS" signature="testMultiService()" name="testMultiService" duration-ms="1131" started-at="2008-05-26T12:41:59Z" finished-at="2008-05-26T12:42:00Z">
+        <test-method status="PASS" signature="testUnaryService()" name="testUnaryService" duration-ms="28" started-at="2008-05-26T16:11:04Z" finished-at="2008-05-26T16:11:04Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceLeasingTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceLeasingTests">
-        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="124" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4416" started-at="2008-05-26T16:11:05Z" finished-at="2008-05-26T16:11:10Z">
         </test-method>
-        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4429" started-at="2008-05-26T12:42:00Z" finished-at="2008-05-26T12:42:04Z">
+        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4412" started-at="2008-05-26T16:11:10Z" finished-at="2008-05-26T16:11:14Z">
         </test-method>
-        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6615" started-at="2008-05-26T12:42:13Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6619" started-at="2008-05-26T16:11:19Z" finished-at="2008-05-26T16:11:25Z">
         </test-method>
-        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4414" started-at="2008-05-26T12:42:04Z" finished-at="2008-05-26T12:42:09Z">
+        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="4417" started-at="2008-05-26T16:11:14Z" finished-at="2008-05-26T16:11:19Z">
         </test-method>
-        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="4420" started-at="2008-05-26T12:42:09Z" finished-at="2008-05-26T12:42:13Z">
+        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="93" started-at="2008-05-26T16:11:25Z" finished-at="2008-05-26T16:11:25Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceInjectionTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceInjectionTests">
-        <test-method status="PASS" signature="checkInjection()" name="checkInjection" duration-ms="68" started-at="2008-05-26T12:42:00Z" finished-at="2008-05-26T12:42:00Z">
+        <test-method status="PASS" signature="checkInjection()" name="checkInjection" duration-ms="59" started-at="2008-05-26T16:11:05Z" finished-at="2008-05-26T16:11:05Z">
         </test-method>
       </class>
     </test>
@@ -38,31 +38,43 @@
   <suite name="Internal">
     <groups>
     </groups>
+    <test name="ServiceTypeTests">
+      <class name="org.ops4j.peaberry.test.internal.ServiceTypeTests">
+        <test-method status="PASS" signature="serviceTypes()" name="serviceTypes" duration-ms="15" started-at="2008-05-26T16:11:26Z" finished-at="2008-05-26T16:11:26Z">
+        </test-method>
+        <test-method status="PASS" signature="sequenceCheck()" name="sequenceCheck" duration-ms="27" started-at="2008-05-26T16:11:26Z" finished-at="2008-05-26T16:11:26Z">
+        </test-method>
+      </class>
+    </test>
     <test name="ServiceMatcherTests">
       <class name="org.ops4j.peaberry.test.internal.ServiceMatcherTests">
-        <test-method status="PASS" signature="handlesNull()" name="handlesNull" duration-ms="8" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="handlesNull()" name="handlesNull" duration-ms="5" started-at="2008-05-26T16:11:26Z" finished-at="2008-05-26T16:11:26Z">
         </test-method>
-        <test-method status="PASS" signature="leasedSpec()" name="leasedSpec" duration-ms="17" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="serviceSpec()" name="serviceSpec" duration-ms="17" started-at="2008-05-26T16:11:26Z" finished-at="2008-05-26T16:11:26Z">
         </test-method>
-        <test-method status="PASS" signature="missingAnnotations()" name="missingAnnotations" duration-ms="18" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="leasedSpec()" name="leasedSpec" duration-ms="14" started-at="2008-05-26T16:11:26Z" finished-at="2008-05-26T16:11:26Z">
         </test-method>
-        <test-method status="PASS" signature="serviceSpec()" name="serviceSpec" duration-ms="20" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="missingAnnotations()" name="missingAnnotations" duration-ms="16" started-at="2008-05-26T16:11:26Z" finished-at="2008-05-26T16:11:26Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="AnnotationTests">
+      <class name="org.ops4j.peaberry.test.internal.AnnotationTests">
+        <test-method status="PASS" signature="checkServiceAnnotation()" name="checkServiceAnnotation" duration-ms="13" started-at="2008-05-26T16:11:25Z" finished-at="2008-05-26T16:11:25Z">
+        </test-method>
+        <test-method status="PASS" signature="checkLeasedAnnotation()" name="checkLeasedAnnotation" duration-ms="8" started-at="2008-05-26T16:11:25Z" finished-at="2008-05-26T16:11:25Z">
         </test-method>
       </class>
     </test>
     <test name="ClassLoaderHookTests">
       <class name="org.ops4j.peaberry.test.internal.ClassLoaderHookTests">
-        <test-method status="PASS" signature="standardDelegation()" name="standardDelegation" duration-ms="9" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="standardDelegation()" name="standardDelegation" duration-ms="12" started-at="2008-05-26T16:11:25Z" finished-at="2008-05-26T16:11:26Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceFilterTests">
       <class name="org.ops4j.peaberry.test.internal.ServiceFilterTests">
-        <test-method status="PASS" signature="sequenceCheck()" name="sequenceCheck" duration-ms="24" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
-        </test-method>
-        <test-method status="PASS" signature="serviceTypes()" name="serviceTypes" duration-ms="14" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
-        </test-method>
-        <test-method status="PASS" signature="serviceFilters()" name="serviceFilters" duration-ms="15" started-at="2008-05-26T12:42:20Z" finished-at="2008-05-26T12:42:20Z">
+        <test-method status="PASS" signature="serviceFilters()" name="serviceFilters" duration-ms="18" started-at="2008-05-26T16:11:26Z" finished-at="2008-05-26T16:11:26Z">
         </test-method>
       </class>
     </test>

@@ -2,19 +2,19 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 575, "sl" : 38, "el" : 115, "name" : "ServiceFilterTests",
+    {"id" : 568, "sl" : 29, "el" : 57, "name" : "ServiceFilterTests",
     "methods" : [
-             {"sl" : 40, "el" : 43, "sc" : 3},  {"sl" : 45, "el" : 50, "sc" : 3},  {"sl" : 52, "el" : 59, "sc" : 3},  {"sl" : 61, "el" : 68, "sc" : 3},  {"sl" : 70, "el" : 87, "sc" : 3},  {"sl" : 95, "el" : 98, "sc" : 3},  {"sl" : 100, "el" : 102, "sc" : 3},  {"sl" : 104, "el" : 114, "sc" : 3}  ]}
+             {"sl" : 37, "el" : 40, "sc" : 3},  {"sl" : 42, "el" : 44, "sc" : 3},  {"sl" : 46, "el" : 56, "sc" : 3}  ]}
     ,
-    {"id" : 609, "sl" : 89, "el" : 89, "name" : "ServiceFilterTests.A",
-    "methods" : [
-             ]}
-    ,
-    {"id" : 609, "sl" : 91, "el" : 91, "name" : "ServiceFilterTests.B",
+    {"id" : 568, "sl" : 31, "el" : 31, "name" : "ServiceFilterTests.A",
     "methods" : [
              ]}
     ,
-    {"id" : 609, "sl" : 93, "el" : 93, "name" : "ServiceFilterTests.C",
+    {"id" : 568, "sl" : 33, "el" : 33, "name" : "ServiceFilterTests.B",
+    "methods" : [
+             ]}
+    ,
+    {"id" : 568, "sl" : 35, "el" : 35, "name" : "ServiceFilterTests.C",
     "methods" : [
               ]}
     
@@ -23,23 +23,11 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_1" : {
-					  "name" : "sequenceCheck",
-					  "pass" : true,
-					  "methods" : [{"sl": 52 },{"sl": 61 },{"sl": 70 },],
-					  "statements" : [{"sl": 53 },{"sl": 54 },{"sl": 56 },{"sl": 57 },{"sl": 62 },{"sl": 63 },{"sl": 65 },{"sl": 66 },{"sl": 73 },{"sl": 74 },{"sl": 75 },{"sl": 77 },{"sl": 78 },{"sl": 79 },{"sl": 80 },{"sl": 83 },{"sl": 84 },{"sl": 85 },]
-					  },
-		"test_3" : {
+		"test_6" : {
 					  "name" : "serviceFilters",
 					  "pass" : true,
-					  "methods" : [{"sl": 95 },{"sl": 100 },{"sl": 104 },],
-					  "statements" : [{"sl": 96 },{"sl": 97 },{"sl": 101 },{"sl": 105 },{"sl": 107 },{"sl": 110 },{"sl": 113 },]
-					  },
-		"test_7" : {
-					  "name" : "serviceTypes",
-					  "pass" : true,
-					  "methods" : [{"sl": 40 },{"sl": 45 },],
-					  "statements" : [{"sl": 41 },{"sl": 42 },{"sl": 46 },{"sl": 47 },{"sl": 48 },{"sl": 49 },]
+					  "methods" : [{"sl": 37 },{"sl": 42 },{"sl": 46 },],
+					  "statements" : [{"sl": 38 },{"sl": 39 },{"sl": 43 },{"sl": 47 },{"sl": 49 },{"sl": 52 },{"sl": 55 },]
 					  }
  };
 
@@ -80,83 +68,25 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
+  [ 6   ] ,
+  [ 6   ] ,
+  [ 6   ] ,
   [  ] ,
   [  ] ,
-  [  ] ,
-  [ 7   ] ,
-  [ 7   ] ,
-  [ 7   ] ,
+  [ 6   ] ,
+  [ 6   ] ,
   [  ] ,
   [  ] ,
-  [ 7   ] ,
-  [ 7   ] ,
-  [ 7   ] ,
-  [ 7   ] ,
-  [ 7   ] ,
+  [ 6   ] ,
+  [ 6   ] ,
+  [  ] ,
+  [ 6   ] ,
   [  ] ,
   [  ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [  ] ,
-  [ 1   ] ,
-  [ 1   ] ,
+  [ 6   ] ,
   [  ] ,
   [  ] ,
-  [  ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [  ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 1   ] ,
-  [  ] ,
-  [  ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [  ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [  ] ,
-  [  ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [ 1   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [  ] ,
-  [  ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [  ] ,
-  [  ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [  ] ,
-  [ 3   ] ,
-  [  ] ,
-  [  ] ,
-  [ 3   ] ,
-  [  ] ,
-  [  ] ,
-  [ 3   ] ,
+  [ 6   ] ,
   [  ] ,
   [  ] 
 ];

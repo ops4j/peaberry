@@ -48,14 +48,9 @@ public final class ServiceFilterFactory {
     /*
      * STEP 2: normalise custom filter, apply missing brackets
      */
-    String customFilter = spec.value();
-    if (null == customFilter) {
-      customFilter = "";
-    } else {
-      customFilter = customFilter.trim();
-      if (customFilter.length() > 0 && !customFilter.startsWith("(")) {
-        customFilter = '(' + customFilter + ')';
-      }
+    String customFilter = spec.value().trim();
+    if (customFilter.length() > 0 && !customFilter.startsWith("(")) {
+      customFilter = '(' + customFilter + ')';
     }
 
     /*

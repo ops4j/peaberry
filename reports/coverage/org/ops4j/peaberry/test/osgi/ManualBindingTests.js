@@ -2,32 +2,32 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 419, "sl" : 40, "el" : 98, "name" : "ManualBindingTests",
+    {"id" : 412, "sl" : 40, "el" : 99, "name" : "ManualBindingTests",
     "methods" : [
-              {"sl" : 43, "el" : 68, "sc" : 3},  {"sl" : 76, "el" : 79, "sc" : 3},  {"sl" : 81, "el" : 85, "sc" : 3},  {"sl" : 87, "el" : 97, "sc" : 3}  ]}
+              {"sl" : 43, "el" : 69, "sc" : 3},  {"sl" : 77, "el" : 80, "sc" : 3},  {"sl" : 82, "el" : 86, "sc" : 3},  {"sl" : 88, "el" : 98, "sc" : 3}  ]}
     
  ]
 };
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_4" : {
+		"test_15" : {
 					  "name" : "testAnnotations",
 					  "pass" : true,
-					  "methods" : [{"sl": 76 },],
-					  "statements" : [{"sl": 77 },{"sl": 78 },]
+					  "methods" : [{"sl": 77 },],
+					  "statements" : [{"sl": 78 },{"sl": 79 },]
 					  },
-		"test_14" : {
-					  "name" : "testUnaryService",
-					  "pass" : true,
-					  "methods" : [{"sl": 81 },],
-					  "statements" : [{"sl": 82 },{"sl": 83 },{"sl": 84 },]
-					  },
-		"test_0" : {
+		"test_16" : {
 					  "name" : "testMultiService",
 					  "pass" : true,
-					  "methods" : [{"sl": 87 },],
-					  "statements" : [{"sl": 88 },{"sl": 89 },{"sl": 90 },{"sl": 91 },{"sl": 92 },{"sl": 93 },{"sl": 94 },{"sl": 95 },{"sl": 96 },]
+					  "methods" : [{"sl": 88 },],
+					  "statements" : [{"sl": 89 },{"sl": 90 },{"sl": 91 },{"sl": 92 },{"sl": 93 },{"sl": 94 },{"sl": 95 },{"sl": 96 },{"sl": 97 },]
+					  },
+		"test_20" : {
+					  "name" : "testUnaryService",
+					  "pass" : true,
+					  "methods" : [{"sl": 82 },],
+					  "statements" : [{"sl": 83 },{"sl": 84 },{"sl": 85 },]
 					  }
  };
 
@@ -107,27 +107,28 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 4   ] ,
-  [ 4   ] ,
-  [ 4   ] ,
+  [  ] ,
+  [ 15   ] ,
+  [ 15   ] ,
+  [ 15   ] ,
   [  ] ,
   [  ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [ 14   ] ,
+  [ 20   ] ,
+  [ 20   ] ,
+  [ 20   ] ,
+  [ 20   ] ,
   [  ] ,
   [  ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
-  [ 0   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
+  [ 16   ] ,
   [  ] ,
   [  ] 
 ];

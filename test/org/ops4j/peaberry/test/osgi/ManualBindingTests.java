@@ -40,6 +40,7 @@ import com.google.inject.TypeLiteral;
 public class ManualBindingTests
     extends OSGiServiceTester {
 
+  @SuppressWarnings("serial")
   @Test(enabled = false)
   public static void setup(Binder binder, BundleContext bundleContext) {
 
