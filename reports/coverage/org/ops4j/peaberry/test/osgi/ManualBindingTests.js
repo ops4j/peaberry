@@ -2,7 +2,7 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 288, "sl" : 40, "el" : 98, "name" : "ManualBindingTests",
+    {"id" : 419, "sl" : 40, "el" : 98, "name" : "ManualBindingTests",
     "methods" : [
               {"sl" : 43, "el" : 68, "sc" : 3},  {"sl" : 76, "el" : 79, "sc" : 3},  {"sl" : 81, "el" : 85, "sc" : 3},  {"sl" : 87, "el" : 97, "sc" : 3}  ]}
     
@@ -11,19 +11,19 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_10" : {
+		"test_4" : {
 					  "name" : "testAnnotations",
 					  "pass" : true,
 					  "methods" : [{"sl": 76 },],
 					  "statements" : [{"sl": 77 },{"sl": 78 },]
 					  },
-		"test_13" : {
+		"test_14" : {
 					  "name" : "testUnaryService",
 					  "pass" : true,
 					  "methods" : [{"sl": 81 },],
 					  "statements" : [{"sl": 82 },{"sl": 83 },{"sl": 84 },]
 					  },
-		"test_5" : {
+		"test_0" : {
 					  "name" : "testMultiService",
 					  "pass" : true,
 					  "methods" : [{"sl": 87 },],
@@ -107,27 +107,27 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 10   ] ,
-  [ 10   ] ,
-  [ 10   ] ,
+  [ 4   ] ,
+  [ 4   ] ,
+  [ 4   ] ,
   [  ] ,
   [  ] ,
-  [ 13   ] ,
-  [ 13   ] ,
-  [ 13   ] ,
-  [ 13   ] ,
+  [ 14   ] ,
+  [ 14   ] ,
+  [ 14   ] ,
+  [ 14   ] ,
   [  ] ,
   [  ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
-  [ 5   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
+  [ 0   ] ,
   [  ] ,
   [  ] 
 ];

@@ -73,7 +73,7 @@ public final class Attributes {
   }
 
   /**
-   * Converts a {@link Service) specification to a type-safe attribute map.
+   * Converts a {@link Service} specification to a type-safe attribute map.
    * 
    * @param spec service specification
    * @return type-safe map of service attributes
