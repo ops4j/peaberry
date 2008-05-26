@@ -2,7 +2,7 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 241, "sl" : 45, "el" : 204, "name" : "Peaberry",
+    {"id" : 243, "sl" : 45, "el" : 204, "name" : "Peaberry",
     "methods" : [
               {"sl" : 48, "el" : 48, "sc" : 3},  {"sl" : 58, "el" : 60, "sc" : 3},  {"sl" : 69, "el" : 71, "sc" : 3},  {"sl" : 82, "el" : 86, "sc" : 3},  {"sl" : 97, "el" : 101, "sc" : 3},  {"sl" : 115, "el" : 119, "sc" : 3},  {"sl" : 133, "el" : 137, "sc" : 3},  {"sl" : 146, "el" : 151, "sc" : 3},  {"sl" : 163, "el" : 165, "sc" : 3},  {"sl" : 179, "el" : 203, "sc" : 3},  {"sl" : 184, "el" : 196, "sc" : 7},  {"sl" : 198, "el" : 201, "sc" : 7}  ]}
     
@@ -11,32 +11,38 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_10" : {
+		"test_21" : {
+					  "name" : "checkLeasedAnnotation",
+					  "pass" : true,
+					  "methods" : [{"sl": 69 },],
+					  "statements" : [{"sl": 70 },]
+					  },
+		"test_6" : {
 					  "name" : "standardDelegation",
 					  "pass" : true,
 					  "methods" : [{"sl": 163 },],
 					  "statements" : [{"sl": 164 },]
 					  },
 		"test_15" : {
+					  "name" : "testWiring",
+					  "pass" : true,
+					  "methods" : [{"sl": 58 },],
+					  "statements" : [{"sl": 59 },]
+					  },
+		"test_20" : {
 					  "name" : "testAnnotations",
 					  "pass" : true,
 					  "methods" : [{"sl": 58 },{"sl": 69 },],
 					  "statements" : [{"sl": 59 },{"sl": 70 },]
 					  },
 		"test_2" : {
-					  "name" : "checkLeasedAnnotation",
-					  "pass" : true,
-					  "methods" : [{"sl": 69 },],
-					  "statements" : [{"sl": 70 },]
-					  },
-		"test_14" : {
-					  "name" : "checkServiceAnnotation",
+					  "name" : "serviceFilters",
 					  "pass" : true,
 					  "methods" : [{"sl": 58 },],
 					  "statements" : [{"sl": 59 },]
 					  },
-		"test_6" : {
-					  "name" : "serviceFilters",
+		"test_1" : {
+					  "name" : "checkServiceAnnotation",
 					  "pass" : true,
 					  "methods" : [{"sl": 58 },],
 					  "statements" : [{"sl": 59 },]
@@ -101,8 +107,8 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 15 , 6 , 14   ] ,
-  [ 15 , 6 , 14   ] ,
+  [ 15 , 1 , 20 , 2   ] ,
+  [ 15 , 1 , 20 , 2   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -112,8 +118,8 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 15 , 2   ] ,
-  [ 15 , 2   ] ,
+  [ 21 , 20   ] ,
+  [ 21 , 20   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -206,8 +212,8 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 10   ] ,
-  [ 10   ] ,
+  [ 6   ] ,
+  [ 6   ] ,
   [  ] ,
   [  ] ,
   [  ] ,

@@ -2,15 +2,15 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 663, "sl" : 32, "el" : 80, "name" : "AnnotationTests",
+    {"id" : 694, "sl" : 32, "el" : 80, "name" : "AnnotationTests",
     "methods" : [
              {"sl" : 47, "el" : 61, "sc" : 3},  {"sl" : 63, "el" : 72, "sc" : 3},  {"sl" : 74, "el" : 79, "sc" : 3}  ]}
     ,
-    {"id" : 663, "sl" : 37, "el" : 37, "name" : "AnnotationTests.A",
+    {"id" : 694, "sl" : 37, "el" : 37, "name" : "AnnotationTests.A",
     "methods" : [
              ]}
     ,
-    {"id" : 663, "sl" : 39, "el" : 39, "name" : "AnnotationTests.B",
+    {"id" : 694, "sl" : 39, "el" : 39, "name" : "AnnotationTests.B",
     "methods" : [
               ]}
     
@@ -19,13 +19,13 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_2" : {
+		"test_21" : {
 					  "name" : "checkLeasedAnnotation",
 					  "pass" : true,
 					  "methods" : [{"sl": 47 },{"sl": 74 },],
 					  "statements" : [{"sl": 48 },{"sl": 50 },{"sl": 51 },{"sl": 56 },{"sl": 59 },{"sl": 60 },{"sl": 76 },{"sl": 78 },]
 					  },
-		"test_14" : {
+		"test_1" : {
 					  "name" : "checkServiceAnnotation",
 					  "pass" : true,
 					  "methods" : [{"sl": 47 },{"sl": 63 },],
@@ -80,38 +80,38 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 2 , 14   ] ,
-  [ 2 , 14   ] ,
+  [ 1 , 21   ] ,
+  [ 1 , 21   ] ,
   [  ] ,
-  [ 2 , 14   ] ,
-  [ 2 , 14   ] ,
-  [  ] ,
-  [  ] ,
+  [ 1 , 21   ] ,
+  [ 1 , 21   ] ,
   [  ] ,
   [  ] ,
-  [ 2 , 14   ] ,
   [  ] ,
   [  ] ,
-  [ 2 , 14   ] ,
-  [ 2 , 14   ] ,
+  [ 1 , 21   ] ,
   [  ] ,
   [  ] ,
-  [ 14   ] ,
-  [  ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [ 14   ] ,
-  [  ] ,
-  [ 14   ] ,
-  [  ] ,
-  [ 14   ] ,
+  [ 1 , 21   ] ,
+  [ 1 , 21   ] ,
   [  ] ,
   [  ] ,
-  [ 2   ] ,
+  [ 1   ] ,
   [  ] ,
-  [ 2   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
+  [ 1   ] ,
   [  ] ,
-  [ 2   ] ,
+  [ 1   ] ,
+  [  ] ,
+  [ 1   ] ,
+  [  ] ,
+  [  ] ,
+  [ 21   ] ,
+  [  ] ,
+  [ 21   ] ,
+  [  ] ,
+  [ 21   ] ,
   [  ] ,
   [  ] 
 ];

@@ -2,62 +2,68 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 106, "sl" : 34, "el" : 91, "name" : "ServiceProxyFactory",
+    {"id" : 108, "sl" : 34, "el" : 93, "name" : "ServiceProxyFactory",
     "methods" : [
-              {"sl" : 37, "el" : 37, "sc" : 3},  {"sl" : 49, "el" : 70, "sc" : 3},  {"sl" : 54, "el" : 61, "sc" : 7},  {"sl" : 82, "el" : 90, "sc" : 3},  {"sl" : 86, "el" : 88, "sc" : 7}  ]}
+              {"sl" : 37, "el" : 37, "sc" : 3},  {"sl" : 49, "el" : 71, "sc" : 3},  {"sl" : 55, "el" : 62, "sc" : 7},  {"sl" : 83, "el" : 92, "sc" : 3},  {"sl" : 88, "el" : 90, "sc" : 7}  ]}
     
  ]
 };
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_3" : {
+		"test_13" : {
 					  "name" : "staticMultiService",
 					  "pass" : true,
-					  "methods" : [{"sl": 86 },],
-					  "statements" : [{"sl": 87 },]
-					  },
-		"test_7" : {
-					  "name" : "staticUnaryService",
-					  "pass" : true,
-					  "methods" : [{"sl": 54 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
-					  },
-		"test_0" : {
-					  "name" : "unleasedUnaryService",
-					  "pass" : true,
-					  "methods" : [{"sl": 54 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
+					  "methods" : [{"sl": 88 },],
+					  "statements" : [{"sl": 89 },]
 					  },
 		"test_11" : {
-					  "name" : "leasedMultiService",
-					  "pass" : true,
-					  "methods" : [{"sl": 86 },],
-					  "statements" : [{"sl": 87 },]
-					  },
-		"test_8" : {
-					  "name" : "leasedUnaryService",
-					  "pass" : true,
-					  "methods" : [{"sl": 54 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },]
-					  },
-		"test_16" : {
 					  "name" : "testMultiService",
 					  "pass" : true,
-					  "methods" : [{"sl": 86 },],
-					  "statements" : [{"sl": 87 },]
+					  "methods" : [{"sl": 88 },],
+					  "statements" : [{"sl": 89 },]
 					  },
 		"test_4" : {
+					  "name" : "staticUnaryService",
+					  "pass" : true,
+					  "methods" : [{"sl": 55 },],
+					  "statements" : [{"sl": 56 },{"sl": 58 },{"sl": 60 },]
+					  },
+		"test_16" : {
+					  "name" : "unleasedUnaryService",
+					  "pass" : true,
+					  "methods" : [{"sl": 55 },],
+					  "statements" : [{"sl": 56 },{"sl": 58 },{"sl": 60 },]
+					  },
+		"test_15" : {
+					  "name" : "testWiring",
+					  "pass" : true,
+					  "methods" : [{"sl": 55 },],
+					  "statements" : [{"sl": 56 },{"sl": 58 },{"sl": 60 },]
+					  },
+		"test_3" : {
+					  "name" : "leasedMultiService",
+					  "pass" : true,
+					  "methods" : [{"sl": 88 },],
+					  "statements" : [{"sl": 89 },]
+					  },
+		"test_17" : {
+					  "name" : "leasedUnaryService",
+					  "pass" : true,
+					  "methods" : [{"sl": 55 },],
+					  "statements" : [{"sl": 56 },{"sl": 58 },{"sl": 60 },]
+					  },
+		"test_10" : {
 					  "name" : "checkInjection",
 					  "pass" : true,
-					  "methods" : [{"sl": 54 },{"sl": 86 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },{"sl": 59 },{"sl": 87 },]
+					  "methods" : [{"sl": 55 },{"sl": 88 },],
+					  "statements" : [{"sl": 56 },{"sl": 58 },{"sl": 60 },{"sl": 89 },]
 					  },
-		"test_20" : {
+		"test_7" : {
 					  "name" : "testUnaryService",
 					  "pass" : true,
-					  "methods" : [{"sl": 54 },],
-					  "statements" : [{"sl": 55 },{"sl": 57 },]
+					  "methods" : [{"sl": 55 },],
+					  "statements" : [{"sl": 56 },{"sl": 58 },]
 					  }
  };
 
@@ -115,15 +121,13 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 4 , 8 , 20 , 7 , 0   ] ,
-  [ 4 , 8 , 20 , 7 , 0   ] ,
   [  ] ,
-  [ 4 , 8 , 20 , 7 , 0   ] ,
+  [ 10 , 15 , 16 , 17 , 4 , 7   ] ,
+  [ 10 , 15 , 16 , 17 , 4 , 7   ] ,
   [  ] ,
-  [ 4 , 8 , 7 , 0   ] ,
+  [ 10 , 15 , 16 , 17 , 4 , 7   ] ,
   [  ] ,
-  [  ] ,
-  [  ] ,
+  [ 10 , 15 , 16 , 17 , 4   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -147,8 +151,12 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 3 , 4 , 16 , 11   ] ,
-  [ 3 , 4 , 16 , 11   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [ 10 , 13 , 3 , 11   ] ,
+  [ 10 , 13 , 3 , 11   ] ,
   [  ] ,
   [  ] ,
   [  ] ,

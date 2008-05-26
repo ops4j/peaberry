@@ -88,10 +88,13 @@ public class ServiceInjectionTests
 
   public void checkInjection() {
     disableAllServices();
+
     missingService(ctorService);
     missingService(fieldService);
     missingService(setterService);
+
     enableService("A");
+
     checkService(ctorService, "A");
     checkService(fieldService, "A");
     checkService(setterService, "A");

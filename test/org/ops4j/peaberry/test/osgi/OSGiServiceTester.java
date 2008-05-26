@@ -48,15 +48,16 @@ public abstract class OSGiServiceTester {
     properties.setProperty("name", name);
     properties.put(new Object(), "bogus");
 
-    Handle<SimpleService> handle = registry.add(new SimpleService() {
-      public String check() {
-        if (handles.containsKey(name)) {
-          return name;
-        }
+    Handle<SimpleService> handle =
+        registry.add((SimpleService) new SimpleService() {
+          public String check() {
+            if (handles.containsKey(name)) {
+              return name;
+            }
 
-        throw new ServiceUnavailableException();
-      }
-    }, attributes(properties));
+            throw new ServiceUnavailableException();
+          }
+        }, attributes(properties));
 
     handles.put(name, handle);
 

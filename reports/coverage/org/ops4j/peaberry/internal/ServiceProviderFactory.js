@@ -2,9 +2,9 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 145, "sl" : 47, "el" : 156, "name" : "ServiceProviderFactory",
+    {"id" : 147, "sl" : 47, "el" : 185, "name" : "ServiceProviderFactory",
     "methods" : [
-              {"sl" : 56, "el" : 56, "sc" : 3},  {"sl" : 68, "el" : 99, "sc" : 3},  {"sl" : 101, "el" : 116, "sc" : 3},  {"sl" : 106, "el" : 108, "sc" : 7},  {"sl" : 110, "el" : 114, "sc" : 7},  {"sl" : 118, "el" : 133, "sc" : 3},  {"sl" : 123, "el" : 125, "sc" : 7},  {"sl" : 127, "el" : 131, "sc" : 7},  {"sl" : 135, "el" : 155, "sc" : 3},  {"sl" : 145, "el" : 147, "sc" : 7},  {"sl" : 149, "el" : 153, "sc" : 7}  ]}
+              {"sl" : 56, "el" : 56, "sc" : 3},  {"sl" : 68, "el" : 99, "sc" : 3},  {"sl" : 111, "el" : 126, "sc" : 3},  {"sl" : 116, "el" : 118, "sc" : 7},  {"sl" : 120, "el" : 124, "sc" : 7},  {"sl" : 138, "el" : 153, "sc" : 3},  {"sl" : 143, "el" : 145, "sc" : 7},  {"sl" : 147, "el" : 151, "sc" : 7},  {"sl" : 164, "el" : 184, "sc" : 3},  {"sl" : 174, "el" : 176, "sc" : 7},  {"sl" : 178, "el" : 182, "sc" : 7}  ]}
     
  ]
 };
@@ -15,6 +15,35 @@ clover.testTargets = {
 
 // JSON: { lines : [{tests : [testid1, testid2, testid3, ...]}, ...]};
 clover.srcFileLines = [  [],   [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,

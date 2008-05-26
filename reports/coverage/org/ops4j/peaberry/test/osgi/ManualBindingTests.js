@@ -2,7 +2,7 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 412, "sl" : 40, "el" : 99, "name" : "ManualBindingTests",
+    {"id" : 644, "sl" : 40, "el" : 99, "name" : "ManualBindingTests",
     "methods" : [
               {"sl" : 43, "el" : 69, "sc" : 3},  {"sl" : 77, "el" : 80, "sc" : 3},  {"sl" : 82, "el" : 86, "sc" : 3},  {"sl" : 88, "el" : 98, "sc" : 3}  ]}
     
@@ -11,19 +11,19 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_15" : {
-					  "name" : "testAnnotations",
-					  "pass" : true,
-					  "methods" : [{"sl": 77 },],
-					  "statements" : [{"sl": 78 },{"sl": 79 },]
-					  },
-		"test_16" : {
+		"test_11" : {
 					  "name" : "testMultiService",
 					  "pass" : true,
 					  "methods" : [{"sl": 88 },],
 					  "statements" : [{"sl": 89 },{"sl": 90 },{"sl": 91 },{"sl": 92 },{"sl": 93 },{"sl": 94 },{"sl": 95 },{"sl": 96 },{"sl": 97 },]
 					  },
 		"test_20" : {
+					  "name" : "testAnnotations",
+					  "pass" : true,
+					  "methods" : [{"sl": 77 },],
+					  "statements" : [{"sl": 78 },{"sl": 79 },]
+					  },
+		"test_7" : {
 					  "name" : "testUnaryService",
 					  "pass" : true,
 					  "methods" : [{"sl": 82 },],
@@ -108,27 +108,27 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 15   ] ,
-  [ 15   ] ,
-  [ 15   ] ,
-  [  ] ,
-  [  ] ,
-  [ 20   ] ,
   [ 20   ] ,
   [ 20   ] ,
   [ 20   ] ,
   [  ] ,
   [  ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
-  [ 16   ] ,
+  [ 7   ] ,
+  [ 7   ] ,
+  [ 7   ] ,
+  [ 7   ] ,
+  [  ] ,
+  [  ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
+  [ 11   ] ,
   [  ] ,
   [  ] 
 ];

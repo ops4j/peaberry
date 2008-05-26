@@ -11,17 +11,17 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_15" : {
-					  "name" : "testAnnotations",
-					  "pass" : true,
-					  "methods" : [{"sl": 33 },{"sl": 41 },],
-					  "statements" : [{"sl": 34 },{"sl": 42 },]
-					  },
-		"test_2" : {
+		"test_21" : {
 					  "name" : "checkLeasedAnnotation",
 					  "pass" : true,
 					  "methods" : [{"sl": 33 },{"sl": 37 },{"sl": 41 },{"sl": 45 },{"sl": 50 },],
 					  "statements" : [{"sl": 34 },{"sl": 38 },{"sl": 42 },{"sl": 47 },{"sl": 52 },{"sl": 53 },{"sl": 56 },]
+					  },
+		"test_20" : {
+					  "name" : "testAnnotations",
+					  "pass" : true,
+					  "methods" : [{"sl": 33 },{"sl": 41 },],
+					  "statements" : [{"sl": 34 },{"sl": 42 },]
 					  }
  };
 
@@ -58,30 +58,30 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 15 , 2   ] ,
-  [ 15 , 2   ] ,
+  [ 21 , 20   ] ,
+  [ 21 , 20   ] ,
   [  ] ,
   [  ] ,
-  [ 2   ] ,
-  [ 2   ] ,
+  [ 21   ] ,
+  [ 21   ] ,
   [  ] ,
   [  ] ,
-  [ 15 , 2   ] ,
-  [ 15 , 2   ] ,
+  [ 21 , 20   ] ,
+  [ 21 , 20   ] ,
   [  ] ,
   [  ] ,
-  [ 2   ] ,
+  [ 21   ] ,
   [  ] ,
-  [ 2   ] ,
-  [  ] ,
-  [  ] ,
-  [ 2   ] ,
-  [  ] ,
-  [ 2   ] ,
-  [ 2   ] ,
+  [ 21   ] ,
   [  ] ,
   [  ] ,
-  [ 2   ] ,
+  [ 21   ] ,
+  [  ] ,
+  [ 21   ] ,
+  [ 21   ] ,
+  [  ] ,
+  [  ] ,
+  [ 21   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
