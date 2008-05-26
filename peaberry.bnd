@@ -5,7 +5,9 @@ Bundle-Version: ${version}
 Include-Resource:\
  @${aop.jar}!/org/aopalliance/**,\
  @${guice.jar}!/com/google/**,\
- NOTICE, LICENSE, LICENSE.asm,\
+ OSGI-OPT/NOTICE=NOTICE,\
+ OSGI-OPT/LICENSE=LICENSE,\
+ OSGI-OPT/LICENSE.asm=LICENSE.asm,\
  OSGI-OPT/src=guice/src,\
  OSGI-OPT/src=src
 

@@ -3,7 +3,8 @@ Bundle-SymbolicName: peaberry-lib
 Bundle-Version: ${version}
 
 Include-Resource:\
- NOTICE, LICENSE,\
+ OSGI-OPT/NOTICE=NOTICE,\
+ OSGI-OPT/LICENSE=LICENSE,\
  OSGI-OPT/src=src
 
 Export-Package:\

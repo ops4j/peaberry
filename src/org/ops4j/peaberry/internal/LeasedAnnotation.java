@@ -31,7 +31,7 @@ public final class LeasedAnnotation
   private final int seconds;
 
   public LeasedAnnotation(int seconds) {
-    this.seconds = seconds;
+    this.seconds = (seconds < 0 ? FOREVER : seconds);
   }
 
   public int seconds() {

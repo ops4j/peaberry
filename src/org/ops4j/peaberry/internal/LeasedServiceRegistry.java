@@ -43,6 +43,11 @@ public final class LeasedServiceRegistry
     this.leaseMillis = leased.seconds() * 1000;
   }
 
+  /**
+   * Uses a timed cache to decide when to delegate to the underlying registry.
+   * 
+   * {@inheritDoc}
+   */
   @SuppressWarnings("unchecked")
   public <T> Iterator<T> lookup(Class<? extends T> type, String filter) {
     final long now = System.currentTimeMillis();

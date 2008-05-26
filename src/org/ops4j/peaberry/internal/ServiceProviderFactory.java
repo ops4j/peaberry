@@ -98,6 +98,16 @@ public final class ServiceProviderFactory {
     return getUnaryProvider(spec, leasedRegistry, serviceClass, filter);
   }
 
+  /**
+   * Create a new unary {@link Service} {@link Provider} for the target.
+   * 
+   * @param spec custom service specification
+   * @param registry dynamic service registry
+   * @param clazz expected service class
+   * @param filter RFC-1960 LDAP filter
+   * 
+   * @return unary {@link Service} {@link Provider} for the target
+   */
   @SuppressWarnings("unchecked")
   private static <T> Provider<T> getUnaryProvider(final Service spec,
       final ServiceRegistry registry, final Class clazz, final String filter) {
@@ -115,6 +125,16 @@ public final class ServiceProviderFactory {
     };
   }
 
+  /**
+   * Create a new multiple {@link Service} {@link Provider} for the target.
+   * 
+   * @param spec custom service specification
+   * @param registry dynamic service registry
+   * @param clazz expected service class
+   * @param filter RFC-1960 LDAP filter
+   * 
+   * @return multiple {@link Service} {@link Provider} for the target
+   */
   @SuppressWarnings("unchecked")
   private static <T> Provider<T> getMultiProvider(final Service spec,
       final ServiceRegistry registry, final Class clazz, final String filter) {
@@ -132,6 +152,15 @@ public final class ServiceProviderFactory {
     };
   }
 
+  /**
+   * Create a new registering {@link Service} {@link Provider} for the target.
+   * 
+   * @param registry dynamic service registry
+   * @param serviceKey service binding key
+   * @param attributes service attributes
+   * 
+   * @return registering {@link Service} {@link Provider} for the target
+   */
   @SuppressWarnings("unchecked")
   private static <T> Provider<T> getHandleProvider(
       final ServiceRegistry registry, final Key serviceKey,
