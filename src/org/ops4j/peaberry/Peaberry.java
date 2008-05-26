@@ -80,7 +80,7 @@ public final class Peaberry {
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      Class<T> target) {
+      Class<? extends T> target) {
 
     return getServiceProvider(registry, Key.get(target), null, null);
   }
@@ -95,7 +95,7 @@ public final class Peaberry {
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      TypeLiteral<T> target) {
+      TypeLiteral<? extends T> target) {
 
     return getServiceProvider(registry, Key.get(target), null, null);
   }
@@ -113,7 +113,7 @@ public final class Peaberry {
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      Class<T> target, Service spec, Leased leased) {
+      Class<? extends T> target, Service spec, Leased leased) {
 
     return getServiceProvider(registry, Key.get(target), spec, leased);
   }
@@ -131,7 +131,7 @@ public final class Peaberry {
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      TypeLiteral<T> target, Service spec, Leased leased) {
+      TypeLiteral<? extends T> target, Service spec, Leased leased) {
 
     return getServiceProvider(registry, Key.get(target), spec, leased);
   }

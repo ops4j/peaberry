@@ -66,7 +66,7 @@ public final class ServiceProviderFactory {
    * @return {@link Service} {@link Provider} for the target
    */
   public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
-      Key<T> key, Service spec, Leased leased) {
+      Key<? extends T> key, Service spec, Leased leased) {
 
     nonNull(registry, "service registry");
     nonNull(key, "injection key");

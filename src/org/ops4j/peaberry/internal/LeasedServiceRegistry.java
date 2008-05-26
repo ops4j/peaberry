@@ -78,7 +78,7 @@ public final class LeasedServiceRegistry
   }
 
   // /CLOVER:OFF
-  public <T> Handle<T> add(T service, Map<String, ?> attributes) {
+  public <T, S extends T> Handle<T> add(S service, Map<String, ?> attributes) {
     return registry.add(service, attributes);
   } // /CLOVER:ON
 

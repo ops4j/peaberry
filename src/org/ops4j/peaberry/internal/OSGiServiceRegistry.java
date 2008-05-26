@@ -120,7 +120,7 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T> Handle<T> add(T service, Map<String, ?> attributes) {
+  public <T, S extends T> Handle<T> add(S service, Map<String, ?> attributes) {
 
     nonNull(service, "service");
 

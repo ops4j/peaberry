@@ -39,7 +39,7 @@ public interface ServiceWatcher {
    * 
    * @return handle to watched service, null if the watcher is not interested
    */
-  <T> Handle<T> add(T service, Map<String, ?> attributes);
+  <T, S extends T> Handle<T> add(S service, Map<String, ?> attributes);
 
   /**
    * Handle to a watched service.

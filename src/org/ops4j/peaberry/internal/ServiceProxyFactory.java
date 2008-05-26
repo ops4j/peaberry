@@ -47,7 +47,8 @@ final class ServiceProxyFactory {
    * @return proxy that delegates to the registry
    */
   public static <T> T getUnaryServiceProxy(Service spec,
-      final ServiceRegistry registry, final Class<T> clazz, final String filter) {
+      final ServiceRegistry registry, final Class<? extends T> clazz,
+      final String filter) {
 
     Enhancer proxy = GuiceCodeGen.getEnhancer(clazz);
     proxy.setCallback(new Dispatcher() {
@@ -80,7 +81,8 @@ final class ServiceProxyFactory {
    * @return iterable proxy that delegates to the registry
    */
   public static <T> Iterable<T> getMultiServiceProxy(Service spec,
-      final ServiceRegistry registry, final Class<T> clazz, final String filter) {
+      final ServiceRegistry registry, final Class<? extends T> clazz,
+      final String filter) {
 
     return new Iterable<T>() {
       public Iterator<T> iterator() {
