@@ -174,4 +174,9 @@ public final class OSGiServiceRegistry
       }
     };
   }
+
+  @Override
+  public String toString() {
+    return String.format("OSGiServiceRegistry(%s)", bundleContext.getBundle());
+  }
 }

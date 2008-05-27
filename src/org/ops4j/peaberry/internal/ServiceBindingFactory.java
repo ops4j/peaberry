@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.util.logging.Level.FINER;
 import static org.ops4j.peaberry.internal.ServiceMatcher.findMetaAnnotation;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
@@ -23,6 +24,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
@@ -30,6 +32,7 @@ import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.BindingFactory;
 import com.google.inject.Key;
+import com.google.inject.Provider;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.spi.Dependency;
 
@@ -42,11 +45,17 @@ public final class ServiceBindingFactory
     implements BindingFactory<Object> {
 
   /**
+   * Use standard logging API.
+   */
+  private final Logger logger;
+
+  /**
    * Underlying {@link ServiceRegistry} that provides dynamic services.
    */
   private final ServiceRegistry serviceRegistry;
 
   public ServiceBindingFactory(ServiceRegistry serviceRegistry) {
+    this.logger = Logger.getLogger(getClass().getName());
     this.serviceRegistry = serviceRegistry;
   }
 
@@ -72,7 +81,12 @@ public final class ServiceBindingFactory
     Service spec = findMetaAnnotation(element, Service.class);
     Leased leased = findMetaAnnotation(element, Leased.class);
 
-    lbb.toProvider(getServiceProvider(serviceRegistry, key, spec, leased));
+    Provider<T> serviceProvider =
+        getServiceProvider(serviceRegistry, key, spec, leased);
+
+    logger.log(FINER, key + " ==> " + serviceProvider);
+
+    lbb.toProvider(serviceProvider);
 
     return true;
   }
