@@ -16,7 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import static java.util.logging.Level.FINER;
 import static org.ops4j.peaberry.internal.ServiceMatcher.findMetaAnnotation;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
@@ -84,7 +83,7 @@ public final class ServiceBindingFactory
     Provider<T> serviceProvider =
         getServiceProvider(serviceRegistry, key, spec, leased);
 
-    logger.log(FINER, key + " ==> " + serviceProvider);
+    logger.fine(key + " ==> " + serviceProvider);
 
     lbb.toProvider(serviceProvider);
 

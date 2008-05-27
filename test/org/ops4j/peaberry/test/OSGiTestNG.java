@@ -22,6 +22,9 @@ import static org.testng.TestNGCommandLineArgs.parseCommandLine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.StringMap;
@@ -82,6 +85,13 @@ public final class OSGiTestNG
 
   @SuppressWarnings("unchecked")
   public static void main(String[] args) {
+
+    Logger rootLogger = Logger.getLogger("");
+    for (Handler h : rootLogger.getHandlers()) {
+      h.setLevel(Level.FINE);
+    }
+    rootLogger.setLevel(Level.FINE);
+
     Map params = checkConditions(parseCommandLine(args));
 
     TestNG testNG = new OSGiTestNG();

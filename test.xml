@@ -18,7 +18,6 @@
       <sysproperty key="felix.config.properties" value="file:test/felix.properties"/>
 
       <sysproperty key="build" value="${build}"/>
-      <sysproperty key="testlib" value="${testlib}"/>
       <sysproperty key="cmpn.jar" value="${cmpn.jar}"/>
 
       <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>
