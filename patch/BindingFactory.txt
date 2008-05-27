@@ -2,7 +2,7 @@ Index: test/com/google/inject/commands/CommandRecorderTest.java
 ===================================================================
 --- test/com/google/inject/commands/CommandRecorderTest.java	(revision 486)
 +++ test/com/google/inject/commands/CommandRecorderTest.java	(working copy)
-@@ -759,6 +759,10 @@
+@@ -760,6 +760,10 @@
      public Void visitGetProvider(GetProviderCommand command) {
        throw new AssertionFailedError();
      }
@@ -15,14 +15,15 @@ Index: test/com/google/inject/commands/CommandRecorderTest.java
    @Retention(RUNTIME)
 Index: src/com/google/inject/matcher/Matchers.java
 ===================================================================
---- src/com/google/inject/matcher/Matchers.java	(revision 486)
+--- src/com/google/inject/matcher/Matchers.java	(revision 491)
 +++ src/com/google/inject/matcher/Matchers.java	(working copy)
-@@ -17,10 +17,14 @@
+@@ -17,12 +17,15 @@
  package com.google.inject.matcher;
  
  import com.google.inject.internal.Objects;
 +import com.google.inject.spi.Dependency;
-+
+ 
+ import java.io.Serializable;
  import java.lang.annotation.Annotation;
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
@@ -32,9 +33,9 @@ Index: src/com/google/inject/matcher/Matchers.java
  import java.lang.reflect.Method;
  
  /**
-@@ -196,4 +200,78 @@
-       }
-     };
+@@ -340,4 +343,111 @@
+       return "returns(" + returnType + ")";
+     }
    }
 +
 +  /**
@@ -46,9 +47,9 @@ Index: src/com/google/inject/matcher/Matchers.java
 +      this.annotations = annotations;
 +    }
 +    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-+      for (int i = 0; i < annotations.length; i++) {
-+        if (annotationClass.isInstance(annotations[i])) {
-+          return annotationClass.cast(annotations[i]);
++      for (Annotation a : annotations) {
++        if (annotationClass.isInstance(a)) {
++          return annotationClass.cast(a);
 +        }
 +      }
 +      return null;
@@ -69,17 +70,33 @@ Index: src/com/google/inject/matcher/Matchers.java
 +   */
 +  public static Matcher<Dependency<?>> key(
 +      final Matcher<AnnotatedElement> keyAnnotation) {
-+    Objects.nonNull(keyAnnotation, "key annotation matcher");
-+    return new AbstractMatcher<Dependency<?>>() {
-+      public boolean matches(Dependency<?> d) {
-+        return keyAnnotation.matches(
-+            new AnnotationBucket(d.getKey().getAnnotation()));
-+      }
++    return new DependencyKey(keyAnnotation);
++  }
 +
-+      public String toString() {
-+        return "key(" + keyAnnotation + ")";
-+      }
-+    };
++  private static class DependencyKey extends
++      AbstractMatcher<Dependency<?>> implements Serializable {
++    private final Matcher<AnnotatedElement> keyAnnotation;
++
++    public DependencyKey(Matcher<AnnotatedElement> keyAnnotation) {
++      this.keyAnnotation = Objects.nonNull(keyAnnotation, "key annotation matcher");
++    }
++
++    public boolean matches(Dependency<?> d) {
++      return keyAnnotation.matches(new AnnotationBucket(d.getKey().getAnnotation()));
++    }
++
++    @Override public boolean equals(Object other) {
++      return other instanceof DependencyKey
++          && ((DependencyKey) other).keyAnnotation.equals(keyAnnotation);
++    }
++
++    @Override public int hashCode() {
++      return 37 * keyAnnotation.hashCode();
++    }
++
++    @Override public String toString() {
++      return "key(" + keyAnnotation + ")";
++    }
 +  }
 +
 +  /**
@@ -87,30 +104,48 @@ Index: src/com/google/inject/matcher/Matchers.java
 +   */
 +  public static Matcher<Dependency<?>> member(
 +      final Matcher<AnnotatedElement> memberAnnotation) {
-+    Objects.nonNull(memberAnnotation, "member annotation matcher");
-+    return new AbstractMatcher<Dependency<?>>() {
-+      public boolean matches(Dependency<?> d) {
-+        Member m = d.getMember();
-+        int i = d.getParameterIndex();
-+        Annotation[] as = new Annotation[0];
++    return new DependencyMember(memberAnnotation);
++  }
 +
-+        if (i < 0) {
-+          as = ((AnnotatedElement)m).getAnnotations();
-+        } else if (m instanceof Constructor) {
-+          as = ((Constructor<?>)m).getParameterAnnotations()[i];
-+        } else if (m instanceof Method) {
-+          as = ((Method)m).getParameterAnnotations()[i];
-+        }
++  private static class DependencyMember extends
++      AbstractMatcher<Dependency<?>> implements Serializable {
++    private final Matcher<AnnotatedElement> memberAnnotation;
 +
-+        return memberAnnotation.matches(new AnnotationBucket(as));
++    public DependencyMember(Matcher<AnnotatedElement> memberAnnotation) {
++      this.memberAnnotation = Objects.nonNull(memberAnnotation, "member annotation matcher");
++    }
++
++    public boolean matches(Dependency<?> d) {
++      Member m = d.getMember();
++      int i = d.getParameterIndex();
++      Annotation[] as = new Annotation[0];
++
++      if (i < 0) {
++        as = ((AnnotatedElement)m).getAnnotations();
++      } else if (m instanceof Constructor) {
++        as = ((Constructor<?>)m).getParameterAnnotations()[i];
++      } else if (m instanceof Method) {
++        as = ((Method)m).getParameterAnnotations()[i];
 +      }
 +
-+      public String toString() {
-+        return "member(" + memberAnnotation + ")";
-+      }
-+    };
++      return memberAnnotation.matches(new AnnotationBucket(as));
++    }
++
++    @Override public boolean equals(Object other) {
++      return other instanceof DependencyMember
++          && ((DependencyMember) other).memberAnnotation.equals(memberAnnotation);
++    }
++
++    @Override public int hashCode() {
++      return 37 * memberAnnotation.hashCode();
++    }
++
++    @Override public String toString() {
++      return "member(" + memberAnnotation + ")";
++    }
 +  }
  }
+\ No newline at end of file
 Index: src/com/google/inject/Binder.java
 ===================================================================
 --- src/com/google/inject/Binder.java	(revision 486)

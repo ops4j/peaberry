@@ -16,12 +16,12 @@
 
 package org.ops4j.peaberry.internal;
 
-import static com.google.inject.internal.Objects.equal;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
 import org.ops4j.peaberry.Service;
+
+import com.google.inject.internal.Objects;
 
 /**
  * Implementation of the {@link Service} annotation.
@@ -53,7 +53,7 @@ public final class ServiceAnnotation
 
   @Override
   public int hashCode() {
-    return ((127 * "value".hashCode()) ^ value.hashCode())
+    return ((127 * "value".hashCode()) ^ Objects.hashCode(value))
         + ((127 * "interfaces".hashCode()) ^ Arrays.hashCode(interfaces));
   }
 
@@ -65,7 +65,7 @@ public final class ServiceAnnotation
 
     Service other = (Service) o;
 
-    return equal(value, other.value())
+    return Objects.equal(value, other.value())
         && Arrays.equals(interfaces, other.interfaces());
   }
 
