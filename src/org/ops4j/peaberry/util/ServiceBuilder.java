@@ -28,7 +28,7 @@ import org.ops4j.peaberry.internal.ServiceAnnotation;
  */
 public final class ServiceBuilder {
 
-  private String name = "";
+  private String[] attributes = {};
   private String filter = "";
   private Class<?>[] interfaces = {};
   private int leaseInSeconds = 0;
@@ -37,8 +37,8 @@ public final class ServiceBuilder {
     return new ServiceBuilder();
   }
 
-  public ServiceBuilder name(String _name) {
-    this.name = nonNull(_name, "name");
+  public ServiceBuilder attributes(String... _attributes) {
+    this.attributes = nonNull(_attributes, "attributes");
     return this;
   }
 
@@ -58,6 +58,6 @@ public final class ServiceBuilder {
   }
 
   public Service build() {
-    return new ServiceAnnotation(filter, interfaces, leaseInSeconds, name);
+    return new ServiceAnnotation(attributes, filter, interfaces, leaseInSeconds);
   }
 }

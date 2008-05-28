@@ -39,11 +39,11 @@ import com.google.inject.BindingAnnotation;
 public @interface Service {
 
   /**
-   * LDAP name
+   * LDAP attributes, a sequence of name=value strings
    * 
    * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
-  String name() default "";
+  String[] attributes() default {};
 
   /**
    * LDAP filter

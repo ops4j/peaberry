@@ -33,18 +33,22 @@ import com.google.inject.internal.Objects;
 public final class ServiceAnnotation
     implements Service {
 
+  private final String[] attributes;
   private final String filter;
   private final Class<?>[] interfaces;
   private final Seconds lease;
-  private final String name;
 
-  public ServiceAnnotation(String filter, Class<?>[] interfaces,
-      int leaseInSeconds, String name) {
+  public ServiceAnnotation(String[] attributes, String filter,
+      Class<?>[] interfaces, int leaseInSeconds) {
 
+    this.attributes = attributes;
     this.filter = filter;
     this.interfaces = interfaces;
     this.lease = new SecondsAnnotation(leaseInSeconds);
-    this.name = name;
+  }
+
+  public String[] attributes() {
+    return attributes;
   }
 
   public String filter() {
@@ -59,20 +63,16 @@ public final class ServiceAnnotation
     return lease;
   }
 
-  public String name() {
-    return name;
-  }
-
   public Class<? extends Annotation> annotationType() {
     return Service.class;
   }
 
   @Override
   public int hashCode() {
-    return ((127 * "filter".hashCode()) ^ Objects.hashCode(filter))
+    return ((127 * "attributes".hashCode()) ^ Arrays.hashCode(attributes))
+        + ((127 * "filter".hashCode()) ^ Objects.hashCode(filter))
         + ((127 * "interfaces".hashCode()) ^ Arrays.hashCode(interfaces))
-        + ((127 * "lease".hashCode()) ^ Objects.hashCode(lease))
-        + ((127 * "name".hashCode()) ^ Objects.hashCode(name));
+        + ((127 * "lease".hashCode()) ^ Objects.hashCode(lease));
   }
 
   @Override
@@ -83,19 +83,20 @@ public final class ServiceAnnotation
 
     Service other = (Service) o;
 
-    return Objects.equal(filter, other.filter())
+    return Arrays.equals(attributes, other.attributes())
+        && Objects.equal(filter, other.filter())
         && Arrays.equals(interfaces, other.interfaces())
-        && Objects.equal(lease, other.lease())
-        && Objects.equal(name, other.name());
+        && Objects.equal(lease, other.lease());
   }
 
-  private static final String FORMAT =
+  private static final String SERVICE_FORMAT =
       "@" + Service.class.getName()
-          + "(filter=%s, interfaces=%s, lease=%s, name=%s)";
+          + "(attributes=%s, filter=%s, interfaces=%s, lease=%s)";
 
   @Override
   public String toString() {
-    return format(FORMAT, filter, Arrays.toString(interfaces), lease, name);
+    return format(SERVICE_FORMAT, attributes, filter, Arrays
+        .toString(interfaces), lease);
   }
 
   /**

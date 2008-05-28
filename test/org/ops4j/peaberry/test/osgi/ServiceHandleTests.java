@@ -57,11 +57,11 @@ public class ServiceHandleTests
   }
 
   @Inject
-  @Service(name = "word=A")
+  @Service(attributes = "word=A")
   Handle<WordService> producerA;
 
   @Inject
-  @Service(name = "word=B")
+  @Service(attributes = "word=B")
   Handle<WordService> producerB;
 
   @Inject
@@ -78,9 +78,9 @@ public class ServiceHandleTests
     binder.install(osgiModule(bundleContext));
 
     binder.bind(WordService.class).annotatedWith(
-        service().name("word=A").build()).to(WordServiceImplA.class);
+        service().attributes("word=A").build()).to(WordServiceImplA.class);
     binder.bind(WordService.class).annotatedWith(
-        service().name("word=B").build()).to(WordServiceImplB.class);
+        service().attributes("word=B").build()).to(WordServiceImplB.class);
   }
 
   private void checkWord(String word, String result) {
