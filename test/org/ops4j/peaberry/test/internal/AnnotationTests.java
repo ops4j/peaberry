@@ -37,7 +37,9 @@ public final class AnnotationTests {
 
   private interface B {}
 
-  @Service(filter = "lang=fr", interfaces = {
+  @Service(attributes = {
+      "a=X", "b=Y"
+  }, filter = "(&(lang=fr)(tz=utc))", interfaces = {
       A.class, B.class
   }, lease = @Seconds(42))
   public Object detailed;
@@ -51,11 +53,11 @@ public final class AnnotationTests {
       throw new RuntimeException(e);
     }
 
-    assert annotation.hashCode() == a.hashCode() : "Expected "
-        + annotation.hashCode() + ", got " + a.hashCode();
-
     assert annotation.equals(a);
     assert a.equals(annotation);
+
+    assert a.hashCode() == annotation.hashCode() : "Expected " + a.hashCode()
+        + ", got " + annotation.hashCode();
   }
 
   public void checkServiceAnnotation() {
@@ -65,13 +67,19 @@ public final class AnnotationTests {
     checkAnnotation("plain", service().interfaces(new Class<?>[] {}).build());
     checkAnnotation("plain", service().lease(0).build());
 
-    checkAnnotation("detailed", service().filter("lang=fr").interfaces(A.class,
-        B.class).lease(42).build());
+    checkAnnotation("detailed", service().attributes("a=X", "b=Y").filter(
+        "(&(lang=fr)(tz=utc))").interfaces(A.class, B.class).lease(42).build());
   }
 
   public void checkNotEquals() {
 
     assert !service().build().equals(new Object());
     assert !service().build().lease().equals(new Object());
+  }
+
+  public void checkAnnotationTypes() {
+
+    assert service().build().annotationType().equals(Service.class);
+    assert service().build().lease().annotationType().equals(Seconds.class);
   }
 }

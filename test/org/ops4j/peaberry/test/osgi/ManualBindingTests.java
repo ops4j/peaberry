@@ -16,11 +16,13 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
 import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.serviceProvider;
 import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
+import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
@@ -28,6 +30,7 @@ import org.testng.annotations.Test;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
@@ -46,27 +49,45 @@ public class ManualBindingTests
     binder.bind(BundleContext.class).toInstance(bundleContext);
     binder.bind(ServiceRegistry.class).toInstance(registry);
 
+    Service specificService = service().filter("name=B").lease(1).build();
+
     binder.bind(SimpleService.class).toProvider(
         serviceProvider(registry, SimpleService.class));
+
+    binder.bind(SimpleService.class).annotatedWith(named("specific"))
+        .toProvider(
+            serviceProvider(registry, SimpleService.class, specificService));
 
     TypeLiteral<Iterable<SimpleService>> multiple =
         new TypeLiteral<Iterable<SimpleService>>() {};
 
-    binder.bind(multiple).toProvider(
-        serviceProvider(registry, multiple, service().filter("name=B")
-            .interfaces(SimpleService.class).lease(1).build()));
+    binder.bind(multiple).toProvider(serviceProvider(registry, multiple));
+
+    binder.bind(multiple).annotatedWith(named("specific")).toProvider(
+        serviceProvider(registry, multiple, specificService));
   }
 
   @Inject
   SimpleService testService;
 
   @Inject
+  @Named("specific")
+  SimpleService specificService;
+
+  @Inject
   Iterable<SimpleService> testServices;
+
+  @Inject
+  @Named("specific")
+  Iterable<SimpleService> specificServices;
 
   public void testUnaryService() {
     disableAllServices();
     enableService("A");
-    checkService(testService, "A");
+    enableService("B");
+    enableService("C");
+    checkService(testService, "C");
+    checkService(specificService, "B");
   }
 
   public void testMultiService() {
@@ -74,10 +95,12 @@ public class ManualBindingTests
     enableService("A");
     enableService("B");
     enableService("C");
-    checkServices(testServices, "B");
+    checkServices(testServices, "C", "B", "A");
+    checkServices(specificServices, "B");
     disableService("B");
-    checkServices(testServices, "!");
+    checkServices(testServices, "C", "A");
+    checkServices(specificServices, "!");
     sleep(1100);
-    checkServices(testServices);
+    checkServices(specificServices);
   }
 }

@@ -18,6 +18,7 @@ package org.ops4j.peaberry.test.osgi;
 
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
+import static org.ops4j.peaberry.util.Attributes.attributes;
 import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
 import org.ops4j.peaberry.Service;
@@ -100,6 +101,12 @@ public class ServiceHandleTests
 
     checkWord("B", consumerA.getWord());
     checkWord("A", consumerB.getWord());
+
+    producerA.modify(attributes(service().attributes("word=A", "=").build()));
+    producerB.modify(attributes(service().attributes("word=B", "=").build()));
+
+    checkWord("A", consumerA.getWord());
+    checkWord("B", consumerB.getWord());
 
     producerA.remove();
     producerB.remove();

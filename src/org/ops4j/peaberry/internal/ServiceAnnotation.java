@@ -16,8 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import static java.lang.String.format;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
@@ -95,8 +93,8 @@ public final class ServiceAnnotation
 
   @Override
   public String toString() {
-    return format(SERVICE_FORMAT, attributes, filter, Arrays
-        .toString(interfaces), lease);
+    return String.format(SERVICE_FORMAT, Arrays.toString(attributes), filter,
+        Arrays.toString(interfaces), lease);
   }
 
   /**
@@ -140,7 +138,7 @@ public final class ServiceAnnotation
 
     @Override
     public String toString() {
-      return format(SECONDS_FORMAT, value);
+      return String.format(SECONDS_FORMAT, value);
     }
   }
 }
