@@ -16,13 +16,12 @@
 
 package org.ops4j.peaberry.test.internal;
 
-import static org.ops4j.peaberry.Peaberry.leased;
-import static org.ops4j.peaberry.Peaberry.service;
+import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
 import java.lang.annotation.Annotation;
 
-import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
+import org.ops4j.peaberry.Service.Seconds;
 import org.testng.annotations.Test;
 
 /**
@@ -38,10 +37,9 @@ public final class AnnotationTests {
 
   private interface B {}
 
-  @Service(value = "lang=fr", interfaces = {
+  @Service(filter = "lang=fr", interfaces = {
       A.class, B.class
-  })
-  @Leased(seconds = 42)
+  }, lease = @Seconds(42))
   public Object detailed;
 
   private void checkAnnotation(String field, Annotation annotation) {
@@ -62,19 +60,18 @@ public final class AnnotationTests {
 
   public void checkServiceAnnotation() {
 
-    checkAnnotation("plain", service(null));
-    checkAnnotation("plain", service(""));
-    checkAnnotation("plain", service("", new Class<?>[] {}));
+    checkAnnotation("plain", service().build());
+    checkAnnotation("plain", service().filter("").build());
+    checkAnnotation("plain", service().interfaces(new Class<?>[] {}).build());
+    checkAnnotation("plain", service().lease(0).build());
 
-    checkAnnotation("detailed", service("lang=fr", A.class, B.class));
-
-    assert !service(null).equals(new Object());
+    checkAnnotation("detailed", service().filter("lang=fr").interfaces(A.class,
+        B.class).lease(42).build());
   }
 
-  public void checkLeasedAnnotation() {
+  public void checkNotEquals() {
 
-    checkAnnotation("detailed", leased(42));
-
-    assert !leased(0).equals(new Object());
+    assert !service().build().equals(new Object());
+    assert !service().build().lease().equals(new Object());
   }
 }

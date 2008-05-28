@@ -16,15 +16,11 @@
 
 package org.ops4j.peaberry.test.osgi;
 
-import static org.ops4j.peaberry.Leased.FOREVER;
-import static org.ops4j.peaberry.Peaberry.leased;
 import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
 import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
-import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.Peaberry.serviceProvider;
+import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
-import org.ops4j.peaberry.Leased;
-import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
@@ -43,6 +39,7 @@ public class ManualBindingTests
   @SuppressWarnings("serial")
   @Test(enabled = false)
   public static void setup(Binder binder, BundleContext bundleContext) {
+    nonDelegatingContainer();
 
     ServiceRegistry registry = osgiServiceRegistry(bundleContext);
 
@@ -52,20 +49,12 @@ public class ManualBindingTests
     binder.bind(SimpleService.class).toProvider(
         serviceProvider(registry, SimpleService.class));
 
-    binder.bind(String.class).toProvider(
-        serviceProvider(registry, String.class, null, leased(FOREVER)));
-
     TypeLiteral<Iterable<SimpleService>> multiple =
         new TypeLiteral<Iterable<SimpleService>>() {};
 
     binder.bind(multiple).toProvider(
-        serviceProvider(registry, multiple, service("name=B",
-            SimpleService.class), leased(1)));
-
-    binder.bind(Integer.class).toProvider(
-        serviceProvider(registry, TypeLiteral.get(Integer.class)));
-
-    nonDelegatingContainer();
+        serviceProvider(registry, multiple, service().filter("name=B")
+            .interfaces(SimpleService.class).lease(1).build()));
   }
 
   @Inject
@@ -73,11 +62,6 @@ public class ManualBindingTests
 
   @Inject
   Iterable<SimpleService> testServices;
-
-  public void testAnnotations() {
-    assert service(null).annotationType().equals(Service.class);
-    assert leased(3).annotationType().equals(Leased.class);
-  }
 
   public void testUnaryService() {
     disableAllServices();

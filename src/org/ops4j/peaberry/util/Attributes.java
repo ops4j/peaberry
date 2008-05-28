@@ -84,7 +84,7 @@ public final class Attributes {
 
     try {
       // parse the service string as a RFC-2253 LDAP name
-      for (Rdn rdn : new LdapName(spec.value()).getRdns()) {
+      for (Rdn rdn : new LdapName(spec.name()).getRdns()) {
         attributes.put(rdn.getType(), rdn.getValue());
       }
     } catch (InvalidNameException e) {/* TODO */}

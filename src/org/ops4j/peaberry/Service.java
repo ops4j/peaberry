@@ -24,8 +24,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.google.inject.BindingAnnotation;
+
 /**
- * Denotes a dynamic service with an optional LDAP filter or name.
+ * Specification for a dynamic service binding.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -33,15 +35,36 @@ import java.lang.annotation.Target;
     TYPE, FIELD, PARAMETER
 })
 @Retention(RUNTIME)
+@BindingAnnotation
 public @interface Service {
 
   /**
-   * RFC-1960 LDAP filter, or RFC-2253 LDAP name
+   * LDAP name
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
-  String value() default "";
+  String name() default "";
+
+  /**
+   * LDAP filter
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
+   */
+  String filter() default "";
 
   /**
    * Custom service API
    */
   Class<?>[] interfaces() default {};
+
+  public @interface Seconds {
+    int value();
+  }
+
+  static int FOREVER = -1;
+
+  /**
+   * Service lease period
+   */
+  Seconds lease() default @Seconds(0);
 }

@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.lang.String.format;
+
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
@@ -31,20 +33,34 @@ import com.google.inject.internal.Objects;
 public final class ServiceAnnotation
     implements Service {
 
-  private final String value;
+  private final String filter;
   private final Class<?>[] interfaces;
+  private final Seconds lease;
+  private final String name;
 
-  public ServiceAnnotation(String value, Class<?>... interfaces) {
-    this.value = (null == value ? "" : value);
+  public ServiceAnnotation(String filter, Class<?>[] interfaces,
+      int leaseInSeconds, String name) {
+
+    this.filter = filter;
     this.interfaces = interfaces;
+    this.lease = new SecondsAnnotation(leaseInSeconds);
+    this.name = name;
   }
 
-  public String value() {
-    return value;
+  public String filter() {
+    return filter;
   }
 
   public Class<?>[] interfaces() {
     return interfaces;
+  }
+
+  public Seconds lease() {
+    return lease;
+  }
+
+  public String name() {
+    return name;
   }
 
   public Class<? extends Annotation> annotationType() {
@@ -53,8 +69,10 @@ public final class ServiceAnnotation
 
   @Override
   public int hashCode() {
-    return ((127 * "value".hashCode()) ^ Objects.hashCode(value))
-        + ((127 * "interfaces".hashCode()) ^ Arrays.hashCode(interfaces));
+    return ((127 * "filter".hashCode()) ^ Objects.hashCode(filter))
+        + ((127 * "interfaces".hashCode()) ^ Arrays.hashCode(interfaces))
+        + ((127 * "lease".hashCode()) ^ Objects.hashCode(lease))
+        + ((127 * "name".hashCode()) ^ Objects.hashCode(name));
   }
 
   @Override
@@ -65,13 +83,63 @@ public final class ServiceAnnotation
 
     Service other = (Service) o;
 
-    return Objects.equal(value, other.value())
-        && Arrays.equals(interfaces, other.interfaces());
+    return Objects.equal(filter, other.filter())
+        && Arrays.equals(interfaces, other.interfaces())
+        && Objects.equal(lease, other.lease())
+        && Objects.equal(name, other.name());
   }
+
+  private static final String FORMAT =
+      "@" + Service.class.getName()
+          + "(filter=%s, interfaces=%s, lease=%s, name=%s)";
 
   @Override
   public String toString() {
-    String api = Arrays.toString(interfaces);
-    return String.format("@Service(\"%s\",%s)", value, api);
+    return format(FORMAT, filter, Arrays.toString(interfaces), lease, name);
+  }
+
+  /**
+   * Implementation of the {@link Seconds} annotation.
+   */
+  private static final class SecondsAnnotation
+      implements Seconds {
+
+    private final int value;
+
+    public SecondsAnnotation(int value) {
+      this.value = value;
+    }
+
+    public int value() {
+      return value;
+    }
+
+    public Class<? extends Annotation> annotationType() {
+      return Seconds.class;
+    }
+
+    @Override
+    public int hashCode() {
+      return ((127 * "value".hashCode()) ^ Integer.valueOf(value).hashCode());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (!(o instanceof Seconds)) {
+        return false;
+      }
+
+      Seconds other = (Seconds) o;
+
+      return value == other.value();
+    }
+
+    private static final String SECONDS_FORMAT =
+        "@" + Seconds.class.getName() + "(value=%d)";
+
+    @Override
+    public String toString() {
+      return format(SECONDS_FORMAT, value);
+    }
   }
 }

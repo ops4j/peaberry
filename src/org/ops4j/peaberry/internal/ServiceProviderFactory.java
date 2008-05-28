@@ -29,7 +29,6 @@ import static org.ops4j.peaberry.util.Attributes.attributes;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
@@ -60,30 +59,29 @@ public final class ServiceProviderFactory {
    * 
    * @param registry dynamic service registry
    * @param key key of the member being injected
-   * @param spec custom service specification
-   * @param leased optionally leased
    * 
    * @return {@link Service} {@link Provider} for the target
    */
   public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
-      Key<? extends T> key, Service spec, Leased leased) {
+      Key<? extends T> key) {
 
     nonNull(registry, "service registry");
     nonNull(key, "injection key");
 
     Type memberType = key.getTypeLiteral().getType();
+    Service spec = (Service) key.getAnnotation();
 
     if (expectsHandle(memberType)) {
 
       Type serviceType = getServiceType(memberType);
-      Key<?> serviceKey = Key.get(serviceType, key.getAnnotation());
+      Key<?> serviceKey = Key.get(serviceType, spec);
 
       return getHandleProvider(registry, serviceKey, attributes(spec));
     }
 
     ServiceRegistry leasedRegistry;
-    if (leased != null && leased.seconds() != 0) {
-      leasedRegistry = new LeasedServiceRegistry(registry, leased);
+    if (null != spec && spec.lease().value() != 0) {
+      leasedRegistry = new LeasedServiceRegistry(registry, spec.lease());
     } else {
       leasedRegistry = registry;
     }

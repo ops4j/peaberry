@@ -16,8 +16,8 @@
 
 package org.ops4j.peaberry.test.internal;
 
-import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
+import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
 import org.ops4j.peaberry.Service;
 import org.testng.annotations.Test;
@@ -44,14 +44,17 @@ public final class ServiceFilterTests {
   }
 
   public void serviceFilters() {
+
     checkFilter("(" + objectclass("A") + ")", null);
 
     checkFilter("(&(" + objectclass("C") + ")(" + objectclass("A") + ")("
-        + objectclass("B") + "))", service(null, C.class, A.class, B.class));
+        + objectclass("B") + "))", service().interfaces(C.class, A.class,
+        B.class).build());
 
     checkFilter("(&(|(name=THIS)(name=THAT))(" + objectclass("A") + "))",
-        service("|(name=THIS)(name=THAT)"));
+        service().filter("|(name=THIS)(name=THAT)").build());
 
-    checkFilter("(OBJECTCLASS=TEST)", service("OBJECTCLASS=TEST"));
+    checkFilter("(OBJECTCLASS=TEST)", service().filter("OBJECTCLASS=TEST")
+        .build());
   }
 }

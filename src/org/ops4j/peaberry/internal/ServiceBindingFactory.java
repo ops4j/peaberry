@@ -16,17 +16,10 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ServiceMatcher.findMetaAnnotation;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.util.logging.Logger;
 
-import org.ops4j.peaberry.Leased;
-import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.BindingFactory;
@@ -51,11 +44,11 @@ public final class ServiceBindingFactory
   /**
    * Underlying {@link ServiceRegistry} that provides dynamic services.
    */
-  private final ServiceRegistry serviceRegistry;
+  private final ServiceRegistry registry;
 
   public ServiceBindingFactory(ServiceRegistry serviceRegistry) {
     this.logger = Logger.getLogger(getClass().getName());
-    this.serviceRegistry = serviceRegistry;
+    this.registry = serviceRegistry;
   }
 
   /**
@@ -63,29 +56,10 @@ public final class ServiceBindingFactory
    */
   public <T> boolean bind(Dependency<T> dependency, LinkedBindingBuilder<T> lbb) {
 
-    Member member = dependency.getMember();
-    int i = dependency.getParameterIndex();
-    AnnotatedElement element = null;
-
-    if (i < 0) {
-      element = (AnnotatedElement) member;
-    } else if (member instanceof Constructor) {
-      element = ((Constructor<?>) member).getParameterTypes()[i];
-    } else /* must be 'setter' method */{
-      element = ((Method) member).getParameterTypes()[i];
-    }
-
     Key<T> key = dependency.getKey();
-
-    Service spec = findMetaAnnotation(element, Service.class);
-    Leased leased = findMetaAnnotation(element, Leased.class);
-
-    Provider<T> serviceProvider =
-        getServiceProvider(serviceRegistry, key, spec, leased);
-
-    logger.fine(key + " ==> " + serviceProvider);
-
-    lbb.toProvider(serviceProvider);
+    Provider<T> provider = getServiceProvider(registry, key);
+    logger.fine(key + " ==> " + provider);
+    lbb.toProvider(provider);
 
     return true;
   }

@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.ops4j.peaberry.Leased;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.Service.Seconds;
 
 /**
  * Provides a {@link Leased} {@link ServiceRegistry}.
@@ -38,9 +38,9 @@ public final class LeasedServiceRegistry
   private volatile Collection<?> services;
   private volatile Long expireMillis = 0L;
 
-  public LeasedServiceRegistry(ServiceRegistry registry, Leased leased) {
+  public LeasedServiceRegistry(ServiceRegistry registry, Seconds lease) {
     this.registry = registry;
-    this.leaseMillis = leased.seconds() * 1000;
+    this.leaseMillis = lease.value() * 1000;
   }
 
   /**

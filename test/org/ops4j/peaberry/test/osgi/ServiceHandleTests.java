@@ -16,9 +16,9 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
-import static org.ops4j.peaberry.Peaberry.service;
-import static org.ops4j.peaberry.util.Attributes.attributes;
+import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -28,8 +28,6 @@ import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import com.google.inject.name.Names;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
@@ -59,23 +57,19 @@ public class ServiceHandleTests
   }
 
   @Inject
-  @Named("A")
-  @Service("word=A")
+  @Service(name = "word=A")
   Handle<WordService> producerA;
 
   @Inject
-  @Named("B")
-  @Service("word=B")
+  @Service(name = "word=B")
   Handle<WordService> producerB;
 
   @Inject
-  @Named("one")
-  @Service("word=A")
+  @Service(filter = "word=A")
   WordService consumerA;
 
   @Inject
-  @Named("two")
-  @Service("word=B")
+  @Service(filter = "word=B")
   WordService consumerB;
 
   @Test(enabled = false)
@@ -83,10 +77,10 @@ public class ServiceHandleTests
 
     binder.install(osgiModule(bundleContext));
 
-    binder.bind(WordService.class).annotatedWith(Names.named("A")).to(
-        WordServiceImplA.class);
-    binder.bind(WordService.class).annotatedWith(Names.named("B")).to(
-        WordServiceImplB.class);
+    binder.bind(WordService.class).annotatedWith(
+        service().name("word=A").build()).to(WordServiceImplA.class);
+    binder.bind(WordService.class).annotatedWith(
+        service().name("word=B").build()).to(WordServiceImplB.class);
   }
 
   private void checkWord(String word, String result) {
@@ -101,8 +95,8 @@ public class ServiceHandleTests
     checkWord("A", producerA.get().getWord());
     checkWord("B", producerB.get().getWord());
 
-    producerA.modify(attributes(service("word=B")));
-    producerB.modify(attributes(service("word=A")));
+    producerA.modify(singletonMap("word", "B"));
+    producerB.modify(singletonMap("word", "A"));
 
     checkWord("B", consumerA.getWord());
     checkWord("A", consumerB.getWord());

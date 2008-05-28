@@ -17,14 +17,12 @@
 package org.ops4j.peaberry;
 
 import static com.google.inject.internal.Objects.nonNull;
+import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.member;
-import static org.ops4j.peaberry.internal.ServiceMatcher.annotatedWithService;
 import static org.ops4j.peaberry.internal.ServiceProviderFactory.getServiceProvider;
 
-import org.ops4j.peaberry.internal.LeasedAnnotation;
 import org.ops4j.peaberry.internal.NonDelegatingClassLoaderHook;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
-import org.ops4j.peaberry.internal.ServiceAnnotation;
 import org.ops4j.peaberry.internal.ServiceBindingFactory;
 import org.osgi.framework.BundleContext;
 
@@ -48,29 +46,6 @@ public final class Peaberry {
   private Peaberry() {}
 
   /**
-   * Create a {@link Service} specification on-the-fly.
-   * 
-   * @param value RFC-1960 LDAP filter, or RFC-2253 LDAP name
-   * @param interfaces custom service API
-   * 
-   * @return {@link Service} specification
-   */
-  public static Service service(String value, Class<?>... interfaces) {
-    return new ServiceAnnotation(value, interfaces);
-  }
-
-  /**
-   * Create a {@link Leased} setting on-the-fly.
-   * 
-   * @param seconds lease time in seconds
-   * 
-   * @return {@link Leased} setting
-   */
-  public static Leased leased(int seconds) {
-    return new LeasedAnnotation(seconds);
-  }
-
-  /**
    * Creates a dynamic service provider for the given {@link ServiceRegistry}.
    * The provider is configured to find all services compatible with the target.
    * 
@@ -82,7 +57,7 @@ public final class Peaberry {
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
       Class<? extends T> target) {
 
-    return getServiceProvider(registry, Key.get(target), null, null);
+    return getServiceProvider(registry, Key.get(target));
   }
 
   /**
@@ -97,47 +72,43 @@ public final class Peaberry {
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
       TypeLiteral<? extends T> target) {
 
-    return getServiceProvider(registry, Key.get(target), null, null);
+    return getServiceProvider(registry, Key.get(target));
   }
 
   /**
    * Creates a dynamic service provider for the given {@link ServiceRegistry}.
-   * The provider is configured with the {@link Service} specification and is
-   * optionally {@link Leased}.
+   * The provider is configured with the custom {@link Service} specification.
    * 
    * @param registry dynamic service registry
    * @param target current binding target
    * @param spec custom service specification
-   * @param leased optionally leased
    * 
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      Class<? extends T> target, Service spec, Leased leased) {
+      Class<? extends T> target, Service spec) {
 
-    return getServiceProvider(registry, Key.get(target), spec, leased);
+    return getServiceProvider(registry, Key.get(target, spec));
   }
 
   /**
    * Creates a dynamic service provider for the given {@link ServiceRegistry}.
-   * The provider is configured with the {@link Service} specification and is
-   * optionally {@link Leased}.
+   * The provider is configured with the custom {@link Service} specification.
    * 
    * @param registry dynamic service registry
    * @param target current binding target
    * @param spec custom service specification
-   * @param leased optionally leased
    * 
    * @return dynamic service provider
    */
   public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      TypeLiteral<? extends T> target, Service spec, Leased leased) {
+      TypeLiteral<? extends T> target, Service spec) {
 
-    return getServiceProvider(registry, Key.get(target), spec, leased);
+    return getServiceProvider(registry, Key.get(target, spec));
   }
 
   /**
-   * Create a new OSGi {@link ServiceRegistry} adaptor for the given bundle.
+   * Creates a new OSGi {@link ServiceRegistry} adaptor for the given bundle.
    * 
    * @param bundleContext current bundle context
    * 
@@ -165,10 +136,10 @@ public final class Peaberry {
   }
 
   /**
-   * Creates a Guice module for the current OSGi bundle with useful bindings,
-   * such as the {@link BundleContext} and registers a {@link BindingFactory}
-   * that binds unbound injection points annotated with {@link Service} to
-   * matching OSGi services.
+   * Creates a Guice module for the given bundle with bindings to the
+   * {@link BundleContext} and OSGi {@link ServiceRegistry}, as well as a
+   * {@link BindingFactory} that will automatically bind injection points
+   * annotated with {@link Service} to matching OSGi services.
    * 
    * An OSGi classloader hook is also set for the thread using this module.
    * 
@@ -182,17 +153,17 @@ public final class Peaberry {
 
     return new Module() {
       public void configure(Binder binder) {
+        nonDelegatingContainer();
 
         ServiceRegistry registry = osgiServiceRegistry(bundleContext);
 
+        // useful bindings for OSGi applications
         binder.bind(BundleContext.class).toInstance(bundleContext);
         binder.bind(ServiceRegistry.class).toInstance(registry);
 
         // auto-bind service dependencies and implementations
-        binder.addBindingFactory(member(annotatedWithService()),
+        binder.addBindingFactory(member(annotatedWith(Service.class)),
             new ServiceBindingFactory(registry));
-
-        nonDelegatingContainer();
       }
 
       @Override

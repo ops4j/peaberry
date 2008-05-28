@@ -26,7 +26,6 @@ import org.ops4j.peaberry.ServiceWatcher.Handle;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
@@ -37,7 +36,6 @@ public class ServiceInjectionTests
 
   @Inject
   @Service
-  @Named("field")
   SimpleService fieldService;
 
   final SimpleService ctorService;
@@ -48,7 +46,6 @@ public class ServiceInjectionTests
 
   @Inject
   public ServiceInjectionTests(@Service
-  @Named("ctor")
   SimpleService service) {
     ctorService = service;
   }
@@ -57,7 +54,6 @@ public class ServiceInjectionTests
 
   @Inject
   protected void setTestService(@Service
-  @Named("setter")
   SimpleService service) {
     setterService = service;
   }
@@ -69,21 +65,18 @@ public class ServiceInjectionTests
 
   @Inject
   @Service(interfaces = ExtendedService.class)
-  @Named("extended1")
   Object extendedService1;
 
   @Inject
   @Service(interfaces = {
       SimpleService.class, ExtendedService.class
   })
-  @Named("extended2")
   Object extendedService2;
 
   @Inject
   @Service(interfaces = {
       SimpleService.class, ExtendedService.class
   })
-  @Named("extendedSequence")
   Iterable<?> extendedServices;
 
   public void checkInjection() {

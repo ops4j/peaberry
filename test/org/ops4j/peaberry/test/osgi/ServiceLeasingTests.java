@@ -16,12 +16,13 @@
 
 package org.ops4j.peaberry.test.osgi;
 
-import org.ops4j.peaberry.Leased;
+import static org.ops4j.peaberry.Service.FOREVER;
+
 import org.ops4j.peaberry.Service;
+import org.ops4j.peaberry.Service.Seconds;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
@@ -32,31 +33,22 @@ public class ServiceLeasingTests
 
   @Inject
   @Service
-  @Named("unleased")
   SimpleService unleasedService;
 
   @Inject
-  @Leased(seconds = 2)
-  @Service
-  @Named("leased")
+  @Service(lease = @Seconds(2))
   SimpleService leasedService;
 
   @Inject
-  @Leased(seconds = 2)
-  @Service
-  @Named("leased")
+  @Service(lease = @Seconds(2))
   Iterable<SimpleService> leasedServices;
 
   @Inject
-  @Leased(seconds = Leased.FOREVER)
-  @Service
-  @Named("static")
+  @Service(lease = @Seconds(FOREVER))
   SimpleService staticService;
 
   @Inject
-  @Leased(seconds = Leased.FOREVER)
-  @Service
-  @Named("static")
+  @Service(lease = @Seconds(FOREVER))
   Iterable<SimpleService> staticServices;
 
   public void unleasedUnaryService() {
