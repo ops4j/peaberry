@@ -39,14 +39,14 @@ public final class ServiceAnnotation
   public ServiceAnnotation(String[] attributes, String filter,
       Class<?>[] interfaces, int leaseInSeconds) {
 
-    this.attributes = attributes;
+    this.attributes = attributes.clone();
     this.filter = filter;
-    this.interfaces = interfaces;
+    this.interfaces = interfaces.clone();
     this.lease = new SecondsAnnotation(leaseInSeconds);
   }
 
   public String[] attributes() {
-    return attributes;
+    return attributes.clone();
   }
 
   public String filter() {
@@ -54,7 +54,7 @@ public final class ServiceAnnotation
   }
 
   public Class<?>[] interfaces() {
-    return interfaces;
+    return interfaces.clone();
   }
 
   public Seconds lease() {

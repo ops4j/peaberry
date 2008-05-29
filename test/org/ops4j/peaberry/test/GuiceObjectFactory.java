@@ -23,6 +23,8 @@ import org.testng.internal.ObjectFactoryImpl;
 import com.google.inject.Injector;
 
 /**
+ * Construct testcase objects using Guice.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class GuiceObjectFactory

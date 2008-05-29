@@ -22,6 +22,8 @@ import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
 import org.testng.annotations.Test;
 
 /**
+ * Additional classloader hook tests for code that isn't exercised in OSGi.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ClassLoaderHookTests", suiteName = "Internal")

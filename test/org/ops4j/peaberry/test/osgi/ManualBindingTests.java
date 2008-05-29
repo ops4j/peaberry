@@ -33,6 +33,8 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 
 /**
+ * Test manual configuration of OSGi service injection.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ManualBindingTests", suiteName = "OSGi")

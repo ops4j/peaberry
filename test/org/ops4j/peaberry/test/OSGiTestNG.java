@@ -35,6 +35,8 @@ import org.testng.TestNG;
 import org.testng.TestNGException;
 
 /**
+ * OSGi version of TestNG launcher that runs tests inside the Felix framework.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class OSGiTestNG
@@ -63,11 +65,16 @@ public final class OSGiTestNG
 
     try {
 
+      // currently tests run inside one bundle, adding multiple test bundles
+      // and scripting is something to be looked into for integration tests
       String testcasesURL = "file:" + System.getProperty("testcases.jar");
       Bundle testBundle = felix.getBundleContext().installBundle(testcasesURL);
       testBundle.start();
 
+      // enable support for OSGi classloading of testcase classes
       setTestRunnerFactory(new OSGiTestRunnerFactory(testBundle));
+
+      // use Guice to create test instances
       setObjectFactory(GuiceObjectFactory.class);
 
       super.run();
@@ -86,6 +93,7 @@ public final class OSGiTestNG
   @SuppressWarnings("unchecked")
   public static void main(String[] args) {
 
+    // Enable detailed tracing when testing
     Logger rootLogger = Logger.getLogger("");
     for (Handler h : rootLogger.getHandlers()) {
       h.setLevel(Level.FINE);

@@ -68,7 +68,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 ===================================================================
 --- src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
 +++ src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
-@@ -0,0 +1,93 @@
+@@ -0,0 +1,95 @@
 +/**
 + * Copyright (C) 2007 Google Inc.
 + *
@@ -101,15 +101,16 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 + */
 +public final class GuiceCodeGen {
 +
-+  private static final NamingPolicy NAMING_POLICY = new GuiceNamingPolicy();
++  static final NamingPolicy NAMING_POLICY = new GuiceNamingPolicy();
 +
-+  private static final ClassLoaderHook DEFAULT_CLASSLOADER_HOOK =
++  static final ClassLoaderHook DEFAULT_CLASSLOADER_HOOK =
 +      new ClassLoaderHook() {
 +        public ClassLoader intercept(ClassLoader loader) {return loader;}
 +      };
 +
-+  private static final ThreadLocal<ClassLoaderHook> THREAD_CLASS_LOADER_HOOK =
++  static final ThreadLocal<ClassLoaderHook> THREAD_CLASS_LOADER_HOOK =
 +      new InheritableThreadLocal<ClassLoaderHook>() {
++        @Override
 +        protected ClassLoaderHook initialValue() {
 +          return DEFAULT_CLASSLOADER_HOOK;
 +        }
@@ -143,6 +144,7 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +
 +  public static Enhancer getEnhancer(final Class<?> type) {
 +    Enhancer enhancer = new Enhancer() {
++        @Override
 +        protected ClassLoader getDefaultClassLoader() {
 +          return getThreadClassLoaderHook().intercept(
 +              super.getDefaultClassLoader());

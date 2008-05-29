@@ -18,11 +18,11 @@ package org.ops4j.peaberry.test.osgi;
 
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
-import static org.ops4j.peaberry.util.Attributes.attributes;
 import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
 import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceUnavailableException;
+import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
 import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
@@ -31,6 +31,8 @@ import com.google.inject.Binder;
 import com.google.inject.Inject;
 
 /**
+ * Test service registration using {@link ServiceWatcher} interface.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceHandleTests", suiteName = "OSGi")
@@ -76,8 +78,10 @@ public class ServiceHandleTests
   @Test(enabled = false)
   public static void setup(Binder binder, BundleContext bundleContext) {
 
+    // standard OSGi service injection module
     binder.install(osgiModule(bundleContext));
 
+    // bind service implementations for registration
     binder.bind(WordService.class).annotatedWith(
         service().attributes("word=A").build()).to(WordServiceImplA.class);
     binder.bind(WordService.class).annotatedWith(
@@ -96,17 +100,12 @@ public class ServiceHandleTests
     checkWord("A", producerA.get().getWord());
     checkWord("B", producerB.get().getWord());
 
+    // this should change the dynamic bindings
     producerA.modify(singletonMap("word", "B"));
     producerB.modify(singletonMap("word", "A"));
 
     checkWord("B", consumerA.getWord());
     checkWord("A", consumerB.getWord());
-
-    producerA.modify(attributes(service().attributes("word=A", "=").build()));
-    producerB.modify(attributes(service().attributes("word=B", "=").build()));
-
-    checkWord("A", consumerA.getWord());
-    checkWord("B", consumerB.getWord());
 
     producerA.remove();
     producerB.remove();

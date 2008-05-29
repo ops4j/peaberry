@@ -34,6 +34,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
+import com.google.inject.internal.Objects;
+
 /**
  * OSGi {@link ServiceRegistry} adaptor (proof-of-concept, not optimised)
  * 
@@ -75,14 +77,14 @@ public final class OSGiServiceRegistry
             Long lhsId = (Long) lhs.getProperty(Constants.SERVICE_ID);
             Long rhsId = (Long) rhs.getProperty(Constants.SERVICE_ID);
 
-            if (lhsId == rhsId) {
+            if (Objects.equal(lhsId, rhsId)) {
               return 0;
             }
 
             Long lhsRanking = (Long) lhs.getProperty(Constants.SERVICE_RANKING);
             Long rhsRanking = (Long) rhs.getProperty(Constants.SERVICE_RANKING);
 
-            if (lhsRanking == rhsRanking) {
+            if (Objects.equal(lhsRanking, rhsRanking)) {
               return rhsId.compareTo(lhsId);
             }
 

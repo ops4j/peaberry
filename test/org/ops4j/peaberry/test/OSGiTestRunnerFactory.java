@@ -35,6 +35,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
+ * Support OSGi classloading of TestNG testcases.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class OSGiTestRunnerFactory
@@ -55,10 +57,12 @@ public final class OSGiTestRunnerFactory
       for (XmlClass xmlClazz : test.getXmlClasses()) {
         String name = xmlClazz.getSupportClass().getName();
         try {
+          // reload testcase class using test bundle
           xmlClazz.setClass(testBundle.loadClass(name));
         } catch (ClassNotFoundException e) {}
       }
 
+      // create custom injector for each testcase in turn
       GuiceObjectFactory.setInjector(getTestInjector(test));
     }
 
@@ -70,13 +74,19 @@ public final class OSGiTestRunnerFactory
 
   private Injector getTestInjector(final XmlTest test) {
 
-    Module testcaseModule = new Module() {
+    return Guice.createInjector(new Module() {
+
       @SuppressWarnings("unchecked")
       public void configure(Binder binder) {
+
         boolean manualSetup = false;
         for (XmlClass xmlClazz : test.getXmlClasses()) {
           Class clazz = xmlClazz.getSupportClass();
+
+          // this forces guice to inject our testcase
           binder.bind(clazz);
+
+          // look for a custom setup method (with its own bindings)
           Method setup;
           try {
             setup = clazz.getMethod("setup", Binder.class, BundleContext.class);
@@ -86,14 +96,14 @@ public final class OSGiTestRunnerFactory
             } catch (Exception e) {
               e.printStackTrace();
             }
-          } catch (Exception e) {}
+          } catch (NoSuchMethodException e) {}
         }
+
         if (!manualSetup) {
+          // no custom setup, just use the standard OSGi module
           binder.install(osgiModule(testBundle.getBundleContext()));
         }
       }
-    };
-
-    return Guice.createInjector(testcaseModule);
+    });
   }
 }

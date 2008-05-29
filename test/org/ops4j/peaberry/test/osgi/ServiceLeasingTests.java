@@ -25,6 +25,8 @@ import org.testng.annotations.Test;
 import com.google.inject.Inject;
 
 /**
+ * Test leasing of services, both timed and static.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceLeasingTests", suiteName = "OSGi")
@@ -72,7 +74,6 @@ public class ServiceLeasingTests
     missingService(unleasedService);
   }
 
-  @Test
   public void leasedUnaryService() {
     disableAllServices();
     missingService(leasedService);

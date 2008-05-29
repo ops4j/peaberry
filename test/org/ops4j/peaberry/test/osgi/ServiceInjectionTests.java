@@ -28,6 +28,8 @@ import org.testng.annotations.Test;
 import com.google.inject.Inject;
 
 /**
+ * Test service injection using automatic bindings.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceInjectionTests", suiteName = "OSGi")
@@ -40,7 +42,8 @@ public class ServiceInjectionTests
 
   final SimpleService ctorService;
 
-  public ServiceInjectionTests() {
+  // default constructor for TestNG
+  protected ServiceInjectionTests() {
     ctorService = null;
   }
 
@@ -58,6 +61,7 @@ public class ServiceInjectionTests
     setterService = service;
   }
 
+  // test proxy support for API hierarchies
   protected static interface ExtendedService
       extends SimpleService {
     int encode();

@@ -29,6 +29,8 @@ import org.testng.annotations.Test;
 import com.google.inject.TypeLiteral;
 
 /**
+ * Test runtime interpretation of service types.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @SuppressWarnings("serial")

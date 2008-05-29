@@ -29,6 +29,8 @@ import org.ops4j.peaberry.ServiceWatcher.Handle;
 import com.google.inject.Inject;
 
 /**
+ * Helper class that registers simple unique services on-demand.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public abstract class OSGiServiceTester {
@@ -44,24 +46,26 @@ public abstract class OSGiServiceTester {
       new HashMap<String, Handle<?>>();
 
   protected void enableService(final String name) {
+
     Properties properties = new Properties();
     properties.setProperty("name", name);
-    properties.put(new Object(), "bogus");
 
     Handle<SimpleService> handle =
         registry.add((SimpleService) new SimpleService() {
           public String check() {
+            // check service is still valid
             if (handles.containsKey(name)) {
               return name;
             }
-
             throw new ServiceUnavailableException();
           }
         }, attributes(properties));
 
     handles.put(name, handle);
 
+    // check the service handle works
     String result = handle.get().check();
+
     assert name.equals(result) : "Expected " + name + ", got " + result;
   }
 
@@ -96,6 +100,7 @@ public abstract class OSGiServiceTester {
       try {
         checkService(service, names[i]);
       } catch (Exception e) {
+        // allow testing for invalid entries
         if (!names[i].equals("!")) {
           throw new RuntimeException(e);
         }

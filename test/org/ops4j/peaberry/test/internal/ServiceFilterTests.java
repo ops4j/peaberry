@@ -23,6 +23,8 @@ import org.ops4j.peaberry.Service;
 import org.testng.annotations.Test;
 
 /**
+ * Test construction of various explicit and implicit service filters.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceFilterTests", suiteName = "Internal")

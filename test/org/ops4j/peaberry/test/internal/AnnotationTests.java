@@ -25,6 +25,8 @@ import org.ops4j.peaberry.Service.Seconds;
 import org.testng.annotations.Test;
 
 /**
+ * Test annotation builders against JVM created annotations.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "AnnotationTests", suiteName = "Internal")
