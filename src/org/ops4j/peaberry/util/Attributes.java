@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.Rdn;
 
 import org.ops4j.peaberry.Service;
-import org.ops4j.peaberry.ServiceException;
 
 /**
  * Collection of utility methods for dealing with service attributes.
@@ -81,6 +81,7 @@ public final class Attributes {
   public static Map<String, ?> attributes(Service spec) {
 
     Map<String, Object> attributes = new HashMap<String, Object>();
+    Logger logger = Logger.getLogger(Attributes.class.getName());
 
     // only interested in LDAP attributes
     for (String a : spec.attributes()) {
@@ -88,7 +89,7 @@ public final class Attributes {
         Rdn rdn = new Rdn(a);
         attributes.put(rdn.getType(), rdn.getValue());
       } catch (InvalidNameException e) {
-        throw new ServiceException("Bad attribute: " + a + " in: " + spec, e);
+        logger.warning("Bad attribute: " + a + " in: " + spec);
       }
     }
 

@@ -84,6 +84,7 @@ final class ServiceProxyFactory {
       final ServiceRegistry registry, final Class<? extends T> clazz,
       final String filter) {
 
+    // use anonymous class as proxy
     return new Iterable<T>() {
       public Iterator<T> iterator() {
         return registry.lookup(clazz, filter);
