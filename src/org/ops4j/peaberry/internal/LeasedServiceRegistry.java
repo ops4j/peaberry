@@ -25,7 +25,7 @@ import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.Service.Seconds;
 
 /**
- * Provides a {@link Leased} {@link ServiceRegistry}.
+ * Provides a leased {@link ServiceRegistry}.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
