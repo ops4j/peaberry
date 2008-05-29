@@ -41,8 +41,8 @@ Index: src/com/google/inject/matcher/Matchers.java
 +  /**
 +   * Helper class to allow matching of annotations decoupled from their element
 +   */
-+  private static class AnnotationBucket implements AnnotatedElement {
-+    final Annotation[] annotations;
++  private static final class AnnotationBucket implements AnnotatedElement {
++    private final Annotation[] annotations;
 +    public AnnotationBucket(Annotation... annotations) {
 +      this.annotations = annotations;
 +    }
@@ -69,11 +69,11 @@ Index: src/com/google/inject/matcher/Matchers.java
 +   * Returns a matcher which matches dependencies with matching key annotations.
 +   */
 +  public static Matcher<Dependency<?>> key(
-+      final Matcher<AnnotatedElement> keyAnnotation) {
++      Matcher<AnnotatedElement> keyAnnotation) {
 +    return new DependencyKey(keyAnnotation);
 +  }
 +
-+  private static class DependencyKey extends
++  private static final class DependencyKey extends
 +      AbstractMatcher<Dependency<?>> implements Serializable {
 +    private final Matcher<AnnotatedElement> keyAnnotation;
 +
@@ -103,11 +103,11 @@ Index: src/com/google/inject/matcher/Matchers.java
 +   * Returns a matcher which matches dependencies with matching member annotations.
 +   */
 +  public static Matcher<Dependency<?>> member(
-+      final Matcher<AnnotatedElement> memberAnnotation) {
++      Matcher<AnnotatedElement> memberAnnotation) {
 +    return new DependencyMember(memberAnnotation);
 +  }
 +
-+  private static class DependencyMember extends
++  private static final class DependencyMember extends
 +      AbstractMatcher<Dependency<?>> implements Serializable {
 +    private final Matcher<AnnotatedElement> memberAnnotation;
 +
@@ -291,7 +291,7 @@ Index: src/com/google/inject/commands/CommandRecorder.java
        commands.add(new AddThrowableErrorCommand(defaultSource(), t));
      }
  
-+    private class BindingErrorHandler implements ErrorHandler {
++    private final class BindingErrorHandler implements ErrorHandler {
 +      public void handle(Object source, String message) {
 +        commands.add(new AddMessageErrorCommand(source, message, new Object[0]));
 +      }
@@ -659,7 +659,7 @@ Index: src/com/google/inject/InjectorBuilder.java
      }
    }
  
-+  private class AddLateBindingHandler implements MissingDependencyHandler {
++  private final class AddLateBindingHandler implements MissingDependencyHandler {
 +    final List<BindingFactory<?>> bindingFactories;
 +
 +    public AddLateBindingHandler(List<BindingFactory<?>> bindingFactories) {
@@ -667,10 +667,10 @@ Index: src/com/google/inject/InjectorBuilder.java
 +    }
 +
 +    @SuppressWarnings("unchecked")
-+    public boolean handle(final Dependency dependency) {
++    public boolean handle(Dependency dependency) {
 +
 +      // search in order of registration...
-+      for (final BindingFactory bindingFactory : bindingFactories) {
++      for (BindingFactory bindingFactory : bindingFactories) {
 +        BindCommand command = BindCommand.lateBinding(errorHandler, dependency, bindingFactory);
 +        if (command != null) {
 +          bindCommandProcesor.visitBind(command);
@@ -839,7 +839,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 + *
 + * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
 + */
-+class AddBindingFactoryCommandProcessor extends CommandProcessor {
++final class AddBindingFactoryCommandProcessor extends CommandProcessor {
 +
 +  private final List<BindingFactory<?>> bindingFactories =
 +      new ArrayList<BindingFactory<?>>();
@@ -849,7 +849,7 @@ Index: src/com/google/inject/AddBindingFactoryCommandProcessor.java
 +  }
 +
 +  @Override public <B> Boolean visitAddBindingFactory(
-+      final AddBindingFactoryCommand<B> command) {
++      AddBindingFactoryCommand<B> command) {
 +
 +    final Matcher<? super Dependency<? extends B>> dependencyMatcher = command.getDependencyMatcher();
 +    final BindingFactory<B> bindingFactory = command.getBindingFactory();

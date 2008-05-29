@@ -56,14 +56,14 @@ public final class Attributes {
      */
     try {
       for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
-        final String key = (String) e.nextElement();
+        String key = (String) e.nextElement();
         attributes.put(key, properties.getProperty(key));
       }
     } catch (ClassCastException e) {}
 
     // now add non-String values that have String keys
     for (Entry<?, ?> entry : properties.entrySet()) {
-      final Object key = entry.getKey();
+      Object key = entry.getKey();
       if (key instanceof String) {
         attributes.put((String) key, entry.getValue());
       }
@@ -83,6 +83,7 @@ public final class Attributes {
     Map<String, Object> attributes = new HashMap<String, Object>();
     Logger logger = Logger.getLogger(Attributes.class.getName());
 
+    // only use the LDAP attributes section
     for (String attribute : spec.attributes()) {
       try {
         Rdn rdn = new Rdn(attribute);

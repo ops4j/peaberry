@@ -136,7 +136,7 @@ public final class Peaberry {
   }
 
   /**
-   * Creates a Guice module for the given bundle with bindings to the
+   * Creates a Guice module for an OSGi bundle, with bindings to the given
    * {@link BundleContext} and OSGi {@link ServiceRegistry}, as well as a
    * {@link BindingFactory} that will automatically bind injection points
    * annotated with {@link Service} to matching OSGi services.

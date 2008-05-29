@@ -33,30 +33,54 @@ public final class ServiceBuilder {
   private Class<?>[] interfaces = {};
   private int leaseInSeconds = 0;
 
+  /**
+   * Start building a new {@link Service} specification.
+   * 
+   * @return new {@link Service} builder
+   */
   public static ServiceBuilder service() {
     return new ServiceBuilder();
   }
 
+  /**
+   * @param _attributes sequence of LDAP (RFC-2253) attributes
+   * @return current {@link Service} builder
+   */
   public ServiceBuilder attributes(String... _attributes) {
     this.attributes = nonNull(_attributes, "attributes");
     return this;
   }
 
+  /**
+   * @param _filter LDAP (RFC-1960) filter
+   * @return current {@link Service} builder
+   */
   public ServiceBuilder filter(String _filter) {
     this.filter = nonNull(_filter, "filter");
     return this;
   }
 
+  /**
+   * @param _interfaces custom service API
+   * @return current {@link Service} builder
+   */
   public ServiceBuilder interfaces(Class<?>... _interfaces) {
     this.interfaces = nonNull(_interfaces, "interfaces");
     return this;
   }
 
+  /**
+   * @param seconds service lease period
+   * @return current {@link Service} builder
+   */
   public ServiceBuilder lease(int seconds) {
     this.leaseInSeconds = seconds;
     return this;
   }
 
+  /**
+   * @return configured {@link Service} instance
+   */
   public Service build() {
     return new ServiceAnnotation(attributes, filter, interfaces, leaseInSeconds);
   }
