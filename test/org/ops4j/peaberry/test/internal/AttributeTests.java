@@ -34,13 +34,13 @@ import org.testng.annotations.Test;
 public final class AttributeTests {
 
   public void testPropertyConverter() {
-    Properties properties = new Properties();
+    final Properties properties = new Properties();
 
     properties.put(1, "badKey");
     properties.setProperty("string", "one");
     properties.put("integer", 1);
 
-    Map<String, ?> attributes = attributes(properties);
+    final Map<String, ?> attributes = attributes(properties);
 
     assert null == attributes.get(1);
     assert attributes.get("string").equals("one");
@@ -50,9 +50,9 @@ public final class AttributeTests {
   }
 
   public void testAnnotationConverter() {
-    Service service = service().attributes("a=b", "=", "c=d").build();
+    final Service service = service().attributes("a=b", "=", "c=d").build();
 
-    Map<String, ?> attributes = attributes(service);
+    final Map<String, ?> attributes = attributes(service);
 
     assert attributes.get("a").equals("b");
     assert attributes.get("c").equals("d");

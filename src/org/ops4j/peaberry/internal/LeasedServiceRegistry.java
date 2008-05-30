@@ -38,7 +38,8 @@ public final class LeasedServiceRegistry
   private volatile Collection<?> services;
   private volatile Long expireMillis = 0L;
 
-  public LeasedServiceRegistry(ServiceRegistry registry, Seconds lease) {
+  public LeasedServiceRegistry(final ServiceRegistry registry,
+      final Seconds lease) {
     this.registry = registry;
     this.leaseMillis = lease.value() * 1000;
   }
@@ -49,7 +50,8 @@ public final class LeasedServiceRegistry
    * {@inheritDoc}
    */
   @SuppressWarnings("unchecked")
-  public <T> Iterator<T> lookup(Class<? extends T> type, String filter) {
+  public <T> Iterator<T> lookup(final Class<? extends T> type,
+      final String filter) {
     final long now = System.currentTimeMillis();
 
     // double-checked locking is OK on Java 5 runtimes
@@ -59,11 +61,11 @@ public final class LeasedServiceRegistry
         if (expireMillis < now) {
           // /CLOVER:ON
 
-          Collection<T> freshServices = new ArrayList<T>();
-          for (Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
+          final Collection<T> freshServices = new ArrayList<T>();
+          for (final Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
             try {
               freshServices.add(i.next());
-            } catch (Exception e) {}
+            } catch (final Exception e) {}
           }
 
           // lease only starts when there are services
@@ -83,13 +85,14 @@ public final class LeasedServiceRegistry
   }
 
   // /CLOVER:OFF
-  public <T, S extends T> Handle<T> add(S service, Map<String, ?> attributes) {
+  public <T, S extends T> Handle<T> add(final S service,
+      final Map<String, ?> attributes) {
     return registry.add((T) service, attributes);
   } // /CLOVER:ON
 
   @Override
   public String toString() {
-    String lease = leaseMillis < 0 ? "STATIC" : leaseMillis + "ms";
+    final String lease = leaseMillis < 0 ? "STATIC" : leaseMillis + "ms";
     return String.format("%s[%s]", registry, lease);
   }
 }

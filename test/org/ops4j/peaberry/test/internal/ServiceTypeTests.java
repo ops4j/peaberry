@@ -37,8 +37,8 @@ import com.google.inject.TypeLiteral;
 @Test(testName = "ServiceTypeTests", suiteName = "Internal")
 public final class ServiceTypeTests {
 
-  private void checkType(Class<?> clazz, Type type) {
-    Class<?> result = getServiceClass(type);
+  private void checkType(final Class<?> clazz, final Type type) {
+    final Class<?> result = getServiceClass(type);
     assert clazz.equals(result) : "Expected " + clazz + ", got " + result;
   }
 
@@ -49,20 +49,20 @@ public final class ServiceTypeTests {
     checkType(Set.class, new TypeLiteral<Iterable<Set<Short>>>() {}.getType());
   }
 
-  private void unary(Type memberType, Class<?> serviceType) {
-    boolean unary = !expectsSequence(memberType);
+  private void unary(final Type memberType, final Class<?> serviceType) {
+    final boolean unary = !expectsSequence(memberType);
     assert unary : "Expected " + memberType + " to be unary";
 
-    Class<?> type = getServiceClass(memberType);
+    final Class<?> type = getServiceClass(memberType);
     assert serviceType.equals(type) : "Expected " + serviceType + " got "
         + type;
   }
 
-  private void multi(Type memberType, Class<?> serviceType) {
-    boolean multi = expectsSequence(memberType);
+  private void multi(final Type memberType, final Class<?> serviceType) {
+    final boolean multi = expectsSequence(memberType);
     assert multi : "Expected " + memberType + " to be multi";
 
-    Class<?> type = getServiceClass(memberType);
+    final Class<?> type = getServiceClass(memberType);
     assert serviceType.equals(type) : "Expected " + serviceType + " got "
         + type;
   }

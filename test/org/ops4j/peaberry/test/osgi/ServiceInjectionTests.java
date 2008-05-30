@@ -49,7 +49,7 @@ public class ServiceInjectionTests
 
   @Inject
   public ServiceInjectionTests(@Service
-  SimpleService service) {
+  final SimpleService service) {
     ctorService = service;
   }
 
@@ -57,7 +57,7 @@ public class ServiceInjectionTests
 
   @Inject
   protected void setTestService(@Service
-  SimpleService service) {
+  final SimpleService service) {
     setterService = service;
   }
 
@@ -115,7 +115,7 @@ public class ServiceInjectionTests
   }
 
   protected void enableExtendedService(final String name) {
-    Properties properties = new Properties();
+    final Properties properties = new Properties();
 
     properties.setProperty("name", name);
 
@@ -123,7 +123,7 @@ public class ServiceInjectionTests
         SimpleService.class.getName(), ExtendedService.class.getName()
     });
 
-    Handle<?> handle = registry.add(new ExtendedService() {
+    final Handle<?> handle = registry.add(new ExtendedService() {
       public String check() {
         if (handles.containsKey(name)) {
           return name;

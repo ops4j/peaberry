@@ -46,7 +46,7 @@ public final class ServiceBindingFactory
    */
   private final ServiceRegistry registry;
 
-  public ServiceBindingFactory(ServiceRegistry serviceRegistry) {
+  public ServiceBindingFactory(final ServiceRegistry serviceRegistry) {
     this.logger = Logger.getLogger(getClass().getName());
     this.registry = serviceRegistry;
   }
@@ -54,10 +54,11 @@ public final class ServiceBindingFactory
   /**
    * {@inheritDoc}
    */
-  public <T> boolean bind(Dependency<T> dependency, LinkedBindingBuilder<T> lbb) {
+  public <T> boolean bind(final Dependency<T> dependency,
+      final LinkedBindingBuilder<T> lbb) {
 
-    Key<T> key = dependency.getKey();
-    Provider<T> provider = getServiceProvider(registry, key);
+    final Key<T> key = dependency.getKey();
+    final Provider<T> provider = getServiceProvider(registry, key);
     logger.fine(key + " ==> " + provider);
     lbb.toProvider(provider);
 

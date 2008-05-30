@@ -36,12 +36,12 @@ public final class ServiceFilterTests {
 
   private interface C {}
 
-  private void checkFilter(String filter, Service spec) {
-    String result = getServiceFilter(spec, A.class);
+  private void checkFilter(final String filter, final Service spec) {
+    final String result = getServiceFilter(spec, A.class);
     assert filter.equals(result) : "Expected " + filter + ", got " + result;
   }
 
-  private String objectclass(String name) {
+  private String objectclass(final String name) {
     return "objectclass=" + getClass().getName() + "$" + name;
   }
 

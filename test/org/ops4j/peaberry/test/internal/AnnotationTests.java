@@ -46,12 +46,12 @@ public final class AnnotationTests {
   }, lease = @Seconds(42))
   public Object detailed;
 
-  private void checkAnnotation(String field, Annotation annotation) {
+  private void checkAnnotation(final String field, final Annotation annotation) {
     Annotation a;
 
     try {
       a = getClass().getField(field).getAnnotation(annotation.annotationType());
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new RuntimeException(e);
     }
 

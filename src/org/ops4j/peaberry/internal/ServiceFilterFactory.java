@@ -36,7 +36,8 @@ public final class ServiceFilterFactory {
    * 
    * @return LDAP filter
    */
-  public static String getServiceFilter(Service spec, Class<?> serviceType) {
+  public static String getServiceFilter(final Service spec,
+      final Class<?> serviceType) {
 
     /*
      * STEP 1: default specification, just use service type
@@ -88,11 +89,11 @@ public final class ServiceFilterFactory {
    * 
    * @return an LDAP filter for the specific interfaces
    */
-  private static String getInterfaceFilter(Service spec) {
-    StringBuilder interfaceClauses = new StringBuilder();
+  private static String getInterfaceFilter(final Service spec) {
+    final StringBuilder interfaceClauses = new StringBuilder();
 
     final Class<?>[] interfaces = spec.interfaces();
-    for (Class<?> i : interfaces) {
+    for (final Class<?> i : interfaces) {
       interfaceClauses.append("(objectclass=");
       interfaceClauses.append(i.getName());
       interfaceClauses.append(')');
@@ -114,7 +115,7 @@ public final class ServiceFilterFactory {
    * 
    * @return an LDAP filter for the injected service
    */
-  private static String getServiceTypeFilter(Class<?> serviceType) {
+  private static String getServiceTypeFilter(final Class<?> serviceType) {
     return "(objectclass=" + serviceType.getName() + ')';
   }
 }

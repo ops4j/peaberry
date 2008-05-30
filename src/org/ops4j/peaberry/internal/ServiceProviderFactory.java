@@ -62,19 +62,19 @@ public final class ServiceProviderFactory {
    * 
    * @return {@link Service} {@link Provider} for the target
    */
-  public static <T> Provider<T> getServiceProvider(ServiceRegistry registry,
-      Key<? extends T> key) {
+  public static <T> Provider<T> getServiceProvider(
+      final ServiceRegistry registry, final Key<? extends T> key) {
 
     nonNull(registry, "service registry");
     nonNull(key, "injection key");
 
-    Type memberType = key.getTypeLiteral().getType();
-    Service spec = (Service) key.getAnnotation();
+    final Type memberType = key.getTypeLiteral().getType();
+    final Service spec = (Service) key.getAnnotation();
 
     if (expectsHandle(memberType)) {
 
-      Type serviceType = getServiceType(memberType);
-      Key<?> serviceKey = Key.get(serviceType, spec);
+      final Type serviceType = getServiceType(memberType);
+      final Key<?> serviceKey = Key.get(serviceType, spec);
 
       return getHandleProvider(registry, serviceKey, attributes(spec));
     }
@@ -86,8 +86,8 @@ public final class ServiceProviderFactory {
       leasedRegistry = registry;
     }
 
-    Class<?> serviceClass = getServiceClass(memberType);
-    String filter = getServiceFilter(spec, serviceClass);
+    final Class<?> serviceClass = getServiceClass(memberType);
+    final String filter = getServiceFilter(spec, serviceClass);
 
     if (expectsSequence(memberType)) {
       return getMultiProvider(spec, leasedRegistry, serviceClass, filter);

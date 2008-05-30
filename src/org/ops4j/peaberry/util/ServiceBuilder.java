@@ -46,7 +46,7 @@ public final class ServiceBuilder {
    * @param _attributes sequence of LDAP (RFC-2253) attributes
    * @return current {@link Service} builder
    */
-  public ServiceBuilder attributes(String... _attributes) {
+  public ServiceBuilder attributes(final String... _attributes) {
     this.attributes = nonNull(_attributes, "attributes");
     return this;
   }
@@ -55,7 +55,7 @@ public final class ServiceBuilder {
    * @param _filter LDAP (RFC-1960) filter
    * @return current {@link Service} builder
    */
-  public ServiceBuilder filter(String _filter) {
+  public ServiceBuilder filter(final String _filter) {
     this.filter = nonNull(_filter, "filter");
     return this;
   }
@@ -64,7 +64,7 @@ public final class ServiceBuilder {
    * @param _interfaces custom service API
    * @return current {@link Service} builder
    */
-  public ServiceBuilder interfaces(Class<?>... _interfaces) {
+  public ServiceBuilder interfaces(final Class<?>... _interfaces) {
     this.interfaces = nonNull(_interfaces, "interfaces");
     return this;
   }
@@ -73,7 +73,7 @@ public final class ServiceBuilder {
    * @param seconds service lease period
    * @return current {@link Service} builder
    */
-  public ServiceBuilder lease(int seconds) {
+  public ServiceBuilder lease(final int seconds) {
     this.leaseInSeconds = seconds;
     return this;
   }

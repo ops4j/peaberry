@@ -49,14 +49,15 @@ public final class OSGiServiceRegistry
    */
   final BundleContext bundleContext;
 
-  public OSGiServiceRegistry(BundleContext bundleContext) {
+  public OSGiServiceRegistry(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
   }
 
   /**
    * {@inheritDoc}
    */
-  public <T> Iterator<T> lookup(final Class<? extends T> type, String filter) {
+  public <T> Iterator<T> lookup(final Class<? extends T> type,
+      final String filter) {
 
     /*
      * This is just a quick proof-of-concept implementation, it doesn't track
@@ -72,17 +73,20 @@ public final class OSGiServiceRegistry
 
       if (services != null) {/* for non-R4 frameworks */
         Arrays.sort(services, new Comparator<ServiceReference>() {
-          public int compare(ServiceReference lhs, ServiceReference rhs) {
+          public int compare(final ServiceReference lhs,
+              final ServiceReference rhs) {
 
-            Long lhsId = (Long) lhs.getProperty(Constants.SERVICE_ID);
-            Long rhsId = (Long) rhs.getProperty(Constants.SERVICE_ID);
+            final Long lhsId = (Long) lhs.getProperty(Constants.SERVICE_ID);
+            final Long rhsId = (Long) rhs.getProperty(Constants.SERVICE_ID);
 
             if (Objects.equal(lhsId, rhsId)) {
               return 0;
             }
 
-            Long lhsRanking = (Long) lhs.getProperty(Constants.SERVICE_RANKING);
-            Long rhsRanking = (Long) rhs.getProperty(Constants.SERVICE_RANKING);
+            final Long lhsRanking =
+                (Long) lhs.getProperty(Constants.SERVICE_RANKING);
+            final Long rhsRanking =
+                (Long) rhs.getProperty(Constants.SERVICE_RANKING);
 
             if (Objects.equal(lhsRanking, rhsRanking)) {
               return rhsId.compareTo(lhsId);
@@ -93,7 +97,7 @@ public final class OSGiServiceRegistry
         });
       }
 
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new RuntimeException(e);
     }
 
@@ -108,7 +112,7 @@ public final class OSGiServiceRegistry
       public T next() {
         try {
           return type.cast(bundleContext.getService(services[i++]));
-        } catch (Exception e) {
+        } catch (final Exception e) {
           throw new ServiceUnavailableException(e);
         }
       }
@@ -122,7 +126,8 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T, S extends T> Handle<T> add(S service, Map<String, ?> attributes) {
+  public <T, S extends T> Handle<T> add(final S service,
+      final Map<String, ?> attributes) {
 
     nonNull(service, "service");
 
@@ -131,7 +136,7 @@ public final class OSGiServiceRegistry
     /*
      * investigate various ways to determine service API...
      */
-    Object objectclass = attributes.get(OBJECTCLASS);
+    final Object objectclass = attributes.get(OBJECTCLASS);
     if (objectclass instanceof String[]) {
       interfaces = (String[]) objectclass;
     } else if (objectclass instanceof String) {
@@ -140,12 +145,12 @@ public final class OSGiServiceRegistry
         interfaces[i] = interfaces[i].trim();
       }
     } else {
-      Collection<String> api = new HashSet<String>();
-      Class<?> clazz = service.getClass();
+      final Collection<String> api = new HashSet<String>();
+      final Class<?> clazz = service.getClass();
       if (clazz.isInterface()) {
         api.add(clazz.getName());
       } else {
-        for (Class<?> i : service.getClass().getInterfaces()) {
+        for (final Class<?> i : service.getClass().getInterfaces()) {
           api.add(i.getName());
         }
       }
@@ -162,12 +167,12 @@ public final class OSGiServiceRegistry
       public T get() {
         try {
           return (T) bundleContext.getService(registration.getReference());
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
           return null;
         }
       }
 
-      public void modify(Map<String, ?> attrs) {
+      public void modify(final Map<String, ?> attrs) {
         registration.setProperties(new Hashtable<String, Object>(attrs));
       }
 

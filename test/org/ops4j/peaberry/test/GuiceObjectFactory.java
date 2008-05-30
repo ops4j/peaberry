@@ -33,13 +33,13 @@ public final class GuiceObjectFactory
   private static final long serialVersionUID = 1L;
   private static volatile Injector injector;
 
-  public static void setInjector(Injector injector) {
+  public static void setInjector(final Injector injector) {
     GuiceObjectFactory.injector = injector;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public Object newInstance(Constructor ctor, Object... initargs) {
+  public Object newInstance(final Constructor ctor, final Object... initargs) {
     if (injector != null) {
       return injector.getInstance(ctor.getDeclaringClass());
     }

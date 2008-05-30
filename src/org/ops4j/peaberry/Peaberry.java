@@ -54,8 +54,8 @@ public final class Peaberry {
    * 
    * @return dynamic service provider
    */
-  public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      Class<? extends T> target) {
+  public static <T> Provider<T> serviceProvider(final ServiceRegistry registry,
+      final Class<? extends T> target) {
 
     return getServiceProvider(registry, Key.get(target));
   }
@@ -69,8 +69,8 @@ public final class Peaberry {
    * 
    * @return dynamic service provider
    */
-  public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      TypeLiteral<? extends T> target) {
+  public static <T> Provider<T> serviceProvider(final ServiceRegistry registry,
+      final TypeLiteral<? extends T> target) {
 
     return getServiceProvider(registry, Key.get(target));
   }
@@ -85,8 +85,8 @@ public final class Peaberry {
    * 
    * @return dynamic service provider
    */
-  public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      Class<? extends T> target, Service spec) {
+  public static <T> Provider<T> serviceProvider(final ServiceRegistry registry,
+      final Class<? extends T> target, final Service spec) {
 
     return getServiceProvider(registry, Key.get(target, spec));
   }
@@ -101,8 +101,8 @@ public final class Peaberry {
    * 
    * @return dynamic service provider
    */
-  public static <T> Provider<T> serviceProvider(ServiceRegistry registry,
-      TypeLiteral<? extends T> target, Service spec) {
+  public static <T> Provider<T> serviceProvider(final ServiceRegistry registry,
+      final TypeLiteral<? extends T> target, final Service spec) {
 
     return getServiceProvider(registry, Key.get(target, spec));
   }
@@ -114,7 +114,8 @@ public final class Peaberry {
    * 
    * @return OSGi specific {@link ServiceRegistry}
    */
-  public static ServiceRegistry osgiServiceRegistry(BundleContext bundleContext) {
+  public static ServiceRegistry osgiServiceRegistry(
+      final BundleContext bundleContext) {
 
     nonNull(bundleContext, "bundle context");
 
@@ -152,10 +153,10 @@ public final class Peaberry {
     nonNull(bundleContext, "bundle context");
 
     return new Module() {
-      public void configure(Binder binder) {
+      public void configure(final Binder binder) {
         nonDelegatingContainer();
 
-        ServiceRegistry registry = osgiServiceRegistry(bundleContext);
+        final ServiceRegistry registry = osgiServiceRegistry(bundleContext);
 
         // useful bindings for OSGi applications
         binder.bind(BundleContext.class).toInstance(bundleContext);

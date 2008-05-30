@@ -44,29 +44,29 @@ public final class OSGiTestRunnerFactory
 
   final Bundle testBundle;
 
-  public OSGiTestRunnerFactory(Bundle testBundle) {
+  public OSGiTestRunnerFactory(final Bundle testBundle) {
     this.testBundle = testBundle;
   }
 
-  public TestRunner newTestRunner(ISuite suite, XmlTest test) {
+  public TestRunner newTestRunner(final ISuite suite, final XmlTest test) {
 
     GuiceObjectFactory.setInjector(null);
 
     if (suite.getName().startsWith("OSGi")) {
 
-      for (XmlClass xmlClazz : test.getXmlClasses()) {
-        String name = xmlClazz.getSupportClass().getName();
+      for (final XmlClass xmlClazz : test.getXmlClasses()) {
+        final String name = xmlClazz.getSupportClass().getName();
         try {
           // reload testcase class using test bundle
           xmlClazz.setClass(testBundle.loadClass(name));
-        } catch (ClassNotFoundException e) {}
+        } catch (final ClassNotFoundException e) {}
       }
 
       // create custom injector for each testcase in turn
       GuiceObjectFactory.setInjector(getTestInjector(test));
     }
 
-    TestRunner runner = new TestRunner(suite, test, false);
+    final TestRunner runner = new TestRunner(suite, test, false);
     runner.addListener(new TestHTMLReporter());
 
     return runner;
@@ -77,11 +77,11 @@ public final class OSGiTestRunnerFactory
     return Guice.createInjector(new Module() {
 
       @SuppressWarnings("unchecked")
-      public void configure(Binder binder) {
+      public void configure(final Binder binder) {
 
         boolean manualSetup = false;
-        for (XmlClass xmlClazz : test.getXmlClasses()) {
-          Class clazz = xmlClazz.getSupportClass();
+        for (final XmlClass xmlClazz : test.getXmlClasses()) {
+          final Class clazz = xmlClazz.getSupportClass();
 
           // this forces guice to inject our testcase
           binder.bind(clazz);
@@ -93,10 +93,10 @@ public final class OSGiTestRunnerFactory
             manualSetup = true;
             try {
               setup.invoke(null, binder, testBundle.getBundleContext());
-            } catch (Exception e) {
+            } catch (final Exception e) {
               e.printStackTrace();
             }
-          } catch (NoSuchMethodException e) {}
+          } catch (final NoSuchMethodException e) {}
         }
 
         if (!manualSetup) {

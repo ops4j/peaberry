@@ -38,7 +38,7 @@ public class ServiceException
    * 
    * @param message detailed message
    */
-  public ServiceException(String message) {
+  public ServiceException(final String message) {
     super(message);
   }
 
@@ -47,7 +47,7 @@ public class ServiceException
    * 
    * @param cause underlying cause
    */
-  public ServiceException(Throwable cause) {
+  public ServiceException(final Throwable cause) {
     super(cause);
   }
 
@@ -57,7 +57,7 @@ public class ServiceException
    * @param message detailed message
    * @param cause underlying cause
    */
-  public ServiceException(String message, Throwable cause) {
+  public ServiceException(final String message, final Throwable cause) {
     super(message, cause);
   }
 }

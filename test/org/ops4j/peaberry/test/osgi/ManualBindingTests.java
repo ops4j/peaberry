@@ -43,15 +43,16 @@ public class ManualBindingTests
 
   @SuppressWarnings("serial")
   @Test(enabled = false)
-  public static void setup(Binder binder, BundleContext bundleContext) {
+  public static void setup(final Binder binder,
+      final BundleContext bundleContext) {
     nonDelegatingContainer();
 
-    ServiceRegistry registry = osgiServiceRegistry(bundleContext);
+    final ServiceRegistry registry = osgiServiceRegistry(bundleContext);
 
     binder.bind(BundleContext.class).toInstance(bundleContext);
     binder.bind(ServiceRegistry.class).toInstance(registry);
 
-    Service specificService = service().filter("name=B").lease(1).build();
+    final Service specificService = service().filter("name=B").lease(1).build();
 
     binder.bind(SimpleService.class).toProvider(
         serviceProvider(registry, SimpleService.class));
@@ -60,7 +61,7 @@ public class ManualBindingTests
         .toProvider(
             serviceProvider(registry, SimpleService.class, specificService));
 
-    TypeLiteral<Iterable<SimpleService>> multiple =
+    final TypeLiteral<Iterable<SimpleService>> multiple =
         new TypeLiteral<Iterable<SimpleService>>() {};
 
     binder.bind(multiple).toProvider(serviceProvider(registry, multiple));

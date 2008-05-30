@@ -36,8 +36,8 @@ public final class ServiceAnnotation
   private final Class<?>[] interfaces;
   private final Seconds lease;
 
-  public ServiceAnnotation(String[] attributes, String filter,
-      Class<?>[] interfaces, int leaseInSeconds) {
+  public ServiceAnnotation(final String[] attributes, final String filter,
+      final Class<?>[] interfaces, final int leaseInSeconds) {
 
     this.attributes = attributes.clone();
     this.filter = filter;
@@ -74,12 +74,12 @@ public final class ServiceAnnotation
   }
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (!(o instanceof Service)) {
       return false;
     }
 
-    Service other = (Service) o;
+    final Service other = (Service) o;
 
     return Arrays.equals(attributes, other.attributes())
         && Objects.equal(filter, other.filter())
@@ -105,7 +105,7 @@ public final class ServiceAnnotation
 
     private final int value;
 
-    public SecondsAnnotation(int value) {
+    public SecondsAnnotation(final int value) {
       this.value = value;
     }
 
@@ -123,12 +123,12 @@ public final class ServiceAnnotation
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
       if (!(o instanceof Seconds)) {
         return false;
       }
 
-      Seconds other = (Seconds) o;
+      final Seconds other = (Seconds) o;
 
       return value == other.value();
     }

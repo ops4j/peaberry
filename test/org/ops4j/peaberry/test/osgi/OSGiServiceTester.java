@@ -47,10 +47,10 @@ public abstract class OSGiServiceTester {
 
   protected void enableService(final String name) {
 
-    Properties properties = new Properties();
+    final Properties properties = new Properties();
     properties.setProperty("name", name);
 
-    Handle<SimpleService> handle =
+    final Handle<SimpleService> handle =
         registry.add((SimpleService) new SimpleService() {
           public String check() {
             // check service is still valid
@@ -64,7 +64,7 @@ public abstract class OSGiServiceTester {
     handles.put(name, handle);
 
     // check the service handle works
-    String result = handle.get().check();
+    final String result = handle.get().check();
 
     assert name.equals(result) : "Expected " + name + ", got " + result;
   }
@@ -74,32 +74,32 @@ public abstract class OSGiServiceTester {
   }
 
   protected void disableAllServices() {
-    for (Handle<?> handle : handles.values()) {
+    for (final Handle<?> handle : handles.values()) {
       handle.remove();
     }
     handles.clear();
   }
 
-  protected void checkService(SimpleService service, String name) {
-    String result = service.check();
+  protected void checkService(final SimpleService service, final String name) {
+    final String result = service.check();
     assert name.equals(result) : "Expected " + name + ", got " + result;
   }
 
-  protected void missingService(SimpleService service) {
+  protected void missingService(final SimpleService service) {
     try {
       service.check();
       assert false : "Expected service exception";
-    } catch (ServiceUnavailableException e) {}
+    } catch (final ServiceUnavailableException e) {}
   }
 
-  protected void checkServices(Iterable<SimpleService> services,
-      String... names) {
+  protected void checkServices(final Iterable<SimpleService> services,
+      final String... names) {
     int i = 0;
-    for (SimpleService service : services) {
+    for (final SimpleService service : services) {
       assert names.length > i : "More services than expected";
       try {
         checkService(service, names[i]);
-      } catch (Exception e) {
+      } catch (final Exception e) {
         // allow testing for invalid entries
         if (!names[i].equals("!")) {
           throw new RuntimeException(e);
@@ -110,9 +110,9 @@ public abstract class OSGiServiceTester {
     assert names.length == i : "Less services than expected";
   }
 
-  protected void sleep(long millis) {
+  protected void sleep(final long millis) {
     try {
       Thread.sleep(millis);
-    } catch (InterruptedException e) {}
+    } catch (final InterruptedException e) {}
   }
 }

@@ -39,16 +39,15 @@ public final class ServiceTypes {
    * 
    * @return expected service type
    */
-  public static Type getServiceType(Type type) {
+  public static Type getServiceType(final Type type) {
 
     if (expectsSequence(type) || expectsHandle(type)) {
       if (type instanceof ParameterizedType) {
         // service type inside Iterable<T> or Handle<T>
-        type = ((ParameterizedType) type).getActualTypeArguments()[0];
-      } else {
-        // plain type, i.e. Iterable<Object> or Handle<Object>
-        type = Object.class;
+        return ((ParameterizedType) type).getActualTypeArguments()[0];
       }
+      // must be raw type
+      return Object.class;
     }
 
     return type;
@@ -61,19 +60,20 @@ public final class ServiceTypes {
    * 
    * @return expected service class
    */
-  public static Class<?> getServiceClass(Type type) {
+  public static Class<?> getServiceClass(final Type type) {
+    final Type serviceType = getServiceType(type);
 
-    type = getServiceType(type);
-
-    if (type instanceof ParameterizedType) {
-      // use raw type for generic service types
-      type = ((ParameterizedType) type).getRawType();
-    } else if (type instanceof WildcardType) {
-      // use upper bound for wildcard service types
-      type = ((WildcardType) type).getUpperBounds()[0];
+    // use raw type for generic service types
+    if (serviceType instanceof ParameterizedType) {
+      return (Class<?>) ((ParameterizedType) serviceType).getRawType();
     }
 
-    return (Class<?>) type;
+    // use upper bound for wildcard service types
+    if (serviceType instanceof WildcardType) {
+      return (Class<?>) ((WildcardType) serviceType).getUpperBounds()[0];
+    }
+
+    return (Class<?>) serviceType;
   }
 
   /**
@@ -83,9 +83,9 @@ public final class ServiceTypes {
    * 
    * @return true if a sequence of services is expected
    */
-  public static boolean expectsSequence(Type type) {
+  public static boolean expectsSequence(final Type type) {
     if (type instanceof ParameterizedType) {
-      type = ((ParameterizedType) type).getRawType();
+      return Iterable.class == ((ParameterizedType) type).getRawType();
     }
     return Iterable.class == type;
   }
@@ -97,9 +97,9 @@ public final class ServiceTypes {
    * 
    * @return true if a service watcher handle is expected
    */
-  public static boolean expectsHandle(Type type) {
+  public static boolean expectsHandle(final Type type) {
     if (type instanceof ParameterizedType) {
-      type = ((ParameterizedType) type).getRawType();
+      return Handle.class == ((ParameterizedType) type).getRawType();
     }
     return Handle.class == type;
   }

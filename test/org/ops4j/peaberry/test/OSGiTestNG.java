@@ -50,16 +50,16 @@ public final class OSGiTestNG
     System.out.println("Start Felix container");
     System.out.println("=====================");
 
-    Map config = new StringMap(loadConfigProperties(), false);
+    final Map config = new StringMap(loadConfigProperties(), false);
 
-    List autoActivatorList = new ArrayList();
+    final List autoActivatorList = new ArrayList();
     autoActivatorList.add(new AutoActivator(config));
 
-    Felix felix = new Felix(config, autoActivatorList);
+    final Felix felix = new Felix(config, autoActivatorList);
 
     try {
       felix.start();
-    } catch (BundleException e) {
+    } catch (final BundleException e) {
       throw new RuntimeException(e);
     }
 
@@ -67,8 +67,9 @@ public final class OSGiTestNG
 
       // currently tests run inside one bundle, adding multiple test bundles
       // and scripting is something to be looked into for integration tests
-      String testcasesURL = "file:" + System.getProperty("testcases.jar");
-      Bundle testBundle = felix.getBundleContext().installBundle(testcasesURL);
+      final String testcasesURL = "file:" + System.getProperty("testcases.jar");
+      final Bundle testBundle =
+          felix.getBundleContext().installBundle(testcasesURL);
       testBundle.start();
 
       // enable support for OSGi classloading of testcase classes
@@ -79,35 +80,35 @@ public final class OSGiTestNG
 
       super.run();
 
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new RuntimeException(e);
     } finally {
       try {
         felix.stop();
-      } catch (BundleException e) {
+      } catch (final BundleException e) {
         throw new RuntimeException(e);
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
 
     // Enable detailed tracing when testing
-    Logger rootLogger = Logger.getLogger("");
-    for (Handler h : rootLogger.getHandlers()) {
+    final Logger rootLogger = Logger.getLogger("");
+    for (final Handler h : rootLogger.getHandlers()) {
       h.setLevel(Level.FINE);
     }
     rootLogger.setLevel(Level.FINE);
 
-    Map params = checkConditions(parseCommandLine(args));
+    final Map params = checkConditions(parseCommandLine(args));
 
-    TestNG testNG = new OSGiTestNG();
+    final TestNG testNG = new OSGiTestNG();
     testNG.configure(params);
 
     try {
       testNG.run();
-    } catch (TestNGException e) {
+    } catch (final TestNGException e) {
       e.printStackTrace();
     }
   }

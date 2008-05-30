@@ -44,9 +44,9 @@ public final class Attributes {
    * @param properties service properties
    * @return type-safe map of service attributes
    */
-  public static Map<String, ?> attributes(Properties properties) {
+  public static Map<String, ?> attributes(final Properties properties) {
 
-    Map<String, Object> attributes = new HashMap<String, Object>();
+    final Map<String, Object> attributes = new HashMap<String, Object>();
 
     /*
      * Sigh, Properties is a really messed-up class... in Java5 there is only
@@ -55,15 +55,16 @@ public final class Attributes {
      * (Java6 adds stringPropertyNames, but we're currently targeting Java5)
      */
     try {
-      for (Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
-        String key = (String) e.nextElement();
+      for (final Enumeration<?> e = properties.propertyNames(); e
+          .hasMoreElements();) {
+        final String key = (String) e.nextElement();
         attributes.put(key, properties.getProperty(key));
       }
-    } catch (ClassCastException e) {}
+    } catch (final ClassCastException e) {}
 
     // now add non-String values that have String keys
-    for (Entry<?, ?> entry : properties.entrySet()) {
-      Object key = entry.getKey();
+    for (final Entry<?, ?> entry : properties.entrySet()) {
+      final Object key = entry.getKey();
       if (key instanceof String) {
         attributes.put((String) key, entry.getValue());
       }
@@ -78,17 +79,17 @@ public final class Attributes {
    * @param spec service specification
    * @return type-safe map of service attributes
    */
-  public static Map<String, ?> attributes(Service spec) {
+  public static Map<String, ?> attributes(final Service spec) {
 
-    Map<String, Object> attributes = new HashMap<String, Object>();
-    Logger logger = Logger.getLogger(Attributes.class.getName());
+    final Map<String, Object> attributes = new HashMap<String, Object>();
+    final Logger logger = Logger.getLogger(Attributes.class.getName());
 
     // only interested in LDAP attributes
-    for (String a : spec.attributes()) {
+    for (final String a : spec.attributes()) {
       try {
-        Rdn rdn = new Rdn(a);
+        final Rdn rdn = new Rdn(a);
         attributes.put(rdn.getType(), rdn.getValue());
-      } catch (InvalidNameException e) {
+      } catch (final InvalidNameException e) {
         logger.warning("Bad attribute: " + a + " in: " + spec);
       }
     }

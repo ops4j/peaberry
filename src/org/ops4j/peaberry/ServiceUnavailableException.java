@@ -38,7 +38,7 @@ public class ServiceUnavailableException
    * 
    * @param message detailed message
    */
-  public ServiceUnavailableException(String message) {
+  public ServiceUnavailableException(final String message) {
     super(message);
   }
 
@@ -47,7 +47,7 @@ public class ServiceUnavailableException
    * 
    * @param cause underlying cause
    */
-  public ServiceUnavailableException(Throwable cause) {
+  public ServiceUnavailableException(final Throwable cause) {
     super(cause);
   }
 
@@ -57,7 +57,7 @@ public class ServiceUnavailableException
    * @param message detailed message
    * @param cause underlying cause
    */
-  public ServiceUnavailableException(String message, Throwable cause) {
+  public ServiceUnavailableException(final String message, final Throwable cause) {
     super(message, cause);
   }
 }

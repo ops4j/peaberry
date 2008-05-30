@@ -46,17 +46,17 @@ final class ServiceProxyFactory {
    * 
    * @return proxy that delegates to the registry
    */
-  public static <T> T getUnaryServiceProxy(Service spec,
+  public static <T> T getUnaryServiceProxy(final Service spec,
       final ServiceRegistry registry, final Class<? extends T> clazz,
       final String filter) {
 
-    Enhancer proxy = GuiceCodeGen.getEnhancer(clazz);
+    final Enhancer proxy = GuiceCodeGen.getEnhancer(clazz);
     proxy.setCallback(new Dispatcher() {
       public Object loadObject() {
         try {
           // use first matching service from registry
           return registry.lookup(clazz, filter).next();
-        } catch (Exception e) {
+        } catch (final Exception e) {
           throw new ServiceUnavailableException(e);
         }
       }
@@ -80,7 +80,7 @@ final class ServiceProxyFactory {
    * 
    * @return iterable proxy that delegates to the registry
    */
-  public static <T> Iterable<T> getMultiServiceProxy(Service spec,
+  public static <T> Iterable<T> getMultiServiceProxy(final Service spec,
       final ServiceRegistry registry, final Class<? extends T> clazz,
       final String filter) {
 

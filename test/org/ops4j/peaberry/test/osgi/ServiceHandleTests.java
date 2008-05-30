@@ -76,7 +76,8 @@ public class ServiceHandleTests
   WordService consumerB;
 
   @Test(enabled = false)
-  public static void setup(Binder binder, BundleContext bundleContext) {
+  public static void setup(final Binder binder,
+      final BundleContext bundleContext) {
 
     // standard OSGi service injection module
     binder.install(osgiModule(bundleContext));
@@ -88,7 +89,7 @@ public class ServiceHandleTests
         service().attributes("word=B").build()).to(WordServiceImplB.class);
   }
 
-  private void checkWord(String word, String result) {
+  private void checkWord(final String word, final String result) {
     assert word.equals(result) : "Expected " + word + ", got " + result;
   }
 
@@ -113,11 +114,11 @@ public class ServiceHandleTests
     try {
       consumerA.getWord();
       assert false : "No service expected";
-    } catch (ServiceUnavailableException e) {}
+    } catch (final ServiceUnavailableException e) {}
 
     try {
       consumerB.getWord();
       assert false : "No service expected";
-    } catch (ServiceUnavailableException e) {}
+    } catch (final ServiceUnavailableException e) {}
   }
 }
