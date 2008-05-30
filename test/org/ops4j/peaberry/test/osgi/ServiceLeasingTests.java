@@ -59,15 +59,7 @@ public class ServiceLeasingTests
     enableService("A");
     checkService(unleasedService, "A");
     enableService("B");
-    checkService(unleasedService, "B");
-    disableService("B");
     checkService(unleasedService, "A");
-    disableService("A");
-    missingService(unleasedService);
-    enableService("A");
-    checkService(unleasedService, "A");
-    enableService("B");
-    checkService(unleasedService, "B");
     disableService("A");
     checkService(unleasedService, "B");
     disableService("B");
@@ -79,15 +71,12 @@ public class ServiceLeasingTests
     missingService(leasedService);
     enableService("A");
     checkService(leasedService, "A");
+    disableService("A");
     enableService("B");
-    checkService(leasedService, "A");
+    missingService(leasedService);
     sleep(2200);
     checkService(leasedService, "B");
     disableService("B");
-    missingService(leasedService);
-    sleep(2200);
-    checkService(leasedService, "A");
-    disableService("A");
     missingService(leasedService);
   }
 
@@ -99,12 +88,12 @@ public class ServiceLeasingTests
     enableService("B");
     checkServices(leasedServices, "A");
     sleep(2200);
-    checkServices(leasedServices, "B", "A");
-    disableService("B");
-    checkServices(leasedServices, "!", "A");
-    sleep(2200);
-    checkServices(leasedServices, "A");
+    checkServices(leasedServices, "A", "B");
     disableService("A");
+    checkServices(leasedServices, "!", "B");
+    sleep(2200);
+    checkServices(leasedServices, "B");
+    disableService("B");
     checkServices(leasedServices, "!");
     sleep(2200);
     checkServices(leasedServices);

@@ -89,7 +89,7 @@ public class ManualBindingTests
     enableService("A");
     enableService("B");
     enableService("C");
-    checkService(testService, "C");
+    checkService(testService, "A");
     checkService(specificService, "B");
   }
 
@@ -98,10 +98,10 @@ public class ManualBindingTests
     enableService("A");
     enableService("B");
     enableService("C");
-    checkServices(testServices, "C", "B", "A");
+    checkServices(testServices, "A", "B", "C");
     checkServices(specificServices, "B");
     disableService("B");
-    checkServices(testServices, "C", "A");
+    checkServices(testServices, "A", "C");
     checkServices(specificServices, "!");
     sleep(1100);
     checkServices(specificServices);

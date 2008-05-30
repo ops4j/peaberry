@@ -50,36 +50,29 @@ public final class LeasedServiceRegistry
    * {@inheritDoc}
    */
   @SuppressWarnings("unchecked")
-  public <T> Iterator<T> lookup(final Class<? extends T> type,
+  public synchronized <T> Iterator<T> lookup(final Class<? extends T> type,
       final String filter) {
+
     final long now = System.currentTimeMillis();
-
-    // double-checked locking is OK on Java 5 runtimes
     if (expireMillis < now) {
-      synchronized (this) {
-        // /CLOVER:OFF
-        if (expireMillis < now) {
-          // /CLOVER:ON
 
-          final Collection<T> freshServices = new ArrayList<T>();
-          for (final Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
-            try {
-              freshServices.add(i.next());
-            } catch (final Exception e) {}
-          }
-
-          // lease only starts when there are services
-          if (freshServices.size() == 0) {
-            return freshServices.iterator();
-          }
-
-          services = freshServices;
-
-          // negative lease times are treated as 'forever', i.e. static lookup
-          expireMillis = leaseMillis < 0 ? Long.MAX_VALUE : (now + leaseMillis);
-        }
+      final Collection<T> freshServices = new ArrayList<T>();
+      for (final Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
+        try {
+          freshServices.add(i.next());
+        } catch (final Exception e) {}
       }
+
+      // lease only starts when there are services
+      if (freshServices.size() == 0) {
+        return freshServices.iterator();
+      }
+
+      services = freshServices;
     }
+
+    // negative lease times are treated as 'forever', i.e. static lookup
+    expireMillis = leaseMillis < 0 ? Long.MAX_VALUE : (now + leaseMillis);
 
     return (Iterator<T>) services.iterator();
   }

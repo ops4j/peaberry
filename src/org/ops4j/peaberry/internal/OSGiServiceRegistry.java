@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.internal;
 
 import static com.google.inject.internal.Objects.nonNull;
+import static java.util.Collections.reverseOrder;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Arrays;
@@ -27,14 +28,12 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-
-import com.google.inject.internal.Objects;
 
 /**
  * OSGi {@link ServiceRegistry} adaptor (proof-of-concept, not optimised)
@@ -43,6 +42,9 @@ import com.google.inject.internal.Objects;
  */
 public final class OSGiServiceRegistry
     implements ServiceRegistry {
+
+  private static final Comparator<ServiceReference> SERVICE_COMPARATOR =
+      new ServiceComparator();
 
   /**
    * Current bundle context, used to interrogate the registry.
@@ -68,37 +70,12 @@ public final class OSGiServiceRegistry
     final ServiceReference[] services;
 
     try {
-
       services = bundleContext.getServiceReferences(null, filter);
-
-      if (services != null) {/* for non-R4 frameworks */
-        Arrays.sort(services, new Comparator<ServiceReference>() {
-          public int compare(final ServiceReference lhs,
-              final ServiceReference rhs) {
-
-            final Long lhsId = (Long) lhs.getProperty(Constants.SERVICE_ID);
-            final Long rhsId = (Long) rhs.getProperty(Constants.SERVICE_ID);
-
-            if (Objects.equal(lhsId, rhsId)) {
-              return 0;
-            }
-
-            final Long lhsRanking =
-                (Long) lhs.getProperty(Constants.SERVICE_RANKING);
-            final Long rhsRanking =
-                (Long) rhs.getProperty(Constants.SERVICE_RANKING);
-
-            if (Objects.equal(lhsRanking, rhsRanking)) {
-              return rhsId.compareTo(lhsId);
-            }
-
-            return lhsRanking.compareTo(rhsRanking);
-          }
-        });
+      if (services != null) {
+        Arrays.sort(services, reverseOrder(SERVICE_COMPARATOR));
       }
-
     } catch (final Exception e) {
-      throw new RuntimeException(e);
+      throw new ServiceException(e);
     }
 
     return new Iterator<T>() {
