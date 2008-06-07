@@ -1,6 +1,118 @@
+Index: common.xml
+===================================================================
+--- common.xml	(revision 503)
++++ common.xml	(working copy)
+@@ -7,10 +7,7 @@
+   <!-- can be overridden at the command line with -Dversion=
+        or in IDEA, in the ant properties dialog -->
+   <property name="version" value="snapshot"/>
+-  <property name="bundle.version" value="0.0.0.snapshot"/>
+-  <tstamp prefix="datestamp">
+-    <format property="dateAndTime" pattern="yyyy-MM-dd H:mm"/>
+-  </tstamp>
++  <property name="api.version" value="1.0"/>
+ 
+   <target name="compile" description="Compile Java source.">
+     <mkdir dir="${build.dir}/classes"/>
+@@ -24,39 +21,55 @@
+     </copy>
+   </target>
+ 
+-  <target name="manifest"
+-      description="Build a jar manifest so Guice can be used as an OSGi bundle">
+-    <dirname property="guice_home" file="${ant.file.common}" />
+-    <taskdef name="osgiBundleInfo" classname="org.knopflerfish.ant.taskdefs.bundle.BundleInfoTask"
+-        classpath="${guice_home}/lib/build/OSGiBundleInfo.jar"/>
++  <target name="manifest" description="Generate OSGi manifest.">
++    <dirname property="common.basedir" file="${ant.file.common}"/>
++    <taskdef resource="aQute/bnd/ant/taskdef.properties"
++      classpath="${common.basedir}/../lib/ant/bnd.jar"/>
+ 
+-    <!-- extracts the packagelist for OSGi -->
+-    <osgiBundleInfo exports="exports" imports="imports" defaultimports="com.google.inject"
+-        stdimports="java.,net.sf.cglib,org.objectweb.asm,com.google.inject.InjectorImpl,com.google.inject.BindCommandProcessor">
+-      <fileset dir="${basedir}">
+-        <include name="src/**/*.java"/>
+-        <!--<exclude name="src/com/google/inject/internal/**/*.java"/>-->
+-      </fileset>
+-    </osgiBundleInfo>
++    <fail unless="module" message="Missing 'module' property (use the primary package name in this jar)"/>
+ 
+-    <mkdir dir="${build.dir}/META-INF"/>
+-    <manifest file="${build.dir}/META-INF/MANIFEST.MF">
+-      <attribute name="Manifest-Version" value="1.0"/>
+-      <attribute name="Built-By" value="${user.name}"/>
+-      <attribute name="Built-At" value="${datestamp.dateAndTime}"/>
++    <property name="Bundle-Name"
++      value="${ant.project.name}"/>
++    <property name="Bundle-SymbolicName"
++      value="${module}"/>
++    <property name="Bundle-Version"
++      value="${replace;${version};^[^0-9];${api.version}.$0}"/>
+ 
+-      <attribute name="Bundle-License" value="http://www.apache.org/licenses/LICENSE-2.0"/>
+-      <attribute name="Import-Package" value="${imports}"/>
+-      <attribute name="Export-Package" value="${exports}"/>
+-      <attribute name="Bundle-Version" value="${bundle.version}"/>
+-      <attribute name="Bundle-Copyright" value="Google Inc. (C) 2006"/>
+-      <attribute name="Bundle-Name" value="${ant.project.name}"/>
+-      <attribute name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 5 and above"/>
+-      <attribute name="Bundle-DocURL" value="http://code.google.com/p/google-guice/"/>
+-      <attribute name="Bundle-Vendor" value="Google Inc."/>
+-      <attribute name="Bundle-ManifestVersion" value="2"/>
+-      <attribute name="Bundle-SymbolicName" value="${ant.project.name}"/>
+-    </manifest>
++    <property name="Bundle-Description"
++      value="Guice is a lightweight dependency injection framework for Java 5 and above"/>
++    <property name="Bundle-DocURL"
++      value="http://code.google.com/p/google-guice/"/>
++    <property name="Bundle-Copyright"
++      value="Google Inc. (C) 2006-2008"/>
++    <property name="Bundle-License"
++      value="http://www.apache.org/licenses/LICENSE-2.0"/>
++    <property name="Bundle-Vendor"
++      value="Google Inc."/>
++
++    <property name="exclude.imports" value=""/>
++
++    <property name="guice.imports"
++      value="com.google.inject.*;version=${api.version}"/>
++
++    <property name="Import-Package"
++      value="${exclude.imports},${guice.imports},*;resolution:=optional"/>
++
++    <property name="Export-Package"
++      value="${module}.*;version=${api.version}"/>
++
++    <property name="-nouses"
++      value="true"/>
++
++    <property name="-removeheaders"
++      value="Bnd-LastModified,Ignore-Package,Include-Resource,Private-Package,Tool"/>
++
++    <bndwrap jars="${build.dir}/classes" output="${build.dir}"/>
++
++    <unjar src="${build.dir}/classes.bar" dest="${build.dir}">
++      <patternset>
++        <include name="META-INF/MANIFEST.MF"/>
++      </patternset>
++    </unjar>
+   </target>
+ 
+   <target name="test.compile"
+Index: build.properties
+===================================================================
+--- build.properties	(revision 503)
++++ build.properties	(working copy)
+@@ -17,3 +17,5 @@
+   com.google.inject.multibindings,\
+   com.google.inject.commands
+ test.class=com.google.inject.AllTests
++module=com.google.inject
++exclude.imports: !net.sf.cglib.*,!org.objectweb.asm.*
 Index: src/com/google/inject/DefaultConstructionProxyFactory.java
 ===================================================================
---- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 486)
+--- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 505)
 +++ src/com/google/inject/DefaultConstructionProxyFactory.java	(working copy)
 @@ -17,7 +17,7 @@
  package com.google.inject;
@@ -16,13 +128,13 @@ Index: src/com/google/inject/DefaultConstructionProxyFactory.java
  
      Class<T> classToConstruct = constructor.getDeclaringClass();
 -    FastClass fastClass = GuiceFastClass.create(classToConstruct);
-+    FastClass fastClass = GuiceCodeGen.getFastClass(classToConstruct);
++    FastClass fastClass = GuiceCodeGen.newFastClass(classToConstruct);
      final FastConstructor fastConstructor
          = fastClass.getConstructor(constructor);
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/internal/GuiceFastClass.java
 ===================================================================
---- src/com/google/inject/internal/GuiceFastClass.java	(revision 486)
+--- src/com/google/inject/internal/GuiceFastClass.java	(revision 505)
 +++ src/com/google/inject/internal/GuiceFastClass.java	(working copy)
 @@ -1,39 +0,0 @@
 -/**
@@ -64,13 +176,121 @@ Index: src/com/google/inject/internal/GuiceFastClass.java
 -    return generator.create();
 -  }
 -}
-Index: src/com/google/inject/internal/GuiceCodeGen.java
+Index: src/com/google/inject/internal/NonDelegatingClassLoaderHook.java
 ===================================================================
---- src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
-+++ src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
-@@ -0,0 +1,95 @@
+--- src/com/google/inject/internal/NonDelegatingClassLoaderHook.java	(revision 0)
++++ src/com/google/inject/internal/NonDelegatingClassLoaderHook.java	(revision 0)
+@@ -0,0 +1,97 @@
 +/**
-+ * Copyright (C) 2007 Google Inc.
++ * Copyright (C) 2008 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject.internal;
++
++import static com.google.inject.internal.ReferenceType.WEAK;
++import static java.security.AccessController.doPrivileged;
++
++import java.security.PrivilegedAction;
++
++/**
++ * Hook to support Guice inside non-delegating classloader containers like OSGi,
++ * where the CGLIB proxy/reflection classes may not be visible to client types.
++ * 
++ * @author mcculls@gmail.com (Stuart McCulloch)
++ */
++public final class NonDelegatingClassLoaderHook
++    implements ClassLoaderHook {
++
++  /**
++   * Custom classloader that delegates between client and Guice class spaces.
++   */
++  private static class BridgeClassLoader
++      extends ClassLoader {
++
++    /**
++     * Build-time location of CGLIB package
++     */
++    private static final String CGLIB_PACKAGE = "com.google.inject.cglib";
++
++    public BridgeClassLoader(final ClassLoader clientClassLoader) {
++      super(clientClassLoader);
++    }
++
++    @Override
++    protected Class<?> loadClass(final String name, final boolean resolve)
++        throws ClassNotFoundException {
++
++      // delegate CGLIB requests to Guice class space
++      if (name.startsWith(CGLIB_PACKAGE)) {
++        try {
++          final ClassLoader loader = GuiceCodeGen.class.getClassLoader();
++          final Class<?> clazz = loader.loadClass(name);
++          if (resolve) {
++            super.resolveClass(clazz);
++          }
++          return clazz;
++        } catch (final Exception e) {
++          // fall back to classic delegation
++        }
++      }
++
++      return super.loadClass(name, resolve);
++    }
++  }
++
++  /**
++   * Weak cache of bridge classloaders that make the Guice implementation
++   * classes visible to various code-generated proxies of client classes.
++   */
++  private static final ReferenceCache<ClassLoader, ClassLoader> CLASS_LOADER_CACHE =
++      new ReferenceCache<ClassLoader, ClassLoader>(WEAK, WEAK) {
++        private static final long serialVersionUID = 1L;
++
++        @Override
++        protected ClassLoader create(final ClassLoader typeClassLoader) {
++          return doPrivileged(new PrivilegedAction<ClassLoader>() {
++            public ClassLoader run() {
++              return new BridgeClassLoader(typeClassLoader);
++            }
++          });
++        }
++      };
++
++  /**
++   * Intercepts classloading requests involving generated classes and proxies.
++   */
++  public ClassLoader intercept(final ClassLoader typeClassLoader) {
++    if (null == typeClassLoader) {
++      return CLASS_LOADER_CACHE.get(ClassLoader.getSystemClassLoader());
++    }
++    return CLASS_LOADER_CACHE.get(typeClassLoader);
++  }
++}
+
+Property changes on: src/com/google/inject/internal/NonDelegatingClassLoaderHook.java
+___________________________________________________________________
+Name: svn:eol-style
+   + native
+
+Index: src/com/google/inject/internal/ClassLoaderHook.java
+===================================================================
+--- src/com/google/inject/internal/ClassLoaderHook.java	(revision 0)
++++ src/com/google/inject/internal/ClassLoaderHook.java	(revision 0)
+@@ -0,0 +1,33 @@
++/**
++ * Copyright (C) 2008 Google Inc.
 + *
 + * Licensed under the Apache License, Version 2.0 (the "License");
 + * you may not use this file except in compliance with the License.
@@ -87,186 +307,34 @@ Index: src/com/google/inject/internal/GuiceCodeGen.java
 +
 +package com.google.inject.internal;
 +
-+import com.google.inject.ClassLoaderHook;
-+import java.lang.reflect.InvocationHandler;
-+import java.lang.reflect.Proxy;
-+import net.sf.cglib.core.NamingPolicy;
-+import net.sf.cglib.proxy.Enhancer;
-+import net.sf.cglib.reflect.FastClass;
-+
 +/**
-+ * Handles all code generation for Guice.
-+ *
-+ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ * Provide classloading interception for Guice enhanced classes and proxies.
++ * 
++ * @author mcculls@gmail.com (Stuart McCulloch)
 + */
-+public final class GuiceCodeGen {
++public interface ClassLoaderHook {
 +
-+  static final NamingPolicy NAMING_POLICY = new GuiceNamingPolicy();
-+
-+  static final ClassLoaderHook DEFAULT_CLASSLOADER_HOOK =
-+      new ClassLoaderHook() {
-+        public ClassLoader intercept(ClassLoader loader) {return loader;}
-+      };
-+
-+  static final ThreadLocal<ClassLoaderHook> THREAD_CLASS_LOADER_HOOK =
-+      new InheritableThreadLocal<ClassLoaderHook>() {
-+        @Override
-+        protected ClassLoaderHook initialValue() {
-+          return DEFAULT_CLASSLOADER_HOOK;
-+        }
-+      };
-+
-+  public static ClassLoaderHook getThreadClassLoaderHook() {
-+    return THREAD_CLASS_LOADER_HOOK.get();
-+  }
-+
-+  public static void setThreadClassLoaderHook(ClassLoaderHook classLoaderHook) {
-+    if (classLoaderHook != null) {
-+      THREAD_CLASS_LOADER_HOOK.set(classLoaderHook);
-+    } else {
-+      THREAD_CLASS_LOADER_HOOK.remove();
-+    }
-+  }
-+
-+  public static ClassLoader getClassLoader(Class<?> type) {
-+    return getThreadClassLoaderHook().intercept(type.getClassLoader());
-+  }
-+
-+  public static FastClass getFastClass(Class<?> type) {
-+    FastClass.Generator generator = new FastClass.Generator();
-+
-+    generator.setType(type);
-+    generator.setClassLoader(getClassLoader(type));
-+    generator.setNamingPolicy(NAMING_POLICY);
-+
-+    return generator.create();
-+  }
-+
-+  public static Enhancer getEnhancer(final Class<?> type) {
-+    Enhancer enhancer = new Enhancer() {
-+        @Override
-+        protected ClassLoader getDefaultClassLoader() {
-+          return getThreadClassLoaderHook().intercept(
-+              super.getDefaultClassLoader());
-+        }
-+      };
-+
-+    enhancer.setSuperclass(type);
-+    enhancer.setUseCache(false); // We do enough caching.
-+    enhancer.setUseFactory(false);
-+    enhancer.setNamingPolicy(NAMING_POLICY);
-+
-+    return enhancer;
-+  }
-+
-+  public static Object getProxy(Class<?> type, InvocationHandler handler) {
-+    return Proxy.newProxyInstance(getClassLoader(type),
-+        new Class[] {type}, handler);
-+  }
++  /**
++   * Intercept classloading request.
++   * 
++   * @param loader classloader involved in request
++   * @return potentially intercepted classloader
++   */
++  ClassLoader intercept(ClassLoader loader);
 +}
 
-Property changes on: src/com/google/inject/internal/GuiceCodeGen.java
+Property changes on: src/com/google/inject/internal/ClassLoaderHook.java
 ___________________________________________________________________
 Name: svn:eol-style
    + native
 
-Index: src/com/google/inject/InjectorImpl.java
+Index: src/com/google/inject/internal/GuiceCodeGen.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 486)
-+++ src/com/google/inject/InjectorImpl.java	(working copy)
-@@ -966,7 +966,7 @@
-         };
-       }
-       else {
--        FastClass fastClass = GuiceFastClass.create(method.getDeclaringClass());
-+        FastClass fastClass = GuiceCodeGen.getFastClass(method.getDeclaringClass());
-         final FastMethod fastMethod = fastClass.getMethod(method);
- 
-         this.methodInvoker = new MethodInvoker() {
-@@ -1176,7 +1176,7 @@
-       }
-       finally {
-         // Only remove the context if this call created it.
--        reference[0] = null;
-+        localContext.remove();
-       }
-     }
-     else {
-Index: src/com/google/inject/ProxyFactory.java
-===================================================================
---- src/com/google/inject/ProxyFactory.java	(revision 486)
-+++ src/com/google/inject/ProxyFactory.java	(working copy)
-@@ -17,7 +17,7 @@
- package com.google.inject;
- 
- import com.google.inject.internal.ErrorHandler;
--import com.google.inject.internal.GuiceFastClass;
-+import com.google.inject.internal.GuiceCodeGen;
- import com.google.inject.internal.GuiceNamingPolicy;
- import com.google.inject.internal.ReferenceCache;
- import net.sf.cglib.proxy.Callback;
-@@ -144,17 +144,13 @@
-     }
- 
-     // Create the proxied class.
--    Enhancer enhancer = new Enhancer();
--    enhancer.setSuperclass(declaringClass);
--    enhancer.setUseCache(false); // We do enough caching.
-+    Enhancer enhancer = GuiceCodeGen.getEnhancer(declaringClass);
-     enhancer.setCallbackFilter(new CallbackFilter() {
-       public int accept(Method method) {
-         return indices.get(method);
-       }
-     });
-     enhancer.setCallbackTypes(callbackTypes);
--    enhancer.setUseFactory(false);
--    enhancer.setNamingPolicy(new GuiceNamingPolicy());
- 
-     Class<?> proxied = enhancer.createClass();
- 
-@@ -169,7 +165,7 @@
-    */
-   private <T> ConstructionProxy<T> createConstructionProxy(final Class<?> clazz,
-       final Constructor standardConstructor) {
--    FastClass fastClass = GuiceFastClass.create(clazz);
-+    FastClass fastClass = GuiceCodeGen.getFastClass(clazz);
-     final FastConstructor fastConstructor
-         = fastClass.getConstructor(standardConstructor.getParameterTypes());
-     return new ConstructionProxy<T>() {
-Index: src/com/google/inject/ConstructionContext.java
-===================================================================
---- src/com/google/inject/ConstructionContext.java	(revision 486)
-+++ src/com/google/inject/ConstructionContext.java	(working copy)
-@@ -19,10 +19,11 @@
- import java.lang.reflect.InvocationHandler;
- import java.lang.reflect.InvocationTargetException;
- import java.lang.reflect.Method;
--import java.lang.reflect.Proxy;
- import java.util.ArrayList;
- import java.util.List;
- 
-+import com.google.inject.internal.GuiceCodeGen;
-+
- /**
-  * Context of a dependency construction. Used to manage circular references.
-  *
-@@ -80,8 +81,7 @@
-         = new DelegatingInvocationHandler<T>();
-     invocationHandlers.add(invocationHandler);
- 
--    Object object = Proxy.newProxyInstance(expectedType.getClassLoader(),
--        new Class[] { expectedType }, invocationHandler);
-+    Object object = GuiceCodeGen.getProxy(expectedType, invocationHandler);
-     return expectedType.cast(object);
-   }
- 
-Index: src/com/google/inject/ClassLoaderHook.java
-===================================================================
---- src/com/google/inject/ClassLoaderHook.java	(revision 0)
-+++ src/com/google/inject/ClassLoaderHook.java	(revision 0)
-@@ -0,0 +1,33 @@
+--- src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
++++ src/com/google/inject/internal/GuiceCodeGen.java	(revision 0)
+@@ -0,0 +1,93 @@
 +/**
-+ * Copyright (C) 2007 Google Inc.
++ * Copyright (C) 2008 Google Inc.
 + *
 + * Licensed under the Apache License, Version 2.0 (the "License");
 + * you may not use this file except in compliance with the License.
@@ -281,26 +349,200 @@ Index: src/com/google/inject/ClassLoaderHook.java
 + * limitations under the License.
 + */
 +
-+package com.google.inject;
++package com.google.inject.internal;
++
++import static java.lang.reflect.Modifier.PROTECTED;
++import static java.lang.reflect.Modifier.PUBLIC;
++
++import java.lang.reflect.InvocationHandler;
++import java.lang.reflect.Proxy;
++
++import net.sf.cglib.core.NamingPolicy;
++import net.sf.cglib.proxy.Enhancer;
++import net.sf.cglib.reflect.FastClass;
 +
 +/**
-+ * Provide classloading interception for Guice enhanced classes and proxies.
++ * Handles runtime code generation for Guice.
 + * 
-+ * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
++ * @author mcculls@gmail.com (Stuart McCulloch)
 + */
-+public interface ClassLoaderHook {
++public final class GuiceCodeGen {
 +
-+  /**
-+   * Intercept classloading request.
-+   * 
-+   * @param loader classloader involved in request
-+   * @return potentially intercepted classloader
++  static final NamingPolicy NAMING_POLICY = new GuiceNamingPolicy();
++
++  static final ClassLoaderHook CLASSLOADER_HOOK =
++      new NonDelegatingClassLoaderHook();
++
++  /*
++   * Private/implementation classes are not visible to classes loaded by other
++   * classloaders, even when they are in the same package. Therefore we cannot
++   * intercept classloading requests for such types.
 +   */
-+  ClassLoader intercept(ClassLoader loader);
++  static boolean isHookable(final Class<?> type) {
++    return (type.getModifiers() & (PROTECTED | PUBLIC)) != 0;
++  }
++
++  public static ClassLoader getClassLoader(final Class<?> type) {
++    final ClassLoader typeClassLoader = type.getClassLoader();
++    if (isHookable(type)) {
++      return CLASSLOADER_HOOK.intercept(typeClassLoader);
++    }
++    return typeClassLoader;
++  }
++
++  public static FastClass newFastClass(final Class<?> type) {
++    final FastClass.Generator generator = new FastClass.Generator();
++
++    generator.setType(type);
++    generator.setClassLoader(getClassLoader(type));
++    generator.setNamingPolicy(NAMING_POLICY);
++
++    return generator.create();
++  }
++
++  public static Enhancer newEnhancer(final Class<?> type) {
++    final Enhancer enhancer = new Enhancer() {
++      @Override
++      protected ClassLoader getDefaultClassLoader() {
++        final ClassLoader defaultClassLoader = super.getDefaultClassLoader();
++        if (isHookable(type)) {
++          return CLASSLOADER_HOOK.intercept(defaultClassLoader);
++        }
++        return defaultClassLoader;
++      }
++    };
++
++    enhancer.setSuperclass(type);
++    enhancer.setUseCache(false); // We do enough caching.
++    enhancer.setUseFactory(false);
++    enhancer.setNamingPolicy(NAMING_POLICY);
++
++    return enhancer;
++  }
++
++  public static <T> T newProxyInstance(final Class<? extends T> type,
++      final InvocationHandler handler) {
++    return type.cast(Proxy.newProxyInstance(
++        getClassLoader(type), new Class[] {type}, handler));
++  }
 +}
 
-Property changes on: src/com/google/inject/ClassLoaderHook.java
+Property changes on: src/com/google/inject/internal/GuiceCodeGen.java
 ___________________________________________________________________
 Name: svn:eol-style
    + native
 
+Index: src/com/google/inject/InjectorImpl.java
+===================================================================
+--- src/com/google/inject/InjectorImpl.java	(revision 505)
++++ src/com/google/inject/InjectorImpl.java	(working copy)
+@@ -26,7 +26,7 @@
+ import com.google.inject.internal.Classes;
+ import com.google.inject.internal.ErrorHandler;
+ import com.google.inject.internal.ErrorMessages;
+-import com.google.inject.internal.GuiceFastClass;
++import com.google.inject.internal.GuiceCodeGen;
+ import com.google.inject.internal.Keys;
+ import com.google.inject.internal.MatcherAndConverter;
+ import com.google.inject.internal.ReferenceCache;
+@@ -858,7 +858,7 @@
+         };
+       }
+       else {
+-        FastClass fastClass = GuiceFastClass.create(method.getDeclaringClass());
++        FastClass fastClass = GuiceCodeGen.newFastClass(method.getDeclaringClass());
+         final FastMethod fastMethod = fastClass.getMethod(method);
+ 
+         methodInvoker = new MethodInvoker() {
+@@ -1050,7 +1050,7 @@
+       }
+       finally {
+         // Only remove the context if this call created it.
+-        reference[0] = null;
++        localContext.remove();
+       }
+     }
+     else {
+Index: src/com/google/inject/ProxyFactory.java
+===================================================================
+--- src/com/google/inject/ProxyFactory.java	(revision 505)
++++ src/com/google/inject/ProxyFactory.java	(working copy)
+@@ -17,8 +17,7 @@
+ package com.google.inject;
+ 
+ import com.google.inject.internal.ErrorHandler;
+-import com.google.inject.internal.GuiceFastClass;
+-import com.google.inject.internal.GuiceNamingPolicy;
++import com.google.inject.internal.GuiceCodeGen;
+ import com.google.inject.internal.ReferenceCache;
+ import net.sf.cglib.proxy.Callback;
+ import net.sf.cglib.proxy.CallbackFilter;
+@@ -144,17 +143,13 @@
+     }
+ 
+     // Create the proxied class.
+-    Enhancer enhancer = new Enhancer();
+-    enhancer.setSuperclass(declaringClass);
+-    enhancer.setUseCache(false); // We do enough caching.
++    Enhancer enhancer = GuiceCodeGen.newEnhancer(declaringClass);
+     enhancer.setCallbackFilter(new CallbackFilter() {
+       public int accept(Method method) {
+         return indices.get(method);
+       }
+     });
+     enhancer.setCallbackTypes(callbackTypes);
+-    enhancer.setUseFactory(false);
+-    enhancer.setNamingPolicy(new GuiceNamingPolicy());
+ 
+     Class<?> proxied = enhancer.createClass();
+ 
+@@ -169,7 +164,7 @@
+    */
+   private <T> ConstructionProxy<T> createConstructionProxy(final Class<?> clazz,
+       final Constructor standardConstructor) {
+-    FastClass fastClass = GuiceFastClass.create(clazz);
++    FastClass fastClass = GuiceCodeGen.newFastClass(clazz);
+     final FastConstructor fastConstructor
+         = fastClass.getConstructor(standardConstructor.getParameterTypes());
+     return new ConstructionProxy<T>() {
+Index: src/com/google/inject/ConstructionContext.java
+===================================================================
+--- src/com/google/inject/ConstructionContext.java	(revision 505)
++++ src/com/google/inject/ConstructionContext.java	(working copy)
+@@ -16,10 +16,11 @@
+ 
+ package com.google.inject;
+ 
++import static com.google.inject.internal.GuiceCodeGen.newProxyInstance;
++
+ import java.lang.reflect.InvocationHandler;
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+-import java.lang.reflect.Proxy;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+@@ -80,8 +81,7 @@
+         = new DelegatingInvocationHandler<T>();
+     invocationHandlers.add(invocationHandler);
+ 
+-    Object object = Proxy.newProxyInstance(expectedType.getClassLoader(),
+-        new Class[] { expectedType }, invocationHandler);
++    Object object = newProxyInstance(expectedType, invocationHandler);
+     return expectedType.cast(object);
+   }
+ 
+Index: build.xml
+===================================================================
+--- build.xml	(revision 505)
++++ build.xml	(working copy)
+@@ -91,6 +91,9 @@
+         <pathelement location="lib/build/easymock.jar"/>
+       </classpath>
+       <arg value="com.google.inject.AllTests"/>    
++      <syspropertyset>
++        <propertyref name="guice.custom.loader"/>
++      </syspropertyset>
+     </java>
+   </target>
+   

@@ -16,55 +16,29 @@
 
 package org.ops4j.peaberry;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.ops4j.peaberry.ServiceWatcher.Handle;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import com.google.inject.BindingAnnotation;
+import com.google.inject.Provider;
 
 /**
- * Specification for a dynamic service binding.
- * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Target( {
-    TYPE, FIELD, PARAMETER
-})
-@Retention(RUNTIME)
-@BindingAnnotation
-public @interface Service {
+public interface ServiceHandleBuilder<T> {
 
   /**
    * LDAP attributes, a sequence of name=value strings
    * 
    * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
-  String[] attributes() default {};
+  ServiceHandleBuilder<T> attributes(String... attributes);
 
   /**
-   * LDAP filter
    * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
    */
-  String filter() default "";
+  ServiceHandleBuilder<T> registry(ServiceRegistry registry);
 
   /**
-   * Custom service API
+   * 
    */
-  Class<?>[] interfaces() default {};
-
-  public @interface Seconds {
-    int value();
-  }
-
-  static int FOREVER = -1;
-
-  /**
-   * Service lease period
-   */
-  Seconds lease() default @Seconds(0);
+  Provider<Handle<T>> handle();
 }

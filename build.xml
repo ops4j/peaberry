@@ -11,6 +11,7 @@
 
   <target name="guice">
     <ant dir="${guice}" target="jar">
+      <property name="module" value="com.google.inject"/>
       <property name="version" value="patched"/>
     </ant>
   </target>

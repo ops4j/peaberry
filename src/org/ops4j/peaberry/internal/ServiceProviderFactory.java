@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
-import static com.google.inject.internal.Objects.nonNull;
+import static com.google.inject.internal.base.Objects.nonNull;
 import static org.ops4j.peaberry.internal.ServiceFilterFactory.getServiceFilter;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.getMultiServiceProxy;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.getUnaryServiceProxy;

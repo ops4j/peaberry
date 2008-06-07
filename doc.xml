@@ -4,7 +4,7 @@
   <target name="doc">
     <mkdir dir="${doc}/javadoc"/>
     <javadoc destdir="${doc}/javadoc" classpath="${build.cp}" sourcepath="${src}" author="no"
-        windowtitle="peaberry - dynamic service injection with Google-Guice">
+        windowtitle="${title}">
       <link href="http://google-guice.googlecode.com/svn/trunk/javadoc"/>
       <link href="http://www2.osgi.org/javadoc/r4"/>
     </javadoc>

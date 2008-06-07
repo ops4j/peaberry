@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
-import static com.google.inject.internal.Objects.nonNull;
+import static com.google.inject.internal.base.Objects.nonNull;
 import static java.util.Collections.reverseOrder;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
@@ -35,6 +35,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
+import com.google.inject.Inject;
+
 /**
  * OSGi {@link ServiceRegistry} adaptor (proof-of-concept, not optimised)
  * 
@@ -51,6 +53,7 @@ public final class OSGiServiceRegistry
    */
   final BundleContext bundleContext;
 
+  @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
   }

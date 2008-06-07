@@ -6,13 +6,12 @@
   <target name="with.clover">
     <clover-setup initstring="${build}/instrument/coverage.db">
       <files>
-        <!-- temporary: this is placeholder code -->
+        <!-- temporary: class will be rewritten -->
         <exclude name="**/OSGiServiceRegistry.java"/>
         <exclude name="**/*Exception.java"/>
       </files>
       <methodContext name="toString" regexp="(.* )?public String toString\(\).*"/>
       <methodContext name="privateCtor" regexp="(.* )?private \w+\(\).*"/>
-      <statementContext name="resolve" regexp="^if \(resolve\) \{.*"/>
       <testsources dir="${test}">
         <testclass annotation="Test"/>
       </testsources>
@@ -22,7 +21,7 @@
   <target name="clover.report">
     <clover-report>
       <current outfile="${doc}/coverage" title="peaberry">
-        <format type="html" filter="toString,privateCtor,resolve"/>
+        <format type="html" filter="toString,privateCtor"/>
         <testsources dir="${test}"/>
       </current>
     </clover-report>

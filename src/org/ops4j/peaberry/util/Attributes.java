@@ -26,8 +26,6 @@ import java.util.logging.Logger;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.Rdn;
 
-import org.ops4j.peaberry.Service;
-
 /**
  * Collection of utility methods for dealing with service attributes.
  * 
@@ -74,23 +72,22 @@ public final class Attributes {
   }
 
   /**
-   * Converts a {@link Service} specification to a type-safe attribute map.
+   * Converts LDAP names to a type-safe attribute map.
    * 
-   * @param spec service specification
+   * @param attributes sequence of name=value strings
    * @return type-safe map of service attributes
    */
-  public static Map<String, ?> attributes(final Service spec) {
+  public static Map<String, ?> attributes(final String[] names) {
 
     final Map<String, Object> attributes = new HashMap<String, Object>();
     final Logger logger = Logger.getLogger(Attributes.class.getName());
 
-    // only interested in LDAP attributes
-    for (final String a : spec.attributes()) {
+    for (final String n : names) {
       try {
-        final Rdn rdn = new Rdn(a);
+        final Rdn rdn = new Rdn(n);
         attributes.put(rdn.getType(), rdn.getValue());
       } catch (final InvalidNameException e) {
-        logger.warning("Bad attribute: " + a + " in: " + spec);
+        logger.warning("Bad LDAP name: " + n);
       }
     }
 

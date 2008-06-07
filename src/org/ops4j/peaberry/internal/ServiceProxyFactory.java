@@ -50,7 +50,7 @@ final class ServiceProxyFactory {
       final ServiceRegistry registry, final Class<? extends T> clazz,
       final String filter) {
 
-    final Enhancer proxy = GuiceCodeGen.getEnhancer(clazz);
+    final Enhancer proxy = GuiceCodeGen.newEnhancer(clazz);
     proxy.setCallback(new Dispatcher() {
       public Object loadObject() {
         try {
