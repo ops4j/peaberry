@@ -26,11 +26,16 @@ import com.google.inject.Provider;
 public interface ServiceHandleBuilder<T> {
 
   /**
-   * LDAP attributes, a sequence of name=value strings
+   * LDAP attributes, a sequence of "name=value" strings
    * 
    * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
   ServiceHandleBuilder<T> attributes(String... attributes);
+
+  /**
+   * Custom service API
+   */
+  ServiceHandleBuilder<T> interfaces(Class<?>... interfaces);
 
   /**
    * 

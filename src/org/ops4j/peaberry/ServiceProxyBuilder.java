@@ -23,6 +23,8 @@ import com.google.inject.Provider;
  */
 public interface ServiceProxyBuilder<T> {
 
+  public static final int FOREVER = Integer.MAX_VALUE;
+
   /**
    * LDAP filter
    * 
@@ -43,20 +45,15 @@ public interface ServiceProxyBuilder<T> {
   /**
    * 
    */
-  ServiceProxyBuilder<T> sticky();
-
-  /**
-   * 
-   */
   ServiceProxyBuilder<T> registry(ServiceRegistry registry);
 
   /**
    * 
    */
-  Provider<T> unary();
+  Provider<T> one();
 
   /**
    * 
    */
-  Provider<Iterable<T>> multiple();
+  Provider<Iterable<T>> many();
 }

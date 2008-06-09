@@ -38,6 +38,11 @@ public class ServiceHandleBuilderImpl<T>
     return this;
   }
 
+  public ServiceHandleBuilder<T> interfaces(final Class<?>... interfaces) {
+    // TODO Auto-generated method stub
+    return this;
+  }
+
   public ServiceHandleBuilder<T> registry(final ServiceRegistry registry) {
     // TODO Auto-generated method stub
     return this;

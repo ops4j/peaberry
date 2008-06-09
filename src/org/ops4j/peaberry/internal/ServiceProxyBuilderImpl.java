@@ -46,22 +46,17 @@ public class ServiceProxyBuilderImpl<T>
     return this;
   }
 
-  public ServiceProxyBuilder<T> sticky() {
-    // TODO Auto-generated method stub
-    return this;
-  }
-
   public ServiceProxyBuilder<T> registry(final ServiceRegistry registry) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public Provider<T> unary() {
+  public Provider<T> one() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  public Provider<Iterable<T>> multiple() {
+  public Provider<Iterable<T>> many() {
     // TODO Auto-generated method stub
     return null;
   }
