@@ -7,7 +7,7 @@
     </classpath>
   </taskdef>
 
-  <target name="patch">
+  <target name="patch" depends="scm">
     <foreach param="patchfile" target="do-patch">
       <path>
         <fileset dir="${patch}"/>

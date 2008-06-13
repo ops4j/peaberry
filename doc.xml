@@ -5,8 +5,10 @@
     <mkdir dir="${doc}/javadoc"/>
     <javadoc destdir="${doc}/javadoc" classpath="${build.cp}" sourcepath="${src}" author="no"
         windowtitle="${title}">
-      <link href="http://google-guice.googlecode.com/svn/trunk/javadoc"/>
-      <link href="http://www2.osgi.org/javadoc/r4"/>
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+      <link href="http://google-guice.googlecode.com/svn/trunk/javadoc/"/>
+      <link href="http://aopalliance.sourceforge.net/doc/"/>
+      <link href="http://www2.osgi.org/javadoc/r4/"/>
     </javadoc>
   </target>
 

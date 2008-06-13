@@ -9,14 +9,14 @@
   <import file="test.xml"/>
   <import file="doc.xml"/>
 
-  <target name="guice">
+  <target name="guice" depends="patch">
     <ant dir="${guice}" target="jar">
       <property name="module" value="com.google.inject"/>
       <property name="version" value="patched"/>
     </ant>
   </target>
 
-  <target name="test.guice">
+  <target name="test.guice" depends="guice">
     <echo message="Skipping Guice unit tests"/>
     <mkdir dir="${guice}/build/test"/>
 <!--
@@ -24,18 +24,18 @@
 -->
   </target>
 
-  <target name="clean.guice">
-    <ant dir="${guice}" target="clean"/>
-  </target>
-
-  <target name="compile">
+  <target name="compile" depends="guice">
     <mkdir dir="${build}/classes"/>
     <javac source="1.5" target="1.5" debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
   </target>
 
-  <target name="test.compile">
+  <target name="test.compile" depends="compile">
     <mkdir dir="${build}/test-classes"/>
     <javac source="1.5" target="1.5" debug="on" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
+  </target>
+
+  <target name="clean.guice">
+    <ant dir="${guice}" target="clean"/>
   </target>
 
   <target name="clean">
@@ -48,10 +48,10 @@
     <delete dir="${guice}"/>
   </target>
 
-  <target name="dist" depends="scm,patch,guice,peaberry"/>
+  <target name="dist" depends="peaberry"/>
 
-  <target name="test.dist" depends="dist,test.guice,test.peaberry"/>
+  <target name="test.dist" depends="test.peaberry"/>
 
-  <target name="reports" depends="clean,with.clover,peaberry,test.peaberry,clover.report"/>
+  <target name="reports" depends="guice,clean,with.clover,peaberry,test.peaberry,clover.report"/>
 
 </project>

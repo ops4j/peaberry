@@ -1,6 +1,6 @@
 Index: src/com/google/inject/DefaultConstructionProxyFactory.java
 ===================================================================
---- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 505)
+--- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 515)
 +++ src/com/google/inject/DefaultConstructionProxyFactory.java	(working copy)
 @@ -17,7 +17,7 @@
  package com.google.inject;
@@ -22,7 +22,7 @@ Index: src/com/google/inject/DefaultConstructionProxyFactory.java
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/internal/GuiceFastClass.java
 ===================================================================
---- src/com/google/inject/internal/GuiceFastClass.java	(revision 505)
+--- src/com/google/inject/internal/GuiceFastClass.java	(revision 515)
 +++ src/com/google/inject/internal/GuiceFastClass.java	(working copy)
 @@ -1,39 +0,0 @@
 -/**
@@ -68,7 +68,7 @@ Index: src/com/google/inject/internal/NonDelegatingClassLoaderHook.java
 ===================================================================
 --- src/com/google/inject/internal/NonDelegatingClassLoaderHook.java	(revision 0)
 +++ src/com/google/inject/internal/NonDelegatingClassLoaderHook.java	(revision 0)
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,94 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -107,10 +107,8 @@ Index: src/com/google/inject/internal/NonDelegatingClassLoaderHook.java
 +  private static class BridgeClassLoader
 +      extends ClassLoader {
 +
-+    /**
-+     * Build-time location of CGLIB package
-+     */
-+    private static final String CGLIB_PACKAGE = "com.google.inject.cglib";
++    private static final String GUICE_INTERNAL_PACKAGE =
++        NonDelegatingClassLoaderHook.class.getPackage().getName();
 +
 +    public BridgeClassLoader(final ClassLoader clientClassLoader) {
 +      super(clientClassLoader);
@@ -120,11 +118,10 @@ Index: src/com/google/inject/internal/NonDelegatingClassLoaderHook.java
 +    protected Class<?> loadClass(final String name, final boolean resolve)
 +        throws ClassNotFoundException {
 +
-+      // delegate CGLIB requests to Guice class space
-+      if (name.startsWith(CGLIB_PACKAGE)) {
++      // delegate internal requests to Guice class space
++      if (name.startsWith(GUICE_INTERNAL_PACKAGE)) {
 +        try {
-+          final ClassLoader loader = GuiceCodeGen.class.getClassLoader();
-+          final Class<?> clazz = loader.loadClass(name);
++          final Class<?> clazz = getClass().getClassLoader().loadClass(name);
 +          if (resolve) {
 +            super.resolveClass(clazz);
 +          }
@@ -322,7 +319,7 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 505)
+--- src/com/google/inject/InjectorImpl.java	(revision 515)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -26,7 +26,7 @@
  import com.google.inject.internal.Classes;
@@ -353,7 +350,7 @@ Index: src/com/google/inject/InjectorImpl.java
      else {
 Index: src/com/google/inject/ProxyFactory.java
 ===================================================================
---- src/com/google/inject/ProxyFactory.java	(revision 505)
+--- src/com/google/inject/ProxyFactory.java	(revision 515)
 +++ src/com/google/inject/ProxyFactory.java	(working copy)
 @@ -17,8 +17,7 @@
  package com.google.inject;
@@ -395,13 +392,13 @@ Index: src/com/google/inject/ProxyFactory.java
      return new ConstructionProxy<T>() {
 Index: src/com/google/inject/ConstructionContext.java
 ===================================================================
---- src/com/google/inject/ConstructionContext.java	(revision 505)
+--- src/com/google/inject/ConstructionContext.java	(revision 515)
 +++ src/com/google/inject/ConstructionContext.java	(working copy)
 @@ -16,10 +16,11 @@
  
  package com.google.inject;
  
-+import static com.google.inject.internal.GuiceCodeGen.newProxyInstance;
++import com.google.inject.internal.GuiceCodeGen;
 +
  import java.lang.reflect.InvocationHandler;
  import java.lang.reflect.InvocationTargetException;
@@ -416,21 +413,22 @@ Index: src/com/google/inject/ConstructionContext.java
  
 -    Object object = Proxy.newProxyInstance(expectedType.getClassLoader(),
 -        new Class[] { expectedType }, invocationHandler);
-+    Object object = newProxyInstance(expectedType, invocationHandler);
++    Object object = GuiceCodeGen.newProxyInstance(expectedType, invocationHandler);
      return expectedType.cast(object);
    }
  
 Index: build.xml
 ===================================================================
---- build.xml	(revision 505)
+--- build.xml	(revision 515)
 +++ build.xml	(working copy)
-@@ -91,6 +91,9 @@
-         <pathelement location="lib/build/easymock.jar"/>
-       </classpath>
-       <arg value="com.google.inject.AllTests"/>    
-+      <syspropertyset>
-+        <propertyref name="guice.custom.loader"/>
-+      </syspropertyset>
-     </java>
+@@ -21,8 +21,8 @@
+       <zipfileset src="lib/build/asm-3.1.jar"/>
+       <zipfileset src="lib/build/google-collect-snapshot-20080530.jar"/>
+       <rule pattern="com.google.common.**" result="com.google.inject.internal.@1"/>
+-      <rule pattern="net.sf.cglib.**" result="com.google.inject.cglib.@1"/>
+-      <rule pattern="org.objectweb.asm.**" result="com.google.inject.asm.@1"/>
++      <rule pattern="net.sf.cglib.**" result="com.google.inject.internal.cglib.@1"/>
++      <rule pattern="org.objectweb.asm.**" result="com.google.inject.internal.asm.@1"/>
+       <keep pattern="com.google.**"/>
+     </jarjar>
    </target>
-   

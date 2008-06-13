@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
 <project name="bnd">
 
-<!--
   <taskdef resource="aQute/bnd/ant/taskdef.properties">
     <classpath>
       <pathelement location="${antlib}/bnd.jar"/>
     </classpath>
   </taskdef>
--->
 
   <target name="peaberry" depends="compile">
     <mkdir dir="${build}/dist"/>
