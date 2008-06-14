@@ -18,9 +18,9 @@ package org.ops4j.peaberry;
 
 import static com.google.inject.internal.base.Objects.nonNull;
 
+import org.ops4j.peaberry.builders.DynamicServiceBuilder;
+import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
-import org.ops4j.peaberry.internal.ServiceHandleBuilderImpl;
-import org.ops4j.peaberry.internal.ServiceProxyBuilderImpl;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Binder;
@@ -43,10 +43,10 @@ public final class Peaberry {
    * @param clazz service interface
    * @return service proxy builder
    */
-  public <T> ServiceProxyBuilder<T> service(final Class<? extends T> clazz) {
+  public <T> DynamicServiceBuilder<T> service(final Class<? extends T> clazz) {
     nonNull(clazz, "service interface");
 
-    return new ServiceProxyBuilderImpl<T>(clazz);
+    return null;// TODO
   }
 
   /**
@@ -55,10 +55,10 @@ public final class Peaberry {
    * @param key implementation key
    * @return service handle builder
    */
-  public <T> ServiceHandleBuilder<T> registration(final Key<? extends T> key) {
+  public <T> QualifiedRegistrationBuilder<T> registration(final Key<? extends T> key) {
     nonNull(key, "implementation key");
 
-    return new ServiceHandleBuilderImpl<T>(key);
+    return null;// TODO
   }
 
   /**
@@ -67,8 +67,7 @@ public final class Peaberry {
    * @param bundleContext current bundle context
    * @return OSGi specific {@link ServiceRegistry}
    */
-  public static ServiceRegistry osgiServiceRegistry(
-      final BundleContext bundleContext) {
+  public static ServiceRegistry osgiServiceRegistry(final BundleContext bundleContext) {
     nonNull(bundleContext, "bundle context");
 
     return new OSGiServiceRegistry(bundleContext);

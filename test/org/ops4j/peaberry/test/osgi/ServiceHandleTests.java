@@ -18,9 +18,7 @@ package org.ops4j.peaberry.test.osgi;
 
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
-import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
-import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
@@ -76,17 +74,14 @@ public class ServiceHandleTests
   WordService consumerB;
 
   @Test(enabled = false)
-  public static void setup(final Binder binder,
-      final BundleContext bundleContext) {
+  public static void setup(final Binder binder, final BundleContext bundleContext) {
 
     // standard OSGi service injection module
     binder.install(osgiModule(bundleContext));
 
     // bind service implementations for registration
-    binder.bind(WordService.class).annotatedWith(
-        service().attributes("word=A").build()).to(WordServiceImplA.class);
-    binder.bind(WordService.class).annotatedWith(
-        service().attributes("word=B").build()).to(WordServiceImplB.class);
+    binder.bind(WordService.class).annotatedWith(service().attributes("word=A").build()).to(WordServiceImplA.class);
+    binder.bind(WordService.class).annotatedWith(service().attributes("word=B").build()).to(WordServiceImplB.class);
   }
 
   private void checkWord(final String word, final String result) {

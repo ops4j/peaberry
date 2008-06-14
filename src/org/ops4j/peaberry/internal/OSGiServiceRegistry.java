@@ -45,8 +45,7 @@ import com.google.inject.Inject;
 public final class OSGiServiceRegistry
     implements ServiceRegistry {
 
-  private static final Comparator<ServiceReference> SERVICE_COMPARATOR =
-      new ServiceComparator();
+  private static final Comparator<ServiceReference> SERVICE_COMPARATOR = new ServiceComparator();
 
   /**
    * Current bundle context, used to interrogate the registry.
@@ -61,8 +60,7 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T> Iterator<T> lookup(final Class<? extends T> type,
-      final String filter) {
+  public <T> Iterator<T> lookup(final Class<? extends T> type, final String filter) {
 
     /*
      * This is just a quick proof-of-concept implementation, it doesn't track
@@ -106,8 +104,7 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T, S extends T> Handle<T> add(final S service,
-      final Map<String, ?> attributes) {
+  public <T, S extends T> Handle<T> add(final S service, final Map<String, ?> attributes) {
 
     nonNull(service, "service");
 
@@ -138,8 +135,7 @@ public final class OSGiServiceRegistry
     }
 
     final ServiceRegistration registration =
-        bundleContext.registerService(interfaces, service,
-            new Hashtable<String, Object>(attributes));
+        bundleContext.registerService(interfaces, service, new Hashtable<String, Object>(attributes));
 
     return new Handle<T>() {
 

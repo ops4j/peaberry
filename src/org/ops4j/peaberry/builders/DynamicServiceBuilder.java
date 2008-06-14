@@ -14,46 +14,15 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
-
-import com.google.inject.Provider;
+package org.ops4j.peaberry.builders;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface ServiceProxyBuilder<T> {
+public interface DynamicServiceBuilder<T>
+    extends FilteredServiceBuilder<T> {
 
-  public static final int FOREVER = Integer.MAX_VALUE;
+  FilteredServiceBuilder<T> leased(int seconds);
 
-  /**
-   * LDAP filter
-   * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
-   */
-  ServiceProxyBuilder<T> filter(String filter);
-
-  /**
-   * Custom service API
-   */
-  ServiceProxyBuilder<T> interfaces(Class<?>... interfaces);
-
-  /**
-   * Service lease period
-   */
-  ServiceProxyBuilder<T> leased(int seconds);
-
-  /**
-   * 
-   */
-  ServiceProxyBuilder<T> registry(ServiceRegistry registry);
-
-  /**
-   * 
-   */
-  Provider<T> one();
-
-  /**
-   * 
-   */
-  Provider<Iterable<T>> many();
+  FilteredServiceBuilder<T> constant();
 }

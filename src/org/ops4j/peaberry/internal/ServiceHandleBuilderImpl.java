@@ -16,9 +16,9 @@
 
 package org.ops4j.peaberry.internal;
 
-import org.ops4j.peaberry.ServiceHandleBuilder;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
+import org.ops4j.peaberry.builders.RegistrationProxyBuilder;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -27,23 +27,23 @@ import com.google.inject.Provider;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public class ServiceHandleBuilderImpl<T>
-    implements ServiceHandleBuilder<T> {
+    implements RegistrationProxyBuilder<T> {
 
   public ServiceHandleBuilderImpl(final Key<? extends T> key) {
   // TODO Auto-generated constructor stub
   }
 
-  public ServiceHandleBuilder<T> attributes(final String... attributes) {
+  public RegistrationProxyBuilder<T> attributes(final String... attributes) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public ServiceHandleBuilder<T> interfaces(final Class<?>... interfaces) {
+  public RegistrationProxyBuilder<T> interfaces(final Class<?>... interfaces) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public ServiceHandleBuilder<T> registry(final ServiceRegistry registry) {
+  public RegistrationProxyBuilder<T> registry(final ServiceRegistry registry) {
     // TODO Auto-generated method stub
     return this;
   }

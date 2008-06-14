@@ -16,8 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
-import org.ops4j.peaberry.ServiceProxyBuilder;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.builders.ServiceProxyBuilder;
 
 import com.google.inject.Provider;
 

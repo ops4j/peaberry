@@ -16,12 +16,8 @@
 
 package org.ops4j.peaberry.test.internal;
 
-import static org.ops4j.peaberry.util.ServiceBuilder.service;
-
 import java.lang.annotation.Annotation;
 
-import org.ops4j.peaberry.Service;
-import org.ops4j.peaberry.Service.Seconds;
 import org.testng.annotations.Test;
 
 /**
@@ -58,8 +54,7 @@ public final class AnnotationTests {
     assert annotation.equals(a);
     assert a.equals(annotation);
 
-    assert a.hashCode() == annotation.hashCode() : "Expected " + a.hashCode()
-        + ", got " + annotation.hashCode();
+    assert a.hashCode() == annotation.hashCode() : "Expected " + a.hashCode() + ", got " + annotation.hashCode();
   }
 
   public void checkServiceAnnotation() {
@@ -69,8 +64,8 @@ public final class AnnotationTests {
     checkAnnotation("plain", service().interfaces(new Class<?>[] {}).build());
     checkAnnotation("plain", service().lease(0).build());
 
-    checkAnnotation("detailed", service().attributes("a=X", "b=Y").filter(
-        "(&(lang=fr)(tz=utc))").interfaces(A.class, B.class).lease(42).build());
+    checkAnnotation("detailed", service().attributes("a=X", "b=Y").filter("(&(lang=fr)(tz=utc))").interfaces(A.class,
+        B.class).lease(42).build());
   }
 
   public void checkNotEquals() {

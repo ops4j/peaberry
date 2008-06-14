@@ -49,14 +49,12 @@ public final class ServiceFilterTests {
 
     checkFilter("(" + objectclass("A") + ")", null);
 
-    checkFilter("(&(" + objectclass("C") + ")(" + objectclass("A") + ")("
-        + objectclass("B") + "))", service().interfaces(C.class, A.class,
-        B.class).build());
+    checkFilter("(&(" + objectclass("C") + ")(" + objectclass("A") + ")(" + objectclass("B") + "))", service()
+        .interfaces(C.class, A.class, B.class).build());
 
-    checkFilter("(&(|(name=THIS)(name=THAT))(" + objectclass("A") + "))",
-        service().filter("|(name=THIS)(name=THAT)").build());
-
-    checkFilter("(OBJECTCLASS=TEST)", service().filter("OBJECTCLASS=TEST")
+    checkFilter("(&(|(name=THIS)(name=THAT))(" + objectclass("A") + "))", service().filter("|(name=THIS)(name=THAT)")
         .build());
+
+    checkFilter("(OBJECTCLASS=TEST)", service().filter("OBJECTCLASS=TEST").build());
   }
 }

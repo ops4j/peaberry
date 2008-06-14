@@ -36,8 +36,7 @@ public final class ServiceFilterFactory {
    * 
    * @return LDAP filter
    */
-  public static String getServiceFilter(final Service spec,
-      final Class<?> serviceType) {
+  public static String getServiceFilter(final Service spec, final Class<?> serviceType) {
 
     /*
      * STEP 1: default specification, just use service type

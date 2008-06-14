@@ -48,8 +48,7 @@ public final class LeasedServiceRegistry
    * {@inheritDoc}
    */
   @SuppressWarnings("unchecked")
-  public synchronized <T> Iterator<T> lookup(final Class<? extends T> type,
-      final String filter) {
+  public synchronized <T> Iterator<T> lookup(final Class<? extends T> type, final String filter) {
 
     final long now = System.currentTimeMillis();
     if (expireMillis < now) {
@@ -76,8 +75,7 @@ public final class LeasedServiceRegistry
   }
 
   // /CLOVER:OFF
-  public <T, S extends T> Handle<T> add(final S service,
-      final Map<String, ?> attributes) {
+  public <T, S extends T> Handle<T> add(final S service, final Map<String, ?> attributes) {
     return registry.add((T) service, attributes);
   } // /CLOVER:ON
 

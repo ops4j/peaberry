@@ -68,8 +68,7 @@ public final class OSGiTestNG
       // currently tests run inside one bundle, adding multiple test bundles
       // and scripting is something to be looked into for integration tests
       final String testcasesURL = "file:" + System.getProperty("testcases.jar");
-      final Bundle testBundle =
-          felix.getBundleContext().installBundle(testcasesURL);
+      final Bundle testBundle = felix.getBundleContext().installBundle(testcasesURL);
       testBundle.start();
 
       // enable support for OSGi classloading of testcase classes

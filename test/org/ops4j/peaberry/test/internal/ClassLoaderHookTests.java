@@ -17,7 +17,6 @@
 package org.ops4j.peaberry.test.internal;
 
 import static com.google.inject.internal.GuiceCodeGen.getClassLoader;
-import static org.ops4j.peaberry.Peaberry.nonDelegatingContainer;
 
 import org.testng.annotations.Test;
 

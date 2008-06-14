@@ -45,11 +45,9 @@ import com.google.inject.Provider;
  */
 public final class ServiceProviderFactory {
 
-  private static final String SERVICE_PROVIDER_DESCRIPTION =
-      "%s lookup(%s,\"%s\") from %s";
+  private static final String SERVICE_PROVIDER_DESCRIPTION = "%s lookup(%s,\"%s\") from %s";
 
-  private static final String HANDLE_PROVIDER_DESCRIPTION =
-      "%s register(%s,\"%s\") with %s";
+  private static final String HANDLE_PROVIDER_DESCRIPTION = "%s register(%s,\"%s\") with %s";
 
   // utility: instances not allowed
   private ServiceProviderFactory() {}
@@ -62,8 +60,7 @@ public final class ServiceProviderFactory {
    * 
    * @return {@link Service} {@link Provider} for the target
    */
-  public static <T> Provider<T> getServiceProvider(
-      final ServiceRegistry registry, final Key<? extends T> key) {
+  public static <T> Provider<T> getServiceProvider(final ServiceRegistry registry, final Key<? extends T> key) {
 
     nonNull(registry, "service registry");
     nonNull(key, "injection key");
@@ -107,8 +104,8 @@ public final class ServiceProviderFactory {
    * @return unary {@link Service} {@link Provider} for the target
    */
   @SuppressWarnings("unchecked")
-  private static <T> Provider<T> getUnaryProvider(final Service spec,
-      final ServiceRegistry registry, final Class clazz, final String filter) {
+  private static <T> Provider<T> getUnaryProvider(final Service spec, final ServiceRegistry registry,
+      final Class clazz, final String filter) {
 
     return new Provider() {
       public Object get() {
@@ -117,8 +114,7 @@ public final class ServiceProviderFactory {
 
       @Override
       public String toString() {
-        return String.format(SERVICE_PROVIDER_DESCRIPTION,
-            "UnaryServiceProvider", clazz, filter, registry);
+        return String.format(SERVICE_PROVIDER_DESCRIPTION, "UnaryServiceProvider", clazz, filter, registry);
       }
     };
   }
@@ -134,8 +130,8 @@ public final class ServiceProviderFactory {
    * @return multiple {@link Service} {@link Provider} for the target
    */
   @SuppressWarnings("unchecked")
-  private static <T> Provider<T> getMultiProvider(final Service spec,
-      final ServiceRegistry registry, final Class clazz, final String filter) {
+  private static <T> Provider<T> getMultiProvider(final Service spec, final ServiceRegistry registry,
+      final Class clazz, final String filter) {
 
     return new Provider() {
       public Iterable get() {
@@ -144,8 +140,7 @@ public final class ServiceProviderFactory {
 
       @Override
       public String toString() {
-        return String.format(SERVICE_PROVIDER_DESCRIPTION,
-            "MultiServiceProvider", clazz, filter, registry);
+        return String.format(SERVICE_PROVIDER_DESCRIPTION, "MultiServiceProvider", clazz, filter, registry);
       }
     };
   }
@@ -160,8 +155,7 @@ public final class ServiceProviderFactory {
    * @return registering {@link Service} {@link Provider} for the target
    */
   @SuppressWarnings("unchecked")
-  private static <T> Provider<T> getHandleProvider(
-      final ServiceRegistry registry, final Key serviceKey,
+  private static <T> Provider<T> getHandleProvider(final ServiceRegistry registry, final Key serviceKey,
       final Map<String, ?> attributes) {
 
     return new Provider() {
@@ -175,8 +169,7 @@ public final class ServiceProviderFactory {
 
       @Override
       public String toString() {
-        return String.format(HANDLE_PROVIDER_DESCRIPTION,
-            "ServiceHandleProvider", serviceKey, attributes, registry);
+        return String.format(HANDLE_PROVIDER_DESCRIPTION, "ServiceHandleProvider", serviceKey, attributes, registry);
       }
     };
   }

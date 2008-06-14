@@ -53,8 +53,7 @@ public final class Attributes {
      * (Java6 adds stringPropertyNames, but we're currently targeting Java5)
      */
     try {
-      for (final Enumeration<?> e = properties.propertyNames(); e
-          .hasMoreElements();) {
+      for (final Enumeration<?> e = properties.propertyNames(); e.hasMoreElements();) {
         final String key = (String) e.nextElement();
         attributes.put(key, properties.getProperty(key));
       }

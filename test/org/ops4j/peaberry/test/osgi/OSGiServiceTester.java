@@ -42,24 +42,22 @@ public abstract class OSGiServiceTester {
   @Inject
   ServiceRegistry registry;
 
-  static final Map<String, Handle<?>> handles =
-      new HashMap<String, Handle<?>>();
+  static final Map<String, Handle<?>> handles = new HashMap<String, Handle<?>>();
 
   protected void enableService(final String name) {
 
     final Properties properties = new Properties();
     properties.setProperty("name", name);
 
-    final Handle<SimpleService> handle =
-        registry.add((SimpleService) new SimpleService() {
-          public String check() {
-            // check service is still valid
-            if (handles.containsKey(name)) {
-              return name;
-            }
-            throw new ServiceUnavailableException();
-          }
-        }, attributes(properties));
+    final Handle<SimpleService> handle = registry.add((SimpleService) new SimpleService() {
+      public String check() {
+        // check service is still valid
+        if (handles.containsKey(name)) {
+          return name;
+        }
+        throw new ServiceUnavailableException();
+      }
+    }, attributes(properties));
 
     handles.put(name, handle);
 
@@ -92,8 +90,7 @@ public abstract class OSGiServiceTester {
     } catch (final ServiceUnavailableException e) {}
   }
 
-  protected void checkServices(final Iterable<SimpleService> services,
-      final String... names) {
+  protected void checkServices(final Iterable<SimpleService> services, final String... names) {
     int i = 0;
     for (final SimpleService service : services) {
       assert names.length > i : "More services than expected";

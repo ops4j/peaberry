@@ -16,10 +16,6 @@
 
 package org.ops4j.peaberry.test.osgi;
 
-import static org.ops4j.peaberry.Service.FOREVER;
-
-import org.ops4j.peaberry.Service;
-import org.ops4j.peaberry.Service.Seconds;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;

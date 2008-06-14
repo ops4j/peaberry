@@ -14,36 +14,19 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.builders;
 
-import org.ops4j.peaberry.ServiceWatcher.Handle;
-
-import com.google.inject.Provider;
+import java.util.Map;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface ServiceHandleBuilder<T> {
+public interface QualifiedRegistrationBuilder<T>
+    extends ScopedRegistrationBuilder<T> {
 
-  /**
-   * LDAP attributes, a sequence of "name=value" strings
-   * 
-   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
-   */
-  ServiceHandleBuilder<T> attributes(String... attributes);
+  // @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
 
-  /**
-   * Custom service API
-   */
-  ServiceHandleBuilder<T> interfaces(Class<?>... interfaces);
+  ScopedRegistrationBuilder<T> attributes(Map<String, ?> attributes);
 
-  /**
-   * 
-   */
-  ServiceHandleBuilder<T> registry(ServiceRegistry registry);
-
-  /**
-   * 
-   */
-  Provider<Handle<T>> handle();
+  ScopedRegistrationBuilder<T> interfaces(Class<?>... interfaces);
 }

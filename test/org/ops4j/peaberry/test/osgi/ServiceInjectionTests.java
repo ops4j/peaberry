@@ -21,8 +21,8 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Properties;
 
-import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
+import org.ops4j.peaberry.test.osgi.OSGiServiceTester.SimpleService;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;

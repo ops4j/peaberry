@@ -54,8 +54,7 @@ public final class ServiceTypeTests {
     assert unary : "Expected " + memberType + " to be unary";
 
     final Class<?> type = getServiceClass(memberType);
-    assert serviceType.equals(type) : "Expected " + serviceType + " got "
-        + type;
+    assert serviceType.equals(type) : "Expected " + serviceType + " got " + type;
   }
 
   private void multi(final Type memberType, final Class<?> serviceType) {
@@ -63,8 +62,7 @@ public final class ServiceTypeTests {
     assert multi : "Expected " + memberType + " to be multi";
 
     final Class<?> type = getServiceClass(memberType);
-    assert serviceType.equals(type) : "Expected " + serviceType + " got "
-        + type;
+    assert serviceType.equals(type) : "Expected " + serviceType + " got " + type;
   }
 
   @SuppressWarnings("unchecked")
@@ -77,12 +75,10 @@ public final class ServiceTypeTests {
     multi(new TypeLiteral<Iterable>() {}.getType(), Object.class);
     multi(new TypeLiteral<Iterable<?>>() {}.getType(), Object.class);
     multi(new TypeLiteral<Iterable<? super List>>() {}.getType(), Object.class);
-    multi(new TypeLiteral<Iterable<? extends String>>() {}.getType(),
-        String.class);
+    multi(new TypeLiteral<Iterable<? extends String>>() {}.getType(), String.class);
 
     multi(new TypeLiteral<Iterable<String>>() {}.getType(), String.class);
     multi(new TypeLiteral<Iterable<List<Iterable>>>() {}.getType(), List.class);
-    multi(new TypeLiteral<Iterable<Map<String, Iterable>>>() {}.getType(),
-        Map.class);
+    multi(new TypeLiteral<Iterable<Map<String, Iterable>>>() {}.getType(), Map.class);
   }
 }
