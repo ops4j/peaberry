@@ -17,12 +17,10 @@
 package org.ops4j.peaberry.test.internal;
 
 import static org.ops4j.peaberry.util.Attributes.attributes;
-import static org.ops4j.peaberry.util.ServiceBuilder.service;
 
 import java.util.Map;
 import java.util.Properties;
 
-import org.ops4j.peaberry.Service;
 import org.testng.annotations.Test;
 
 /**
@@ -50,9 +48,7 @@ public final class AttributeTests {
   }
 
   public void testAnnotationConverter() {
-    final Service service = service().attributes("a=b", "=", "c=d").build();
-
-    final Map<String, ?> attributes = attributes(service);
+    final Map<String, ?> attributes = attributes("a=b", "=", "c=d");
 
     assert attributes.get("a").equals("b");
     assert attributes.get("c").equals("d");

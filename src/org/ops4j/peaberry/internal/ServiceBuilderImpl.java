@@ -17,38 +17,54 @@
 package org.ops4j.peaberry.internal;
 
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceWatcher.Handle;
-import org.ops4j.peaberry.builders.RegistrationProxyBuilder;
+import org.ops4j.peaberry.builders.DynamicServiceBuilder;
+import org.ops4j.peaberry.builders.FilteredServiceBuilder;
+import org.ops4j.peaberry.builders.ScopedServiceBuilder;
+import org.ops4j.peaberry.builders.ServiceProxyBuilder;
 
-import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceHandleBuilderImpl<T>
-    implements RegistrationProxyBuilder<T> {
+public class ServiceBuilderImpl<T>
+    implements DynamicServiceBuilder<T> {
 
-  public ServiceHandleBuilderImpl(final Key<? extends T> key) {
+  public ServiceBuilderImpl(final Class<? extends T> target) {
   // TODO Auto-generated constructor stub
   }
 
-  public RegistrationProxyBuilder<T> attributes(final String... attributes) {
+  public ScopedServiceBuilder<T> filter(final String filter) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public RegistrationProxyBuilder<T> interfaces(final Class<?>... interfaces) {
+  public ScopedServiceBuilder<T> interfaces(final Class<?>... interfaces) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public RegistrationProxyBuilder<T> registry(final ServiceRegistry registry) {
+  public FilteredServiceBuilder<T> leased(final int seconds) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public Provider<Handle<T>> handle() {
+  public FilteredServiceBuilder<T> constant() {
+    // TODO Auto-generated method stub
+    return this;
+  }
+
+  public ServiceProxyBuilder<T> registry(final ServiceRegistry registry) {
+    // TODO Auto-generated method stub
+    return this;
+  }
+
+  public Provider<T> single() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public Provider<Iterable<T>> multiple() {
     // TODO Auto-generated method stub
     return null;
   }

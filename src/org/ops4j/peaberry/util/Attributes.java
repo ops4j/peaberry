@@ -76,7 +76,7 @@ public final class Attributes {
    * @param attributes sequence of name=value strings
    * @return type-safe map of service attributes
    */
-  public static Map<String, ?> attributes(final String[] names) {
+  public static Map<String, ?> attributes(final String... names) {
 
     final Map<String, Object> attributes = new HashMap<String, Object>();
     final Logger logger = Logger.getLogger(Attributes.class.getName());

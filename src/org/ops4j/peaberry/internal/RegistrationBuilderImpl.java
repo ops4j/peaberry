@@ -16,47 +16,43 @@
 
 package org.ops4j.peaberry.internal;
 
-import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.builders.ServiceProxyBuilder;
+import java.util.Map;
 
+import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceWatcher.Handle;
+import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
+import org.ops4j.peaberry.builders.RegistrationProxyBuilder;
+import org.ops4j.peaberry.builders.ScopedRegistrationBuilder;
+
+import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceProxyBuilderImpl<T>
-    implements ServiceProxyBuilder<T> {
+public class RegistrationBuilderImpl<T>
+    implements QualifiedRegistrationBuilder<T> {
 
-  public ServiceProxyBuilderImpl(final Class<? extends T> target) {
+  public RegistrationBuilderImpl(final Key<? extends T> key) {
   // TODO Auto-generated constructor stub
   }
 
-  public ServiceProxyBuilder<T> filter(final String filter) {
+  public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> attributes) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public ServiceProxyBuilder<T> interfaces(final Class<?>... interfaces) {
+  public ScopedRegistrationBuilder<T> interfaces(final Class<?>... interfaces) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public ServiceProxyBuilder<T> leased(final int seconds) {
+  public RegistrationProxyBuilder<T> registry(final ServiceRegistry registry) {
     // TODO Auto-generated method stub
     return this;
   }
 
-  public ServiceProxyBuilder<T> registry(final ServiceRegistry registry) {
-    // TODO Auto-generated method stub
-    return this;
-  }
-
-  public Provider<T> one() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public Provider<Iterable<T>> many() {
+  public Provider<Handle<T>> handle() {
     // TODO Auto-generated method stub
     return null;
   }
