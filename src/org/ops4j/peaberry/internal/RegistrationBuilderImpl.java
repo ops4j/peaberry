@@ -42,11 +42,6 @@ public class RegistrationBuilderImpl<T>
     return this;
   }
 
-  public ScopedRegistrationBuilder<T> interfaces(final Class<?>... interfaces) {
-    // TODO Auto-generated method stub
-    return this;
-  }
-
   public RegistrationProxyBuilder<T> registry(final ServiceRegistry registry) {
     // TODO Auto-generated method stub
     return this;

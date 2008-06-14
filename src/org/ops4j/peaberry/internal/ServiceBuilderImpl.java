@@ -34,22 +34,17 @@ public class ServiceBuilderImpl<T>
   // TODO Auto-generated constructor stub
   }
 
-  public ScopedServiceBuilder<T> filter(final String filter) {
-    // TODO Auto-generated method stub
-    return this;
-  }
-
-  public ScopedServiceBuilder<T> interfaces(final Class<?>... interfaces) {
-    // TODO Auto-generated method stub
-    return this;
-  }
-
   public FilteredServiceBuilder<T> leased(final int seconds) {
     // TODO Auto-generated method stub
     return this;
   }
 
   public FilteredServiceBuilder<T> constant() {
+    // TODO Auto-generated method stub
+    return this;
+  }
+
+  public ScopedServiceBuilder<T> filter(final String filter) {
     // TODO Auto-generated method stub
     return this;
   }

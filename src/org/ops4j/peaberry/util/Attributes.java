@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.util;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,7 +74,7 @@ public final class Attributes {
   /**
    * Converts LDAP names to a type-safe attribute map.
    * 
-   * @param attributes sequence of name=value strings
+   * @param names sequence of name=value strings
    * @return type-safe map of service attributes
    */
   public static Map<String, ?> attributes(final String... names) {
@@ -91,5 +92,15 @@ public final class Attributes {
     }
 
     return attributes;
+  }
+
+  public static Map<String, ?> objectclass(final Class<?>... interfaces) {
+    final String[] objectclass = new String[interfaces.length];
+
+    for (int i = 0; i < interfaces.length; i++) {
+      objectclass[i] = interfaces[i].getName();
+    }
+
+    return Collections.singletonMap("objectclass", objectclass);
   }
 }

@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.builders;
-
-import java.util.Map;
+package org.ops4j.peaberry.util;
 
 /**
+ * Collection of utility methods for dealing with service filters.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface QualifiedRegistrationBuilder<T>
-    extends ScopedRegistrationBuilder<T> {
+public final class Filter {
 
-  // @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
+  // instances not allowed
+  private Filter() {}
 
-  ScopedRegistrationBuilder<T> attributes(Map<String, ?> attributes);
+  public static String objectclass(final Class<?>... interfaces) {
+    final StringBuilder filter = new StringBuilder();
+
+    for (final Class<?> i : interfaces) {
+      filter.append("(objectclass=");
+      filter.append(i.getName());
+      filter.append(')');
+    }
+
+    if (interfaces.length > 1) {
+      filter.insert(0, "(&");
+      filter.append(')');
+    }
+
+    return filter.toString();
+  }
 }

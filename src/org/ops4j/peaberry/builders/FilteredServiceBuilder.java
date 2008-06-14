@@ -25,6 +25,4 @@ public interface FilteredServiceBuilder<T>
   // @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
 
   ScopedServiceBuilder<T> filter(String filter);
-
-  ScopedServiceBuilder<T> interfaces(Class<?>... interfaces);
 }
