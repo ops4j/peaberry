@@ -21,7 +21,6 @@ import static org.ops4j.peaberry.Peaberry.osgiModule;
 import java.lang.reflect.Method;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.testng.ISuite;
 import org.testng.ITestRunnerFactory;
 import org.testng.TestRunner;
@@ -49,7 +48,6 @@ public final class OSGiTestRunnerFactory
   }
 
   public TestRunner newTestRunner(final ISuite suite, final XmlTest test) {
-
     GuiceObjectFactory.setInjector(null);
 
     if (suite.getName().startsWith("OSGi")) {
@@ -62,8 +60,8 @@ public final class OSGiTestRunnerFactory
         } catch (final ClassNotFoundException e) {}
       }
 
-      // create custom injector for each testcase in turn
-      GuiceObjectFactory.setInjector(getTestInjector(test));
+      // create custom injector for each OSGi testcase in turn
+      GuiceObjectFactory.setInjector(getOSGiTestInjector(test));
     }
 
     final TestRunner runner = new TestRunner(suite, test, false);
@@ -72,37 +70,24 @@ public final class OSGiTestRunnerFactory
     return runner;
   }
 
-  private Injector getTestInjector(final XmlTest test) {
-
+  private Injector getOSGiTestInjector(final XmlTest test) {
     return Guice.createInjector(new Module() {
 
       @SuppressWarnings("unchecked")
       public void configure(final Binder binder) {
 
-        boolean manualSetup = false;
         for (final XmlClass xmlClazz : test.getXmlClasses()) {
           final Class clazz = xmlClazz.getSupportClass();
 
-          // this forces guice to inject our testcase
-          binder.bind(clazz);
-
-          // look for a custom setup method (with its own bindings)
-          Method setup;
           try {
-            setup = clazz.getMethod("setup", Binder.class, BundleContext.class);
-            manualSetup = true;
-            try {
-              setup.invoke(null, binder, testBundle.getBundleContext());
-            } catch (final Exception e) {
-              e.printStackTrace();
-            }
-          } catch (final NoSuchMethodException e) {}
+            final Method configure = clazz.getMethod("configure", Binder.class);
+            configure.invoke(null, binder);
+          } catch (final Exception e) {
+            e.printStackTrace();
+          }
         }
 
-        if (!manualSetup) {
-          // no custom setup, just use the standard OSGi module
-          binder.install(osgiModule(testBundle.getBundleContext()));
-        }
+        binder.install(osgiModule(testBundle.getBundleContext()));
       }
     });
   }

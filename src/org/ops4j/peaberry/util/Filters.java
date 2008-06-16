@@ -21,10 +21,10 @@ package org.ops4j.peaberry.util;
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class Filter {
+public final class Filters {
 
   // instances not allowed
-  private Filter() {}
+  private Filters() {}
 
   /**
    * Convert service API to the appropriate OBJECTCLASS filter.

@@ -16,17 +16,21 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static com.google.inject.name.Names.named;
 import static java.util.Collections.singletonMap;
-import static org.ops4j.peaberry.Peaberry.osgiModule;
+import static org.ops4j.peaberry.Peaberry.registration;
+import static org.ops4j.peaberry.Peaberry.service;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
-import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
 import com.google.inject.Inject;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
 
 /**
  * Test service registration using {@link ServiceWatcher} interface.
@@ -58,30 +62,32 @@ public class ServiceHandleTests
   }
 
   @Inject
-  @Service(attributes = "word=A")
-  Handle<WordService> producerA;
+  Handle<WordServiceImplA> producerA;
 
   @Inject
-  @Service(attributes = "word=B")
-  Handle<WordService> producerB;
+  Handle<WordServiceImplB> producerB;
 
   @Inject
-  @Service(filter = "word=A")
+  @Named("A")
   WordService consumerA;
 
   @Inject
-  @Service(filter = "word=B")
+  @Named("B")
   WordService consumerB;
 
   @Test(enabled = false)
-  public static void setup(final Binder binder, final BundleContext bundleContext) {
+  @SuppressWarnings("serial")
+  public static void configure(final Binder binder) {
 
-    // standard OSGi service injection module
-    binder.install(osgiModule(bundleContext));
+    binder.bind(new TypeLiteral<Handle<WordServiceImplA>>() {}).toProvider(
+        registration(Key.get(WordServiceImplA.class)).attributes("word=A").handle());
+    binder.bind(new TypeLiteral<Handle<WordServiceImplB>>() {}).toProvider(
+        registration(Key.get(WordServiceImplB.class)).attributes("word=B").handle());
 
-    // bind service implementations for registration
-    binder.bind(WordService.class).annotatedWith(service().attributes("word=A").build()).to(WordServiceImplA.class);
-    binder.bind(WordService.class).annotatedWith(service().attributes("word=B").build()).to(WordServiceImplB.class);
+    binder.bind(WordService.class).annotatedWith(named("A")).toProvider(
+        service(WordService.class).filter("word=A").single());
+    binder.bind(WordService.class).annotatedWith(named("B")).toProvider(
+        service(WordService.class).filter("word=B").single());
   }
 
   private void checkWord(final String word, final String result) {

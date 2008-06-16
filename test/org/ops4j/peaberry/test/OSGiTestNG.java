@@ -43,16 +43,16 @@ public final class OSGiTestNG
     extends TestNG {
 
   @Override
-  @SuppressWarnings("unchecked")
   public void run() {
 
     System.out.println("=====================");
     System.out.println("Start Felix container");
     System.out.println("=====================");
 
+    @SuppressWarnings("unchecked")
     final Map config = new StringMap(loadConfigProperties(), false);
 
-    final List autoActivatorList = new ArrayList();
+    final List<Object> autoActivatorList = new ArrayList<Object>();
     autoActivatorList.add(new AutoActivator(config));
 
     final Felix felix = new Felix(config, autoActivatorList);
@@ -90,7 +90,6 @@ public final class OSGiTestNG
     }
   }
 
-  @SuppressWarnings("unchecked")
   public static void main(final String[] args) {
 
     // Enable detailed tracing when testing
@@ -100,6 +99,7 @@ public final class OSGiTestNG
     }
     rootLogger.setLevel(Level.FINE);
 
+    @SuppressWarnings("unchecked")
     final Map params = checkConditions(parseCommandLine(args));
 
     final TestNG testNG = new OSGiTestNG();

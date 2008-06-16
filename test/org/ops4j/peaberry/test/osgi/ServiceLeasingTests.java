@@ -16,9 +16,15 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static com.google.inject.name.Names.named;
+import static org.ops4j.peaberry.Peaberry.service;
+
 import org.testng.annotations.Test;
 
+import com.google.inject.Binder;
 import com.google.inject.Inject;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
 
 /**
  * Test leasing of services, both timed and static.
@@ -30,23 +36,22 @@ public class ServiceLeasingTests
     extends OSGiServiceTester {
 
   @Inject
-  @Service
   SimpleService unleasedService;
 
   @Inject
-  @Service(lease = @Seconds(2))
+  @Named("leased")
   SimpleService leasedService;
 
   @Inject
-  @Service(lease = @Seconds(2))
+  @Named("leased")
   Iterable<SimpleService> leasedServices;
 
   @Inject
-  @Service(lease = @Seconds(FOREVER))
+  @Named("static")
   SimpleService staticService;
 
   @Inject
-  @Service(lease = @Seconds(FOREVER))
+  @Named("static")
   Iterable<SimpleService> staticServices;
 
   public void unleasedUnaryService() {
@@ -123,5 +128,22 @@ public class ServiceLeasingTests
     checkServices(staticServices, "!");
     sleep(2200);
     checkServices(staticServices, "!");
+  }
+
+  @Test(enabled = false)
+  @SuppressWarnings("serial")
+  public static void configure(final Binder binder) {
+
+    binder.bind(SimpleService.class).toProvider(service(SimpleService.class).single());
+
+    binder.bind(SimpleService.class).annotatedWith(named("leased")).toProvider(
+        service(SimpleService.class).leased(2).single());
+    binder.bind(new TypeLiteral<Iterable<SimpleService>>() {}).annotatedWith(named("leased")).toProvider(
+        service(SimpleService.class).leased(2).multiple());
+
+    binder.bind(SimpleService.class).annotatedWith(named("static")).toProvider(
+        service(SimpleService.class).constant().single());
+    binder.bind(new TypeLiteral<Iterable<SimpleService>>() {}).annotatedWith(named("static")).toProvider(
+        service(SimpleService.class).constant().multiple());
   }
 }

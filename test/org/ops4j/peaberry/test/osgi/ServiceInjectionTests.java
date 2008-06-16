@@ -16,16 +16,19 @@
 
 package org.ops4j.peaberry.test.osgi;
 
+import static com.google.inject.name.Names.named;
+import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.attributes;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Properties;
 
 import org.ops4j.peaberry.ServiceWatcher.Handle;
-import org.ops4j.peaberry.test.osgi.OSGiServiceTester.SimpleService;
 import org.testng.annotations.Test;
 
+import com.google.inject.Binder;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  * Test service injection using automatic bindings.
@@ -37,7 +40,6 @@ public class ServiceInjectionTests
     extends OSGiServiceTester {
 
   @Inject
-  @Service
   SimpleService fieldService;
 
   final SimpleService ctorService;
@@ -48,16 +50,14 @@ public class ServiceInjectionTests
   }
 
   @Inject
-  public ServiceInjectionTests(@Service
-  final SimpleService service) {
+  public ServiceInjectionTests(final SimpleService service) {
     ctorService = service;
   }
 
   SimpleService setterService;
 
   @Inject
-  protected void setTestService(@Service
-  final SimpleService service) {
+  protected void setTestService(final SimpleService service) {
     setterService = service;
   }
 
@@ -68,19 +68,11 @@ public class ServiceInjectionTests
   }
 
   @Inject
-  @Service(interfaces = ExtendedService.class)
-  Object extendedService1;
+  @Named("extendedService")
+  Object extendedService;
 
   @Inject
-  @Service(interfaces = {
-      SimpleService.class, ExtendedService.class
-  })
-  Object extendedService2;
-
-  @Inject
-  @Service(interfaces = {
-      SimpleService.class, ExtendedService.class
-  })
+  @Named("extendedService")
   Iterable<?> extendedServices;
 
   public void checkInjection() {
@@ -98,17 +90,12 @@ public class ServiceInjectionTests
 
     enableExtendedService("B");
 
-    assert "B".equals(((SimpleService) extendedService1).check());
-    assert "B".equals(((SimpleService) extendedService2).check());
+    assert "B".equals(((SimpleService) extendedService).check());
 
-    assert extendedService1 instanceof SimpleService;
-    assert extendedService1 instanceof ExtendedService;
+    assert extendedService instanceof SimpleService;
+    assert extendedService instanceof ExtendedService;
 
-    assert extendedService2 instanceof SimpleService;
-    assert extendedService2 instanceof ExtendedService;
-
-    assert ((ExtendedService) extendedService1).encode() == "B".hashCode();
-    assert ((ExtendedService) extendedService2).encode() == "B".hashCode();
+    assert ((ExtendedService) extendedService).encode() == "B".hashCode();
 
     assert extendedServices.iterator().next() instanceof SimpleService;
     assert extendedServices.iterator().next() instanceof ExtendedService;
@@ -142,5 +129,17 @@ public class ServiceInjectionTests
     }, attributes(properties));
 
     handles.put(name, handle);
+  }
+
+  @Test(enabled = false)
+  public static void configure(final Binder binder) {
+
+    binder.bind(SimpleService.class).toProvider(service(SimpleService.class).single());
+
+    binder.bind(Object.class).annotatedWith(named("extendedService")).toProvider(
+        service(ExtendedService.class).single());
+
+    binder.bind(Iterable.class).annotatedWith(named("extendedService")).toProvider(
+        service(ExtendedService.class).multiple());
   }
 }

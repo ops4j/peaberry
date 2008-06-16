@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.test.internal;
 
 import static org.ops4j.peaberry.util.Attributes.attributes;
+import static org.ops4j.peaberry.util.Attributes.names;
 
 import java.util.Map;
 import java.util.Properties;
@@ -48,7 +49,7 @@ public final class AttributeTests {
   }
 
   public void testAnnotationConverter() {
-    final Map<String, ?> attributes = attributes("a=b", "=", "c=d");
+    final Map<String, ?> attributes = names("a=b", "=", "c=d");
 
     assert attributes.get("a").equals("b");
     assert attributes.get("c").equals("d");

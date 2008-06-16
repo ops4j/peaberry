@@ -45,7 +45,7 @@ public final class Peaberry {
    * @param clazz service interface
    * @return dynamic service builder
    */
-  public <T> DynamicServiceBuilder<T> service(final Class<? extends T> clazz) {
+  public static <T> DynamicServiceBuilder<T> service(final Class<? extends T> clazz) {
     nonNull(clazz, "service interface");
 
     return new DynamicServiceBuilderImpl<T>(clazz);
@@ -57,7 +57,7 @@ public final class Peaberry {
    * @param key implementation key
    * @return service registration builder
    */
-  public <T> QualifiedRegistrationBuilder<T> registration(final Key<? extends T> key) {
+  public static <T> QualifiedRegistrationBuilder<T> registration(final Key<? extends T> key) {
     nonNull(key, "implementation key");
 
     return new QualifiedRegistrationBuilderImpl<T>(key);

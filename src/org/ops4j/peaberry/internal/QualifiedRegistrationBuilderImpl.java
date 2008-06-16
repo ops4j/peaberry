@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
+import static org.ops4j.peaberry.util.Attributes.names;
+
 import java.util.Map;
 
 import org.ops4j.peaberry.ServiceRegistry;
@@ -45,12 +47,17 @@ public final class QualifiedRegistrationBuilderImpl<T>
     this.implementationKey = key;
   }
 
-  public ScopedRegistrationBuilder<T> attributes(Map<String, ?> customAttributes) {
+  public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> customAttributes) {
     attributes = customAttributes;
     return this;
   }
 
-  public RegistrationProxyBuilder<T> registry(Key<? extends ServiceRegistry> key) {
+  public ScopedRegistrationBuilder<T> attributes(final String... customNames) {
+    attributes = names(customNames);
+    return this;
+  }
+
+  public RegistrationProxyBuilder<T> registry(final Key<? extends ServiceRegistry> key) {
     registryKey = key;
     return this;
   }
@@ -62,8 +69,8 @@ public final class QualifiedRegistrationBuilderImpl<T>
       Injector injector;
 
       public Handle<T> get() {
-        ServiceRegistry registry = injector.getInstance(registryKey);
-        T serviceImplementation = injector.getInstance(implementationKey);
+        final ServiceRegistry registry = injector.getInstance(registryKey);
+        final T serviceImplementation = injector.getInstance(implementationKey);
 
         return registry.add(serviceImplementation, attributes);
       }

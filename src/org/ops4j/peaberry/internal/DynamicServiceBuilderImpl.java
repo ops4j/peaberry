@@ -50,7 +50,7 @@ public final class DynamicServiceBuilderImpl<T>
     this.clazz = clazz;
   }
 
-  public FilteredServiceBuilder<T> leased(int seconds) {
+  public FilteredServiceBuilder<T> leased(final int seconds) {
     leaseInSeconds = seconds;
     return this;
   }
@@ -60,12 +60,12 @@ public final class DynamicServiceBuilderImpl<T>
     return this;
   }
 
-  public ScopedServiceBuilder<T> filter(String customFilter) {
+  public ScopedServiceBuilder<T> filter(final String customFilter) {
     filter = customFilter;
     return this;
   }
 
-  public ServiceProxyBuilder<T> registry(Key<? extends ServiceRegistry> key) {
+  public ServiceProxyBuilder<T> registry(final Key<? extends ServiceRegistry> key) {
     registryKey = key;
     return this;
   }

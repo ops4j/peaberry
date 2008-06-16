@@ -37,4 +37,14 @@ public interface QualifiedRegistrationBuilder<T>
    * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
   ScopedRegistrationBuilder<T> attributes(Map<String, ?> attributes);
+
+  /**
+   * Apply the given sequence of LDAP names to the service registration.
+   * 
+   * @param names sequence of name=value strings
+   * @return registration EDSL builder
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
+   */
+  ScopedRegistrationBuilder<T> attributes(String... names);
 }
