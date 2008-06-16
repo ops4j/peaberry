@@ -20,7 +20,9 @@ import static com.google.inject.internal.base.Objects.nonNull;
 
 import org.ops4j.peaberry.builders.DynamicServiceBuilder;
 import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
+import org.ops4j.peaberry.internal.DynamicServiceBuilderImpl;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
+import org.ops4j.peaberry.internal.QualifiedRegistrationBuilderImpl;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Binder;
@@ -46,7 +48,7 @@ public final class Peaberry {
   public <T> DynamicServiceBuilder<T> service(final Class<? extends T> clazz) {
     nonNull(clazz, "service interface");
 
-    return null;// TODO
+    return new DynamicServiceBuilderImpl<T>(clazz);
   }
 
   /**
@@ -58,7 +60,7 @@ public final class Peaberry {
   public <T> QualifiedRegistrationBuilder<T> registration(final Key<? extends T> key) {
     nonNull(key, "implementation key");
 
-    return null;// TODO
+    return new QualifiedRegistrationBuilderImpl<T>(key);
   }
 
   /**

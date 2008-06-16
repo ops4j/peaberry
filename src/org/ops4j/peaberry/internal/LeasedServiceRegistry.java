@@ -18,6 +18,7 @@ package org.ops4j.peaberry.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.ops4j.peaberry.ServiceRegistry;
@@ -50,7 +51,7 @@ public final class LeasedServiceRegistry
    * {@inheritDoc}
    */
   @SuppressWarnings("unchecked")
-  public synchronized <T> Iterable<T> lookup(final Class<? extends T> type, final String filter) {
+  public synchronized <T> Iterator<T> lookup(final Class<? extends T> type, final String filter) {
     final long now = System.currentTimeMillis();
 
     // check rolling lease...
@@ -59,14 +60,14 @@ public final class LeasedServiceRegistry
 
       try {
         // deep cache, stopping at the first unavailable service
-        for (final T service : registry.lookup(type, filter)) {
-          freshServices.add(service);
+        for (final Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
+          freshServices.add(i.next());
         }
       } catch (final Exception e) {}
 
       // never cache empty results
       if (freshServices.size() == 0) {
-        return freshServices;
+        return freshServices.iterator();
       }
 
       services = freshServices;
@@ -75,7 +76,7 @@ public final class LeasedServiceRegistry
     // negative lease times are treated as 'forever', i.e. static lookup
     expireMillis = leaseMillis < 0 ? Long.MAX_VALUE : (now + leaseMillis);
 
-    return (Iterable<T>) services;
+    return (Iterator<T>) services.iterator();
   }
 
   // /CLOVER:OFF

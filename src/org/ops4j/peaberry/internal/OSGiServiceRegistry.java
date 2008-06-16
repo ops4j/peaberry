@@ -62,7 +62,7 @@ public final class OSGiServiceRegistry
   /**
    * {@inheritDoc}
    */
-  public <T> Iterable<T> lookup(final Class<? extends T> type, final String filter) {
+  public <T> Iterator<T> lookup(final Class<? extends T> type, final String filter) {
 
     /*
      * This is just a quick proof-of-concept implementation, it doesn't track
@@ -73,7 +73,7 @@ public final class OSGiServiceRegistry
     final ServiceReference[] services;
 
     try {
-      services = bundleContext.getServiceReferences(null, filter);
+      services = bundleContext.getServiceReferences(type.getName(), filter);
       if (services != null) {
         Arrays.sort(services, reverseOrder(SERVICE_COMPARATOR));
       }
@@ -81,28 +81,24 @@ public final class OSGiServiceRegistry
       throw new ServiceException(e);
     }
 
-    return new Iterable<T>() {
-      public Iterator<T> iterator() {
-        return new Iterator<T>() {
-          int i = 0;
+    return new Iterator<T>() {
+      int i = 0;
 
-          public boolean hasNext() {
-            return services != null && i < services.length;
-          }
+      public boolean hasNext() {
+        return services != null && i < services.length;
+      }
 
-          @SuppressWarnings("null")
-          public T next() {
-            try {
-              return type.cast(bundleContext.getService(services[i++]));
-            } catch (final Exception e) {
-              throw new ServiceUnavailableException(e);
-            }
-          }
+      @SuppressWarnings("null")
+      public T next() {
+        try {
+          return type.cast(bundleContext.getService(services[i++]));
+        } catch (final Exception e) {
+          throw new ServiceUnavailableException(e);
+        }
+      }
 
-          public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
+      public void remove() {
+        throw new UnsupportedOperationException();
       }
     };
   }
@@ -122,11 +118,6 @@ public final class OSGiServiceRegistry
     final Object objectclass = attributes.get(OBJECTCLASS);
     if (objectclass instanceof String[]) {
       interfaces = (String[]) objectclass;
-    } else if (objectclass instanceof String) {
-      interfaces = ((String) objectclass).split(",");
-      for (int i = 0; i < interfaces.length; i++) {
-        interfaces[i] = interfaces[i].trim();
-      }
     } else {
       final Collection<String> api = new HashSet<String>();
       final Class<?> clazz = service.getClass();
