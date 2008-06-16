@@ -18,13 +18,23 @@ package org.ops4j.peaberry.builders;
 
 import java.util.Map;
 
+import org.ops4j.peaberry.Peaberry;
+
 /**
+ * See the service registration EDSL examples at {@link Peaberry}.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface QualifiedRegistrationBuilder<T>
     extends ScopedRegistrationBuilder<T> {
 
-  // @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
-
+  /**
+   * Apply the given RFC-2253 LDAP attributes to the service registration.
+   * 
+   * @param attributes service attributes
+   * @return registration EDSL builder
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
+   */
   ScopedRegistrationBuilder<T> attributes(Map<String, ?> attributes);
 }

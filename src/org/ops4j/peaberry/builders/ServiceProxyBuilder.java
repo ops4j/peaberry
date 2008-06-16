@@ -16,14 +16,24 @@
 
 package org.ops4j.peaberry.builders;
 
+import org.ops4j.peaberry.Peaberry;
+
 import com.google.inject.Provider;
 
 /**
+ * See the dynamic service EDSL examples at {@link Peaberry}.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface ServiceProxyBuilder<T> {
 
+  /**
+   * @return single service provider
+   */
   Provider<T> single();
 
+  /**
+   * @return multiple service provider
+   */
   Provider<Iterable<T>> multiple();
 }

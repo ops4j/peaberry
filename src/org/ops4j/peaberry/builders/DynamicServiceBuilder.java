@@ -16,13 +16,28 @@
 
 package org.ops4j.peaberry.builders;
 
+import org.ops4j.peaberry.Peaberry;
+
 /**
+ * See the dynamic service EDSL examples at {@link Peaberry}.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface DynamicServiceBuilder<T>
     extends FilteredServiceBuilder<T> {
 
+  /**
+   * Periodically cache the result of each successful dynamic service lookup.
+   * 
+   * @param seconds lease period in seconds
+   * @return service EDSL builder
+   */
   FilteredServiceBuilder<T> leased(int seconds);
 
+  /**
+   * Statically cache the result of the first successful dynamic service lookup.
+   * 
+   * @return service EDSL builder
+   */
   FilteredServiceBuilder<T> constant();
 }

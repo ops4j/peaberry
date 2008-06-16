@@ -18,24 +18,26 @@ package org.ops4j.peaberry.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.ops4j.peaberry.ServiceRegistry;
 
 /**
- * Provides a leased {@link ServiceRegistry}.
+ * Wraps cache around an existing {@link ServiceRegistry} - assumes that only
+ * one service query will be used with a given {@link LeasedServiceRegistry}.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class LeasedServiceRegistry
     implements ServiceRegistry {
 
+  // configuration
   private final ServiceRegistry registry;
   private final long leaseMillis;
 
-  private volatile Collection<?> services;
-  private volatile Long expireMillis = 0L;
+  // internal cache
+  private Collection<?> services;
+  private long expireMillis = 0L;
 
   public LeasedServiceRegistry(final ServiceRegistry registry, final int seconds) {
     this.registry = registry;
@@ -48,21 +50,23 @@ public final class LeasedServiceRegistry
    * {@inheritDoc}
    */
   @SuppressWarnings("unchecked")
-  public synchronized <T> Iterator<T> lookup(final Class<? extends T> type, final String filter) {
-
+  public synchronized <T> Iterable<T> lookup(final Class<? extends T> type, final String filter) {
     final long now = System.currentTimeMillis();
+
+    // check rolling lease...
     if (expireMillis < now) {
-
       final Collection<T> freshServices = new ArrayList<T>();
-      for (final Iterator<T> i = registry.lookup(type, filter); i.hasNext();) {
-        try {
-          freshServices.add(i.next());
-        } catch (final Exception e) {}
-      }
 
-      // lease only starts when there are services
+      try {
+        // deep cache, stopping at the first unavailable service
+        for (final T service : registry.lookup(type, filter)) {
+          freshServices.add(service);
+        }
+      } catch (final Exception e) {}
+
+      // never cache empty results
       if (freshServices.size() == 0) {
-        return freshServices.iterator();
+        return freshServices;
       }
 
       services = freshServices;
@@ -71,7 +75,7 @@ public final class LeasedServiceRegistry
     // negative lease times are treated as 'forever', i.e. static lookup
     expireMillis = leaseMillis < 0 ? Long.MAX_VALUE : (now + leaseMillis);
 
-    return (Iterator<T>) services.iterator();
+    return (Iterable<T>) services;
   }
 
   // /CLOVER:OFF

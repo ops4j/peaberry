@@ -38,10 +38,10 @@ public final class Peaberry {
   private Peaberry() {}
 
   /**
-   * Start building a dynamic service proxy for the given interface.
+   * Start building a dynamic service provider for the given interface.
    * 
    * @param clazz service interface
-   * @return service proxy builder
+   * @return dynamic service builder
    */
   public <T> DynamicServiceBuilder<T> service(final Class<? extends T> clazz) {
     nonNull(clazz, "service interface");
@@ -53,7 +53,7 @@ public final class Peaberry {
    * Start building a service registration for the given implementation key.
    * 
    * @param key implementation key
-   * @return service handle builder
+   * @return service registration builder
    */
   public <T> QualifiedRegistrationBuilder<T> registration(final Key<? extends T> key) {
     nonNull(key, "implementation key");

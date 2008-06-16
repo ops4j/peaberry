@@ -16,8 +16,6 @@
 
 package org.ops4j.peaberry;
 
-import java.util.Iterator;
-
 /**
  * Simple abstraction of a dynamic service registry.
  * 
@@ -34,5 +32,5 @@ public interface ServiceRegistry
    * 
    * @return sequence of service instances
    */
-  <T> Iterator<T> lookup(Class<? extends T> clazz, String filter);
+  <T> Iterable<T> lookup(Class<? extends T> clazz, String filter);
 }

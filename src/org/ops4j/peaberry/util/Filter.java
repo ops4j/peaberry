@@ -26,15 +26,22 @@ public final class Filter {
   // instances not allowed
   private Filter() {}
 
+  /**
+   * Convert service API to the appropriate OBJECTCLASS filter.
+   * 
+   * @param interfaces service API
+   * @return RFC-1960 LDAP filter
+   */
   public static String objectclass(final Class<?>... interfaces) {
     final StringBuilder filter = new StringBuilder();
 
     for (final Class<?> i : interfaces) {
-      filter.append("(objectclass=");
+      filter.append("(OBJECTCLASS=");
       filter.append(i.getName());
       filter.append(')');
     }
 
+    // AND clauses together
     if (interfaces.length > 1) {
       filter.insert(0, "(&");
       filter.append(')');

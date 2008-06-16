@@ -16,14 +16,20 @@
 
 package org.ops4j.peaberry.builders;
 
+import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.ServiceWatcher.Handle;
 
 import com.google.inject.Provider;
 
 /**
+ * See the service registration EDSL examples at {@link Peaberry}.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface RegistrationProxyBuilder<T> {
 
+  /**
+   * @return service registration provider
+   */
   Provider<Handle<T>> handle();
 }

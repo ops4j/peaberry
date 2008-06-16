@@ -16,15 +16,12 @@
 
 package org.ops4j.peaberry.internal;
 
-import java.util.Iterator;
-
-import org.ops4j.peaberry.Service;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 
-import com.google.inject.cglib.proxy.Dispatcher;
-import com.google.inject.cglib.proxy.Enhancer;
 import com.google.inject.internal.GuiceCodeGen;
+import com.google.inject.internal.cglib.proxy.Dispatcher;
+import com.google.inject.internal.cglib.proxy.Enhancer;
 
 /**
  * Provide proxies that delegate to services found in a {@link ServiceRegistry}.
@@ -39,54 +36,33 @@ final class ServiceProxyFactory {
   /**
    * Create a proxy that delegates to a single service from the registry.
    * 
-   * @param spec custom service specification
    * @param registry dynamic service registry
    * @param clazz expected service class
    * @param filter RFC-1960 LDAP filter
+   * @param interfaces service API
    * 
    * @return proxy that delegates to the registry
    */
-  public static <T> T getUnaryServiceProxy(final Service spec, final ServiceRegistry registry,
-      final Class<? extends T> clazz, final String filter) {
+  public static <T> T getServiceProxy(final ServiceRegistry registry, final Class<? extends T> clazz,
+      final String filter, final Class<?>... interfaces) {
 
     final Enhancer proxy = GuiceCodeGen.newEnhancer(clazz);
     proxy.setCallback(new Dispatcher() {
       public Object loadObject() {
         try {
-          // use first matching service from registry
-          return registry.lookup(clazz, filter).next();
+          // use first matching service from the dynamic query
+          return registry.lookup(clazz, filter).iterator().next();
         } catch (final Exception e) {
           throw new ServiceUnavailableException(e);
         }
       }
     });
 
-    // apply custom service API to generated proxy
-    if (spec != null && spec.interfaces().length > 0) {
-      proxy.setInterfaces(spec.interfaces());
+    // apply custom service API
+    if (interfaces.length > 0) {
+      proxy.setInterfaces(interfaces);
     }
 
     return clazz.cast(proxy.create());
-  }
-
-  /**
-   * Create a proxy that delegates to a sequence of services from the registry.
-   * 
-   * @param spec custom service specification
-   * @param registry dynamic service registry
-   * @param clazz expected service class
-   * @param filter RFC-1960 LDAP filter
-   * 
-   * @return iterable proxy that delegates to the registry
-   */
-  public static <T> Iterable<T> getMultiServiceProxy(final Service spec, final ServiceRegistry registry,
-      final Class<? extends T> clazz, final String filter) {
-
-    // use anonymous class as proxy
-    return new Iterable<T>() {
-      public Iterator<T> iterator() {
-        return registry.lookup(clazz, filter);
-      }
-    };
   }
 }

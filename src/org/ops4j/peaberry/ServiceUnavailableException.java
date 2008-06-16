@@ -21,10 +21,10 @@ package org.ops4j.peaberry;
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public class ServiceUnavailableException
+public final class ServiceUnavailableException
     extends ServiceException {
 
-  private static final long serialVersionUID = 4246959463382711425L;
+  private static final long serialVersionUID = 9207041522801931804L;
 
   /**
    * Constructs a {@link ServiceUnavailableException} with no message or cause.

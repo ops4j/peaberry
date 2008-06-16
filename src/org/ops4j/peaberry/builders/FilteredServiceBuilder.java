@@ -16,13 +16,23 @@
 
 package org.ops4j.peaberry.builders;
 
+import org.ops4j.peaberry.Peaberry;
+
 /**
+ * See the dynamic service EDSL examples at {@link Peaberry}.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface FilteredServiceBuilder<T>
     extends ScopedServiceBuilder<T> {
 
-  // @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
-
+  /**
+   * Apply the given RFC-1960 LDAP filter to the dynamic service lookup.
+   * 
+   * @param filter RFC-1960 LDAP filter
+   * @return service EDSL builder
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
+   */
   ScopedServiceBuilder<T> filter(String filter);
 }
