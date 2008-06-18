@@ -17,7 +17,7 @@
 package org.ops4j.peaberry;
 
 /**
- * General purpose {@link Service} exception.
+ * General purpose service exception.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

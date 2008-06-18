@@ -17,7 +17,7 @@
 package org.ops4j.peaberry;
 
 /**
- * Exception thrown when a requested {@link Service} is not available.
+ * Exception thrown when a requested service is not available.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

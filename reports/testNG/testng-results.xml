@@ -1,0 +1,64 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="OSGi">
+    <groups>
+    </groups>
+    <test name="ServiceHandleTests">
+      <class name="org.ops4j.peaberry.test.osgi.ServiceHandleTests">
+        <test-method status="PASS" signature="testWiring()" name="testWiring" duration-ms="20" started-at="2008-06-18T12:45:41Z" finished-at="2008-06-18T12:45:41Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="ServiceRankingTests">
+      <class name="org.ops4j.peaberry.test.osgi.ServiceRankingTests">
+        <test-method status="PASS" signature="checkRanking()" name="checkRanking" duration-ms="10" started-at="2008-06-18T12:45:58Z" finished-at="2008-06-18T12:45:58Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="ServiceLeasingTests">
+      <class name="org.ops4j.peaberry.test.osgi.ServiceLeasingTests">
+        <test-method status="PASS" signature="staticMultiService()" name="staticMultiService" duration-ms="4408" started-at="2008-06-18T12:45:41Z" finished-at="2008-06-18T12:45:45Z">
+        </test-method>
+        <test-method status="PASS" signature="leasedMultiService()" name="leasedMultiService" duration-ms="6611" started-at="2008-06-18T12:45:52Z" finished-at="2008-06-18T12:45:58Z">
+        </test-method>
+        <test-method status="PASS" signature="staticUnaryService()" name="staticUnaryService" duration-ms="4413" started-at="2008-06-18T12:45:45Z" finished-at="2008-06-18T12:45:49Z">
+        </test-method>
+        <test-method status="PASS" signature="leasedUnaryService()" name="leasedUnaryService" duration-ms="2210" started-at="2008-06-18T12:45:49Z" finished-at="2008-06-18T12:45:52Z">
+        </test-method>
+        <test-method status="PASS" signature="unleasedUnaryService()" name="unleasedUnaryService" duration-ms="10" started-at="2008-06-18T12:45:58Z" finished-at="2008-06-18T12:45:58Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="ServiceScopingTests">
+      <class name="org.ops4j.peaberry.test.osgi.ServiceScopingTests">
+        <test-method status="PASS" signature="checkScoping()" name="checkScoping" duration-ms="13" started-at="2008-06-18T12:45:58Z" finished-at="2008-06-18T12:45:58Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="ServiceInjectionTests">
+      <class name="org.ops4j.peaberry.test.osgi.ServiceInjectionTests">
+        <test-method status="PASS" signature="checkInjection()" name="checkInjection" duration-ms="26" started-at="2008-06-18T12:45:41Z" finished-at="2008-06-18T12:45:41Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+  <suite name="Util">
+    <groups>
+    </groups>
+    <test name="AttributeTests">
+      <class name="org.ops4j.peaberry.test.util.AttributeTests">
+        <test-method status="PASS" signature="testNameConverter()" name="testNameConverter" duration-ms="16" started-at="2008-06-18T12:45:58Z" finished-at="2008-06-18T12:45:58Z">
+        </test-method>
+        <test-method status="PASS" signature="testPropertyConverter()" name="testPropertyConverter" duration-ms="16" started-at="2008-06-18T12:45:58Z" finished-at="2008-06-18T12:45:58Z">
+        </test-method>
+      </class>
+    </test>
+    <test name="FilterTests">
+      <class name="org.ops4j.peaberry.test.util.FilterTests">
+        <test-method status="PASS" signature="testObjectClassConverter()" name="testObjectClassConverter" duration-ms="33" started-at="2008-06-18T12:45:58Z" finished-at="2008-06-18T12:45:58Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

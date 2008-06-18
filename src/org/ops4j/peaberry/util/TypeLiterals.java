@@ -34,7 +34,7 @@ public final class TypeLiterals {
   private TypeLiterals() {}
 
   /**
-   * Create a TypeLiteral representing <code>Iterable<T></code>.
+   * Create a TypeLiteral representing <code>Iterable&lt;T&gt;</code>.
    * 
    * @param clazz service interface
    * @return Iterable<T> type
@@ -58,7 +58,7 @@ public final class TypeLiterals {
   }
 
   /**
-   * Create a TypeLiteral representing <code>Handle<T></code>.
+   * Create a TypeLiteral representing <code>Handle&lt;T&gt;</code>.
    * 
    * @param clazz service interface
    * @return Handle<T> type
