@@ -17,4 +17,9 @@
     <bnd files="testcases.bnd" classpath="${build}/test-classes"/>
   </target>
 
+  <target name="aopalliance">
+    <mkdir dir="${build}/dist"/>
+    <bnd files="aopalliance.bnd"/>
+  </target>
+
 </project>

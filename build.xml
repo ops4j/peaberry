@@ -9,11 +9,12 @@
   <import file="test.xml"/>
   <import file="doc.xml"/>
 
-  <target name="guice" depends="patch">
+  <target name="guice" depends="patch,aopalliance">
     <ant dir="${guice}" target="jar">
       <property name="module" value="com.google.inject"/>
-      <property name="version" value="patched"/>
+      <property name="version" value="${patch.version}"/>
     </ant>
+    <copy file="${guice.jar}" todir="${build}/dist"/>
   </target>
 
   <target name="test.guice" depends="guice">
@@ -48,7 +49,9 @@
     <delete dir="${guice}"/>
   </target>
 
-  <target name="dist" depends="peaberry"/>
+  <target name="dist" depends="peaberry">
+    <zip destfile="${build}/peaberry-${version}.zip" basedir="${build}/dist" update="true"/>
+  </target>
 
   <target name="test.dist" depends="dist,test.peaberry"/>
 

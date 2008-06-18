@@ -1,0 +1,18 @@
+
+Include-Resource:\
+ @${guice}/lib/aopalliance.jar
+
+-exportcontents: *
+
+-nouses: true
+
+-removeheaders:\
+ Bnd-LastModified,\
+ Ignore-Package,\
+ Include-Resource,\
+ Private-Package,\
+ Tool
+
+-output:\
+ ${aop.jar}
+
