@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.util;
 
+import static org.osgi.framework.Constants.OBJECTCLASS;
+
 /**
  * Collection of utility methods for dealing with service filters.
  * 
@@ -27,24 +29,21 @@ public final class Filters {
   private Filters() {}
 
   /**
-   * Convert service API to the appropriate OBJECTCLASS filter.
+   * Convert service API to the appropriate <i>objectClass</i> filter.
    * 
    * @param interfaces service API
    * @return RFC-1960 LDAP filter
    */
-  public static String objectclass(final Class<?>... interfaces) {
+  public static String objectClass(final Class<?>... interfaces) {
     final StringBuilder filter = new StringBuilder();
 
     for (final Class<?> i : interfaces) {
-      filter.append("(OBJECTCLASS=");
-      filter.append(i.getName());
-      filter.append(')');
+      filter.append('(' + OBJECTCLASS + '=' + i.getName() + ')');
     }
 
-    // AND clauses together
+    // must AND multiple clauses
     if (interfaces.length > 1) {
-      filter.insert(0, "(&");
-      filter.append(')');
+      return "(&" + filter + ')';
     }
 
     return filter.toString();

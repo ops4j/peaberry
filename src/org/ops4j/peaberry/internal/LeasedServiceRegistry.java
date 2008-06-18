@@ -24,12 +24,12 @@ import java.util.Map;
 import org.ops4j.peaberry.ServiceRegistry;
 
 /**
- * Wraps cache around an existing {@link ServiceRegistry} - assumes that only
- * one service query will be used with a given {@link LeasedServiceRegistry}.
+ * Wraps cache around an existing {@link ServiceRegistry}, assumes the same
+ * service query will always be used for each {@link LeasedServiceRegistry}.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class LeasedServiceRegistry
+final class LeasedServiceRegistry
     implements ServiceRegistry {
 
   // configuration
@@ -79,9 +79,10 @@ public final class LeasedServiceRegistry
     return (Iterator<T>) services.iterator();
   }
 
-  // /CLOVER:OFF
+  @SuppressWarnings("unused")
+  // /CLOVER:OFF - this will never be called as a leased registry is read-only
   public <T, S extends T> Handle<T> add(final S service, final Map<String, ?> attributes) {
-    return registry.add((T) service, attributes);
+    throw new UnsupportedOperationException();
   } // /CLOVER:ON
 
   @Override

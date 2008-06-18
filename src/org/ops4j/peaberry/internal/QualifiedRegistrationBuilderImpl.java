@@ -16,8 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.util.Attributes.names;
-
 import java.util.Map;
 
 import org.ops4j.peaberry.ServiceRegistry;
@@ -32,15 +30,20 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
+ * Default {@link QualifiedRegistrationBuilder} implementation.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class QualifiedRegistrationBuilderImpl<T>
     implements QualifiedRegistrationBuilder<T> {
 
+  // primary configuration item
   final Key<? extends T> implementationKey;
 
+  // default configuration
   Map<String, ?> attributes = null;
 
+  // use plain injection key to find default service registry implementation
   Key<? extends ServiceRegistry> registryKey = Key.get(ServiceRegistry.class);
 
   public QualifiedRegistrationBuilderImpl(final Key<? extends T> key) {
@@ -49,11 +52,6 @@ public final class QualifiedRegistrationBuilderImpl<T>
 
   public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> customAttributes) {
     attributes = customAttributes;
-    return this;
-  }
-
-  public ScopedRegistrationBuilder<T> attributes(final String... customNames) {
-    attributes = names(customNames);
     return this;
   }
 
@@ -69,9 +67,12 @@ public final class QualifiedRegistrationBuilderImpl<T>
       Injector injector;
 
       public Handle<T> get() {
+
+        // time to lookup the actual implementation bindings
         final ServiceRegistry registry = injector.getInstance(registryKey);
         final T serviceImplementation = injector.getInstance(implementationKey);
 
+        // register the implementation with the service registry
         return registry.add(serviceImplementation, attributes);
       }
     };

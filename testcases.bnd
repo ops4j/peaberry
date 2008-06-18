@@ -1,6 +1,9 @@
 
-Export-Package:\
- org.ops4j.peaberry.test.osgi
+Import-Package:\
+ !org.apache.felix.*,*
+
+Private-Package:\
+ org.ops4j.peaberry.test.*
 
 -nouses: true
 

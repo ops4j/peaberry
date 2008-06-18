@@ -18,12 +18,13 @@ package org.ops4j.peaberry.test.osgi;
 
 import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.service;
-import static org.ops4j.peaberry.util.Attributes.attributes;
-import static org.osgi.framework.Constants.OBJECTCLASS;
+import static org.ops4j.peaberry.util.Attributes.properties;
+import static org.ops4j.peaberry.util.Filters.objectClass;
 
 import java.util.Properties;
 
 import org.ops4j.peaberry.ServiceWatcher.Handle;
+import org.ops4j.peaberry.util.Attributes;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
@@ -31,13 +32,25 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 /**
- * Test service injection using automatic bindings.
+ * Test service injection of simple and extended interfaces.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceInjectionTests", suiteName = "OSGi")
 public class ServiceInjectionTests
     extends OSGiServiceTester {
+
+  @Test(enabled = false)
+  public static void configure(final Binder binder) {
+
+    binder.bind(SimpleService.class).toProvider(service(SimpleService.class).single());
+
+    binder.bind(Object.class).annotatedWith(named("extendedService")).toProvider(
+        service(ExtendedService.class).single());
+
+    binder.bind(Iterable.class).annotatedWith(named("extendedService")).toProvider(
+        service(ExtendedService.class).filter(objectClass(ExtendedService.class)).multiple());
+  }
 
   @Inject
   SimpleService fieldService;
@@ -73,7 +86,8 @@ public class ServiceInjectionTests
 
   @Inject
   @Named("extendedService")
-  Iterable<?> extendedServices;
+  @SuppressWarnings("unchecked")
+  Iterable extendedServices;
 
   public void checkInjection() {
     disableAllServices();
@@ -99,23 +113,21 @@ public class ServiceInjectionTests
 
     assert extendedServices.iterator().next() instanceof SimpleService;
     assert extendedServices.iterator().next() instanceof ExtendedService;
+
+    disableAllServices();
   }
 
   protected void enableExtendedService(final String name) {
     final Properties properties = new Properties();
 
     properties.setProperty("name", name);
-
-    properties.put(OBJECTCLASS, new String[] {
-        SimpleService.class.getName(), ExtendedService.class.getName()
-    });
+    properties.putAll(Attributes.objectClass(SimpleService.class, ExtendedService.class));
 
     final Handle<?> handle = registry.add(new ExtendedService() {
       public String check() {
         if (handles.containsKey(name)) {
           return name;
         }
-
         throw new RuntimeException("Missing Service");
       }
 
@@ -123,23 +135,10 @@ public class ServiceInjectionTests
         if (handles.containsKey(name)) {
           return name.hashCode();
         }
-
         throw new RuntimeException("Missing Service");
       }
-    }, attributes(properties));
+    }, properties(properties));
 
     handles.put(name, handle);
-  }
-
-  @Test(enabled = false)
-  public static void configure(final Binder binder) {
-
-    binder.bind(SimpleService.class).toProvider(service(SimpleService.class).single());
-
-    binder.bind(Object.class).annotatedWith(named("extendedService")).toProvider(
-        service(ExtendedService.class).single());
-
-    binder.bind(Iterable.class).annotatedWith(named("extendedService")).toProvider(
-        service(ExtendedService.class).multiple());
   }
 }

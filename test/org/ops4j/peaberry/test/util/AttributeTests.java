@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test.internal;
+package org.ops4j.peaberry.test.util;
 
-import static org.ops4j.peaberry.util.Attributes.attributes;
 import static org.ops4j.peaberry.util.Attributes.names;
+import static org.ops4j.peaberry.util.Attributes.properties;
 
 import java.util.Map;
 import java.util.Properties;
@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Test(testName = "AttributeTests", suiteName = "Internal")
+@Test(testName = "AttributeTests", suiteName = "Util")
 public final class AttributeTests {
 
   public void testPropertyConverter() {
@@ -39,7 +39,7 @@ public final class AttributeTests {
     properties.setProperty("string", "one");
     properties.put("integer", 1);
 
-    final Map<String, ?> attributes = attributes(properties);
+    final Map<?, ?> attributes = properties(properties);
 
     assert null == attributes.get(1);
     assert attributes.get("string").equals("one");
@@ -48,7 +48,7 @@ public final class AttributeTests {
     assert 2 == attributes.size();
   }
 
-  public void testAnnotationConverter() {
+  public void testNameConverter() {
     final Map<String, ?> attributes = names("a=b", "=", "c=d");
 
     assert attributes.get("a").equals("b");

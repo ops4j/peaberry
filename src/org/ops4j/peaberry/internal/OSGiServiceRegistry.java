@@ -16,8 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import static com.google.inject.internal.base.Objects.nonNull;
-import static java.util.Collections.reverseOrder;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Arrays;
@@ -47,7 +45,7 @@ import com.google.inject.Singleton;
 public final class OSGiServiceRegistry
     implements ServiceRegistry {
 
-  private static final Comparator<ServiceReference> SERVICE_COMPARATOR = new ServiceComparator();
+  static final Comparator<ServiceReference> BEST_SERVICE_COMPARATOR = new BestServiceComparator();
 
   /**
    * Current bundle context, used to interrogate the registry.
@@ -59,9 +57,6 @@ public final class OSGiServiceRegistry
     this.bundleContext = bundleContext;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public <T> Iterator<T> lookup(final Class<? extends T> type, final String filter) {
 
     /*
@@ -75,7 +70,7 @@ public final class OSGiServiceRegistry
     try {
       services = bundleContext.getServiceReferences(type.getName(), filter);
       if (services != null) {
-        Arrays.sort(services, reverseOrder(SERVICE_COMPARATOR));
+        Arrays.sort(services, BEST_SERVICE_COMPARATOR);
       }
     } catch (final Exception e) {
       throw new ServiceException(e);
@@ -103,19 +98,18 @@ public final class OSGiServiceRegistry
     };
   }
 
-  /**
-   * {@inheritDoc}
-   */
   public <T, S extends T> Handle<T> add(final S service, final Map<String, ?> attributes) {
 
-    nonNull(service, "service");
-
-    String[] interfaces;
+    final Hashtable<String, Object> dictionary = new Hashtable<String, Object>();
+    if (null != attributes) {
+      dictionary.putAll(attributes);
+    }
 
     /*
      * investigate various ways to determine service API...
      */
-    final Object objectclass = attributes.get(OBJECTCLASS);
+    String[] interfaces;
+    final Object objectclass = dictionary.get(OBJECTCLASS);
     if (objectclass instanceof String[]) {
       interfaces = (String[]) objectclass;
     } else {
@@ -132,7 +126,7 @@ public final class OSGiServiceRegistry
     }
 
     final ServiceRegistration registration =
-        bundleContext.registerService(interfaces, service, new Hashtable<String, Object>(attributes));
+        bundleContext.registerService(interfaces, service, dictionary);
 
     return new Handle<T>() {
 
@@ -145,8 +139,12 @@ public final class OSGiServiceRegistry
         }
       }
 
-      public void modify(final Map<String, ?> attrs) {
-        registration.setProperties(new Hashtable<String, Object>(attrs));
+      public void modify(final Map<String, ?> map) {
+        final Hashtable<String, Object> dict = new Hashtable<String, Object>();
+        if (null != map) {
+          dict.putAll(map);
+        }
+        registration.setProperties(dict);
       }
 
       public void remove() {

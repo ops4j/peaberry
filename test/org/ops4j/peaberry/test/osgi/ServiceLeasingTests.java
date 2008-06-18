@@ -18,12 +18,12 @@ package org.ops4j.peaberry.test.osgi;
 
 import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.service;
+import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 
 /**
@@ -34,6 +34,24 @@ import com.google.inject.name.Named;
 @Test(testName = "ServiceLeasingTests", suiteName = "OSGi")
 public class ServiceLeasingTests
     extends OSGiServiceTester {
+
+  @Test(enabled = false)
+  public static void configure(final Binder binder) {
+
+    binder.bind(SimpleService.class).toProvider(service(SimpleService.class).single());
+
+    binder.bind(SimpleService.class).annotatedWith(named("leased")).toProvider(
+        service(SimpleService.class).leased(2).single());
+
+    binder.bind(SimpleService.class).annotatedWith(named("static")).toProvider(
+        service(SimpleService.class).constant().single());
+
+    binder.bind(iterable(SimpleService.class)).annotatedWith(named("leased")).toProvider(
+        service(SimpleService.class).leased(2).multiple());
+
+    binder.bind(iterable(SimpleService.class)).annotatedWith(named("static")).toProvider(
+        service(SimpleService.class).constant().multiple());
+  }
 
   @Inject
   SimpleService unleasedService;
@@ -65,6 +83,7 @@ public class ServiceLeasingTests
     checkService(unleasedService, "B");
     disableService("B");
     missingService(unleasedService);
+    disableAllServices();
   }
 
   public void leasedUnaryService() {
@@ -79,6 +98,7 @@ public class ServiceLeasingTests
     checkService(leasedService, "B");
     disableService("B");
     missingService(leasedService);
+    disableAllServices();
   }
 
   public void leasedMultiService() {
@@ -98,6 +118,7 @@ public class ServiceLeasingTests
     checkServices(leasedServices, "!");
     sleep(2200);
     checkServices(leasedServices);
+    disableAllServices();
   }
 
   public void staticUnaryService() {
@@ -113,6 +134,7 @@ public class ServiceLeasingTests
     missingService(staticService);
     sleep(2200);
     missingService(staticService);
+    disableAllServices();
   }
 
   public void staticMultiService() {
@@ -128,22 +150,6 @@ public class ServiceLeasingTests
     checkServices(staticServices, "!");
     sleep(2200);
     checkServices(staticServices, "!");
-  }
-
-  @Test(enabled = false)
-  @SuppressWarnings("serial")
-  public static void configure(final Binder binder) {
-
-    binder.bind(SimpleService.class).toProvider(service(SimpleService.class).single());
-
-    binder.bind(SimpleService.class).annotatedWith(named("leased")).toProvider(
-        service(SimpleService.class).leased(2).single());
-    binder.bind(new TypeLiteral<Iterable<SimpleService>>() {}).annotatedWith(named("leased")).toProvider(
-        service(SimpleService.class).leased(2).multiple());
-
-    binder.bind(SimpleService.class).annotatedWith(named("static")).toProvider(
-        service(SimpleService.class).constant().single());
-    binder.bind(new TypeLiteral<Iterable<SimpleService>>() {}).annotatedWith(named("static")).toProvider(
-        service(SimpleService.class).constant().multiple());
+    disableAllServices();
   }
 }

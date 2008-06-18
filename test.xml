@@ -4,6 +4,8 @@
   <taskdef resource="testngtasks" classpath="${testng.jar}"/>
 
   <target name="test.peaberry" depends="testcases">
+    <delete dir="${build}/felix"/>
+
     <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.OSGiTestNG">
 
       <classfileset dir="${build}/test-classes" includes="**/*Tests.class" />
@@ -18,14 +20,12 @@
       <sysproperty key="felix.config.properties" value="file:test/felix.properties"/>
 
       <sysproperty key="build" value="${build}"/>
-      <sysproperty key="cmpn.jar" value="${cmpn.jar}"/>
 
+      <sysproperty key="cmpn.jar" value="${cmpn.jar}"/>
       <sysproperty key="aop.jar" value="${aop.jar}"/>
       <sysproperty key="guice.jar" value="${guice.jar}"/>
       <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>
       <sysproperty key="testcases.jar" value="${testcases.jar}"/>
-
-      <sysproperty key="runnerFactoryClass" value="org.ops4j.peaberry.test.OSGiRunnerFactory"/>
 
     </testng>
   </target>

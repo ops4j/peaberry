@@ -20,6 +20,8 @@ import static com.google.inject.name.Names.named;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
+import static org.ops4j.peaberry.util.Attributes.names;
+import static org.ops4j.peaberry.util.TypeLiterals.handle;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.ServiceWatcher;
@@ -29,7 +31,6 @@ import org.testng.annotations.Test;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 
 /**
@@ -38,8 +39,23 @@ import com.google.inject.name.Named;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceHandleTests", suiteName = "OSGi")
-public class ServiceHandleTests
-    extends OSGiServiceTester {
+public class ServiceHandleTests {
+
+  @Test(enabled = false)
+  public static void configure(final Binder binder) {
+
+    binder.bind(handle(WordService.class)).annotatedWith(named("A")).toProvider(
+        registration(Key.get(WordServiceImplA.class)).attributes(names("word=A")).handle());
+
+    binder.bind(handle(WordService.class)).annotatedWith(named("B")).toProvider(
+        registration(Key.get(WordServiceImplB.class)).attributes(names("word=B")).handle());
+
+    binder.bind(WordService.class).annotatedWith(named("A")).toProvider(
+        service(WordService.class).filter("word=A").single());
+
+    binder.bind(WordService.class).annotatedWith(named("B")).toProvider(
+        service(WordService.class).filter("word=B").single());
+  }
 
   protected interface WordService {
     String getWord();
@@ -62,10 +78,12 @@ public class ServiceHandleTests
   }
 
   @Inject
-  Handle<WordServiceImplA> producerA;
+  @Named("A")
+  Handle<WordService> producerA;
 
   @Inject
-  Handle<WordServiceImplB> producerB;
+  @Named("B")
+  Handle<WordService> producerB;
 
   @Inject
   @Named("A")
@@ -74,21 +92,6 @@ public class ServiceHandleTests
   @Inject
   @Named("B")
   WordService consumerB;
-
-  @Test(enabled = false)
-  @SuppressWarnings("serial")
-  public static void configure(final Binder binder) {
-
-    binder.bind(new TypeLiteral<Handle<WordServiceImplA>>() {}).toProvider(
-        registration(Key.get(WordServiceImplA.class)).attributes("word=A").handle());
-    binder.bind(new TypeLiteral<Handle<WordServiceImplB>>() {}).toProvider(
-        registration(Key.get(WordServiceImplB.class)).attributes("word=B").handle());
-
-    binder.bind(WordService.class).annotatedWith(named("A")).toProvider(
-        service(WordService.class).filter("word=A").single());
-    binder.bind(WordService.class).annotatedWith(named("B")).toProvider(
-        service(WordService.class).filter("word=B").single());
-  }
 
   private void checkWord(final String word, final String result) {
     assert word.equals(result) : "Expected " + word + ", got " + result;

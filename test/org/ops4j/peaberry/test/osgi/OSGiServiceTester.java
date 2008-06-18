@@ -16,7 +16,8 @@
 
 package org.ops4j.peaberry.test.osgi;
 
-import static org.ops4j.peaberry.util.Attributes.attributes;
+import static org.ops4j.peaberry.util.Attributes.properties;
+import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,8 +46,13 @@ public abstract class OSGiServiceTester {
   static final Map<String, Handle<?>> handles = new HashMap<String, Handle<?>>();
 
   protected void enableService(final String name) {
+    enableService(name, 0);
+  }
+
+  protected void enableService(final String name, final int ranking) {
 
     final Properties properties = new Properties();
+    properties.put(SERVICE_RANKING, ranking);
     properties.setProperty("name", name);
 
     final Handle<SimpleService> handle = registry.add((SimpleService) new SimpleService() {
@@ -57,7 +63,7 @@ public abstract class OSGiServiceTester {
         }
         throw new ServiceUnavailableException();
       }
-    }, attributes(properties));
+    }, properties(properties));
 
     handles.put(name, handle);
 

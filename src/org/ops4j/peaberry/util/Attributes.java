@@ -18,6 +18,7 @@ package org.ops4j.peaberry.util;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Collections.unmodifiableMap;
+import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public final class Attributes {
    * @param properties service properties
    * @return type-safe map of service attributes
    */
-  public static Map<String, ?> attributes(final Properties properties) {
+  public static Map<String, ?> properties(final Properties properties) {
 
     final Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -97,18 +98,18 @@ public final class Attributes {
   }
 
   /**
-   * Convert service API to the appropriate OBJECTCLASS attribute(s).
+   * Convert service API to the appropriate <i>objectClass</i> attribute(s).
    * 
    * @param interfaces service API
    * @return type-safe map of service attributes
    */
-  public static Map<String, ?> objectclass(final Class<?>... interfaces) {
+  public static Map<String, ?> objectClass(final Class<?>... interfaces) {
     final String[] objectclass = new String[interfaces.length];
 
     for (int i = 0; i < interfaces.length; i++) {
       objectclass[i] = interfaces[i].getName();
     }
 
-    return singletonMap("OBJECTCLASS", objectclass);
+    return singletonMap(OBJECTCLASS, objectclass);
   }
 }

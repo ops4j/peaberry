@@ -19,46 +19,52 @@ package org.ops4j.peaberry.internal;
 import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.osgi.framework.ServiceReference;
 
 /**
+ * OSGi service {@link Comparator} that puts <i>best</i> services first, using
+ * the definition of <i>best</i> service from the OSGi R4 core specification.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public final class ServiceComparator
-    implements Comparator<ServiceReference> {
+final class BestServiceComparator
+    implements Comparator<ServiceReference>, Serializable {
 
-  /**
-   * Compare {@link ServiceReference} according to R4 of the OSGi specification.
-   * We provide our own implementation here for use on R3 or earlier frameworks.
-   * 
-   * @see {@link ServiceReference#compareTo(Object)}
-   */
+  private static final long serialVersionUID = 1L;
+
   public int compare(final ServiceReference lhs, final ServiceReference rhs) {
 
     final long lhsId = getNumber(lhs, SERVICE_ID);
     final long rhsId = getNumber(rhs, SERVICE_ID);
 
+    // /CLOVER:OFF
     if (lhsId == rhsId) {
       return 0;
-    }
+    } // /CLOVER:ON
 
     final long lhsRanking = getNumber(lhs, SERVICE_RANKING);
     final long rhsRanking = getNumber(rhs, SERVICE_RANKING);
 
     if (lhsRanking == rhsRanking) {
-      return lhsId < rhsId ? 1 : -1;
+      // /CLOVER:OFF
+      return lhsId < rhsId ? -1 : 1;
+      // /CLOVER:ON
     }
 
-    return lhsRanking < rhsRanking ? -1 : 1;
+    return lhsRanking < rhsRanking ? 1 : -1;
   }
 
   private static long getNumber(final ServiceReference ref, final String key) {
     final Object value = ref.getProperty(key);
+    // /CLOVER:OFF
     if (value instanceof Number) {
+      // /CLOVER:ON
       return ((Number) value).longValue();
     }
+    // /CLOVER:OFF
     return 0L;
   }
 }

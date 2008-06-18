@@ -41,10 +41,10 @@ import com.google.inject.Module;
 public final class OSGiTestRunnerFactory
     implements ITestRunnerFactory {
 
-  final Bundle testBundle;
+  static volatile Bundle bundle;
 
-  public OSGiTestRunnerFactory(final Bundle testBundle) {
-    this.testBundle = testBundle;
+  public static void setBundle(final Bundle bundle) {
+    OSGiTestRunnerFactory.bundle = bundle;
   }
 
   public TestRunner newTestRunner(final ISuite suite, final XmlTest test) {
@@ -56,7 +56,7 @@ public final class OSGiTestRunnerFactory
         final String name = xmlClazz.getSupportClass().getName();
         try {
           // reload testcase class using test bundle
-          xmlClazz.setClass(testBundle.loadClass(name));
+          xmlClazz.setClass(bundle.loadClass(name));
         } catch (final ClassNotFoundException e) {}
       }
 
@@ -73,13 +73,10 @@ public final class OSGiTestRunnerFactory
   private Injector getOSGiTestInjector(final XmlTest test) {
     return Guice.createInjector(new Module() {
 
-      @SuppressWarnings("unchecked")
       public void configure(final Binder binder) {
-
         for (final XmlClass xmlClazz : test.getXmlClasses()) {
-          final Class clazz = xmlClazz.getSupportClass();
-
           try {
+            final Class<?> clazz = xmlClazz.getSupportClass();
             final Method configure = clazz.getMethod("configure", Binder.class);
             configure.invoke(null, binder);
           } catch (final Exception e) {
@@ -87,7 +84,7 @@ public final class OSGiTestRunnerFactory
           }
         }
 
-        binder.install(osgiModule(testBundle.getBundleContext()));
+        binder.install(osgiModule(bundle.getBundleContext()));
       }
     });
   }

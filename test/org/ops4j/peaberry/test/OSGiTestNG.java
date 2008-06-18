@@ -19,6 +19,7 @@ package org.ops4j.peaberry.test;
 import static org.apache.felix.main.Main.loadConfigProperties;
 import static org.testng.TestNGCommandLineArgs.parseCommandLine;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +32,12 @@ import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.main.AutoActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.testng.ITestRunnerFactory;
 import org.testng.TestNG;
 import org.testng.TestNGException;
 
 /**
- * OSGi version of TestNG launcher that runs tests inside the Felix framework.
+ * TestNG launcher that runs tests inside the Felix framework.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -69,13 +71,19 @@ public final class OSGiTestNG
       // and scripting is something to be looked into for integration tests
       final String testcasesURL = "file:" + System.getProperty("testcases.jar");
       final Bundle testBundle = felix.getBundleContext().installBundle(testcasesURL);
+
       testBundle.start();
 
       // enable support for OSGi classloading of testcase classes
-      setTestRunnerFactory(new OSGiTestRunnerFactory(testBundle));
+      final Class<?> runnerFactoryClz = testBundle.loadClass(OSGiTestRunnerFactory.class.getName());
+      final ITestRunnerFactory runnerFactory = (ITestRunnerFactory) runnerFactoryClz.newInstance();
+      final Method setBundleMethod = runnerFactoryClz.getMethod("setBundle", Bundle.class);
+      setBundleMethod.invoke(runnerFactory, testBundle);
+      setTestRunnerFactory(runnerFactory);
 
       // use Guice to create test instances
-      setObjectFactory(GuiceObjectFactory.class);
+      final Class<?> objectFactoryClz = testBundle.loadClass(GuiceObjectFactory.class.getName());
+      setObjectFactory(objectFactoryClz);
 
       super.run();
 

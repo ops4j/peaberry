@@ -16,10 +16,10 @@
 
 package org.ops4j.peaberry.internal;
 
-import java.util.Iterator;
+import static org.ops4j.peaberry.internal.ServiceProxyFactory.multiServiceProxy;
+import static org.ops4j.peaberry.internal.ServiceProxyFactory.singleServiceProxy;
 
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.DynamicServiceBuilder;
 import org.ops4j.peaberry.builders.FilteredServiceBuilder;
 import org.ops4j.peaberry.builders.ScopedServiceBuilder;
@@ -29,21 +29,23 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.internal.GuiceCodeGen;
-import com.google.inject.internal.cglib.proxy.Dispatcher;
-import com.google.inject.internal.cglib.proxy.Enhancer;
 
 /**
+ * Default {@link DynamicServiceBuilder} implementation.
+ * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public final class DynamicServiceBuilderImpl<T>
     implements DynamicServiceBuilder<T> {
 
+  // primary configuration item
   final Class<? extends T> clazz;
 
+  // default configuration
   int leaseInSeconds = 0;
   String filter = null;
 
+  // use plain injection key to find default service registry implementation
   Key<? extends ServiceRegistry> registryKey = Key.get(ServiceRegistry.class);
 
   public DynamicServiceBuilderImpl(final Class<? extends T> clazz) {
@@ -61,7 +63,12 @@ public final class DynamicServiceBuilderImpl<T>
   }
 
   public ScopedServiceBuilder<T> filter(final String customFilter) {
-    filter = customFilter;
+    // provide really basic normalisation
+    if (customFilter.charAt(0) == '(') {
+      filter = customFilter;
+    } else {
+      filter = '(' + customFilter + ')';
+    }
     return this;
   }
 
@@ -73,6 +80,7 @@ public final class DynamicServiceBuilderImpl<T>
   ServiceRegistry getServiceRegistry(final Injector injector) {
     final ServiceRegistry registry = injector.getInstance(registryKey);
     if (leaseInSeconds != 0) {
+      // wrap leased cache around primary registry implementation
       return new LeasedServiceRegistry(registry, leaseInSeconds);
     }
     return registry;
@@ -85,21 +93,7 @@ public final class DynamicServiceBuilderImpl<T>
       Injector injector;
 
       public T get() {
-        final ServiceRegistry registry = getServiceRegistry(injector);
-
-        final Enhancer proxy = GuiceCodeGen.newEnhancer(clazz);
-        proxy.setCallback(new Dispatcher() {
-          public Object loadObject() {
-            try {
-              // use first matching service from the dynamic query
-              return registry.lookup(clazz, filter).next();
-            } catch (final Exception e) {
-              throw new ServiceUnavailableException(e);
-            }
-          }
-        });
-
-        return clazz.cast(proxy.create());
+        return singleServiceProxy(getServiceRegistry(injector), clazz, filter);
       }
     };
   }
@@ -111,13 +105,7 @@ public final class DynamicServiceBuilderImpl<T>
       Injector injector;
 
       public Iterable<T> get() {
-        final ServiceRegistry registry = getServiceRegistry(injector);
-
-        return new Iterable<T>() {
-          public Iterator<T> iterator() {
-            return registry.lookup(clazz, filter);
-          }
-        };
+        return multiServiceProxy(getServiceRegistry(injector), clazz, filter);
       }
     };
   }
