@@ -1,11 +1,11 @@
 Index: src/com/google/inject/DefaultConstructionProxyFactory.java
 ===================================================================
---- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 516)
+--- src/com/google/inject/DefaultConstructionProxyFactory.java	(revision 532)
 +++ src/com/google/inject/DefaultConstructionProxyFactory.java	(working copy)
 @@ -16,9 +16,9 @@
-
+ 
  package com.google.inject;
-
+ 
 +import static com.google.inject.internal.GuiceCodeGen.newFastClass;
  import com.google.inject.internal.Errors;
  import com.google.inject.internal.ErrorsException;
@@ -24,7 +24,7 @@ Index: src/com/google/inject/DefaultConstructionProxyFactory.java
        @SuppressWarnings("unchecked")
 Index: src/com/google/inject/internal/GuiceFastClass.java
 ===================================================================
---- src/com/google/inject/internal/GuiceFastClass.java	(revision 516)
+--- src/com/google/inject/internal/GuiceFastClass.java	(revision 532)
 +++ src/com/google/inject/internal/GuiceFastClass.java	(working copy)
 @@ -1,39 +0,0 @@
 -/**
@@ -321,11 +321,11 @@ Name: svn:eol-style
 
 Index: src/com/google/inject/InjectorImpl.java
 ===================================================================
---- src/com/google/inject/InjectorImpl.java	(revision 516)
+--- src/com/google/inject/InjectorImpl.java	(revision 532)
 +++ src/com/google/inject/InjectorImpl.java	(working copy)
 @@ -17,6 +17,7 @@
  package com.google.inject;
-
+ 
  import static com.google.common.base.Preconditions.checkState;
 +import static com.google.inject.internal.GuiceCodeGen.newFastClass;
  import com.google.common.base.ReferenceType;
@@ -339,7 +339,7 @@ Index: src/com/google/inject/InjectorImpl.java
  import com.google.inject.internal.Keys;
  import com.google.inject.internal.MatcherAndConverter;
  import com.google.inject.internal.Nullability;
-@@ -893,7 +893,7 @@
+@@ -885,7 +885,7 @@
          };
        }
        else {
@@ -348,7 +348,7 @@ Index: src/com/google/inject/InjectorImpl.java
          final FastMethod fastMethod = fastClass.getMethod(method);
  
          methodInvoker = new MethodInvoker() {
-@@ -1111,7 +1111,7 @@
+@@ -1102,7 +1102,7 @@
        }
        finally {
          // Only remove the context if this call created it.
@@ -359,12 +359,12 @@ Index: src/com/google/inject/InjectorImpl.java
      else {
 Index: src/com/google/inject/ProxyFactory.java
 ===================================================================
---- src/com/google/inject/ProxyFactory.java	(revision 516)
+--- src/com/google/inject/ProxyFactory.java	(revision 532)
 +++ src/com/google/inject/ProxyFactory.java	(working copy)
 @@ -16,12 +16,12 @@
-
+ 
  package com.google.inject;
-
+ 
 +import static com.google.inject.internal.GuiceCodeGen.newEnhancer;
 +import static com.google.inject.internal.GuiceCodeGen.newFastClass;
  import com.google.common.collect.Lists;
@@ -374,9 +374,9 @@ Index: src/com/google/inject/ProxyFactory.java
 -import com.google.inject.internal.GuiceFastClass;
 -import com.google.inject.internal.GuiceNamingPolicy;
  import com.google.inject.internal.ReferenceCache;
+ import com.google.inject.internal.StackTraceElements;
  import java.lang.reflect.Constructor;
- import java.lang.reflect.InvocationTargetException;
-@@ -146,17 +146,13 @@
+@@ -147,17 +147,13 @@
      }
  
      // Create the proxied class.
@@ -395,7 +395,7 @@ Index: src/com/google/inject/ProxyFactory.java
  
      Class<?> proxied = enhancer.createClass();
  
-@@ -171,7 +167,7 @@
+@@ -172,7 +168,7 @@
     */
    private <T> ConstructionProxy<T> createConstructionProxy(Errors errors, final Class<?> clazz,
        final Constructor standardConstructor) throws ErrorsException {
@@ -406,12 +406,12 @@ Index: src/com/google/inject/ProxyFactory.java
      final List<Parameter<?>> parameters = Parameter.forConstructor(standardConstructor, errors);
 Index: src/com/google/inject/ConstructionContext.java
 ===================================================================
---- src/com/google/inject/ConstructionContext.java	(revision 516)
+--- src/com/google/inject/ConstructionContext.java	(revision 532)
 +++ src/com/google/inject/ConstructionContext.java	(working copy)
 @@ -16,12 +16,12 @@
-
+ 
  package com.google.inject;
-
+ 
 +import static com.google.inject.internal.GuiceCodeGen.newProxyInstance;
  import com.google.inject.internal.Errors;
  import com.google.inject.internal.ErrorsException;
@@ -421,7 +421,7 @@ Index: src/com/google/inject/ConstructionContext.java
 -import java.lang.reflect.Proxy;
  import java.util.ArrayList;
  import java.util.List;
-
+ 
 @@ -79,8 +79,7 @@
          = new DelegatingInvocationHandler<T>();
      invocationHandlers.add(invocationHandler);
@@ -434,7 +434,7 @@ Index: src/com/google/inject/ConstructionContext.java
  
 Index: build.xml
 ===================================================================
---- build.xml	(revision 516)
+--- build.xml	(revision 532)
 +++ build.xml	(working copy)
 @@ -21,8 +21,8 @@
        <zipfileset src="lib/build/asm-3.1.jar"/>
