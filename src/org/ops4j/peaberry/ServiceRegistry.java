@@ -16,23 +16,21 @@
 
 package org.ops4j.peaberry;
 
-import java.util.Iterator;
-
 /**
  * Simple abstraction of a dynamic service registry.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 public interface ServiceRegistry
-    extends ServiceWatcher {
+    extends ServiceScope {
 
   /**
-   * Lookup service instances from registry, constrained by LDAP filter.
+   * Lookup services from the registry, constrained by the LDAP filter.
    * 
    * @param clazz expected service class
    * @param filter RFC-1960 LDAP filter
    * 
-   * @return sequence of service instances
+   * @return sequence of imported service handles
    */
-  <T> Iterator<T> lookup(Class<? extends T> clazz, String filter);
+  <S, T extends S> Iterable<Import<S>> lookup(Class<T> clazz, String filter);
 }

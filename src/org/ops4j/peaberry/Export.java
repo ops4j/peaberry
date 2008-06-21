@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.builders;
+package org.ops4j.peaberry;
 
-import org.ops4j.peaberry.Export;
-import org.ops4j.peaberry.Peaberry;
-
-import com.google.inject.Provider;
+import java.util.Map;
 
 /**
- * See the service registration EDSL examples at {@link Peaberry}.
+ * Handle to a service instance exported in a {@link ServiceScope}.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface RegistrationProxyBuilder<T> {
+public interface Export<T>
+    extends Import<T> {
 
   /**
-   * @return exported service provider
+   * Modify the attributes associated with the exported service.
+   * 
+   * @param attributes service attributes
    */
-  Provider<Export<T>> export();
+  void modify(Map<String, ?> attributes);
+
+  /**
+   * Remove the exported service from the containing scope.
+   */
+  void remove();
 }

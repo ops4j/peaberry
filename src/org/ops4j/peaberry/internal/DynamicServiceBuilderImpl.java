@@ -16,9 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ServiceProxyFactory.multiServiceProxy;
-import static org.ops4j.peaberry.internal.ServiceProxyFactory.singleServiceProxy;
-
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.builders.DynamicServiceBuilder;
 import org.ops4j.peaberry.builders.FilteredServiceBuilder;
@@ -81,7 +78,7 @@ public final class DynamicServiceBuilderImpl<T>
     final ServiceRegistry registry = injector.getInstance(registryKey);
     if (leaseInSeconds != 0) {
       // wrap leased cache around primary registry implementation
-      return new LeasedServiceRegistry(registry, leaseInSeconds);
+      // return new LeasedServiceRegistry(registry, leaseInSeconds);
     }
     return registry;
   }
@@ -93,7 +90,7 @@ public final class DynamicServiceBuilderImpl<T>
       Injector injector;
 
       public T get() {
-        return singleServiceProxy(getServiceRegistry(injector), clazz, filter);
+        return null;// FIXME
       }
     };
   }
@@ -105,7 +102,7 @@ public final class DynamicServiceBuilderImpl<T>
       Injector injector;
 
       public Iterable<T> get() {
-        return multiServiceProxy(getServiceRegistry(injector), clazz, filter);
+        return null;// FIXME
       }
     };
   }

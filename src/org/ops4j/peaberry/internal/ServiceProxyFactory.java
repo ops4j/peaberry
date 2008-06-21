@@ -16,17 +16,18 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.lang.reflect.Proxy.newProxyInstance;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
+import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 
-import com.google.inject.internal.GuiceCodeGen;
-
 /**
- * Factory methods for various dynamic service proxies.
+ * Factory methods for various types of dynamic service proxies.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -35,45 +36,66 @@ final class ServiceProxyFactory {
   // instances not allowed
   private ServiceProxyFactory() {}
 
-  /**
-   * Create a single service proxy that dynamically delegates to the best match.
-   * 
-   * @param registry service registry
-   * @param clazz expected service class
-   * @param filter RFC-1960 LDAP filter
-   * @return proxy for single service
-   */
-  public static <T> T singleServiceProxy(final ServiceRegistry registry,
-      final Class<? extends T> clazz, final String filter) {
+  public static <S, T extends S> S serviceProxy(final Class<T> clazz, final Import<S> handle) {
 
-    return GuiceCodeGen.newProxyInstance(clazz, new InvocationHandler() {
+    final ClassLoader loader = clazz.getClassLoader();
+    final Class<?>[] interfaces = {clazz};
+
+    final Object proxy = newProxyInstance(loader, interfaces, new InvocationHandler() {
       public Object invoke(@SuppressWarnings("unused")
-      final Object proxy, final Method method, final Object[] args) {
+      final Object unused, final Method method, final Object[] args) {
         try {
-          // use first matching service from the dynamic query
-          final T service = registry.lookup(clazz, filter).next();
+          final Object service = handle.get();
           return method.invoke(service, args);
         } catch (final Exception e) {
           throw new ServiceUnavailableException(e);
+        } finally {
+          handle.unget();
         }
       }
     });
+
+    return clazz.cast(proxy);
   }
 
-  /**
-   * Create a multiple service proxy that iterates over all matching services.
-   * 
-   * @param registry service registry
-   * @param clazz expected service class
-   * @param filter RFC-1960 LDAP filter
-   * @return proxy for multiple services
-   */
-  public static <T> Iterable<T> multiServiceProxy(final ServiceRegistry registry,
-      final Class<? extends T> clazz, final String filter) {
+  public static <S, T extends S> Iterable<S> serviceProxies(final Class<T> clazz,
+      final Iterable<Import<S>> handles) {
 
-    return new Iterable<T>() {
-      public Iterator<T> iterator() {
-        return registry.lookup(clazz, filter);
+    return new Iterable<S>() {
+      public Iterator<S> iterator() {
+        return new Iterator<S>() {
+
+          private final Iterator<Import<S>> i = handles.iterator();
+
+          public boolean hasNext() {
+            return i.hasNext();
+          }
+
+          public S next() {
+            return serviceProxy(clazz, i.next());
+          }
+
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+        };
+      }
+    };
+  }
+
+  public static <S, T extends S> Import<S> dynamic(final ServiceRegistry registry,
+      final Class<T> clazz, final String filter) {
+
+    return new Import<S>() {
+      private Import<T> handle;
+
+      public S get() {
+        handle = registry.lookup(clazz, filter).iterator().next();
+        return handle.get();
+      }
+
+      public void unget() {
+        handle.unget();
       }
     };
   }

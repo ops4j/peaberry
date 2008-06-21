@@ -18,8 +18,8 @@ package org.ops4j.peaberry.internal;
 
 import java.util.Map;
 
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceWatcher.Handle;
 import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
 import org.ops4j.peaberry.builders.RegistrationProxyBuilder;
 import org.ops4j.peaberry.builders.ScopedRegistrationBuilder;
@@ -60,20 +60,20 @@ public final class QualifiedRegistrationBuilderImpl<T>
     return this;
   }
 
-  public Provider<Handle<T>> handle() {
-    return new Provider<Handle<T>>() {
+  public Provider<Export<T>> export() {
+    return new Provider<Export<T>>() {
 
       @Inject
       Injector injector;
 
-      public Handle<T> get() {
+      public Export<T> get() {
 
         // time to lookup the actual implementation bindings
         final ServiceRegistry registry = injector.getInstance(registryKey);
         final T serviceImplementation = injector.getInstance(implementationKey);
 
         // register the implementation with the service registry
-        return registry.add(serviceImplementation, attributes);
+        return registry.export(serviceImplementation, attributes);
       }
     };
   }

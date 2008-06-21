@@ -21,11 +21,11 @@ import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 
-import java.util.Iterator;
 import java.util.Map;
 
+import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceWatcher.Handle;
 import org.ops4j.peaberry.test.osgi.OSGiServiceTester.SimpleService;
 import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
@@ -56,7 +56,7 @@ public class ServiceScopingTests {
     binder.bind(SimpleService.class).toProvider(
         service(SimpleService.class).registry(registryKey).single());
 
-    binder.bind(Handle.class).toProvider(registration(serviceKey).registry(registryKey).handle());
+    binder.bind(Export.class).toProvider(registration(serviceKey).registry(registryKey).export());
   }
 
   protected static class CountingRegistryProvider
@@ -71,14 +71,15 @@ public class ServiceScopingTests {
     public ServiceRegistry get() {
       final ServiceRegistry osgiRegistry = osgiServiceRegistry(bundleContext);
       return new ServiceRegistry() {
-        public <T> Iterator<T> lookup(final Class<? extends T> clazz, final String filter) {
+        @SuppressWarnings("unchecked")
+        public <S, T extends S> Iterable<Import<S>> lookup(final Class<T> clazz, final String filter) {
           lookupCount++;
-          return osgiRegistry.lookup(clazz, filter);
+          return osgiRegistry.lookup((Class<S>) clazz, filter);
         }
 
-        public <T, S extends T> Handle<T> add(final S service, final Map<String, ?> attributes) {
+        public <S, T extends S> Export<S> export(final T service, final Map<String, ?> attributes) {
           watchCount++;
-          return osgiRegistry.add((T) service, attributes);
+          return osgiRegistry.export((S) service, attributes);
         }
       };
     }
@@ -109,7 +110,7 @@ public class ServiceScopingTests {
   public void checkScoping() {
 
     @SuppressWarnings("unchecked")
-    Handle handle = injector.getInstance(Handle.class);
+    Export handle = injector.getInstance(Export.class);
 
     assert service.check().equals("lookup:1,watch:1");
     assert service.check().equals("lookup:2,watch:1");
@@ -117,7 +118,7 @@ public class ServiceScopingTests {
 
     handle.remove();
 
-    handle = injector.getInstance(Handle.class);
+    handle = injector.getInstance(Export.class);
 
     assert service.check().equals("lookup:4,watch:2");
     assert service.check().equals("lookup:5,watch:2");

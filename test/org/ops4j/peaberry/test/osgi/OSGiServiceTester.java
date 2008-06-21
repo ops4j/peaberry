@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
-import org.ops4j.peaberry.ServiceWatcher.Handle;
 
 import com.google.inject.Inject;
 
@@ -43,7 +43,7 @@ public abstract class OSGiServiceTester {
   @Inject
   ServiceRegistry registry;
 
-  static final Map<String, Handle<?>> handles = new HashMap<String, Handle<?>>();
+  static final Map<String, Export<?>> handles = new HashMap<String, Export<?>>();
 
   protected void enableService(final String name) {
     enableService(name, 0);
@@ -55,7 +55,7 @@ public abstract class OSGiServiceTester {
     properties.put(SERVICE_RANKING, ranking);
     properties.setProperty("name", name);
 
-    final Handle<SimpleService> handle = registry.add((SimpleService) new SimpleService() {
+    final Export<SimpleService> handle = registry.export((SimpleService) new SimpleService() {
       public String check() {
         // check service is still valid
         if (handles.containsKey(name)) {
@@ -78,7 +78,7 @@ public abstract class OSGiServiceTester {
   }
 
   protected void disableAllServices() {
-    for (final Handle<?> handle : handles.values()) {
+    for (final Export<?> handle : handles.values()) {
       handle.remove();
     }
     handles.clear();

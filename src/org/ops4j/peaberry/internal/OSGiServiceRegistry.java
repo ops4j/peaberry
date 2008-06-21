@@ -26,6 +26,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -57,7 +59,7 @@ public final class OSGiServiceRegistry
     this.bundleContext = bundleContext;
   }
 
-  public <T> Iterator<T> lookup(final Class<? extends T> type, final String filter) {
+  public <S, T extends S> Iterable<Import<S>> lookup(final Class<T> type, final String filter) {
 
     /*
      * This is just a quick proof-of-concept implementation, it doesn't track
@@ -76,29 +78,42 @@ public final class OSGiServiceRegistry
       throw new ServiceException(e);
     }
 
-    return new Iterator<T>() {
-      int i = 0;
+    return new Iterable<Import<S>>() {
+      public Iterator<Import<S>> iterator() {
+        return new Iterator<Import<S>>() {
+          int i = 0;
 
-      public boolean hasNext() {
-        return services != null && i < services.length;
-      }
+          public boolean hasNext() {
+            return services != null && i < services.length;
+          }
 
-      @SuppressWarnings("null")
-      public T next() {
-        try {
-          return type.cast(bundleContext.getService(services[i++]));
-        } catch (final Exception e) {
-          throw new ServiceUnavailableException(e);
-        }
-      }
+          @SuppressWarnings("null")
+          public Import<S> next() {
+            final ServiceReference ref = services[i++];
+            try {
+              return new Import<S>() {
+                public S get() {
+                  return type.cast(bundleContext.getService(ref));
+                }
 
-      public void remove() {
-        throw new UnsupportedOperationException();
+                public void unget() {
+                  bundleContext.ungetService(ref);
+                }
+              };
+            } catch (final Exception e) {
+              throw new ServiceUnavailableException(e);
+            }
+          }
+
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+        };
       }
     };
   }
 
-  public <T, S extends T> Handle<T> add(final S service, final Map<String, ?> attributes) {
+  public <T, S extends T> Export<T> export(final S service, final Map<String, ?> attributes) {
 
     final Hashtable<String, Object> dictionary = new Hashtable<String, Object>();
     if (null != attributes) {
@@ -128,7 +143,7 @@ public final class OSGiServiceRegistry
     final ServiceRegistration registration =
         bundleContext.registerService(interfaces, service, dictionary);
 
-    return new Handle<T>() {
+    return new Export<T>() {
 
       @SuppressWarnings("unchecked")
       public T get() {
@@ -137,6 +152,12 @@ public final class OSGiServiceRegistry
         } catch (final IllegalStateException e) {
           return null;
         }
+      }
+
+      public void unget() {
+        try {
+          bundleContext.ungetService(registration.getReference());
+        } catch (final IllegalStateException e) {}
       }
 
       public void modify(final Map<String, ?> map) {

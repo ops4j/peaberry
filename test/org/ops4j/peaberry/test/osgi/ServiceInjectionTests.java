@@ -23,7 +23,7 @@ import static org.ops4j.peaberry.util.Filters.objectClass;
 
 import java.util.Properties;
 
-import org.ops4j.peaberry.ServiceWatcher.Handle;
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.util.Attributes;
 import org.testng.annotations.Test;
 
@@ -123,7 +123,7 @@ public class ServiceInjectionTests
     properties.setProperty("name", name);
     properties.putAll(Attributes.objectClass(SimpleService.class, ExtendedService.class));
 
-    final Handle<?> handle = registry.add(new ExtendedService() {
+    final Export<?> handle = registry.export(new ExtendedService() {
       public String check() {
         if (handles.containsKey(name)) {
           return name;

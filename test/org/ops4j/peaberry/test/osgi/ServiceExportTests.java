@@ -21,11 +21,11 @@ import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.names;
-import static org.ops4j.peaberry.util.TypeLiterals.handle;
+import static org.ops4j.peaberry.util.TypeLiterals.export;
 
+import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.ServiceScope;
 import org.ops4j.peaberry.ServiceUnavailableException;
-import org.ops4j.peaberry.ServiceWatcher;
-import org.ops4j.peaberry.ServiceWatcher.Handle;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
@@ -34,21 +34,21 @@ import com.google.inject.Key;
 import com.google.inject.name.Named;
 
 /**
- * Test service registration using {@link ServiceWatcher} interface.
+ * Test service registration using {@link ServiceScope} interface.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-@Test(testName = "ServiceHandleTests", suiteName = "OSGi")
-public class ServiceHandleTests {
+@Test(testName = "ServiceExportTests", suiteName = "OSGi")
+public class ServiceExportTests {
 
   @Test(enabled = false)
   public static void configure(final Binder binder) {
 
-    binder.bind(handle(WordService.class)).annotatedWith(named("A")).toProvider(
-        registration(Key.get(WordServiceImplA.class)).attributes(names("word=A")).handle());
+    binder.bind(export(WordService.class)).annotatedWith(named("A")).toProvider(
+        registration(Key.get(WordServiceImplA.class)).attributes(names("word=A")).export());
 
-    binder.bind(handle(WordService.class)).annotatedWith(named("B")).toProvider(
-        registration(Key.get(WordServiceImplB.class)).attributes(names("word=B")).handle());
+    binder.bind(export(WordService.class)).annotatedWith(named("B")).toProvider(
+        registration(Key.get(WordServiceImplB.class)).attributes(names("word=B")).export());
 
     binder.bind(WordService.class).annotatedWith(named("A")).toProvider(
         service(WordService.class).filter("word=A").single());
@@ -79,11 +79,11 @@ public class ServiceHandleTests {
 
   @Inject
   @Named("A")
-  Handle<WordService> producerA;
+  Export<WordService> producerA;
 
   @Inject
   @Named("B")
-  Handle<WordService> producerB;
+  Export<WordService> producerB;
 
   @Inject
   @Named("A")

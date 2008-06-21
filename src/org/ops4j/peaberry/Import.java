@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.builders;
-
-import org.ops4j.peaberry.Export;
-import org.ops4j.peaberry.Peaberry;
-
-import com.google.inject.Provider;
+package org.ops4j.peaberry;
 
 /**
- * See the service registration EDSL examples at {@link Peaberry}.
+ * Handle to a service instance imported from a {@link ServiceRegistry}.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface RegistrationProxyBuilder<T> {
+public interface Import<T> {
 
   /**
-   * @return exported service provider
+   * Start using the imported service instance.
+   * 
+   * @return service instance
+   * 
+   * @throws ServiceUnavailableException
    */
-  Provider<Export<T>> export();
+  T get();
+
+  /**
+   * Stop using the imported service instance.
+   */
+  void unget();
 }

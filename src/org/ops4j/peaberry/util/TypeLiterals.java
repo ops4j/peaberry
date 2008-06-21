@@ -19,7 +19,7 @@ package org.ops4j.peaberry.util;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import org.ops4j.peaberry.ServiceWatcher.Handle;
+import org.ops4j.peaberry.Export;
 
 import com.google.inject.TypeLiteral;
 
@@ -58,25 +58,25 @@ public final class TypeLiterals {
   }
 
   /**
-   * Create a TypeLiteral representing <code>Handle&lt;T&gt;</code>.
+   * Create a TypeLiteral representing <code>Export&lt;T&gt;</code>.
    * 
    * @param clazz service interface
-   * @return Handle<T> type
+   * @return Export<T> type
    */
   @SuppressWarnings("unchecked")
-  public static <T> TypeLiteral<Handle<? extends T>> handle(final Class<T> clazz) {
-    return (TypeLiteral<Handle<? extends T>>) TypeLiteral.get(new ParameterizedType() {
+  public static <T> TypeLiteral<Export<? extends T>> export(final Class<T> clazz) {
+    return (TypeLiteral<Export<? extends T>>) TypeLiteral.get(new ParameterizedType() {
 
       public Type[] getActualTypeArguments() {
         return new Type[] {clazz};
       }
 
       public Type getRawType() {
-        return Handle.class;
+        return Export.class;
       }
 
       public Type getOwnerType() {
-        return Handle.class.getEnclosingClass();
+        return null;
       }
     });
   }
