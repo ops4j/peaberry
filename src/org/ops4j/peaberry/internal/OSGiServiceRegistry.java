@@ -59,7 +59,7 @@ public final class OSGiServiceRegistry
     this.bundleContext = bundleContext;
   }
 
-  public <S, T extends S> Iterable<Import<S>> lookup(final Class<T> type, final String filter) {
+  public <T> Iterable<Import<T>> lookup(final Class<? extends T> type, final String filter) {
 
     /*
      * This is just a quick proof-of-concept implementation, it doesn't track
@@ -67,20 +67,21 @@ public final class OSGiServiceRegistry
      * implementation will be available soon.
      */
 
-    final ServiceReference[] services;
+    return new Iterable<Import<T>>() {
+      public Iterator<Import<T>> iterator() {
 
-    try {
-      services = bundleContext.getServiceReferences(type.getName(), filter);
-      if (services != null) {
-        Arrays.sort(services, BEST_SERVICE_COMPARATOR);
-      }
-    } catch (final Exception e) {
-      throw new ServiceException(e);
-    }
+        final ServiceReference[] services;
 
-    return new Iterable<Import<S>>() {
-      public Iterator<Import<S>> iterator() {
-        return new Iterator<Import<S>>() {
+        try {
+          services = bundleContext.getServiceReferences(type.getName(), filter);
+          if (services != null) {
+            Arrays.sort(services, BEST_SERVICE_COMPARATOR);
+          }
+        } catch (final Exception e) {
+          throw new ServiceException(e);
+        }
+
+        return new Iterator<Import<T>>() {
           int i = 0;
 
           public boolean hasNext() {
@@ -88,11 +89,11 @@ public final class OSGiServiceRegistry
           }
 
           @SuppressWarnings("null")
-          public Import<S> next() {
-            final ServiceReference ref = services[i++];
+          public Import<T> next() {
             try {
-              return new Import<S>() {
-                public S get() {
+              final ServiceReference ref = services[i++];
+              return new Import<T>() {
+                public T get() {
                   return type.cast(bundleContext.getService(ref));
                 }
 

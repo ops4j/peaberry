@@ -72,9 +72,9 @@ public class ServiceScopingTests {
       final ServiceRegistry osgiRegistry = osgiServiceRegistry(bundleContext);
       return new ServiceRegistry() {
         @SuppressWarnings("unchecked")
-        public <S, T extends S> Iterable<Import<S>> lookup(final Class<T> clazz, final String filter) {
+        public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz, final String filter) {
           lookupCount++;
-          return osgiRegistry.lookup((Class<S>) clazz, filter);
+          return osgiRegistry.lookup(clazz, filter);
         }
 
         public <S, T extends S> Export<S> export(final T service, final Map<String, ?> attributes) {
@@ -113,16 +113,14 @@ public class ServiceScopingTests {
     Export handle = injector.getInstance(Export.class);
 
     assert service.check().equals("lookup:1,watch:1");
-    assert service.check().equals("lookup:2,watch:1");
-    assert service.check().equals("lookup:3,watch:1");
+    assert service.check().equals("lookup:1,watch:1");
 
     handle.remove();
 
     handle = injector.getInstance(Export.class);
 
-    assert service.check().equals("lookup:4,watch:2");
-    assert service.check().equals("lookup:5,watch:2");
-    assert service.check().equals("lookup:6,watch:2");
+    assert service.check().equals("lookup:1,watch:2");
+    assert service.check().equals("lookup:1,watch:2");
 
     handle.remove();
   }

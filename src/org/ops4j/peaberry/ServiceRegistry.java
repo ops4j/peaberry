@@ -32,5 +32,5 @@ public interface ServiceRegistry
    * 
    * @return sequence of imported service handles
    */
-  <S, T extends S> Iterable<Import<S>> lookup(Class<T> clazz, String filter);
+  <T> Iterable<Import<T>> lookup(Class<? extends T> clazz, String filter);
 }

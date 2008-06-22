@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
@@ -36,7 +35,7 @@ final class ServiceProxyFactory {
   // instances not allowed
   private ServiceProxyFactory() {}
 
-  public static <S, T extends S> S serviceProxy(final Class<T> clazz, final Import<S> handle) {
+  public static <T> T serviceProxy(final Class<? extends T> clazz, final Import<T> handle) {
 
     final ClassLoader loader = clazz.getClassLoader();
     final Class<?>[] interfaces = {clazz};
@@ -58,20 +57,20 @@ final class ServiceProxyFactory {
     return clazz.cast(proxy);
   }
 
-  public static <S, T extends S> Iterable<S> serviceProxies(final Class<T> clazz,
-      final Iterable<Import<S>> handles) {
+  public static <T> Iterable<T> serviceProxies(final Class<? extends T> clazz,
+      final Iterable<Import<T>> handles) {
 
-    return new Iterable<S>() {
-      public Iterator<S> iterator() {
-        return new Iterator<S>() {
+    return new Iterable<T>() {
+      public Iterator<T> iterator() {
+        return new Iterator<T>() {
 
-          private final Iterator<Import<S>> i = handles.iterator();
+          private final Iterator<Import<T>> i = handles.iterator();
 
           public boolean hasNext() {
             return i.hasNext();
           }
 
-          public S next() {
+          public T next() {
             return serviceProxy(clazz, i.next());
           }
 
@@ -83,20 +82,21 @@ final class ServiceProxyFactory {
     };
   }
 
-  public static <S, T extends S> Import<S> dynamic(final ServiceRegistry registry,
-      final Class<T> clazz, final String filter) {
+  public static <T> T serviceProxy(final Class<? extends T> clazz, final Iterable<Import<T>> handles) {
 
-    return new Import<S>() {
+    return serviceProxy(clazz, new Import<T>() {
       private Import<T> handle;
 
-      public S get() {
-        handle = registry.lookup(clazz, filter).iterator().next();
+      public T get() {
+        handle = handles.iterator().next();
         return handle.get();
       }
 
       public void unget() {
-        handle.unget();
+        if (handle != null) {
+          handle.unget();
+        }
       }
-    };
+    });
   }
 }
