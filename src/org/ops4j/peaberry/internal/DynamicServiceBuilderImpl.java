@@ -63,7 +63,7 @@ public final class DynamicServiceBuilderImpl<T>
   }
 
   public ScopedServiceBuilder<T> filter(final String customFilter) {
-    // provide really basic normalisation
+    // provide some basic normalisation
     if (customFilter.charAt(0) == '(') {
       filter = customFilter;
     } else {

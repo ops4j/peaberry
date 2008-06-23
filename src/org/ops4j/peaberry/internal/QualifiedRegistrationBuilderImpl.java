@@ -70,10 +70,10 @@ public final class QualifiedRegistrationBuilderImpl<T>
 
         // time to lookup the actual implementation bindings
         final ServiceRegistry registry = injector.getInstance(registryKey);
-        final T serviceImplementation = injector.getInstance(implementationKey);
+        final T serviceImpl = injector.getInstance(implementationKey);
 
-        // register the implementation with the service registry
-        return registry.export(serviceImplementation, attributes);
+        // register implementation with service registry
+        return registry.export(serviceImpl, attributes);
       }
     };
   }
