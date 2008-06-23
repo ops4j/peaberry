@@ -30,8 +30,8 @@ import java.util.Map;
 public interface ServiceScope {
 
   /**
-   * &quot;scope.filter&quot; attribute name (an LDAP filter that defines which
-   * services can also be exported to the nested {@link ServiceScope} instance).
+   * &quot;scope.filter&quot; attribute name - an LDAP filter that defines which
+   * services can also be exported to the nested {@link ServiceScope} instance.
    */
   static final String SCOPE_FILTER = "scope.filter";
 

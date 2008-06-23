@@ -37,7 +37,7 @@ public final class TypeLiterals {
    * Create a TypeLiteral representing <code>Iterable&lt;T&gt;</code>.
    * 
    * @param clazz service interface
-   * @return Iterable<T> type
+   * @return Iterable<T> type literal
    */
   @SuppressWarnings("unchecked")
   public static <T> TypeLiteral<Iterable<T>> iterable(final Class<T> clazz) {
@@ -61,7 +61,7 @@ public final class TypeLiterals {
    * Create a TypeLiteral representing <code>Export&lt;T&gt;</code>.
    * 
    * @param clazz service interface
-   * @return Export<T> type
+   * @return Export<T> type literal
    */
   @SuppressWarnings("unchecked")
   public static <T> TypeLiteral<Export<? extends T>> export(final Class<T> clazz) {

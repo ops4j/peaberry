@@ -7,10 +7,14 @@ Bundle-Description: ${title}
 Bundle-DocURL: http://code.google.com/p/peaberry/
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
 
+Bundle-ClassPath:\
+ .,asm.jar
+
 Include-Resource:\
  OSGI-OPT/NOTICE=NOTICE,\
  OSGI-OPT/LICENSE=LICENSE,\
- OSGI-OPT/src=src
+ OSGI-OPT/src=src,\
+ asm.jar=${asm.jar}
 
 osgi.imports:\
  org.osgi.framework;version="[1.3,2)"
