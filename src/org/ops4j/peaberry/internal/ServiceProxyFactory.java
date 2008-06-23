@@ -16,14 +16,10 @@
 
 package org.ops4j.peaberry.internal;
 
-import static java.lang.reflect.Proxy.newProxyInstance;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
  * Factory methods for various types of dynamic service proxies.
@@ -35,26 +31,27 @@ final class ServiceProxyFactory {
   // instances not allowed
   private ServiceProxyFactory() {}
 
+  private static ImportProxyClassLoader TEMP = null;
+
   public static <T> T serviceProxy(final Class<? extends T> clazz, final Import<T> handle) {
 
     final ClassLoader loader = clazz.getClassLoader();
-    final Class<?>[] interfaces = {clazz};
 
-    final Object proxy = newProxyInstance(loader, interfaces, new InvocationHandler() {
-      public Object invoke(@SuppressWarnings("unused")
-      final Object unused, final Method method, final Object[] args) {
-        try {
-          final Object service = handle.get();
-          return method.invoke(service, args);
-        } catch (final Exception e) {
-          throw new ServiceUnavailableException(e);
-        } finally {
-          handle.unget();
-        }
-      }
-    });
+    if (null == TEMP) {
+      TEMP = new ImportProxyClassLoader(loader);
+    }
 
-    return clazz.cast(proxy);
+    final Class<?> proxyClazz;
+
+    try {
+      proxyClazz = TEMP.loadClass(clazz.getName() + "$Peaberry");
+      Constructor<?> ctor = proxyClazz.getConstructor(Import.class);
+      return clazz.cast(ctor.newInstance(handle));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return null;
   }
 
   public static <T> Iterable<T> serviceProxies(final Class<? extends T> clazz,

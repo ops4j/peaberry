@@ -16,7 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 import static org.objectweb.asm.Opcodes.ACC_FINAL;
 import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
@@ -25,20 +24,29 @@ import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ARETURN;
 import static org.objectweb.asm.Opcodes.ASTORE;
 import static org.objectweb.asm.Opcodes.ATHROW;
+import static org.objectweb.asm.Opcodes.DLOAD;
+import static org.objectweb.asm.Opcodes.DRETURN;
+import static org.objectweb.asm.Opcodes.DSTORE;
 import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.FRETURN;
+import static org.objectweb.asm.Opcodes.FSTORE;
 import static org.objectweb.asm.Opcodes.GETFIELD;
 import static org.objectweb.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.ILOAD;
 import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.ISTORE;
+import static org.objectweb.asm.Opcodes.LLOAD;
+import static org.objectweb.asm.Opcodes.LRETURN;
+import static org.objectweb.asm.Opcodes.LSTORE;
 import static org.objectweb.asm.Opcodes.NEW;
 import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_5;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Method;
 
 import org.objectweb.asm.ClassWriter;
@@ -52,10 +60,26 @@ import org.ops4j.peaberry.ServiceUnavailableException;
 /**
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-final class PrototypeServiceProxyFactory {
+final class ImportProxyClassLoader
+    extends ClassLoader {
 
-  // instances not allowed
-  private PrototypeServiceProxyFactory() {}
+  public ImportProxyClassLoader(ClassLoader loader) {
+    super(loader);
+  }
+
+  @Override
+  protected Class<?> findClass(String name)
+      throws ClassNotFoundException {
+
+    if (name.endsWith("$Peaberry")) {
+      String baseName = name.substring(0, name.length() - "$Peaberry".length());
+      Class<?> baseClazz = loadClass(baseName);
+      byte[] byteCode = generateProxy(baseClazz);
+      return defineClass(name, byteCode, 0, byteCode.length);
+    }
+
+    return super.findClass(name);
+  }
 
   private static String[] internalNames(Class<?>... interfaces) {
     String[] names = new String[interfaces.length];
@@ -65,7 +89,7 @@ final class PrototypeServiceProxyFactory {
     return names;
   }
 
-  public static <T> T serviceProxy(final Class<? extends T> clazz, final Import<T> handle) {
+  private static byte[] generateProxy(final Class<?> clazz) {
 
     final String proxyName;
     final String[] apiNames;
@@ -81,7 +105,7 @@ final class PrototypeServiceProxyFactory {
     final String fieldType = Type.getInternalName(Import.class);
     final String fieldDesc = 'L' + fieldType + ';';
 
-    final ClassWriter classWriter = new ClassWriter(COMPUTE_FRAMES | COMPUTE_MAXS);
+    final ClassWriter classWriter = new ClassWriter(COMPUTE_MAXS);
     classWriter.visit(V1_5, ACC_PUBLIC | ACC_FINAL, proxyName, null, "java/lang/Object", apiNames);
 
     FieldVisitor handleVisitor =
@@ -93,12 +117,15 @@ final class PrototypeServiceProxyFactory {
         classWriter.visitMethod(ACC_PUBLIC, "<init>", '(' + fieldDesc + ")V", null, null);
 
     ctorVisitor.visitCode();
+
     ctorVisitor.visitVarInsn(ALOAD, 0);
     ctorVisitor.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
     ctorVisitor.visitVarInsn(ALOAD, 0);
     ctorVisitor.visitVarInsn(ALOAD, 1);
     ctorVisitor.visitFieldInsn(PUTFIELD, proxyName, "handle", fieldDesc);
     ctorVisitor.visitInsn(RETURN);
+
+    ctorVisitor.visitMaxs(0, 0);
     ctorVisitor.visitEnd();
 
     for (Method m : clazz.getMethods()) {
@@ -114,18 +141,35 @@ final class PrototypeServiceProxyFactory {
       Label fini = new Label();
 
       methodVisitor.visitCode();
+
+      methodVisitor.visitTryCatchBlock(start, end, handler, Type.getInternalName(Exception.class));
+      methodVisitor.visitTryCatchBlock(start, end, finallyHandler, null);
+      methodVisitor.visitTryCatchBlock(handler, finallyHandler, finallyHandler, null);
+
+      Class<?> ret = m.getReturnType();
+
       methodVisitor.visitVarInsn(ALOAD, 0);
       methodVisitor.visitFieldInsn(GETFIELD, proxyName, "handle", fieldDesc);
       methodVisitor.visitVarInsn(ASTORE, 1);
       methodVisitor.visitLabel(start);
       methodVisitor.visitVarInsn(ALOAD, 1);
       methodVisitor.visitMethodInsn(INVOKEINTERFACE, fieldType, "get", "()Ljava/lang/Object;");
-      methodVisitor.visitMethodInsn(INVOKEVIRTUAL, Type.getInternalName(m.getDeclaringClass()), m
+      methodVisitor.visitMethodInsn(INVOKEINTERFACE, Type.getInternalName(m.getDeclaringClass()), m
           .getName(), Type.getMethodDescriptor(m));
       if (m.getReturnType() == void.class) {
         methodVisitor.visitInsn(POP);
       } else {
-        methodVisitor.visitVarInsn(ASTORE, 2);
+        if (ret == int.class) {
+          methodVisitor.visitVarInsn(ISTORE, 2);
+        } else if (ret == long.class) {
+          methodVisitor.visitVarInsn(LSTORE, 2);
+        } else if (ret == float.class) {
+          methodVisitor.visitVarInsn(FSTORE, 2);
+        } else if (ret == double.class) {
+          methodVisitor.visitVarInsn(DSTORE, 2);
+        } else {
+          methodVisitor.visitVarInsn(ASTORE, 2);
+        }
       }
       methodVisitor.visitLabel(end);
       methodVisitor.visitVarInsn(ALOAD, 1);
@@ -133,8 +177,28 @@ final class PrototypeServiceProxyFactory {
       if (m.getReturnType() == void.class) {
         methodVisitor.visitJumpInsn(GOTO, fini);
       } else {
-        methodVisitor.visitVarInsn(ALOAD, 2);
-        methodVisitor.visitInsn(ARETURN);
+        if (ret == int.class) {
+          methodVisitor.visitVarInsn(ILOAD, 2);
+        } else if (ret == long.class) {
+          methodVisitor.visitVarInsn(LLOAD, 2);
+        } else if (ret == float.class) {
+          methodVisitor.visitVarInsn(FLOAD, 2);
+        } else if (ret == double.class) {
+          methodVisitor.visitVarInsn(DLOAD, 2);
+        } else {
+          methodVisitor.visitVarInsn(ALOAD, 2);
+        }
+        if (ret == int.class) {
+          methodVisitor.visitInsn(IRETURN);
+        } else if (ret == long.class) {
+          methodVisitor.visitInsn(LRETURN);
+        } else if (ret == float.class) {
+          methodVisitor.visitInsn(FRETURN);
+        } else if (ret == double.class) {
+          methodVisitor.visitInsn(DRETURN);
+        } else {
+          methodVisitor.visitInsn(ARETURN);
+        }
       }
       methodVisitor.visitLabel(handler);
       methodVisitor.visitVarInsn(ASTORE, 2);
@@ -151,26 +215,17 @@ final class PrototypeServiceProxyFactory {
       methodVisitor.visitMethodInsn(INVOKEINTERFACE, fieldType, "unget", "()V");
       methodVisitor.visitVarInsn(ALOAD, 3);
       methodVisitor.visitInsn(ATHROW);
-      methodVisitor.visitLabel(fini);
       if (m.getReturnType() == void.class) {
+        methodVisitor.visitLabel(fini);
         methodVisitor.visitInsn(RETURN);
       }
 
-      methodVisitor.visitTryCatchBlock(start, end, handler, Type.getInternalName(Exception.class));
-      methodVisitor.visitTryCatchBlock(start, end, finallyHandler, null);
-      methodVisitor.visitTryCatchBlock(handler, finallyHandler, finallyHandler, null);
-
+      methodVisitor.visitMaxs(0, 0);
       methodVisitor.visitEnd();
     }
 
     classWriter.visitEnd();
 
-    try {
-      OutputStream f = new FileOutputStream("eek");
-      f.write(classWriter.toByteArray());
-      f.close();
-    } catch (Exception e) {}
-
-    return null;
+    return classWriter.toByteArray();
   }
 }
