@@ -32,7 +32,6 @@ import static org.objectweb.asm.Opcodes.FLOAD;
 import static org.objectweb.asm.Opcodes.FRETURN;
 import static org.objectweb.asm.Opcodes.FSTORE;
 import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GOTO;
 import static org.objectweb.asm.Opcodes.ILOAD;
 import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
@@ -42,7 +41,6 @@ import static org.objectweb.asm.Opcodes.LLOAD;
 import static org.objectweb.asm.Opcodes.LRETURN;
 import static org.objectweb.asm.Opcodes.LSTORE;
 import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_5;
@@ -138,7 +136,6 @@ final class ImportProxyClassLoader
       Label end = new Label();
       Label handler = new Label();
       Label finallyHandler = new Label();
-      Label fini = new Label();
 
       methodVisitor.visitCode();
 
@@ -156,9 +153,7 @@ final class ImportProxyClassLoader
       methodVisitor.visitMethodInsn(INVOKEINTERFACE, fieldType, "get", "()Ljava/lang/Object;");
       methodVisitor.visitMethodInsn(INVOKEINTERFACE, Type.getInternalName(m.getDeclaringClass()), m
           .getName(), Type.getMethodDescriptor(m));
-      if (m.getReturnType() == void.class) {
-        methodVisitor.visitInsn(POP);
-      } else {
+      if (m.getReturnType() != void.class) {
         if (ret == int.class) {
           methodVisitor.visitVarInsn(ISTORE, 2);
         } else if (ret == long.class) {
@@ -175,7 +170,7 @@ final class ImportProxyClassLoader
       methodVisitor.visitVarInsn(ALOAD, 1);
       methodVisitor.visitMethodInsn(INVOKEINTERFACE, fieldType, "unget", "()V");
       if (m.getReturnType() == void.class) {
-        methodVisitor.visitJumpInsn(GOTO, fini);
+        methodVisitor.visitInsn(RETURN);
       } else {
         if (ret == int.class) {
           methodVisitor.visitVarInsn(ILOAD, 2);
@@ -215,10 +210,6 @@ final class ImportProxyClassLoader
       methodVisitor.visitMethodInsn(INVOKEINTERFACE, fieldType, "unget", "()V");
       methodVisitor.visitVarInsn(ALOAD, 3);
       methodVisitor.visitInsn(ATHROW);
-      if (m.getReturnType() == void.class) {
-        methodVisitor.visitLabel(fini);
-        methodVisitor.visitInsn(RETURN);
-      }
 
       methodVisitor.visitMaxs(0, 0);
       methodVisitor.visitEnd();

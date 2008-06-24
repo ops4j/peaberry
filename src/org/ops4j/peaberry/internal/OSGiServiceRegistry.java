@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -74,11 +75,12 @@ public final class OSGiServiceRegistry
 
         try {
           services = bundleContext.getServiceReferences(type.getName(), filter);
-          if (services != null) {
-            Arrays.sort(services, BEST_SERVICE_COMPARATOR);
-          }
         } catch (final Exception e) {
           throw new ServiceException(e);
+        }
+
+        if (services != null) {
+          Arrays.sort(services, BEST_SERVICE_COMPARATOR);
         }
 
         return new Iterator<Import<T>>() {
@@ -90,20 +92,30 @@ public final class OSGiServiceRegistry
 
           @SuppressWarnings("null")
           public Import<T> next() {
+            final ServiceReference ref;
             try {
-              final ServiceReference ref = services[i++];
-              return new Import<T>() {
-                public T get() {
-                  return type.cast(bundleContext.getService(ref));
-                }
-
-                public void unget() {
-                  bundleContext.ungetService(ref);
-                }
-              };
+              ref = services[i++];
             } catch (final Exception e) {
-              throw new ServiceUnavailableException(e);
+              throw new NoSuchElementException();
             }
+
+            return new Import<T>() {
+              public T get() {
+                try {
+                  T obj = type.cast(bundleContext.getService(ref));
+                  obj.getClass(); // force NPE if null
+                  return obj;
+                } catch (Exception e) {
+                  throw new ServiceUnavailableException(e);
+                }
+              }
+
+              public void unget() {
+                try {
+                  bundleContext.ungetService(ref);
+                } catch (Exception e) {}
+              }
+            };
           }
 
           public void remove() {
@@ -141,36 +153,40 @@ public final class OSGiServiceRegistry
       interfaces = api.toArray(new String[api.size()]);
     }
 
-    final ServiceRegistration registration =
-        bundleContext.registerService(interfaces, service, dictionary);
+    final ServiceRegistration registration;
+
+    try {
+      registration = bundleContext.registerService(interfaces, service, dictionary);
+    } catch (Exception e) {
+      throw new ServiceException(e);
+    }
 
     return new Export<T>() {
 
       @SuppressWarnings("unchecked")
       public T get() {
-        try {
-          return (T) bundleContext.getService(registration.getReference());
-        } catch (final IllegalStateException e) {
-          return null;
-        }
+        return service;
       }
 
-      public void unget() {
-        try {
-          bundleContext.ungetService(registration.getReference());
-        } catch (final IllegalStateException e) {}
-      }
+      public void unget() {}
 
       public void modify(final Map<String, ?> map) {
         final Hashtable<String, Object> dict = new Hashtable<String, Object>();
         if (null != map) {
           dict.putAll(map);
         }
-        registration.setProperties(dict);
+
+        try {
+          registration.setProperties(dict);
+        } catch (Exception e) {
+          throw new ServiceException(e);
+        }
       }
 
       public void remove() {
-        registration.unregister();
+        try {
+          registration.unregister();
+        } catch (Exception e) {}
       }
     };
   }

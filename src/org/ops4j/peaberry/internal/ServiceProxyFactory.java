@@ -16,10 +16,17 @@
 
 package org.ops4j.peaberry.internal;
 
+import static com.google.common.base.ReferenceType.WEAK;
+import static java.security.AccessController.doPrivileged;
+
 import java.lang.reflect.Constructor;
+import java.security.PrivilegedAction;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceException;
+
+import com.google.common.collect.ReferenceMap;
 
 /**
  * Factory methods for various types of dynamic service proxies.
@@ -31,27 +38,33 @@ final class ServiceProxyFactory {
   // instances not allowed
   private ServiceProxyFactory() {}
 
-  private static ImportProxyClassLoader TEMP = null;
+  private static final ReferenceMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
+      new ReferenceMap<ClassLoader, ClassLoader>(WEAK, WEAK);
 
-  public static <T> T serviceProxy(final Class<? extends T> clazz, final Import<T> handle) {
+  public static <T> T importProxy(final Class<? extends T> clazz, final Import<T> handle) {
+    final ClassLoader typeLoader = clazz.getClassLoader();
 
-    final ClassLoader loader = clazz.getClassLoader();
+    ClassLoader proxyLoader;
 
-    if (null == TEMP) {
-      TEMP = new ImportProxyClassLoader(loader);
+    synchronized (PROXY_LOADER_MAP) {
+      proxyLoader = PROXY_LOADER_MAP.get(clazz.getClassLoader());
+      if (null == proxyLoader) {
+        proxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
+          public ClassLoader run() {
+            return new ImportProxyClassLoader(typeLoader);
+          }
+        });
+        PROXY_LOADER_MAP.put(typeLoader, proxyLoader);
+      }
     }
 
-    final Class<?> proxyClazz;
-
     try {
-      proxyClazz = TEMP.loadClass(clazz.getName() + "$Peaberry");
+      final Class<?> proxyClazz = proxyLoader.loadClass(clazz.getName() + "$Peaberry");
       Constructor<?> ctor = proxyClazz.getConstructor(Import.class);
       return clazz.cast(ctor.newInstance(handle));
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new ServiceException(e);
     }
-
-    return null;
   }
 
   public static <T> Iterable<T> serviceProxies(final Class<? extends T> clazz,
@@ -68,7 +81,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            return serviceProxy(clazz, i.next());
+            return importProxy(clazz, i.next());
           }
 
           public void remove() {
@@ -81,19 +94,15 @@ final class ServiceProxyFactory {
 
   public static <T> T serviceProxy(final Class<? extends T> clazz, final Iterable<Import<T>> handles) {
 
-    return serviceProxy(clazz, new Import<T>() {
-      private Import<T> handle;
-
-      public T get() {
-        handle = handles.iterator().next();
-        return handle.get();
+    @SuppressWarnings("unchecked")
+    Import<T> dynamicLookup = importProxy(Import.class, new Import<Import>() {
+      public Import<T> get() {
+        return handles.iterator().next();
       }
 
-      public void unget() {
-        if (handle != null) {
-          handle.unget();
-        }
-      }
+      public void unget() {}
     });
+
+    return importProxy(clazz, dynamicLookup);
   }
 }

@@ -14,7 +14,10 @@ Include-Resource:\
  OSGI-OPT/NOTICE=NOTICE,\
  OSGI-OPT/LICENSE=LICENSE,\
  OSGI-OPT/src=src,\
- asm.jar=${asm.jar}
+ asm.jar=${asm.jar},\
+ @${collect.jar}!/com/google/common/base/*Reference*,\
+ @${collect.jar}!/com/google/common/base/Preconditions*,\
+ @${collect.jar}!/com/google/common/collect/ReferenceMap*
 
 osgi.imports:\
  org.osgi.framework;version="[1.3,2)"
