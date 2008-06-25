@@ -102,10 +102,10 @@ public final class OSGiServiceRegistry
             return new Import<T>() {
               public T get() {
                 try {
-                  T obj = type.cast(bundleContext.getService(ref));
+                  final T obj = type.cast(bundleContext.getService(ref));
                   obj.getClass(); // force NPE if null
                   return obj;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                   throw new ServiceUnavailableException(e);
                 }
               }
@@ -113,7 +113,7 @@ public final class OSGiServiceRegistry
               public void unget() {
                 try {
                   bundleContext.ungetService(ref);
-                } catch (Exception e) {}
+                } catch (final Exception e) {}
               }
             };
           }
@@ -157,7 +157,7 @@ public final class OSGiServiceRegistry
 
     try {
       registration = bundleContext.registerService(interfaces, service, dictionary);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new ServiceException(e);
     }
 
@@ -178,7 +178,7 @@ public final class OSGiServiceRegistry
 
         try {
           registration.setProperties(dict);
-        } catch (Exception e) {
+        } catch (final Exception e) {
           throw new ServiceException(e);
         }
       }
@@ -186,7 +186,7 @@ public final class OSGiServiceRegistry
       public void remove() {
         try {
           registration.unregister();
-        } catch (Exception e) {}
+        } catch (final Exception e) {}
       }
     };
   }
