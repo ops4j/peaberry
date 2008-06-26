@@ -47,7 +47,7 @@ Index: src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
 --- src/com/google/inject/internal/BytecodeGen.java	Thu Jun 26 01:55:17 PDT 2008
 +++ src/com/google/inject/internal/BytecodeGen.java	Thu Jun 26 01:55:17 PDT 2008
-@@ -0,0 +1,174 @@
+@@ -0,0 +1,186 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -108,19 +108,31 @@ Index: src/com/google/inject/internal/BytecodeGen.java
 + */
 +public final class BytecodeGen {
 +
-+  private static final ClassLoader GUICE_CLASS_LOADER = BytecodeGen.class.getClassLoader();
++  static final ClassLoader GUICE_CLASS_LOADER = BytecodeGen.class.getClassLoader();
 +
-+  /** ie. "com.google.inject.internal" */
-+  private static final String GUICE_INTERNAL_PACKAGE = BytecodeGen.class.getPackage().getName();
++  static final String GUICE_INTERNAL_PACKAGE;
++  static final String CGLIB_PACKAGE;
 +
-+  private static final NamingPolicy NAMING_POLICY = new DefaultNamingPolicy() {
++  static {
++    String name;
++
++    /** ie. "com.google.inject.internal..." */
++    name = BytecodeGen.class.getName();
++    GUICE_INTERNAL_PACKAGE = name.replaceFirst("\\.internal\\..*$", ".internal");
++
++    /** ie. "net.sf.cglib...", or "com.google.inject.internal.cglib..." */
++    name = Enhancer.class.getName();
++    CGLIB_PACKAGE = name.replaceFirst("\\.cglib\\..*$", ".cglib");
++  }
++
++  static final NamingPolicy NAMING_POLICY = new DefaultNamingPolicy() {
 +    @Override protected String getTag() {
 +      return "ByGuice";
 +    }
 +  };
 +
 +  /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
-+  private static final boolean HOOK_ENABLED
++  static final boolean HOOK_ENABLED
 +      = "true".equals(System.getProperty("guice.custom.loader", "true"));
 +
 +  /**
@@ -206,7 +218,7 @@ Index: src/com/google/inject/internal/BytecodeGen.java
 +        throws ClassNotFoundException {
 +
 +      // delegate internal requests to Guice class space
-+      if (name.startsWith(GUICE_INTERNAL_PACKAGE)) {
++      if (name.startsWith(GUICE_INTERNAL_PACKAGE) || name.startsWith(CGLIB_PACKAGE)) {
 +        try {
 +          Class<?> clazz = GUICE_CLASS_LOADER.loadClass(name);
 +          if (resolve) {
@@ -435,7 +447,7 @@ Index: test/com/google/inject/internal/BytecodeGenTest.java
 ===================================================================
 --- test/com/google/inject/internal/BytecodeGenTest.java	Thu Jun 26 01:39:36 PDT 2008
 +++ test/com/google/inject/internal/BytecodeGenTest.java	Thu Jun 26 01:39:36 PDT 2008
-@@ -0,0 +1,149 @@
+@@ -0,0 +1,148 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -468,7 +480,6 @@ Index: test/com/google/inject/internal/BytecodeGenTest.java
 +
 +/**
 + * TODO: tests for garbage collection of generated classes
-+ * TODO: run the tests safely without running jarjar first?
 + *
 + * @author mcculls@gmail.com (Stuart McCulloch)
 + */
@@ -513,7 +524,7 @@ Index: test/com/google/inject/internal/BytecodeGenTest.java
 +        // standard bootdelegation of java.*
 +        return super.loadClass(name, resolve);
 +
-+      } else if (!name.startsWith("com.google.inject.internal.") || name.contains("Test")) {
++      } else if ((!name.contains(".internal.") && !name.contains(".cglib.")) || name.contains("Test")) {
 +
 +        /*
 +         * load public and test classes directly from the classpath - we don't
