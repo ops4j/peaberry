@@ -47,7 +47,7 @@ Index: src/com/google/inject/internal/BytecodeGen.java
 ===================================================================
 --- src/com/google/inject/internal/BytecodeGen.java	Thu Jun 26 01:55:17 PDT 2008
 +++ src/com/google/inject/internal/BytecodeGen.java	Thu Jun 26 01:55:17 PDT 2008
-@@ -0,0 +1,186 @@
+@@ -0,0 +1,184 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -81,12 +81,10 @@ Index: src/com/google/inject/internal/BytecodeGen.java
 + * reflection ({@link FastClass}), method interceptors ({@link GuiceEnhancer}) and to proxy circular
 + * dependencies.
 + *
-+ * TODO: verify and cleanup this doc
-+ *
 + * <p>When loading classes, we need to be careful of:
 + * <ul>
 + *   <li><strong>Memory leaks.</strong> Generated classes need to be garbage collected in long-lived
-+ *       applications. Once an injector and instances it created can be garbage collected, the
++ *       applications. Once an injector and any instances it created can be garbage collected, the
 + *       corresponding generated classes should be collectable.
 + *   <li><strong>Visibility.</strong> Containers like <code>OSGi</code> use class loader boundaries
 + *       to enforce modularity at runtime.
@@ -100,7 +98,7 @@ Index: src/com/google/inject/internal/BytecodeGen.java
 + *    <li><strong>Guice's class loader.</strong>
 + *    <li><strong>Our bridge class loader.</strong> This is a child of the user's class loader. It
 + *        selectively delegates to either the user's class loader (for user classes) or the Guice
-+ *        class loader (for classes that are used by the generated classes).
++ *        class loader (for internal classes that are used by the generated classes).
 + * </ul>
 + *
 + * @author mcculls@gmail.com (Stuart McCulloch)
