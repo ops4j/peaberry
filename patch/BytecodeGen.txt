@@ -447,7 +447,7 @@ Index: test/com/google/inject/internal/BytecodeGenTest.java
 ===================================================================
 --- test/com/google/inject/internal/BytecodeGenTest.java	Thu Jun 26 01:39:36 PDT 2008
 +++ test/com/google/inject/internal/BytecodeGenTest.java	Thu Jun 26 01:39:36 PDT 2008
-@@ -0,0 +1,148 @@
+@@ -0,0 +1,181 @@
 +/**
 + * Copyright (C) 2008 Google Inc.
 + *
@@ -471,6 +471,8 @@ Index: test/com/google/inject/internal/BytecodeGenTest.java
 +import com.google.inject.Module;
 +import static com.google.inject.matcher.Matchers.any;
 +import java.io.File;
++import java.lang.ref.Reference;
++import java.lang.ref.WeakReference;
 +import java.net.MalformedURLException;
 +import java.net.URL;
 +import java.net.URLClassLoader;
@@ -479,8 +481,6 @@ Index: test/com/google/inject/internal/BytecodeGenTest.java
 +import org.aopalliance.intercept.MethodInvocation;
 +
 +/**
-+ * TODO: tests for garbage collection of generated classes
-+ *
 + * @author mcculls@gmail.com (Stuart McCulloch)
 + */
 +public class BytecodeGenTest extends TestCase {
@@ -594,6 +594,39 @@ Index: test/com/google/inject/internal/BytecodeGenTest.java
 +
 +    // verify method interception still works
 +    assertEquals("HELLO WORLD", test.sayHello());
++  }
++
++  public void testProxyClassUnloading() {
++
++    ProxyTest testProxy = Guice.createInjector(new Module() {
++      public void configure(Binder binder) {
++        binder.bind(ProxyTest.class).to(ProxyTestImpl.class);
++        binder.bindInterceptor(any(), any(), new MethodInterceptor() {
++          public Object invoke(MethodInvocation chain)
++              throws Throwable {
++            return chain.proceed() + " WORLD";
++          }
++        });
++      }
++    }).getInstance(ProxyTest.class);
++
++    // take a weak reference to the generated proxy class
++    Reference<Class<?>> clazzRef = new WeakReference<Class<?>>(testProxy.getClass());
++
++    assertNotNull(clazzRef.get());
++
++    // null the proxy
++    testProxy = null;
++
++    /*
++     * this should be enough to queue the weak reference
++     * unless something is holding onto it accidentally.
++     */
++    System.gc();
++    System.gc();
++    System.gc();
++
++    assertNull(clazzRef.get());
 +  }
 +}
 Index: build.xml
