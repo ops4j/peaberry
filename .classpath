@@ -5,7 +5,7 @@
 	<classpathentry kind="lib" path="guice/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="guice/lib/build/asm-3.1.jar"/>
 	<classpathentry kind="lib" path="guice/lib/build/google-collect-snapshot-20080530.jar"/>
-	<classpathentry kind="lib" path="guice/build/dist/guice-patched-for-osgi.jar"/>
+	<classpathentry kind="lib" path="guice/build/dist/guice-2.0-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/build/osgi.core.jar"/>
 	<classpathentry kind="lib" path="lib/build/osgi.cmpn.jar"/>
 	<classpathentry kind="lib" path="lib/test/felix.jar"/>
