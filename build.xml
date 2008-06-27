@@ -3,16 +3,15 @@
   <property file="build.properties"/>
 
   <import file="scm.xml"/>
-  <import file="patch.xml"/>
   <import file="clover.xml"/>
   <import file="bnd.xml"/>
   <import file="test.xml"/>
   <import file="doc.xml"/>
 
-  <target name="guice" depends="patch,aopalliance">
+  <target name="guice" depends="scm,aopalliance">
     <ant dir="${guice}" target="jar">
       <property name="module" value="com.google.inject"/>
-      <property name="version" value="${patch.version}"/>
+      <property name="version" value="2.0-SNAPSHOT"/>
     </ant>
     <copy file="${guice.jar}" todir="${build}/dist"/>
   </target>
