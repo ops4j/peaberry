@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="5" skipfailedinvocationCounts="false" verbose="1" name="Failed suite [OSGi]" junit="false" annotations="JDK">
+  <test name="ServiceLeasingTests(failed)" junit="false" annotations="JDK">
+    <classes>
+      <class name="org.ops4j.peaberry.test.osgi.ServiceLeasingTests">
+        <methods>
+          <include name="staticMultiService"/>
+          <include name="staticUnaryService"/>
+          <include name="leasedUnaryService"/>
+          <include name="leasedMultiService"/>
+        </methods>
+      </class>
+    </classes>
+  </test>
+</suite>
