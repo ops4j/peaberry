@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -96,7 +95,7 @@ public final class OSGiServiceRegistry
             try {
               ref = services[i++];
             } catch (final Exception e) {
-              throw new NoSuchElementException();
+              throw new ServiceUnavailableException();
             }
 
             return new Import<T>() {

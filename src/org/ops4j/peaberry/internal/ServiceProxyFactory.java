@@ -16,17 +16,11 @@
 
 package org.ops4j.peaberry.internal;
 
-import static com.google.common.base.ReferenceType.WEAK;
-import static java.security.AccessController.doPrivileged;
+import static org.ops4j.peaberry.internal.ImportProxyClassLoader.importProxy;
 
-import java.lang.reflect.Constructor;
-import java.security.PrivilegedAction;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceException;
-
-import com.google.common.collect.ReferenceMap;
 
 /**
  * Factory methods for various types of dynamic service proxies.
@@ -37,35 +31,6 @@ final class ServiceProxyFactory {
 
   // instances not allowed
   private ServiceProxyFactory() {}
-
-  private static final ReferenceMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
-      new ReferenceMap<ClassLoader, ClassLoader>(WEAK, WEAK);
-
-  public static <T> T importProxy(final Class<? extends T> clazz, final Import<T> handle) {
-    final ClassLoader typeLoader = clazz.getClassLoader();
-
-    ClassLoader proxyLoader;
-
-    synchronized (PROXY_LOADER_MAP) {
-      proxyLoader = PROXY_LOADER_MAP.get(clazz.getClassLoader());
-      if (null == proxyLoader) {
-        proxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
-          public ClassLoader run() {
-            return new ImportProxyClassLoader(typeLoader);
-          }
-        });
-        PROXY_LOADER_MAP.put(typeLoader, proxyLoader);
-      }
-    }
-
-    try {
-      final Class<?> proxyClazz = proxyLoader.loadClass(clazz.getName() + "$Peaberry");
-      Constructor<?> ctor = proxyClazz.getConstructor(Import.class);
-      return clazz.cast(ctor.newInstance(handle));
-    } catch (Exception e) {
-      throw new ServiceException(e);
-    }
-  }
 
   public static <T> Iterable<T> serviceProxies(final Class<? extends T> clazz,
       final Iterable<Import<T>> handles) {
@@ -94,15 +59,14 @@ final class ServiceProxyFactory {
 
   public static <T> T serviceProxy(final Class<? extends T> clazz, final Iterable<Import<T>> handles) {
 
-    @SuppressWarnings("unchecked")
-    Import<T> dynamicLookup = importProxy(Import.class, new Import<Import>() {
+    return importProxy(clazz, new Import<Import<T>>() {
+
       public Import<T> get() {
         return handles.iterator().next();
       }
 
       public void unget() {}
-    });
 
-    return importProxy(clazz, dynamicLookup);
+    });
   }
 }

@@ -44,84 +44,87 @@ public class ServiceExportTests {
   @Test(enabled = false)
   public static void configure(final Binder binder) {
 
-    binder.bind(export(WordService.class)).annotatedWith(named("A")).toProvider(
-        registration(Key.get(WordServiceImplA.class)).attributes(names("word=A")).export());
+    binder.bind(export(HelloService.class)).annotatedWith(named("A")).toProvider(
+        registration(Key.get(HelloServiceLong.class)).attributes(names("style=long")).export());
 
-    binder.bind(export(WordService.class)).annotatedWith(named("B")).toProvider(
-        registration(Key.get(WordServiceImplB.class)).attributes(names("word=B")).export());
+    binder.bind(export(HelloService.class)).annotatedWith(named("B")).toProvider(
+        registration(Key.get(HelloServiceShort.class)).attributes(names("style=short")).export());
 
-    binder.bind(WordService.class).annotatedWith(named("A")).toProvider(
-        service(WordService.class).filter("word=A").single());
+    binder.bind(HelloService.class).annotatedWith(named("A")).toProvider(
+        service(HelloService.class).filter("style=long").single());
 
-    binder.bind(WordService.class).annotatedWith(named("B")).toProvider(
-        service(WordService.class).filter("word=B").single());
+    binder.bind(HelloService.class).annotatedWith(named("B")).toProvider(
+        service(HelloService.class).filter("style=short").single());
   }
 
-  protected interface WordService {
-    String getWord();
+  protected interface HelloService {
+    String say(String name);
   }
 
-  protected static class WordServiceImplA
-      implements WordService {
+  protected static class HelloServiceLong
+      implements HelloService {
 
-    public String getWord() {
-      return "A";
+    public String say(String name) {
+      return "Hello " + name;
     }
   }
 
-  protected static class WordServiceImplB
-      implements WordService {
+  protected static class HelloServiceShort
+      implements HelloService {
 
-    public String getWord() {
-      return "B";
+    public String say(String name) {
+      return "Hi " + name;
     }
   }
 
   @Inject
   @Named("A")
-  Export<WordService> producerA;
+  Export<HelloService> producerA;
 
   @Inject
   @Named("B")
-  Export<WordService> producerB;
+  Export<HelloService> producerB;
 
   @Inject
   @Named("A")
-  WordService consumerA;
+  HelloService consumerA;
 
   @Inject
   @Named("B")
-  WordService consumerB;
+  HelloService consumerB;
 
-  private void checkWord(final String word, final String result) {
-    assert word.equals(result) : "Expected " + word + ", got " + result;
+  private void checkResponse(final String expected, final String result) {
+    assert expected.equals(result) : "Expected " + expected + ", got " + result;
   }
 
   public void testWiring() {
 
-    checkWord("A", consumerA.getWord());
-    checkWord("B", consumerB.getWord());
+    checkResponse("Hello A", consumerA.say("A"));
+    checkResponse("Hi B", consumerB.say("B"));
 
-    checkWord("A", producerA.get().getWord());
-    checkWord("B", producerB.get().getWord());
+    checkResponse("Hello A", producerA.get().say("A"));
+    checkResponse("Hi B", producerB.get().say("B"));
 
-    // this should change the dynamic bindings
-    producerA.modify(singletonMap("word", "B"));
-    producerB.modify(singletonMap("word", "A"));
+    // this should switch the client dynamic bindings
+    producerA.modify(singletonMap("style", "short"));
+    producerB.modify(singletonMap("style", "long"));
 
-    checkWord("B", consumerA.getWord());
-    checkWord("A", consumerB.getWord());
+    checkResponse("Hi A", consumerA.say("A"));
+    checkResponse("Hello B", consumerB.say("B"));
+
+    checkResponse("Hello A", producerA.get().say("A"));
+    checkResponse("Hi B", producerB.get().say("B"));
 
     producerA.remove();
     producerB.remove();
 
     try {
-      consumerA.getWord();
+      consumerA.say("A");
       assert false : "No service expected";
     } catch (final ServiceUnavailableException e) {}
 
     try {
-      consumerB.getWord();
+      consumerB.say("B");
       assert false : "No service expected";
     } catch (final ServiceUnavailableException e) {}
   }
