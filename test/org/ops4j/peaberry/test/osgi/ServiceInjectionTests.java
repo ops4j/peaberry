@@ -77,7 +77,10 @@ public class ServiceInjectionTests
   // test proxy support for API hierarchies
   protected abstract static class ExtendedService
       implements SimpleService {
+
     public abstract int encode();
+
+    public void noOp() {}
   }
 
   @Inject
@@ -110,6 +113,14 @@ public class ServiceInjectionTests
     assert extendedService instanceof ExtendedService;
 
     assert ((ExtendedService) extendedService).encode() == "B".hashCode();
+    ((ExtendedService) extendedService).noOp();
+
+    try {
+      ClassLoader proxyLoader = extendedService.getClass().getClassLoader();
+      assert ExtendedService.class.equals(proxyLoader.loadClass(ExtendedService.class.getName()));
+      proxyLoader.loadClass("some-non-existent-class");
+      assert false : "Expected ClassNotFoundException";
+    } catch (ClassNotFoundException e) {}
 
     assert extendedServices.iterator().next() instanceof SimpleService;
     assert extendedServices.iterator().next() instanceof ExtendedService;

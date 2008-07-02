@@ -62,7 +62,9 @@ final class ImportProxyClassLoader
       final Constructor<?> ctor = proxyClazz.getConstructor(Object.class);
       return clazz.cast(ctor.newInstance(handle));
     } catch (final Exception e) {
+      // /CLOVER:OFF
       throw new ServiceException(e);
+      // /CLOVER:ON
     }
   }
 
@@ -82,6 +84,6 @@ final class ImportProxyClassLoader
       return defineClass(clazzOrProxyName, byteCode, 0, byteCode.length);
     }
 
-    return super.findClass(clazzOrProxyName);
+    throw new ClassNotFoundException();
   }
 }

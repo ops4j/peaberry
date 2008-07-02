@@ -7,8 +7,8 @@
     </classpath>
   </taskdef>
 
-  <target name="peaberry" depends="compile">
-    <mkdir dir="${build}/dist"/>
+  <target name="peaberry" depends="compile,aopalliance">
+    <copy file="${guice.jar}" todir="${build}/dist"/>
     <bnd files="peaberry.bnd" classpath="${build}/classes"/>
   </target>
 

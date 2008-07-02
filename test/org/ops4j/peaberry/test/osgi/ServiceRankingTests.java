@@ -55,6 +55,11 @@ public class ServiceRankingTests
 
     checkServices(services, "A", "B", "C", "D", "E", "F", "G");
 
+    try {
+      services.iterator().remove();
+      assert false : "Expected UnsupportedOperationException";
+    } catch (UnsupportedOperationException e) {}
+
     disableAllServices();
   }
 }

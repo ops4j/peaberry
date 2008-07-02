@@ -8,12 +8,11 @@
   <import file="test.xml"/>
   <import file="doc.xml"/>
 
-  <target name="guice" depends="scm,aopalliance">
+  <target name="guice" depends="scm">
     <ant dir="${guice}" target="jar">
       <property name="module" value="com.google.inject"/>
       <property name="version" value="2.0-SNAPSHOT"/>
     </ant>
-    <copy file="${guice.jar}" todir="${build}/dist"/>
   </target>
 
   <target name="test.guice" depends="guice">
@@ -26,12 +25,12 @@
 
   <target name="compile" depends="guice">
     <mkdir dir="${build}/classes"/>
-    <javac source="1.5" target="1.5" debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
+    <javac source="1.5" target="1.5" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
   </target>
 
   <target name="test.compile" depends="compile">
     <mkdir dir="${build}/test-classes"/>
-    <javac source="1.5" target="1.5" debug="on" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
+    <javac source="1.5" target="1.5" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
   </target>
 
   <target name="clean.guice">

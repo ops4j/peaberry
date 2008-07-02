@@ -98,7 +98,7 @@ final class ImportGlue {
 
     init(cw, superName, proxyName);
     for (final Method m : clazz.getMethods()) {
-      if ((m.getModifiers() & (PRIVATE | STATIC | FINAL | NATIVE)) == 0) {
+      if ((m.getModifiers() & (STATIC | FINAL | NATIVE)) == 0) {
         wrap(cw, proxyName, m);
       }
     }
