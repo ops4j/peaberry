@@ -74,7 +74,7 @@ final class ImportProxyClassLoader
   protected Class<?> findClass(final String clazzOrProxyName)
       throws ClassNotFoundException {
 
-    String clazzName = getClazzName(clazzOrProxyName);
+    final String clazzName = getClazzName(clazzOrProxyName);
 
     if (!clazzName.equals(clazzOrProxyName)) {
       final Class<?> clazz = loadClass(clazzName);

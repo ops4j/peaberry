@@ -64,7 +64,7 @@ public class ServiceExportTests {
   protected static class HelloServiceLong
       implements HelloService {
 
-    public String say(String name) {
+    public String say(final String name) {
       return "Hello " + name;
     }
   }
@@ -72,7 +72,7 @@ public class ServiceExportTests {
   protected static class HelloServiceShort
       implements HelloService {
 
-    public String say(String name) {
+    public String say(final String name) {
       return "Hi " + name;
     }
   }

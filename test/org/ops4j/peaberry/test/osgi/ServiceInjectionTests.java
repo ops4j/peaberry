@@ -75,9 +75,9 @@ public class ServiceInjectionTests
   }
 
   // test proxy support for API hierarchies
-  protected static interface ExtendedService
-      extends SimpleService {
-    int encode();
+  protected abstract static class ExtendedService
+      implements SimpleService {
+    public abstract int encode();
   }
 
   @Inject
@@ -131,6 +131,7 @@ public class ServiceInjectionTests
         throw new RuntimeException("Missing Service");
       }
 
+      @Override
       public int encode() {
         if (handles.containsKey(name)) {
           return name.hashCode();

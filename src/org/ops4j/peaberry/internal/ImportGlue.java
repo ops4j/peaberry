@@ -16,10 +16,14 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.lang.reflect.Modifier.ABSTRACT;
+import static java.lang.reflect.Modifier.FINAL;
+import static java.lang.reflect.Modifier.NATIVE;
+import static java.lang.reflect.Modifier.PRIVATE;
+import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.reflect.Modifier.STATIC;
+import static java.lang.reflect.Modifier.SYNCHRONIZED;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
-import static org.objectweb.asm.Opcodes.ACC_FINAL;
-import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ASTORE;
 import static org.objectweb.asm.Opcodes.ATHROW;
@@ -72,7 +76,7 @@ final class ImportGlue {
     return proxyName.replaceAll("\\$Proxy$", "");
   }
 
-  public static byte[] generateProxy(Class<?> clazz) {
+  public static byte[] generateProxy(final Class<?> clazz) {
 
     final String proxyName = getProxyName(getInternalName(clazz));
 
@@ -89,12 +93,14 @@ final class ImportGlue {
 
     final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
 
-    cw.visit(V1_5, ACC_PUBLIC | ACC_FINAL, proxyName, null, superName, interfaceNames);
-    cw.visitField(ACC_PRIVATE | ACC_FINAL, "handle", OBJECT_DESC, null, null).visitEnd();
+    cw.visit(V1_5, PUBLIC, proxyName, null, superName, interfaceNames);
+    cw.visitField(PRIVATE | FINAL, "handle", OBJECT_DESC, null, null).visitEnd();
 
     init(cw, superName, proxyName);
     for (final Method m : clazz.getMethods()) {
-      wrap(cw, proxyName, m);
+      if ((m.getModifiers() & (PRIVATE | STATIC | FINAL | NATIVE)) == 0) {
+        wrap(cw, proxyName, m);
+      }
     }
 
     cw.visitEnd();
@@ -106,7 +112,7 @@ final class ImportGlue {
 
     final String descriptor = '(' + OBJECT_DESC + ")V";
 
-    final MethodVisitor v = cw.visitMethod(ACC_PUBLIC, "<init>", descriptor, null, null);
+    final MethodVisitor v = cw.visitMethod(PUBLIC, "<init>", descriptor, null, null);
 
     v.visitCode();
 
@@ -123,12 +129,13 @@ final class ImportGlue {
 
   private static void wrap(final ClassWriter cw, final String proxyName, final Method method) {
 
-    final String name = method.getName();
+    final String methodName = method.getName();
 
     final String descriptor = getMethodDescriptor(method);
     final String[] exceptions = getInternalNames(method.getExceptionTypes());
+    final int modifiers = method.getModifiers() & ~(ABSTRACT | SYNCHRONIZED);
 
-    final MethodVisitor v = cw.visitMethod(ACC_PUBLIC, name, descriptor, null, exceptions);
+    final MethodVisitor v = cw.visitMethod(modifiers, methodName, descriptor, null, exceptions);
 
     final Label start = new Label();
     final Label end = new Label();
@@ -172,9 +179,15 @@ final class ImportGlue {
     }
 
     final Class<?> clazz = method.getDeclaringClass();
+    final String subjectName = getInternalName(clazz);
 
-    final int kind = clazz.isInterface() ? INVOKEINTERFACE : INVOKEVIRTUAL;
-    v.visitMethodInsn(kind, getInternalName(clazz), name, getMethodDescriptor(method));
+    if (clazz.isInterface()) {
+      v.visitMethodInsn(INVOKEINTERFACE, subjectName, methodName, descriptor);
+    } else {
+      v.visitTypeInsn(CHECKCAST, subjectName);
+      v.visitMethodInsn(INVOKEVIRTUAL, subjectName, methodName, descriptor);
+    }
+
     final Type returnType = getReturnType(method);
 
     if (returnType.getSort() != VOID) {
@@ -216,8 +229,8 @@ final class ImportGlue {
     v.visitEnd();
   }
 
-  private static String[] getInternalNames(Class<?>... clazzes) {
-    String[] names = new String[clazzes.length];
+  private static String[] getInternalNames(final Class<?>... clazzes) {
+    final String[] names = new String[clazzes.length];
     for (int i = 0; i < names.length; i++) {
       names[i] = getInternalName(clazzes[i]);
     }
