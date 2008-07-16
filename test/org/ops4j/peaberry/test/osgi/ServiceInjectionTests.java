@@ -78,7 +78,7 @@ public class ServiceInjectionTests
   protected abstract static class ExtendedService
       implements SimpleService {
 
-    public abstract int encode();
+    public abstract double encode();
 
     public void noOp() {}
   }
@@ -143,7 +143,7 @@ public class ServiceInjectionTests
       }
 
       @Override
-      public int encode() {
+      public double encode() {
         if (handles.containsKey(name)) {
           return name.hashCode();
         }

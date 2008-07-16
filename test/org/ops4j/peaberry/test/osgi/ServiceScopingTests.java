@@ -21,6 +21,7 @@ import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.ops4j.peaberry.Export;
@@ -66,19 +67,31 @@ public class ServiceScopingTests {
     BundleContext bundleContext;
 
     public static volatile int lookupCount = 0;
-    public static volatile int watchCount = 0;
+    public static volatile int iteratorCount = 0;
+    public static volatile int exportCount = 0;
 
     public ServiceRegistry get() {
       final ServiceRegistry osgiRegistry = osgiServiceRegistry(bundleContext);
       return new ServiceRegistry() {
+
         @SuppressWarnings("unchecked")
         public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz, final String filter) {
+
           lookupCount++;
-          return osgiRegistry.lookup(clazz, filter);
+          final Iterable<Import<T>> services = osgiRegistry.lookup(clazz, filter);
+
+          return new Iterable<Import<T>>() {
+            public Iterator<Import<T>> iterator() {
+
+              iteratorCount++;
+              return services.iterator();
+            }
+          };
         }
 
         public <S, T extends S> Export<S> export(final T service, final Map<String, ?> attributes) {
-          watchCount++;
+
+          exportCount++;
           return osgiRegistry.export((S) service, attributes);
         }
       };
@@ -93,9 +106,10 @@ public class ServiceScopingTests {
         public String check() {
 
           final String lookupCount = "lookup:" + CountingRegistryProvider.lookupCount;
-          final String watchCount = "watch:" + CountingRegistryProvider.watchCount;
+          final String iteratorCount = "iterator:" + CountingRegistryProvider.iteratorCount;
+          final String exportCount = "export:" + CountingRegistryProvider.exportCount;
 
-          return lookupCount + ',' + watchCount;
+          return lookupCount + ',' + iteratorCount + ',' + exportCount;
         }
       };
     }
@@ -112,15 +126,15 @@ public class ServiceScopingTests {
     @SuppressWarnings("unchecked")
     Export handle = injector.getInstance(Export.class);
 
-    assert service.check().equals("lookup:1,watch:1");
-    assert service.check().equals("lookup:1,watch:1");
+    assert service.check().equals("lookup:1,iterator:1,export:1");
+    assert service.check().equals("lookup:1,iterator:2,export:1");
 
     handle.remove();
 
     handle = injector.getInstance(Export.class);
 
-    assert service.check().equals("lookup:1,watch:2");
-    assert service.check().equals("lookup:1,watch:2");
+    assert service.check().equals("lookup:1,iterator:3,export:2");
+    assert service.check().equals("lookup:1,iterator:4,export:2");
 
     handle.remove();
   }
