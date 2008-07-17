@@ -20,8 +20,10 @@ import static org.ops4j.peaberry.internal.ServiceProxyFactory.serviceProxies;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.serviceProxy;
 
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 import org.ops4j.peaberry.builders.DynamicServiceBuilder;
 import org.ops4j.peaberry.builders.FilteredServiceBuilder;
+import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.builders.ScopedServiceBuilder;
 import org.ops4j.peaberry.builders.ServiceProxyBuilder;
 
@@ -42,8 +44,11 @@ public final class DynamicServiceBuilderImpl<T>
   final Class<? extends T> clazz;
 
   // default configuration
-  int leaseInSeconds = 0;
+  boolean constant = false;
   String filter = null;
+
+  // services are never decorated by default
+  Key<? extends ImportDecorator<? super T>> decoratorKey = null;
 
   // use plain injection key to find default service registry implementation
   Key<? extends ServiceRegistry> registryKey = Key.get(ServiceRegistry.class);
@@ -52,13 +57,13 @@ public final class DynamicServiceBuilderImpl<T>
     this.clazz = clazz;
   }
 
-  public FilteredServiceBuilder<T> leased(final int seconds) {
-    leaseInSeconds = seconds;
+  public DecoratedServiceBuilder<T> constant() {
+    constant = true;
     return this;
   }
 
-  public FilteredServiceBuilder<T> constant() {
-    leaseInSeconds = -1;
+  public FilteredServiceBuilder<T> decoratedWith(final Key<? extends ImportDecorator<? super T>> key) {
+    decoratorKey = key;
     return this;
   }
 
@@ -72,7 +77,7 @@ public final class DynamicServiceBuilderImpl<T>
     return this;
   }
 
-  public ServiceProxyBuilder<T> registry(final Key<? extends ServiceRegistry> key) {
+  public ServiceProxyBuilder<T> in(final Key<? extends ServiceRegistry> key) {
     registryKey = key;
     return this;
   }
@@ -85,7 +90,6 @@ public final class DynamicServiceBuilderImpl<T>
 
       public T get() {
         final ServiceRegistry registry = injector.getInstance(registryKey);
-        if (leaseInSeconds != 0) {/* TODO */}
         return serviceProxy(clazz, registry.lookup(clazz, filter));
       }
     };
@@ -99,7 +103,6 @@ public final class DynamicServiceBuilderImpl<T>
 
       public Iterable<T> get() {
         final ServiceRegistry registry = injector.getInstance(registryKey);
-        if (leaseInSeconds != 0) {/* TODO */}
         return serviceProxies(clazz, registry.lookup(clazz, filter));
       }
     };

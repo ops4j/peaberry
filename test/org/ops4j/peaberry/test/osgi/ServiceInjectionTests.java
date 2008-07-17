@@ -116,11 +116,11 @@ public class ServiceInjectionTests
     ((ExtendedService) extendedService).noOp();
 
     try {
-      ClassLoader proxyLoader = extendedService.getClass().getClassLoader();
+      final ClassLoader proxyLoader = extendedService.getClass().getClassLoader();
       assert ExtendedService.class.equals(proxyLoader.loadClass(ExtendedService.class.getName()));
       proxyLoader.loadClass("some-non-existent-class");
       assert false : "Expected ClassNotFoundException";
-    } catch (ClassNotFoundException e) {}
+    } catch (final ClassNotFoundException e) {}
 
     assert extendedServices.iterator().next() instanceof SimpleService;
     assert extendedServices.iterator().next() instanceof ExtendedService;

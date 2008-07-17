@@ -23,6 +23,7 @@ import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.SYNCHRONIZED;
+import static java.lang.reflect.Modifier.VOLATILE;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ASTORE;
@@ -92,9 +93,10 @@ final class ImportGlue {
     }
 
     final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
+    final int flags = PRIVATE | (false ? VOLATILE : FINAL);
 
     cw.visit(V1_5, PUBLIC, proxyName, null, superName, interfaceNames);
-    cw.visitField(PRIVATE | FINAL, "handle", OBJECT_DESC, null, null).visitEnd();
+    cw.visitField(flags, "handle", OBJECT_DESC, null, null).visitEnd();
 
     init(cw, superName, proxyName);
     for (final Method m : clazz.getMethods()) {

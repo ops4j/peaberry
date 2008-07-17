@@ -16,20 +16,21 @@
 
 package org.ops4j.peaberry.builders;
 
-import org.ops4j.peaberry.Peaberry;
+import org.ops4j.peaberry.Import;
 
 /**
- * See the dynamic service EDSL examples at {@link Peaberry}.
+ * Provide runtime decoration of imported services - this could be extra
+ * indirection like <code>Import<Import<T>></code>, or altered behaviour.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface DynamicServiceBuilder<T>
-    extends DecoratedServiceBuilder<T> {
+public interface ImportDecorator<T> {
 
   /**
-   * Statically cache the result of the first successful service lookup.
+   * Decorate an imported service.
    * 
-   * @return service EDSL builder
+   * @param handle service handle
+   * @return decorated service handle
    */
-  DecoratedServiceBuilder<T> constant();
+  Import<?> decorate(Import<T> handle);
 }

@@ -55,9 +55,9 @@ public class ServiceScopingTests {
     binder.bind(serviceKey).toProvider(CountingServiceProvider.class);
 
     binder.bind(SimpleService.class).toProvider(
-        service(SimpleService.class).registry(registryKey).single());
+        service(SimpleService.class).in(registryKey).single());
 
-    binder.bind(Export.class).toProvider(registration(serviceKey).registry(registryKey).export());
+    binder.bind(Export.class).toProvider(registration(serviceKey).in(registryKey).export());
   }
 
   protected static class CountingRegistryProvider

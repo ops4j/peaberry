@@ -35,5 +35,5 @@ public interface ScopedServiceBuilder<T>
    * @param key registry key
    * @return service EDSL builder
    */
-  ServiceProxyBuilder<T> registry(Key<? extends ServiceRegistry> key);
+  ServiceProxyBuilder<T> in(Key<? extends ServiceRegistry> key);
 }

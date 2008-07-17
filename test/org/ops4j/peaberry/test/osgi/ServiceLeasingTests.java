@@ -20,10 +20,13 @@ import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 
+import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.builders.ImportDecorator;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
 import com.google.inject.Inject;
+import com.google.inject.Key;
 import com.google.inject.name.Named;
 
 /**
@@ -35,19 +38,29 @@ import com.google.inject.name.Named;
 public class ServiceLeasingTests
     extends OSGiServiceTester {
 
+  private static class LeasedDecorator
+      implements ImportDecorator<Object> {
+
+    public Import<?> decorate(final Import<Object> handle) {
+      return handle;// TODO: leasing algorithm
+    }
+  }
+
   @Test(enabled = false)
   public static void configure(final Binder binder) {
+
+    final Key<LeasedDecorator> leasedDecoratorKey = Key.get(LeasedDecorator.class);
 
     binder.bind(SimpleService.class).toProvider(service(SimpleService.class).single());
 
     binder.bind(SimpleService.class).annotatedWith(named("leased")).toProvider(
-        service(SimpleService.class).leased(2).single());
+        service(SimpleService.class).decoratedWith(leasedDecoratorKey).single());
 
     binder.bind(SimpleService.class).annotatedWith(named("static")).toProvider(
         service(SimpleService.class).constant().single());
 
     binder.bind(iterable(SimpleService.class)).annotatedWith(named("leased")).toProvider(
-        service(SimpleService.class).leased(2).multiple());
+        service(SimpleService.class).decoratedWith(leasedDecoratorKey).multiple());
 
     binder.bind(iterable(SimpleService.class)).annotatedWith(named("static")).toProvider(
         service(SimpleService.class).constant().multiple());

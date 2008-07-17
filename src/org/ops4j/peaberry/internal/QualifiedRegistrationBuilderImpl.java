@@ -55,7 +55,7 @@ public final class QualifiedRegistrationBuilderImpl<T>
     return this;
   }
 
-  public RegistrationProxyBuilder<T> registry(final Key<? extends ServiceRegistry> key) {
+  public RegistrationProxyBuilder<T> in(final Key<? extends ServiceRegistry> key) {
     registryKey = key;
     return this;
   }

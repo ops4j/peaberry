@@ -58,7 +58,7 @@ public class ServiceRankingTests
     try {
       services.iterator().remove();
       assert false : "Expected UnsupportedOperationException";
-    } catch (UnsupportedOperationException e) {}
+    } catch (final UnsupportedOperationException e) {}
 
     disableAllServices();
   }
