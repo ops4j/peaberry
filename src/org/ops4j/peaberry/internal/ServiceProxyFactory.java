@@ -21,6 +21,7 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.importProxy;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
  * Factory methods for various types of dynamic service proxies.
@@ -32,8 +33,8 @@ final class ServiceProxyFactory {
   // instances not allowed
   private ServiceProxyFactory() {}
 
-  public static <T> Iterable<T> serviceProxies(final Class<? extends T> clazz,
-      final Iterable<Import<T>> handles) {
+  public static <S, T extends S> Iterable<T> serviceProxies(final Class<? extends T> clazz,
+      final ImportDecorator<S> deco, final Iterable<Import<T>> handles, final boolean constant) {
 
     return new Iterable<T>() {
       public Iterator<T> iterator() {
@@ -46,7 +47,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            return importProxy(clazz, i.next());
+            return importProxy(clazz, deco == null ? i.next() : deco.decorate(i.next()), constant);
           }
 
           public void remove() {
@@ -57,16 +58,17 @@ final class ServiceProxyFactory {
     };
   }
 
-  public static <T> T serviceProxy(final Class<? extends T> clazz, final Iterable<Import<T>> handles) {
+  public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
+      final ImportDecorator<S> deco, final Iterable<Import<T>> handles, final boolean constant) {
 
-    return importProxy(clazz, new Import<Import<T>>() {
-
-      public Import<T> get() {
-        return handles.iterator().next();
+    final Import<T> dynamicLookup = new Import<T>() {
+      public T get() {
+        return handles.iterator().next().get();
       }
 
       public void unget() {}
+    };
 
-    });
+    return importProxy(clazz, deco == null ? dynamicLookup : deco.decorate(dynamicLookup), constant);
   }
 }

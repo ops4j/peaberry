@@ -89,8 +89,16 @@ public final class DynamicServiceBuilderImpl<T>
       Injector injector;
 
       public T get() {
+
+        final ImportDecorator<? super T> decorator;
+        if (null == decoratorKey) {
+          decorator = null;
+        } else {
+          decorator = injector.getInstance(decoratorKey);
+        }
+
         final ServiceRegistry registry = injector.getInstance(registryKey);
-        return serviceProxy(clazz, registry.lookup(clazz, filter));
+        return serviceProxy(clazz, decorator, registry.lookup(clazz, filter), constant);
       }
     };
   }
@@ -102,8 +110,16 @@ public final class DynamicServiceBuilderImpl<T>
       Injector injector;
 
       public Iterable<T> get() {
+
+        final ImportDecorator<? super T> decorator;
+        if (null == decoratorKey) {
+          decorator = null;
+        } else {
+          decorator = injector.getInstance(decoratorKey);
+        }
+
         final ServiceRegistry registry = injector.getInstance(registryKey);
-        return serviceProxies(clazz, registry.lookup(clazz, filter));
+        return serviceProxies(clazz, decorator, registry.lookup(clazz, filter), constant);
       }
     };
   }

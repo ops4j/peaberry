@@ -41,7 +41,7 @@ public class ServiceLeasingTests
   private static class LeasedDecorator
       implements ImportDecorator<Object> {
 
-    public Import<?> decorate(final Import<Object> handle) {
+    public <T> Import<T> decorate(final Import<T> handle) {
       return handle;// TODO: leasing algorithm
     }
   }

@@ -19,12 +19,11 @@ package org.ops4j.peaberry.builders;
 import org.ops4j.peaberry.Import;
 
 /**
- * Provide runtime decoration of imported services - this could be extra
- * indirection like <code>Import<Import<T>></code>, or altered behaviour.
+ * Provide runtime decoration of imported services.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
-public interface ImportDecorator<T> {
+public interface ImportDecorator<S> {
 
   /**
    * Decorate an imported service.
@@ -32,5 +31,5 @@ public interface ImportDecorator<T> {
    * @param handle service handle
    * @return decorated service handle
    */
-  Import<?> decorate(Import<T> handle);
+  <T extends S> Import<T> decorate(Import<T> handle);
 }
