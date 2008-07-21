@@ -53,6 +53,6 @@
 
   <target name="test.dist" depends="dist,test.peaberry"/>
 
-  <target name="reports" depends="guice,clean,with.clover,peaberry,test.peaberry,clover.report"/>
+  <target name="reports" depends="guice,clean,with.clover,peaberry,test.peaberry,clover.report,pmd"/>
 
 </project>

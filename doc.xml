@@ -1,6 +1,25 @@
 <?xml version="1.0"?>
 <project name="doc">
 
+  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+    <classpath>
+      <pathelement location="${antlib}/jaxen.jar"/>
+      <pathelement location="${antlib}/pmd.jar"/>
+      <pathelement location="${asm.jar}"/>
+    </classpath>
+  </taskdef>
+
+  <target name="pmd">
+    <mkdir dir="${doc}/coverage"/>
+    <pmd rulesetfiles="pmd.xml" shortFilenames="true">
+      <formatter type="html" toFile="${doc}/coverage/pmd.html" linkPrefix="" linePrefix="src-"/>
+      <fileset dir="${src}" includes="**/*.java" excludes="**/OSGiServiceRegistry.java"/>
+      <auxclasspath>
+        <pathelement location="${build}/classes"/>
+      </auxclasspath>
+    </pmd>
+  </target>
+
   <target name="doc">
     <mkdir dir="${doc}/javadoc"/>
     <javadoc destdir="${doc}/javadoc" classpath="${build.cp}" sourcepath="${src}" author="no"
