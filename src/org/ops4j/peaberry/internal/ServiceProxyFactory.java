@@ -16,9 +16,13 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.util.Collections.emptyList;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.importProxy;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
@@ -34,7 +38,32 @@ final class ServiceProxyFactory {
   private ServiceProxyFactory() {}
 
   public static <S, T extends S> Iterable<T> serviceProxies(final Class<? extends T> clazz,
-      final ImportDecorator<S> deco, final Iterable<Import<T>> handles, final boolean constant) {
+      final Iterable<Import<T>> handles, final ImportDecorator<S> deco, final boolean sticky) {
+
+    if (sticky) {
+      return new Iterable<T>() {
+        private volatile List<T> stickyProxies = emptyList();
+
+        private List<T> getActiveServices() {
+          final List<T> proxies = new ArrayList<T>();
+          for (final Import<T> h : handles) {
+            proxies.add(importProxy(clazz, deco != null ? deco.decorate(h) : h, true));
+          }
+          return proxies;
+        }
+
+        public Iterator<T> iterator() {
+          if (stickyProxies.size() == 0) {
+            synchronized (this) {
+              if (stickyProxies.size() == 0) {
+                stickyProxies = getActiveServices();
+              }
+            }
+          }
+          return stickyProxies.iterator();
+        }
+      };
+    }
 
     return new Iterable<T>() {
       public Iterator<T> iterator() {
@@ -47,7 +76,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            return importProxy(clazz, deco == null ? i.next() : deco.decorate(i.next()), constant);
+            return importProxy(clazz, deco != null ? deco.decorate(i.next()) : i.next(), false);
           }
 
           public void remove() {
@@ -59,16 +88,24 @@ final class ServiceProxyFactory {
   }
 
   public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
-      final ImportDecorator<S> deco, final Iterable<Import<T>> handles, final boolean constant) {
+      final Iterable<Import<T>> handles, final ImportDecorator<S> deco, final boolean sticky) {
 
-    final Import<T> dynamicLookup = new Import<T>() {
-      public T get() {
-        return handles.iterator().next().get();
-      }
+    final Callable<Import<T>> deferredLookup;
 
-      public void unget() {}
-    };
+    if (deco != null) {
+      deferredLookup = new Callable<Import<T>>() {
+        public Import<T> call() {
+          return deco.decorate(handles.iterator().next());
+        }
+      };
+    } else {
+      deferredLookup = new Callable<Import<T>>() {
+        public Import<T> call() {
+          return handles.iterator().next();
+        }
+      };
+    }
 
-    return importProxy(clazz, deco == null ? dynamicLookup : deco.decorate(dynamicLookup), constant);
+    return importProxy(clazz, deferredLookup, sticky);
   }
 }

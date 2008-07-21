@@ -27,9 +27,9 @@ public interface DynamicServiceBuilder<T>
     extends DecoratedServiceBuilder<T> {
 
   /**
-   * Statically cache the result of the first successful service lookup.
+   * Always use the result of the first successful service lookup.
    * 
    * @return service EDSL builder
    */
-  DecoratedServiceBuilder<T> constant();
+  DecoratedServiceBuilder<T> sticky();
 }

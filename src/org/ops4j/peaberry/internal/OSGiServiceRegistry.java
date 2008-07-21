@@ -102,7 +102,9 @@ public final class OSGiServiceRegistry
               public T get() {
                 try {
                   final T obj = type.cast(bundleContext.getService(ref));
-                  obj.getClass(); // force NPE if null
+                  if (null == obj) {
+                    throw new ServiceUnavailableException();
+                  }
                   return obj;
                 } catch (final Exception e) {
                   throw new ServiceUnavailableException(e);

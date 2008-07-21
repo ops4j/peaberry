@@ -42,7 +42,16 @@ public class ServiceLeasingTests
       implements ImportDecorator<Object> {
 
     public <T> Import<T> decorate(final Import<T> handle) {
-      return handle;// TODO: leasing algorithm
+      return new Import<T>() {
+
+        public T get() {
+          return handle.get();// TODO: leasing
+        }
+
+        public void unget() {
+          handle.unget();
+        }
+      };
     }
   }
 
@@ -57,13 +66,13 @@ public class ServiceLeasingTests
         service(SimpleService.class).decoratedWith(leasedDecoratorKey).single());
 
     binder.bind(SimpleService.class).annotatedWith(named("static")).toProvider(
-        service(SimpleService.class).constant().single());
+        service(SimpleService.class).sticky().single());
 
     binder.bind(iterable(SimpleService.class)).annotatedWith(named("leased")).toProvider(
         service(SimpleService.class).decoratedWith(leasedDecoratorKey).multiple());
 
     binder.bind(iterable(SimpleService.class)).annotatedWith(named("static")).toProvider(
-        service(SimpleService.class).constant().multiple());
+        service(SimpleService.class).sticky().multiple());
   }
 
   @Inject

@@ -44,21 +44,19 @@ public final class DynamicServiceBuilderImpl<T>
   final Class<? extends T> clazz;
 
   // default configuration
-  boolean constant = false;
+  boolean sticky = false;
   String filter = null;
 
-  // services are never decorated by default
+  // custom configuration keys
   Key<? extends ImportDecorator<? super T>> decoratorKey = null;
-
-  // use plain injection key to find default service registry implementation
-  Key<? extends ServiceRegistry> registryKey = Key.get(ServiceRegistry.class);
+  Key<? extends ServiceRegistry> registryKey = null;
 
   public DynamicServiceBuilderImpl(final Class<? extends T> clazz) {
     this.clazz = clazz;
   }
 
-  public DecoratedServiceBuilder<T> constant() {
-    constant = true;
+  public DecoratedServiceBuilder<T> sticky() {
+    sticky = true;
     return this;
   }
 
@@ -90,15 +88,10 @@ public final class DynamicServiceBuilderImpl<T>
 
       public T get() {
 
-        final ImportDecorator<? super T> decorator;
-        if (null == decoratorKey) {
-          decorator = null;
-        } else {
-          decorator = injector.getInstance(decoratorKey);
-        }
+        final ImportDecorator<? super T> decorator = getDecorator(injector);
+        final ServiceRegistry registry = getRegistry(injector);
 
-        final ServiceRegistry registry = injector.getInstance(registryKey);
-        return serviceProxy(clazz, decorator, registry.lookup(clazz, filter), constant);
+        return serviceProxy(clazz, registry.lookup(clazz, filter), decorator, sticky);
       }
     };
   }
@@ -111,16 +104,25 @@ public final class DynamicServiceBuilderImpl<T>
 
       public Iterable<T> get() {
 
-        final ImportDecorator<? super T> decorator;
-        if (null == decoratorKey) {
-          decorator = null;
-        } else {
-          decorator = injector.getInstance(decoratorKey);
-        }
+        final ImportDecorator<? super T> decorator = getDecorator(injector);
+        final ServiceRegistry registry = getRegistry(injector);
 
-        final ServiceRegistry registry = injector.getInstance(registryKey);
-        return serviceProxies(clazz, decorator, registry.lookup(clazz, filter), constant);
+        return serviceProxies(clazz, registry.lookup(clazz, filter), decorator, sticky);
       }
     };
+  }
+
+  ImportDecorator<? super T> getDecorator(final Injector injector) {
+    if (decoratorKey != null) {
+      return injector.getInstance(decoratorKey);
+    }
+    return null;
+  }
+
+  ServiceRegistry getRegistry(final Injector injector) {
+    if (registryKey != null) {
+      return injector.getInstance(registryKey);
+    }
+    return injector.getInstance(ServiceRegistry.class);
   }
 }
