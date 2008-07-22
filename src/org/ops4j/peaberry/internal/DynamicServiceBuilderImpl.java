@@ -44,8 +44,8 @@ public final class DynamicServiceBuilderImpl<T>
   final Class<? extends T> clazz;
 
   // default configuration
-  boolean sticky = false; // NOPMD
-  String filter = null; // NOPMD
+  boolean sticky = false;
+  String filter = null;
 
   // custom configuration keys
   Key<? extends ImportDecorator<? super T>> decoratorKey = null;

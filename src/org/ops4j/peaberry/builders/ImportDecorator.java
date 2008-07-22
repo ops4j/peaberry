@@ -19,7 +19,7 @@ package org.ops4j.peaberry.builders;
 import org.ops4j.peaberry.Import;
 
 /**
- * Provide runtime decoration of imported services.
+ * Provide runtime decoration/intercepting of imported services.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */

@@ -40,18 +40,15 @@ final class BestServiceComparator
     final long lhsId = getNumber(lhs, SERVICE_ID);
     final long rhsId = getNumber(rhs, SERVICE_ID);
 
-    // /CLOVER:OFF
     if (lhsId == rhsId) {
       return 0;
-    } // /CLOVER:ON
+    }
 
     final long lhsRanking = getNumber(lhs, SERVICE_RANKING);
     final long rhsRanking = getNumber(rhs, SERVICE_RANKING);
 
     if (lhsRanking == rhsRanking) {
-      // /CLOVER:OFF
       return lhsId < rhsId ? -1 : 1;
-      // /CLOVER:ON
     }
 
     return lhsRanking < rhsRanking ? 1 : -1;
@@ -59,12 +56,9 @@ final class BestServiceComparator
 
   private static long getNumber(final ServiceReference ref, final String key) {
     final Object value = ref.getProperty(key);
-    // /CLOVER:OFF
     if (value instanceof Number) {
-      // /CLOVER:ON
       return ((Number) value).longValue();
     }
-    // /CLOVER:OFF
     return 0L;
   }
 }

@@ -25,12 +25,14 @@
 
   <target name="compile" depends="guice">
     <mkdir dir="${build}/classes"/>
-    <javac source="1.5" target="1.5" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
+    <javac source="1.5" target="1.5" debug="true"
+        srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}"/>
   </target>
 
   <target name="test.compile" depends="compile">
     <mkdir dir="${build}/test-classes"/>
-    <javac source="1.5" target="1.5" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
+    <javac source="1.5" target="1.5" debug="true"
+        srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}"/>
   </target>
 
   <target name="clean.guice">

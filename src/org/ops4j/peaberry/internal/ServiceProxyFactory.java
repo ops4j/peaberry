@@ -22,7 +22,6 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.importProxy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
@@ -96,22 +95,29 @@ final class ServiceProxyFactory {
   public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> deco, final boolean sticky) {
 
-    final Callable<Import<T>> deferredLookup;
+    final Import<T> lookup = new Import<T>() {
+      private long count = 0L;
+      private Import<T> handle;
 
-    if (null == deco) {
-      deferredLookup = new Callable<Import<T>>() {
-        public Import<T> call() {
-          return handles.iterator().next();
+      public synchronized T get() {
+        count++;
+        if (null == handle) {
+          handle = handles.iterator().next();
         }
-      };
-    } else {
-      deferredLookup = new Callable<Import<T>>() {
-        public Import<T> call() {
-          return deco.decorate(handles.iterator().next());
-        }
-      };
-    }
+        return handle.get();
+      }
 
-    return importProxy(clazz, deferredLookup, sticky);
+      public synchronized void unget() {
+        try {
+          handle.unget();
+        } finally {
+          if (--count == 0) {
+            handle = null;
+          }
+        }
+      }
+    };
+
+    return importProxy(clazz, null == deco ? lookup : deco.decorate(lookup), sticky);
   }
 }

@@ -24,11 +24,9 @@ import static org.ops4j.peaberry.internal.ImportGlue.getProxyName;
 
 import java.lang.reflect.Constructor;
 import java.security.PrivilegedAction;
-import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
-import org.ops4j.peaberry.ServiceUnavailableException;
 
 import com.google.common.collect.ReferenceMap;
 
@@ -66,26 +64,8 @@ final class ImportProxyClassLoader
       final Constructor<?> ctor = proxyClazz.getConstructor(Object.class);
       return clazz.cast(ctor.newInstance(handle));
     } catch (final Exception e) {
-      // /CLOVER:OFF
       throw new ServiceException(e);
-      // /CLOVER:ON
     }
-  }
-
-  public static <T> T importProxy(final Class<? extends T> clazz, final Callable<Import<T>> handle,
-      final boolean sticky) {
-    return importProxy(clazz, new Import<Import<T>>() {
-
-      public Import<T> get() {
-        try {
-          return handle.call();
-        } catch (final Exception e) {
-          throw new ServiceUnavailableException(e);
-        }
-      }
-
-      public void unget() {}
-    }, sticky);
   }
 
   ImportProxyClassLoader(final ClassLoader loader) {

@@ -41,10 +41,10 @@ public final class QualifiedRegistrationBuilderImpl<T>
   final Key<? extends T> implementationKey;
 
   // default configuration
-  Map<String, ?> attributes = null; // NOPMD
+  Map<String, ?> attributes = null;
 
-  // use plain injection key to find default service registry implementation
-  Key<? extends ServiceRegistry> registryKey = Key.get(ServiceRegistry.class);
+  // custom configuration keys
+  Key<? extends ServiceRegistry> registryKey = null;
 
   public QualifiedRegistrationBuilderImpl(final Key<? extends T> key) {
     this.implementationKey = key;
@@ -69,12 +69,19 @@ public final class QualifiedRegistrationBuilderImpl<T>
       public Export<T> get() {
 
         // time to lookup the actual implementation bindings
-        final ServiceRegistry registry = injector.getInstance(registryKey);
+        final ServiceRegistry registry = getRegistry(injector);
         final T serviceImpl = injector.getInstance(implementationKey);
 
         // register implementation with service registry
         return registry.export(serviceImpl, attributes);
       }
     };
+  }
+
+  ServiceRegistry getRegistry(final Injector injector) {
+    if (registryKey != null) {
+      return injector.getInstance(registryKey);
+    }
+    return injector.getInstance(ServiceRegistry.class);
   }
 }
