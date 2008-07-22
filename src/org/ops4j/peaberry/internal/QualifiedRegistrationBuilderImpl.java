@@ -41,7 +41,7 @@ public final class QualifiedRegistrationBuilderImpl<T>
   final Key<? extends T> implementationKey;
 
   // default configuration
-  Map<String, ?> attributes = null;
+  Map<String, ?> attributes = null; // NOPMD
 
   // use plain injection key to find default service registry implementation
   Key<? extends ServiceRegistry> registryKey = Key.get(ServiceRegistry.class);

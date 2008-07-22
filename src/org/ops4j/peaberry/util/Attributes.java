@@ -37,6 +37,8 @@ import javax.naming.ldap.Rdn;
  */
 public final class Attributes {
 
+  private static final Logger LOGGER = Logger.getLogger(Attributes.class.getName());
+
   // instances not allowed
   private Attributes() {}
 
@@ -61,7 +63,9 @@ public final class Attributes {
         final String key = (String) e.nextElement();
         attributes.put(key, properties.getProperty(key));
       }
-    } catch (final ClassCastException e) {}
+    } catch (final ClassCastException e) {
+      LOGGER.warning("Property map contains non-String key: " + e);
+    }
 
     // now add non-String values that have String keys
     for (final Entry<?, ?> entry : properties.entrySet()) {
@@ -83,14 +87,13 @@ public final class Attributes {
   public static Map<String, ?> names(final String... names) {
 
     final Map<String, Object> attributes = new HashMap<String, Object>();
-    final Logger logger = Logger.getLogger(Attributes.class.getName());
 
     for (final String n : names) {
       try {
-        final Rdn rdn = new Rdn(n);
+        final Rdn rdn = new Rdn(n); // NOPMD
         attributes.put(rdn.getType(), rdn.getValue());
       } catch (final InvalidNameException e) {
-        logger.warning("Bad LDAP name: " + n);
+        LOGGER.warning("Bad LDAP name: " + n);
       }
     }
 

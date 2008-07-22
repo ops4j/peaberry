@@ -41,28 +41,7 @@ final class ServiceProxyFactory {
       final Iterable<Import<T>> handles, final ImportDecorator<S> deco, final boolean sticky) {
 
     if (sticky) {
-      return new Iterable<T>() {
-        private volatile List<T> stickyProxies = emptyList();
-
-        private List<T> getActiveServices() {
-          final List<T> proxies = new ArrayList<T>();
-          for (final Import<T> h : handles) {
-            proxies.add(importProxy(clazz, deco != null ? deco.decorate(h) : h, true));
-          }
-          return proxies;
-        }
-
-        public Iterator<T> iterator() {
-          if (stickyProxies.size() == 0) {
-            synchronized (this) {
-              if (stickyProxies.size() == 0) {
-                stickyProxies = getActiveServices();
-              }
-            }
-          }
-          return stickyProxies.iterator();
-        }
-      };
+      return stickyServiceProxies(clazz, handles, deco);
     }
 
     return new Iterable<T>() {
@@ -76,7 +55,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            return importProxy(clazz, deco != null ? deco.decorate(i.next()) : i.next(), false);
+            return importProxy(clazz, null == deco ? i.next() : deco.decorate(i.next()), false);
           }
 
           public void remove() {
@@ -87,21 +66,48 @@ final class ServiceProxyFactory {
     };
   }
 
+  private static <S, T extends S> Iterable<T> stickyServiceProxies(final Class<? extends T> clazz,
+      final Iterable<Import<T>> handles, final ImportDecorator<S> deco) {
+
+    return new Iterable<T>() {
+      private volatile List<T> stickyProxies = emptyList();
+
+      private List<T> getActiveServices() {
+        final List<T> proxies = new ArrayList<T>();
+        for (final Import<T> h : handles) {
+          proxies.add(importProxy(clazz, null == deco ? h : deco.decorate(h), true));
+        }
+        return proxies;
+      }
+
+      public Iterator<T> iterator() {
+        if (stickyProxies.size() == 0) {
+          synchronized (this) {
+            if (stickyProxies.size() == 0) {
+              stickyProxies = getActiveServices();
+            }
+          }
+        }
+        return stickyProxies.iterator();
+      }
+    };
+  }
+
   public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> deco, final boolean sticky) {
 
     final Callable<Import<T>> deferredLookup;
 
-    if (deco != null) {
+    if (null == deco) {
       deferredLookup = new Callable<Import<T>>() {
         public Import<T> call() {
-          return deco.decorate(handles.iterator().next());
+          return handles.iterator().next();
         }
       };
     } else {
       deferredLookup = new Callable<Import<T>>() {
         public Import<T> call() {
-          return handles.iterator().next();
+          return deco.decorate(handles.iterator().next());
         }
       };
     }

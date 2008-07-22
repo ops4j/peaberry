@@ -22,8 +22,8 @@
 
   <target name="doc">
     <mkdir dir="${doc}/javadoc"/>
-    <javadoc destdir="${doc}/javadoc" classpath="${build.cp}" sourcepath="${src}" author="no"
-        windowtitle="${title}">
+    <javadoc destdir="${doc}/javadoc" classpath="${build.cp}" author="no" windowtitle="${title}">
+      <packageset dir="${src}" excludes="**/internal/**"/>
       <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
       <link href="http://google-guice.googlecode.com/svn/trunk/javadoc/"/>
       <link href="http://aopalliance.sourceforge.net/doc/"/>
