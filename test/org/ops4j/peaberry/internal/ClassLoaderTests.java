@@ -33,13 +33,13 @@ public final class ClassLoaderTests {
       // cannot proxy a null class
       ImportProxyClassLoader.importProxy(null, null);
       assert false : "Expected service exception";
-    } catch (ServiceException e) {}
+    } catch (final ServiceException e) {}
 
     try {
       // cannot proxy a final class
       ImportProxyClassLoader.importProxy(String.class, null);
       assert false : "Expected service exception";
-    } catch (ServiceException e) {}
+    } catch (final ServiceException e) {}
 
     // but can proxy an interface from the java.* packages
     ImportProxyClassLoader.importProxy(Runnable.class, null);

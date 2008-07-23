@@ -38,7 +38,7 @@ import com.google.inject.name.Named;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceInjectionTests", suiteName = "OSGi")
-public class ServiceInjectionTests
+public final class ServiceInjectionTests
     extends OSGiServiceTester {
 
   @Test(enabled = false)
@@ -58,8 +58,9 @@ public class ServiceInjectionTests
 
   final SimpleService ctorService;
 
-  // default constructor for TestNG
-  protected ServiceInjectionTests() {
+  // constructor for initial TestNG testcase construction
+  // (the real test will use the inject-able constructor)
+  ServiceInjectionTests() {
     ctorService = null;
   }
 
@@ -76,7 +77,7 @@ public class ServiceInjectionTests
   }
 
   // test proxy support for API hierarchies
-  protected abstract static class ExtendedService
+  protected static abstract class ExtendedService
       implements SimpleService {
 
     public abstract double encode();
@@ -93,7 +94,6 @@ public class ServiceInjectionTests
   @SuppressWarnings("unchecked")
   Iterable allServices;
 
-  @SuppressWarnings("unchecked")
   public void checkInjection() {
     disableAllServices();
 
@@ -103,7 +103,9 @@ public class ServiceInjectionTests
 
     missingService((SimpleService) extendedService);
 
-    checkServices(allServices);
+    @SuppressWarnings("unchecked")
+    Iterable<SimpleService> simpleServices = allServices;
+    checkServices(simpleServices);
 
     enableService("A");
 
@@ -113,7 +115,7 @@ public class ServiceInjectionTests
 
     missingService((SimpleService) extendedService);
 
-    checkServices(allServices, "A");
+    checkServices(simpleServices, "A");
 
     enableExtendedService("B");
 
@@ -123,7 +125,7 @@ public class ServiceInjectionTests
 
     checkService((SimpleService) extendedService, "B");
 
-    checkServices(allServices, "B", "A");
+    checkServices(simpleServices, "B", "A");
 
     assert extendedService instanceof SimpleService;
     assert extendedService instanceof ExtendedService;
@@ -141,12 +143,12 @@ public class ServiceInjectionTests
     disableAllServices();
   }
 
-  protected void enableExtendedService(final String name) {
+  void enableExtendedService(final String name) {
     final Properties properties = new Properties();
 
     properties.setProperty("name", name);
     properties.putAll(Attributes.objectClass(SimpleService.class, ExtendedService.class));
-    properties.put(SERVICE_RANKING, 999); // so extended service will appear first
+    properties.put(SERVICE_RANKING, 999); // so extended service appears first
 
     final Export<?> handle = registry.export(new ExtendedService() {
       public String check() {

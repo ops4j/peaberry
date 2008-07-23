@@ -39,7 +39,7 @@ import com.google.inject.name.Named;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceExportTests", suiteName = "OSGi")
-public class ServiceExportTests {
+public final class ServiceExportTests {
 
   @Test(enabled = false)
   public static void configure(final Binder binder) {
@@ -61,7 +61,7 @@ public class ServiceExportTests {
     String say(String name);
   }
 
-  protected static class HelloServiceLong
+  static class HelloServiceLong
       implements HelloService {
 
     public String say(final String name) {
@@ -69,7 +69,7 @@ public class ServiceExportTests {
     }
   }
 
-  protected static class HelloServiceShort
+  static class HelloServiceShort
       implements HelloService {
 
     public String say(final String name) {
@@ -93,7 +93,7 @@ public class ServiceExportTests {
   @Named("B")
   HelloService consumerB;
 
-  private void checkResponse(final String expected, final String result) {
+  void checkResponse(final String expected, final String result) {
     assert expected.equals(result) : "Expected " + expected + ", got " + result;
   }
 

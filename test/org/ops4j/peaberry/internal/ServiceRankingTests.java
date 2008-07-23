@@ -33,7 +33,8 @@ public final class ServiceRankingTests {
   @SuppressWarnings("unused")
   public void cornerCases() {
 
-    ServiceReference empty = new ServiceReference() {
+    // service reference with no properties at all
+    final ServiceReference empty = new ServiceReference() {
 
       public int compareTo(Object reference) {
         return 0;
@@ -60,7 +61,8 @@ public final class ServiceRankingTests {
       }
     };
 
-    ServiceReference basic = new ServiceReference() {
+    // service reference with only a service ID
+    final ServiceReference basic = new ServiceReference() {
 
       public int compareTo(Object reference) {
         return 0;
@@ -90,7 +92,7 @@ public final class ServiceRankingTests {
       }
     };
 
-    BestServiceComparator comparator = new BestServiceComparator();
+    final BestServiceComparator comparator = new BestServiceComparator();
 
     assert 0 == comparator.compare(empty, empty);
     assert 0 == comparator.compare(basic, basic);

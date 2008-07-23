@@ -45,11 +45,11 @@ public abstract class OSGiServiceTester {
 
   static final Map<String, Export<?>> handles = new HashMap<String, Export<?>>();
 
-  protected void enableService(final String name) {
+  protected final void enableService(final String name) {
     enableService(name, 0);
   }
 
-  protected void enableService(final String name, final int ranking) {
+  protected final void enableService(final String name, final int ranking) {
 
     final Properties properties = new Properties();
     properties.put(SERVICE_RANKING, ranking);
@@ -73,30 +73,30 @@ public abstract class OSGiServiceTester {
     assert name.equals(result) : "Expected " + name + ", got " + result;
   }
 
-  protected void disableService(final String name) {
+  protected final void disableService(final String name) {
     handles.remove(name).remove();
   }
 
-  protected void disableAllServices() {
+  protected final void disableAllServices() {
     for (final Export<?> handle : handles.values()) {
       handle.remove();
     }
     handles.clear();
   }
 
-  protected void checkService(final SimpleService service, final String name) {
+  protected final void checkService(final SimpleService service, final String name) {
     final String result = service.check();
     assert name.equals(result) : "Expected " + name + ", got " + result;
   }
 
-  protected void missingService(final SimpleService service) {
+  protected final void missingService(final SimpleService service) {
     try {
       service.check();
       assert false : "Expected service exception";
     } catch (final ServiceUnavailableException e) {}
   }
 
-  protected void checkServices(final Iterable<SimpleService> services, final String... names) {
+  protected final void checkServices(final Iterable<SimpleService> services, final String... names) {
     int i = 0;
     for (final SimpleService service : services) {
       assert names.length > i : "More services than expected";
@@ -111,11 +111,5 @@ public abstract class OSGiServiceTester {
       i++;
     }
     assert names.length == i : "Less services than expected";
-  }
-
-  protected void sleep(final long millis) {
-    try {
-      Thread.sleep(millis);
-    } catch (final InterruptedException e) {}
   }
 }

@@ -42,33 +42,36 @@ import com.google.inject.name.Named;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "DirectServiceTests", suiteName = "OSGi")
-public class DirectServiceTests
-    extends OSGiServiceTester {
+public final class DirectServiceTests {
 
   @Test(enabled = false)
   public static void configure(final Binder binder) {
 
-    binder.bind(export(SimpleService.class)).toProvider(
-        registration(Key.get(SimpleService.class, named("Backing"))).export());
+    binder.bind(export(DummyService.class)).toProvider(
+        registration(Key.get(DummyService.class, named("Backing"))).export());
 
-    binder.bind(SimpleService.class).annotatedWith(named("Service")).toProvider(
-        service(SimpleService.class).direct().single());
+    binder.bind(DummyService.class).annotatedWith(named("Service")).toProvider(
+        service(DummyService.class).direct().single());
 
-    binder.bind(iterable(SimpleService.class)).annotatedWith(named("Service")).toProvider(
-        service(SimpleService.class).direct().multiple());
+    binder.bind(iterable(DummyService.class)).annotatedWith(named("Service")).toProvider(
+        service(DummyService.class).direct().multiple());
 
-    binder.bind(SimpleService.class).annotatedWith(named("Backing")).toProvider(
-        SimpleServiceProvider.class).in(Scopes.SINGLETON);
+    binder.bind(DummyService.class).annotatedWith(named("Backing")).toProvider(
+        DummyServiceProvider.class).in(Scopes.SINGLETON);
 
     binder.bind(Holder.class);
   }
 
-  static class SimpleServiceProvider
-      implements Provider<SimpleService> {
+  protected static interface DummyService {
+    String test();
+  }
 
-    public SimpleService get() {
-      return new SimpleService() {
-        public String check() {
+  static class DummyServiceProvider
+      implements Provider<DummyService> {
+
+    public DummyService get() {
+      return new DummyService() {
+        public String test() {
           return "TEST";
         }
       };
@@ -76,28 +79,28 @@ public class DirectServiceTests
   }
 
   @Retention(RUNTIME)
-  public @interface Nullable {}
+  @interface Nullable {}
 
   static class Holder {
     @Inject
     @Named("Backing")
-    public SimpleService backing;
+    public DummyService backing;
 
     @Inject
     @Nullable
     @Named("Service")
-    public SimpleService service;
+    public DummyService service;
 
     @Inject
     @Named("Service")
-    public Iterable<SimpleService> services;
+    public Iterable<DummyService> services;
   }
 
   @Inject
   Injector injector;
 
   @Inject
-  Export<SimpleService> exportedService;
+  Export<DummyService> exportedService;
 
   public void testWiring() {
 
@@ -105,21 +108,20 @@ public class DirectServiceTests
 
     assert holder.backing == holder.service;
     assert holder.backing == holder.services.iterator().next();
-    checkService(holder.service, "TEST");
-    checkServices(holder.services, "TEST");
+    assert "TEST".equals(holder.service.test());
+    assert "TEST".equals(holder.services.iterator().next().test());
 
     exportedService.remove();
 
     assert holder.backing == holder.service;
     assert holder.backing == holder.services.iterator().next();
-    checkService(holder.service, "TEST");
-    checkServices(holder.services, "TEST");
+    assert "TEST".equals(holder.service.test());
+    assert "TEST".equals(holder.services.iterator().next().test());
 
     holder = injector.getInstance(Holder.class);
 
     assert holder.backing != holder.service;
     assert null == holder.service;
     assert false == holder.services.iterator().hasNext();
-    checkServices(holder.services);
   }
 }

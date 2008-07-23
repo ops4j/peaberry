@@ -47,7 +47,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            return importProxy(clazz, null == decorator ? i.next() : decorator.decorate(i.next()));
+            return importProxy(clazz, apply(decorator, i.next()));
           }
 
           public void remove() {
@@ -75,7 +75,9 @@ final class ServiceProxyFactory {
 
       public synchronized void unget() {
         try {
-          handle.unget();
+          if (null != handle) {
+            handle.unget();
+          }
         } finally {
           if (--count == 0) {
             handle = null;
@@ -84,6 +86,10 @@ final class ServiceProxyFactory {
       }
     };
 
-    return importProxy(clazz, null == decorator ? lookup : decorator.decorate(lookup));
+    return importProxy(clazz, apply(decorator, lookup));
+  }
+
+  static <S, T extends S> Import<T> apply(final ImportDecorator<S> decorator, final Import<T> handle) {
+    return null == decorator ? handle : decorator.decorate(handle);
   }
 }

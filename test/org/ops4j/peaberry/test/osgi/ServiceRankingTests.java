@@ -30,7 +30,7 @@ import com.google.inject.Inject;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceRankingTests", suiteName = "OSGi")
-public class ServiceRankingTests
+public final class ServiceRankingTests
     extends OSGiServiceTester {
 
   @Test(enabled = false)

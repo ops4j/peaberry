@@ -43,7 +43,7 @@ import com.google.inject.Provider;
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
 @Test(testName = "ServiceScopingTests", suiteName = "OSGi")
-public class ServiceScopingTests {
+public final class ServiceScopingTests {
 
   @Test(enabled = false)
   public static void configure(final Binder binder) {
@@ -60,15 +60,15 @@ public class ServiceScopingTests {
     binder.bind(Export.class).toProvider(registration(serviceKey).in(registryKey).export());
   }
 
-  protected static class CountingRegistryProvider
+  static class CountingRegistryProvider
       implements Provider<ServiceRegistry> {
 
     @Inject
     BundleContext bundleContext;
 
-    public static volatile int lookupCount = 0;
-    public static volatile int iteratorCount = 0;
-    public static volatile int exportCount = 0;
+    static volatile int lookupCount = 0;
+    static volatile int iteratorCount = 0;
+    static volatile int exportCount = 0;
 
     public ServiceRegistry get() {
       final ServiceRegistry osgiRegistry = osgiServiceRegistry(bundleContext);
@@ -98,7 +98,7 @@ public class ServiceScopingTests {
     }
   }
 
-  protected static class CountingServiceProvider
+  static class CountingServiceProvider
       implements Provider<SimpleService> {
 
     public SimpleService get() {
