@@ -72,11 +72,23 @@ final class ImportGlue {
   private static final String OBJECT_DESC = getDescriptor(Object.class);
 
   public static String getProxyName(final String clazzName) {
-    return clazzName + "$Proxy";
+    final String safeName;
+    if (clazzName.startsWith("java.")) {
+      safeName = clazzName.replace(".", "$$");
+    } else if (clazzName.startsWith("java/")) {
+      safeName = clazzName.replace("/", "$$");
+    } else {
+      safeName = clazzName;
+    }
+    return safeName + "$$Proxy";
   }
 
   public static String getClazzName(final String proxyName) {
-    return proxyName.replaceAll("\\$Proxy$", "");
+    final String clazzName = proxyName.replaceFirst("\\$\\$Proxy$", "");
+    if (clazzName.startsWith("java$$")) {
+      return clazzName.replace("$$", ".");
+    }
+    return clazzName;
   }
 
   public static byte[] generateProxy(final Class<?> clazz) {

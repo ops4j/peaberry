@@ -40,6 +40,8 @@ final class ImportProxyClassLoader
       final ClassLoader proxyLoader = getProxyClassLoader(clazz.getClassLoader());
       final Class<?> proxyClazz = proxyLoader.loadClass(getProxyName(clazz.getName()));
       return clazz.cast(proxyClazz.getConstructor(Import.class).newInstance(handle));
+    } catch (final LinkageError e) {
+      throw new ServiceException(e);
     } catch (final Exception e) {
       throw new ServiceException(e);
     }
@@ -49,17 +51,18 @@ final class ImportProxyClassLoader
       new ReferenceMap<ClassLoader, ClassLoader>(WEAK, WEAK);
 
   private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
+    final ClassLoader parent = null == typeLoader ? getSystemClassLoader() : typeLoader;
     ClassLoader proxyLoader;
 
     synchronized (PROXY_LOADER_MAP) {
-      proxyLoader = PROXY_LOADER_MAP.get(typeLoader);
+      proxyLoader = PROXY_LOADER_MAP.get(parent);
       if (null == proxyLoader) {
         proxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
           public ClassLoader run() {
-            return new ImportProxyClassLoader(typeLoader);
+            return new ImportProxyClassLoader(parent);
           }
         });
-        PROXY_LOADER_MAP.put(typeLoader, proxyLoader);
+        PROXY_LOADER_MAP.put(parent, proxyLoader);
       }
     }
 
