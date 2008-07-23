@@ -23,18 +23,15 @@ import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.SYNCHRONIZED;
-import static java.lang.reflect.Modifier.VOLATILE;
-import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
+import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ASTORE;
 import static org.objectweb.asm.Opcodes.ATHROW;
 import static org.objectweb.asm.Opcodes.CHECKCAST;
 import static org.objectweb.asm.Opcodes.DUP;
 import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.IFNE;
 import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.INSTANCEOF;
 import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
@@ -65,8 +62,13 @@ import org.ops4j.peaberry.Import;
  */
 final class ImportGlue {
 
+  // instances not allowed
+  private ImportGlue() {}
+
   private static final String EXCEPTION_NAME = getInternalName(Exception.class);
   private static final String IMPORT_NAME = getInternalName(Import.class);
+
+  private static final String IMPORT_DESC = getDescriptor(Import.class);
   private static final String OBJECT_DESC = getDescriptor(Object.class);
 
   public static String getProxyName(final String clazzName) {
@@ -92,11 +94,10 @@ final class ImportGlue {
       interfaceNames = getInternalNames(clazz.getInterfaces());
     }
 
-    final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
-    final int flags = PRIVATE | (false ? VOLATILE : FINAL);
+    final ClassWriter cw = new ClassWriter(COMPUTE_FRAMES);
 
-    cw.visit(V1_5, PUBLIC, proxyName, null, superName, interfaceNames);
-    cw.visitField(flags, "handle", OBJECT_DESC, null, null).visitEnd();
+    cw.visit(V1_5, PUBLIC | FINAL, proxyName, null, superName, interfaceNames);
+    cw.visitField(PRIVATE | FINAL, "handle", IMPORT_DESC, null, null).visitEnd();
 
     init(cw, superName, proxyName);
     for (final Method m : clazz.getMethods()) {
@@ -112,9 +113,7 @@ final class ImportGlue {
 
   private static void init(final ClassWriter cw, final String superName, final String proxyName) {
 
-    final String descriptor = '(' + OBJECT_DESC + ")V";
-
-    final MethodVisitor v = cw.visitMethod(PUBLIC, "<init>", descriptor, null, null);
+    final MethodVisitor v = cw.visitMethod(PUBLIC, "<init>", '(' + IMPORT_DESC + ")V", null, null);
 
     v.visitCode();
 
@@ -122,7 +121,7 @@ final class ImportGlue {
     v.visitInsn(DUP);
     v.visitMethodInsn(INVOKESPECIAL, superName, "<init>", "()V");
     v.visitVarInsn(ALOAD, 1);
-    v.visitFieldInsn(PUTFIELD, proxyName, "handle", OBJECT_DESC);
+    v.visitFieldInsn(PUTFIELD, proxyName, "handle", IMPORT_DESC);
     v.visitInsn(RETURN);
 
     v.visitMaxs(0, 0);
@@ -142,9 +141,6 @@ final class ImportGlue {
     final Label start = new Label();
     final Label end = new Label();
 
-    final Label isHandle = new Label();
-    final Label loop = new Label();
-
     final Label ungetR = new Label();
     final Label finalR = new Label();
     final Label catchX = new Label();
@@ -157,22 +153,14 @@ final class ImportGlue {
     v.visitTryCatchBlock(ungetR, finalR, finalR, EXCEPTION_NAME);
     v.visitTryCatchBlock(ungetX, finalX, finalX, EXCEPTION_NAME);
 
-    v.visitLabel(start);
-
     v.visitVarInsn(ALOAD, 0);
-    v.visitFieldInsn(GETFIELD, proxyName, "handle", OBJECT_DESC);
-    v.visitJumpInsn(GOTO, isHandle);
-
-    v.visitLabel(loop);
-    v.visitTypeInsn(CHECKCAST, IMPORT_NAME);
+    v.visitFieldInsn(GETFIELD, proxyName, "handle", IMPORT_DESC);
     v.visitInsn(DUP);
     v.visitVarInsn(ASTORE, 0);
-    v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "get", "()" + OBJECT_DESC);
 
-    v.visitLabel(isHandle);
-    v.visitInsn(DUP);
-    v.visitTypeInsn(INSTANCEOF, IMPORT_NAME);
-    v.visitJumpInsn(IFNE, loop);
+    v.visitLabel(start);
+
+    v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "get", "()" + OBJECT_DESC);
 
     int i = 1;
     for (final Type t : getArgumentTypes(method)) {
@@ -199,9 +187,8 @@ final class ImportGlue {
     v.visitLabel(ungetR);
 
     v.visitVarInsn(ALOAD, 0);
-    v.visitInsn(DUP);
-    v.visitTypeInsn(CHECKCAST, IMPORT_NAME);
     v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", "()V");
+    v.visitInsn(ACONST_NULL);
 
     v.visitLabel(finalR);
 
@@ -217,9 +204,8 @@ final class ImportGlue {
     v.visitLabel(ungetX);
 
     v.visitVarInsn(ALOAD, 0);
-    v.visitInsn(DUP);
-    v.visitTypeInsn(CHECKCAST, IMPORT_NAME);
     v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", "()V");
+    v.visitInsn(ACONST_NULL);
 
     v.visitLabel(finalX);
 

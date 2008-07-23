@@ -20,6 +20,7 @@ import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.properties;
 import static org.ops4j.peaberry.util.Filters.objectClass;
+import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import java.util.Properties;
 
@@ -48,8 +49,8 @@ public class ServiceInjectionTests
     binder.bind(Object.class).annotatedWith(named("extendedService")).toProvider(
         service(ExtendedService.class).single());
 
-    binder.bind(Iterable.class).annotatedWith(named("extendedService")).toProvider(
-        service(ExtendedService.class).filter(objectClass(ExtendedService.class)).multiple());
+    binder.bind(Iterable.class).annotatedWith(named("allServices")).toProvider(
+        service(SimpleService.class).filter(objectClass(SimpleService.class)).multiple());
   }
 
   @Inject
@@ -88,10 +89,11 @@ public class ServiceInjectionTests
   Object extendedService;
 
   @Inject
-  @Named("extendedService")
+  @Named("allServices")
   @SuppressWarnings("unchecked")
-  Iterable extendedServices;
+  Iterable allServices;
 
+  @SuppressWarnings("unchecked")
   public void checkInjection() {
     disableAllServices();
 
@@ -99,15 +101,29 @@ public class ServiceInjectionTests
     missingService(fieldService);
     missingService(setterService);
 
+    missingService((SimpleService) extendedService);
+
+    checkServices(allServices);
+
     enableService("A");
 
     checkService(ctorService, "A");
     checkService(fieldService, "A");
     checkService(setterService, "A");
 
+    missingService((SimpleService) extendedService);
+
+    checkServices(allServices, "A");
+
     enableExtendedService("B");
 
-    assert "B".equals(((SimpleService) extendedService).check());
+    checkService(ctorService, "B");
+    checkService(fieldService, "B");
+    checkService(setterService, "B");
+
+    checkService((SimpleService) extendedService, "B");
+
+    checkServices(allServices, "B", "A");
 
     assert extendedService instanceof SimpleService;
     assert extendedService instanceof ExtendedService;
@@ -122,9 +138,6 @@ public class ServiceInjectionTests
       assert false : "Expected ClassNotFoundException";
     } catch (final ClassNotFoundException e) {}
 
-    assert extendedServices.iterator().next() instanceof SimpleService;
-    assert extendedServices.iterator().next() instanceof ExtendedService;
-
     disableAllServices();
   }
 
@@ -133,6 +146,7 @@ public class ServiceInjectionTests
 
     properties.setProperty("name", name);
     properties.putAll(Attributes.objectClass(SimpleService.class, ExtendedService.class));
+    properties.put(SERVICE_RANKING, 999); // so extended service will appear first
 
     final Export<?> handle = registry.export(new ExtendedService() {
       public String check() {

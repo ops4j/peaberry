@@ -22,7 +22,6 @@ import static org.ops4j.peaberry.internal.ImportGlue.generateProxy;
 import static org.ops4j.peaberry.internal.ImportGlue.getClazzName;
 import static org.ops4j.peaberry.internal.ImportGlue.getProxyName;
 
-import java.lang.reflect.Constructor;
 import java.security.PrivilegedAction;
 
 import org.ops4j.peaberry.Import;
@@ -36,17 +35,24 @@ import com.google.common.collect.ReferenceMap;
 final class ImportProxyClassLoader
     extends ClassLoader {
 
+  public static <T> T importProxy(final Class<? extends T> clazz, final Import<T> handle) {
+    try {
+      final ClassLoader proxyLoader = getProxyClassLoader(clazz.getClassLoader());
+      final Class<?> proxyClazz = proxyLoader.loadClass(getProxyName(clazz.getName()));
+      return clazz.cast(proxyClazz.getConstructor(Import.class).newInstance(handle));
+    } catch (final Exception e) {
+      throw new ServiceException(e);
+    }
+  }
+
   private static final ReferenceMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
       new ReferenceMap<ClassLoader, ClassLoader>(WEAK, WEAK);
 
-  public static <T> T importProxy(final Class<? extends T> clazz, final Import<?> handle) {
-
-    final ClassLoader typeLoader = clazz.getClassLoader();
-
+  private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
     ClassLoader proxyLoader;
 
     synchronized (PROXY_LOADER_MAP) {
-      proxyLoader = PROXY_LOADER_MAP.get(clazz.getClassLoader());
+      proxyLoader = PROXY_LOADER_MAP.get(typeLoader);
       if (null == proxyLoader) {
         proxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
           public ClassLoader run() {
@@ -57,18 +63,11 @@ final class ImportProxyClassLoader
       }
     }
 
-    try {
-      final String proxyName = getProxyName(clazz.getName());
-      final Class<?> proxyClazz = proxyLoader.loadClass(proxyName);
-      final Constructor<?> ctor = proxyClazz.getConstructor(Object.class);
-      return clazz.cast(ctor.newInstance(handle));
-    } catch (final Exception e) {
-      throw new ServiceException(e);
-    }
+    return proxyLoader;
   }
 
-  ImportProxyClassLoader(final ClassLoader loader) {
-    super(loader);
+  ImportProxyClassLoader(final ClassLoader parent) {
+    super(parent);
   }
 
   @Override
@@ -78,8 +77,7 @@ final class ImportProxyClassLoader
     final String clazzName = getClazzName(clazzOrProxyName);
 
     if (!clazzName.equals(clazzOrProxyName)) {
-      final Class<?> clazz = loadClass(clazzName);
-      final byte[] byteCode = generateProxy(clazz);
+      final byte[] byteCode = generateProxy(loadClass(clazzName));
       return defineClass(clazzOrProxyName, byteCode, 0, byteCode.length);
     }
 
