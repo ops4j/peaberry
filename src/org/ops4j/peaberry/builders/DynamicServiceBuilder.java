@@ -27,9 +27,9 @@ public interface DynamicServiceBuilder<T>
     extends DecoratedServiceBuilder<T> {
 
   /**
-   * Always use the result of the first successful service lookup.
+   * Inject the service instance directly, do not use a dynamic proxy.
    * 
    * @return service EDSL builder
    */
-  DecoratedServiceBuilder<T> sticky();
+  DecoratedServiceBuilder<T> direct();
 }

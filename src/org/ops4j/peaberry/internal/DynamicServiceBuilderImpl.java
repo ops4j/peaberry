@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
+import static org.ops4j.peaberry.internal.DirectServiceFactory.directService;
+import static org.ops4j.peaberry.internal.DirectServiceFactory.directServices;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.serviceProxies;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.serviceProxy;
 
@@ -44,7 +46,7 @@ public final class DynamicServiceBuilderImpl<T>
   final Class<? extends T> clazz;
 
   // default configuration
-  boolean sticky = false;
+  boolean direct = false;
   String filter = null;
 
   // custom configuration keys
@@ -55,8 +57,8 @@ public final class DynamicServiceBuilderImpl<T>
     this.clazz = clazz;
   }
 
-  public DecoratedServiceBuilder<T> sticky() {
-    sticky = true;
+  public DecoratedServiceBuilder<T> direct() {
+    direct = true;
     return this;
   }
 
@@ -66,8 +68,8 @@ public final class DynamicServiceBuilderImpl<T>
   }
 
   public ScopedServiceBuilder<T> filter(final String customFilter) {
-    // provide some basic normalisation
-    if (customFilter.charAt(0) == '(') {
+    // provide some basic normalisation of LDAP filter strings
+    if (null == customFilter || customFilter.charAt(0) == '(') {
       filter = customFilter;
     } else {
       filter = '(' + customFilter + ')';
@@ -91,7 +93,11 @@ public final class DynamicServiceBuilderImpl<T>
         final ImportDecorator<? super T> decorator = getDecorator(injector);
         final ServiceRegistry registry = getRegistry(injector);
 
-        return serviceProxy(clazz, registry.lookup(clazz, filter), decorator, sticky);
+        if (direct) {
+          return directService(registry.lookup(clazz, filter), decorator);
+        }
+
+        return serviceProxy(clazz, registry.lookup(clazz, filter), decorator);
       }
     };
   }
@@ -107,7 +113,11 @@ public final class DynamicServiceBuilderImpl<T>
         final ImportDecorator<? super T> decorator = getDecorator(injector);
         final ServiceRegistry registry = getRegistry(injector);
 
-        return serviceProxies(clazz, registry.lookup(clazz, filter), decorator, sticky);
+        if (direct) {
+          return directServices(registry.lookup(clazz, filter), decorator);
+        }
+
+        return serviceProxies(clazz, registry.lookup(clazz, filter), decorator);
       }
     };
   }

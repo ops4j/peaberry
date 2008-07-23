@@ -39,8 +39,7 @@ final class ImportProxyClassLoader
   private static final ReferenceMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
       new ReferenceMap<ClassLoader, ClassLoader>(WEAK, WEAK);
 
-  public static <T> T importProxy(final Class<? extends T> clazz, final Import<?> handle,
-      final boolean sticky) {
+  public static <T> T importProxy(final Class<? extends T> clazz, final Import<?> handle) {
 
     final ClassLoader typeLoader = clazz.getClassLoader();
 

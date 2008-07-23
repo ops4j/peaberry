@@ -16,18 +16,15 @@
 
 package org.ops4j.peaberry.internal;
 
-import static java.util.Collections.emptyList;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.importProxy;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * Factory methods for various types of dynamic service proxies.
+ * Factory methods for dynamic service proxies.
  * 
  * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
  */
@@ -37,11 +34,7 @@ final class ServiceProxyFactory {
   private ServiceProxyFactory() {}
 
   public static <S, T extends S> Iterable<T> serviceProxies(final Class<? extends T> clazz,
-      final Iterable<Import<T>> handles, final ImportDecorator<S> deco, final boolean sticky) {
-
-    if (sticky) {
-      return stickyServiceProxies(clazz, handles, deco);
-    }
+      final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
     return new Iterable<T>() {
       public Iterator<T> iterator() {
@@ -54,7 +47,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            return importProxy(clazz, null == deco ? i.next() : deco.decorate(i.next()), false);
+            return importProxy(clazz, null == decorator ? i.next() : decorator.decorate(i.next()));
           }
 
           public void remove() {
@@ -65,35 +58,8 @@ final class ServiceProxyFactory {
     };
   }
 
-  private static <S, T extends S> Iterable<T> stickyServiceProxies(final Class<? extends T> clazz,
-      final Iterable<Import<T>> handles, final ImportDecorator<S> deco) {
-
-    return new Iterable<T>() {
-      private volatile List<T> stickyProxies = emptyList();
-
-      private List<T> getActiveServices() {
-        final List<T> proxies = new ArrayList<T>();
-        for (final Import<T> h : handles) {
-          proxies.add(importProxy(clazz, null == deco ? h : deco.decorate(h), true));
-        }
-        return proxies;
-      }
-
-      public Iterator<T> iterator() {
-        if (stickyProxies.size() == 0) {
-          synchronized (this) {
-            if (stickyProxies.size() == 0) {
-              stickyProxies = getActiveServices();
-            }
-          }
-        }
-        return stickyProxies.iterator();
-      }
-    };
-  }
-
   public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
-      final Iterable<Import<T>> handles, final ImportDecorator<S> deco, final boolean sticky) {
+      final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
     final Import<T> lookup = new Import<T>() {
       private long count = 0L;
@@ -118,6 +84,6 @@ final class ServiceProxyFactory {
       }
     };
 
-    return importProxy(clazz, null == deco ? lookup : deco.decorate(lookup), sticky);
+    return importProxy(clazz, null == decorator ? lookup : decorator.decorate(lookup));
   }
 }
