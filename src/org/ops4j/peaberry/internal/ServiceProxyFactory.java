@@ -64,22 +64,25 @@ final class ServiceProxyFactory {
     final Import<T> lookup = new Import<T>() {
       private long count = 0L;
       private Import<T> handle;
+      private T instance;
 
       public synchronized T get() {
         count++;
         if (null == handle) {
           handle = handles.iterator().next();
+          instance = handle.get();
         }
-        return handle.get();
+        return instance;
       }
 
       public synchronized void unget() {
-        try {
-          if (null != handle) {
-            handle.unget();
-          }
-        } finally {
-          if (--count == 0) {
+        if (--count == 0) {
+          try {
+            if (null != handle) {
+              handle.unget();
+            }
+          } finally {
+            instance = null;
             handle = null;
           }
         }
