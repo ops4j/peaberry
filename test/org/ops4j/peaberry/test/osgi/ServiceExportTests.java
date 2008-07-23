@@ -65,7 +65,7 @@ public class ServiceExportTests {
       implements HelloService {
 
     public String say(final String name) {
-      return "Hello " + name;
+      return "Hello, " + name;
     }
   }
 
@@ -73,7 +73,7 @@ public class ServiceExportTests {
       implements HelloService {
 
     public String say(final String name) {
-      return "Hi " + name;
+      return "Hi, " + name;
     }
   }
 
@@ -99,21 +99,21 @@ public class ServiceExportTests {
 
   public void testWiring() {
 
-    checkResponse("Hello A", consumerA.say("A"));
-    checkResponse("Hi B", consumerB.say("B"));
+    checkResponse("Hello, A", consumerA.say("A"));
+    checkResponse("Hi, B", consumerB.say("B"));
 
-    checkResponse("Hello A", producerA.get().say("A"));
-    checkResponse("Hi B", producerB.get().say("B"));
+    checkResponse("Hello, A", producerA.get().say("A"));
+    checkResponse("Hi, B", producerB.get().say("B"));
 
     // this should switch the client dynamic bindings
     producerA.modify(singletonMap("style", "short"));
     producerB.modify(singletonMap("style", "long"));
 
-    checkResponse("Hi A", consumerA.say("A"));
-    checkResponse("Hello B", consumerB.say("B"));
+    checkResponse("Hi, A", consumerA.say("A"));
+    checkResponse("Hello, B", consumerB.say("B"));
 
-    checkResponse("Hello A", producerA.get().say("A"));
-    checkResponse("Hi B", producerB.get().say("B"));
+    checkResponse("Hello, A", producerA.get().say("A"));
+    checkResponse("Hi, B", producerB.get().say("B"));
 
     producerA.remove();
     producerB.remove();

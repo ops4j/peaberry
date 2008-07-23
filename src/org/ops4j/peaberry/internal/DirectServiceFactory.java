@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.util.Collections.unmodifiableCollection;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -46,7 +48,7 @@ final class DirectServiceFactory {
       }
     }
 
-    return services;
+    return unmodifiableCollection(services);
   }
 
   public static <S, T extends S> T directService(final Iterable<Import<T>> handles,
