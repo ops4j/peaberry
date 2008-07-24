@@ -19,13 +19,13 @@
  *
  * <dl>
  *
- * <dt>{@link org.ops4j.peaberry.builder.DynamicServiceBuilder}
+ * <dt>{@link org.ops4j.peaberry.builders.DynamicServiceBuilder}
  * <dd>The interface that describes how to build dynamic service providers.
  *
- * <dt>{@link org.ops4j.peaberry.builder.QualifiedRegistrationBuilder}
+ * <dt>{@link org.ops4j.peaberry.builders.QualifiedRegistrationBuilder}
  * <dd>The interface that describes how to build service registration providers.
  *
- * <dt>{@link org.ops4j.peaberry.builder.ImportDecorator}
+ * <dt>{@link org.ops4j.peaberry.builders.ImportDecorator}
  * <dd>The interface you can implement in order to decorate or intercept services.
  *
  * </dl>
