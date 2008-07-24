@@ -33,14 +33,18 @@ limitations under the License.
   <artifactId>peaberry</artifactId>
   <version>0.6</version>
 
-  <name>peaberry - dynamic service injection with Google-Guice</name>
+  <name>peaberry - dynamic service extension for Google-Guice</name>
 
   <url>http://code.google.com/p/peaberry/</url>
 
   <description>
-    The peaberry project extends Google-Guice to support dependency
-    injection of dynamic services. It provides an OSGi bundle that
-    can be dropped into any R4 framework, such as Eclipse/Equinox. 
+    The peaberry project is an extension library for Google-Guice
+    that supports dependency injection of dynamic services.
+
+    It provides OSGi integration out of the box, and has plug-in
+    support for other registry-based service frameworks. It ships
+    as an OSGi bundle that can be dropped into any R4 framework,
+    such as Apache Felix or Eclipse/Equinox. 
   </description>
 
 </project>

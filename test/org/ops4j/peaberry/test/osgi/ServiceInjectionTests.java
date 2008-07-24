@@ -104,7 +104,7 @@ public final class ServiceInjectionTests
     missingService((SimpleService) extendedService);
 
     @SuppressWarnings("unchecked")
-    Iterable<SimpleService> simpleServices = allServices;
+    final Iterable<SimpleService> simpleServices = allServices;
     checkServices(simpleServices);
 
     enableService("A");

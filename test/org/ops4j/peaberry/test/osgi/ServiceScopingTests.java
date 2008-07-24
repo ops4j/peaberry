@@ -133,12 +133,12 @@ public final class ServiceScopingTests {
     };
 
     @SuppressWarnings( {"unused", "unchecked"})
-    public <T> Iterable<Import<T>> lookup(Class<? extends T> clazz, String filter) {
+    public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz, final String filter) {
       return Collections.singletonList((Import<T>) BLANK_IMPORT);
     }
 
     @SuppressWarnings("unused")
-    public <S, T extends S> Export<S> export(T service, Map<String, ?> attributes) {
+    public <S, T extends S> Export<S> export(final T service, final Map<String, ?> attributes) {
       throw new UnsupportedOperationException();
     }
   }

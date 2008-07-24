@@ -56,7 +56,7 @@ public final class ServiceDecorationTests
   static class BrokenDecorator
       implements ImportDecorator<Object> {
     @SuppressWarnings("unused")
-    public <T> Import<T> decorate(Import<T> handle) {
+    public <T> Import<T> decorate(final Import<T> handle) {
       return new Import<T>() {
         public T get() {
           throw new UnsupportedOperationException();
@@ -116,7 +116,7 @@ public final class ServiceDecorationTests
     enableService("B");
     enableService("C");
 
-    Holder holder = injector.getInstance(Holder.class);
+    final Holder holder = injector.getInstance(Holder.class);
     checkServices(holder.brokenServices);
 
     disableAllServices();

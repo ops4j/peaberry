@@ -56,7 +56,7 @@ public final class ServiceContentionTests
     public String test() {
       try {
         Thread.sleep(100);
-      } catch (InterruptedException e) {}
+      } catch (final InterruptedException e) {}
 
       return "DONE";
     }
@@ -70,7 +70,7 @@ public final class ServiceContentionTests
 
   public void testContention() {
 
-    Thread[] threads = new Thread[8];
+    final Thread[] threads = new Thread[8];
 
     for (int i = 0; i < threads.length; i++) {
       threads[i] = new Thread(new Runnable() {
@@ -80,14 +80,14 @@ public final class ServiceContentionTests
       });
     }
 
-    for (Thread t : threads) {
+    for (final Thread t : threads) {
       t.start();
     }
 
-    for (Thread t : threads) {
+    for (final Thread t : threads) {
       try {
         t.join();
-      } catch (InterruptedException e) {}
+      } catch (final InterruptedException e) {}
     }
 
     assert "DONE".equals(importedService.test());
