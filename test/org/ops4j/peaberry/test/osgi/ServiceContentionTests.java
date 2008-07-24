@@ -21,6 +21,7 @@ import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 
 import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.ServiceUnavailableException;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
@@ -89,6 +90,14 @@ public final class ServiceContentionTests
       } catch (InterruptedException e) {}
     }
 
+    assert "DONE".equals(importedService.test());
+
     exportedService.remove();
+
+    try {
+      importedService.test();
+      assert false : "No service expected";
+    } catch (final ServiceUnavailableException e) {}
+
   }
 }

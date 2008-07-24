@@ -21,6 +21,7 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.importProxy;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
@@ -71,6 +72,9 @@ final class ServiceProxyFactory {
         if (null == handle) {
           handle = handles.iterator().next();
           instance = handle.get();
+        }
+        if (null == instance) {
+          throw new ServiceUnavailableException();
         }
         return instance;
       }
