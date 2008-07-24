@@ -41,7 +41,7 @@ import com.google.inject.Singleton;
 /**
  * OSGi {@link ServiceRegistry} adaptor (proof-of-concept, not optimised)
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Singleton
 public final class OSGiServiceRegistry

@@ -33,7 +33,7 @@ import javax.naming.ldap.Rdn;
 /**
  * Collection of utility methods for dealing with service attributes.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class Attributes {
 

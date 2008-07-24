@@ -28,7 +28,7 @@ import org.ops4j.peaberry.builders.ImportDecorator;
 /**
  * Factory methods for direct static services.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class DirectServiceFactory {
 

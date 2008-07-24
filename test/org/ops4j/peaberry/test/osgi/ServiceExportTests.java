@@ -36,7 +36,7 @@ import com.google.inject.name.Named;
 /**
  * Test service registration using {@link ServiceScope} interface.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ServiceExportTests", suiteName = "OSGi")
 public final class ServiceExportTests {

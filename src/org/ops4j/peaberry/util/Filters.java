@@ -21,7 +21,7 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 /**
  * Collection of utility methods for dealing with service filters.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class Filters {
 

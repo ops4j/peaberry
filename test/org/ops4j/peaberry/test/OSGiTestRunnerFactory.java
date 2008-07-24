@@ -36,7 +36,7 @@ import com.google.inject.Module;
 /**
  * Support OSGi classloading of TestNG testcases.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class OSGiTestRunnerFactory
     implements ITestRunnerFactory {

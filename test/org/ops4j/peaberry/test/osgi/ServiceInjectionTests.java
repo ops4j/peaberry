@@ -35,7 +35,7 @@ import com.google.inject.name.Named;
 /**
  * Test service injection of simple and extended interfaces.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ServiceInjectionTests", suiteName = "OSGi")
 public final class ServiceInjectionTests

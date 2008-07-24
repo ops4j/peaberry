@@ -40,7 +40,7 @@ import com.google.inject.Provider;
 /**
  * Test service scoping.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ServiceScopingTests", suiteName = "OSGi")
 public final class ServiceScopingTests {

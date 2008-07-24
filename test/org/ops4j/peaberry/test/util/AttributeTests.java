@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 /**
  * Test attribute helper methods.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "AttributeTests", suiteName = "Util")
 public final class AttributeTests {

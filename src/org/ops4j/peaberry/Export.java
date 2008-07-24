@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Handle to a service instance exported in a {@link ServiceScope}.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface Export<T>
     extends Import<T> {

@@ -31,7 +31,7 @@ import com.google.inject.Key;
 /**
  * Test service contention.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ServiceContentionTests", suiteName = "OSGi")
 public final class ServiceContentionTests

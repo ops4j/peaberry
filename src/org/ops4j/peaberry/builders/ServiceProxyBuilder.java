@@ -23,7 +23,7 @@ import com.google.inject.Provider;
 /**
  * See the dynamic service EDSL examples at {@link Peaberry}.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceProxyBuilder<T> {
 

@@ -32,7 +32,7 @@ import com.google.inject.Inject;
 /**
  * Helper class that registers simple unique services on-demand.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public abstract class OSGiServiceTester {
 

@@ -39,7 +39,7 @@ import org.testng.TestNGException;
 /**
  * TestNG launcher that runs tests inside the Felix framework.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class OSGiTestNG
     extends TestNG {

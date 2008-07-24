@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 /**
  * Exception thrown when a requested service is not available.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class ServiceUnavailableException
     extends ServiceException {

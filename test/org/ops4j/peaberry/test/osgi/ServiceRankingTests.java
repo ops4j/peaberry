@@ -27,7 +27,7 @@ import com.google.inject.Inject;
 /**
  * Test service ranking.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ServiceRankingTests", suiteName = "OSGi")
 public final class ServiceRankingTests

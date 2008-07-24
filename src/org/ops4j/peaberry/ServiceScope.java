@@ -25,7 +25,7 @@ import java.util.Map;
  * automatically exported to any contained {@link ServiceScope} instances that
  * have &quot;scope.filter&quot; attributes that match the exported service.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceScope {
 

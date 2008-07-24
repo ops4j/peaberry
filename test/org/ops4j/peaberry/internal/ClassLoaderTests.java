@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
 /**
  * Test internal proxy classloader.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ClassLoaderTests", suiteName = "Internal")
 public final class ClassLoaderTests {

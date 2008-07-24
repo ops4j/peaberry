@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
 /**
  * Test internal service ranking code.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ServiceRankingTests", suiteName = "Internal")
 public final class ServiceRankingTests {

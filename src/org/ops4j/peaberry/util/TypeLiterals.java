@@ -26,7 +26,7 @@ import com.google.inject.TypeLiteral;
 /**
  * Collection of utility methods for dealing with generic TypeLiterals.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class TypeLiterals {
 

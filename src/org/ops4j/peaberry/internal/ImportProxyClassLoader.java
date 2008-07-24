@@ -30,7 +30,7 @@ import org.ops4j.peaberry.ServiceException;
 import com.google.common.collect.ReferenceMap;
 
 /**
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ImportProxyClassLoader
     extends ClassLoader {

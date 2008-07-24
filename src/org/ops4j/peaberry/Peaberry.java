@@ -30,7 +30,7 @@ import com.google.inject.Module;
 /**
  * Guice extension that supports injection of dynamic services.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class Peaberry {
 

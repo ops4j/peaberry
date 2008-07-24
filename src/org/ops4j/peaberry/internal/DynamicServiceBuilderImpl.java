@@ -37,7 +37,7 @@ import com.google.inject.Provider;
 /**
  * Default {@link DynamicServiceBuilder} implementation.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class DynamicServiceBuilderImpl<T>
     implements DynamicServiceBuilder<T> {

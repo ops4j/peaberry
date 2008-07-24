@@ -27,7 +27,7 @@ import org.ops4j.peaberry.builders.ImportDecorator;
 /**
  * Factory methods for dynamic service proxies.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ServiceProxyFactory {
 

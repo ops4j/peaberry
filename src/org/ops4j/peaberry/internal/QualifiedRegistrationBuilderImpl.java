@@ -32,7 +32,7 @@ import com.google.inject.Provider;
 /**
  * Default {@link QualifiedRegistrationBuilder} implementation.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class QualifiedRegistrationBuilderImpl<T>
     implements QualifiedRegistrationBuilder<T> {

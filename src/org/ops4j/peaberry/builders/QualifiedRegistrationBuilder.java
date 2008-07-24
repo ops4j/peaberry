@@ -23,7 +23,7 @@ import org.ops4j.peaberry.Peaberry;
 /**
  * See the service registration EDSL examples at {@link Peaberry}.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface QualifiedRegistrationBuilder<T>
     extends ScopedRegistrationBuilder<T> {

@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 /**
  * General purpose service exception.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public class ServiceException
     extends RuntimeException {

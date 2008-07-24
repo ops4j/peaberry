@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 /**
  * Test filter helper methods.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "FilterTests", suiteName = "Util")
 public final class FilterTests {

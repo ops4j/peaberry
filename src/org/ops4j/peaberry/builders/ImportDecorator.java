@@ -21,7 +21,7 @@ import org.ops4j.peaberry.Import;
 /**
  * Provide runtime decoration/intercepting of imported services.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ImportDecorator<S> {
 

@@ -58,7 +58,7 @@ import org.ops4j.peaberry.Import;
 /**
  * Around-advice glue code, specifically optimised for peaberry.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ImportGlue {
 

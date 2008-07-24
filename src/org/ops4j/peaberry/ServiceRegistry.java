@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 /**
  * Simple abstraction of a dynamic service registry.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceRegistry
     extends ServiceScope {

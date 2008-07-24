@@ -39,7 +39,7 @@ import com.google.inject.name.Named;
 /**
  * Test direct static services.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "DirectServiceTests", suiteName = "OSGi")
 public final class DirectServiceTests {

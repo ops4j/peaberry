@@ -25,7 +25,7 @@ import com.google.inject.Injector;
 /**
  * Construct testcase objects using Guice.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class GuiceObjectFactory
     extends ObjectFactoryImpl {

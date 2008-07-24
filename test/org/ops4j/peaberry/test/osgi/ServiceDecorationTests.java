@@ -34,7 +34,7 @@ import com.google.inject.name.Named;
 /**
  * Test service decoration.
  * 
- * @author stuart.mcculloch@jayway.net (Stuart McCulloch)
+ * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test(testName = "ServiceDecorationTests", suiteName = "OSGi")
 public final class ServiceDecorationTests
