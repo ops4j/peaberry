@@ -21,12 +21,14 @@ import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.test.osgi.OSGiServiceTester.SimpleService;
 import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
@@ -36,6 +38,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
+import com.google.inject.name.Named;
 
 /**
  * Test service scoping.
@@ -58,6 +61,9 @@ public final class ServiceScopingTests {
         service(SimpleService.class).in(registryKey).single());
 
     binder.bind(Export.class).toProvider(registration(serviceKey).in(registryKey).export());
+
+    binder.bind(SimpleService.class).annotatedWith(named("blank")).toProvider(
+        service(SimpleService.class).in(Key.get(BlankRegistry.class)).single());
   }
 
   static class CountingRegistryProvider
@@ -115,8 +121,34 @@ public final class ServiceScopingTests {
     }
   }
 
+  static class BlankRegistry
+      implements ServiceRegistry {
+
+    static final Import<Object> BLANK_IMPORT = new Import<Object>() {
+      public Object get() {
+        return null;
+      }
+
+      public void unget() {}
+    };
+
+    @SuppressWarnings( {"unused", "unchecked"})
+    public <T> Iterable<Import<T>> lookup(Class<? extends T> clazz, String filter) {
+      return Collections.singletonList((Import<T>) BLANK_IMPORT);
+    }
+
+    @SuppressWarnings("unused")
+    public <S, T extends S> Export<S> export(T service, Map<String, ?> attributes) {
+      throw new UnsupportedOperationException();
+    }
+  }
+
   @Inject
   SimpleService service;
+
+  @Inject
+  @Named("blank")
+  SimpleService blankService;
 
   @Inject
   Injector injector;
@@ -137,5 +169,10 @@ public final class ServiceScopingTests {
     assert service.check().equals("lookup:1,iterator:4,export:2");
 
     handle.remove();
+
+    try {
+      blankService.check();
+      assert false : "No service expected";
+    } catch (final ServiceUnavailableException e) {}
   }
 }

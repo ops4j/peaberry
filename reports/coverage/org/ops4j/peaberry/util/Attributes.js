@@ -2,7 +2,7 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 85, "sl" : 38, "el" : 118, "name" : "Attributes",
+    {"id" : 91, "sl" : 38, "el" : 118, "name" : "Attributes",
     "methods" : [
               {"sl" : 43, "el" : 43, "sc" : 3},  {"sl" : 51, "el" : 79, "sc" : 3},  {"sl" : 87, "el" : 101, "sc" : 3},  {"sl" : 109, "el" : 117, "sc" : 3}  ]}
     
@@ -11,47 +11,47 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_3" : {
+		"test_0" : {
+					  "name" : "stickyService",
+					  "pass" : true,
+					  "methods" : [{"sl": 51 },],
+					  "statements" : [{"sl": 53 },{"sl": 61 },{"sl": 62 },{"sl": 63 },{"sl": 64 },{"sl": 71 },{"sl": 72 },{"sl": 73 },{"sl": 74 },{"sl": 78 },]
+					  },
+		"test_13" : {
 					  "name" : "testNameConverter",
 					  "pass" : true,
 					  "methods" : [{"sl": 87 },],
 					  "statements" : [{"sl": 89 },{"sl": 91 },{"sl": 92 },{"sl": 93 },{"sl": 94 },{"sl": 96 },{"sl": 100 },]
 					  },
-		"test_11" : {
-					  "name" : "brokenServices",
+		"test_2" : {
+					  "name" : "testPropertyConverter",
 					  "pass" : true,
 					  "methods" : [{"sl": 51 },],
-					  "statements" : [{"sl": 53 },{"sl": 61 },{"sl": 62 },{"sl": 63 },{"sl": 64 },{"sl": 71 },{"sl": 72 },{"sl": 73 },{"sl": 74 },{"sl": 78 },]
+					  "statements" : [{"sl": 53 },{"sl": 61 },{"sl": 62 },{"sl": 67 },{"sl": 71 },{"sl": 72 },{"sl": 73 },{"sl": 74 },{"sl": 78 },]
 					  },
-		"test_12" : {
+		"test_10" : {
 					  "name" : "checkRanking",
 					  "pass" : true,
 					  "methods" : [{"sl": 51 },],
 					  "statements" : [{"sl": 53 },{"sl": 61 },{"sl": 62 },{"sl": 63 },{"sl": 64 },{"sl": 71 },{"sl": 72 },{"sl": 73 },{"sl": 74 },{"sl": 78 },]
 					  },
 		"test_4" : {
+					  "name" : "testObjectClassConverter",
+					  "pass" : true,
+					  "methods" : [{"sl": 109 },],
+					  "statements" : [{"sl": 110 },{"sl": 112 },{"sl": 113 },{"sl": 116 },]
+					  },
+		"test_12" : {
 					  "name" : "checkInjection",
 					  "pass" : true,
 					  "methods" : [{"sl": 51 },{"sl": 109 },],
 					  "statements" : [{"sl": 53 },{"sl": 61 },{"sl": 62 },{"sl": 63 },{"sl": 64 },{"sl": 71 },{"sl": 72 },{"sl": 73 },{"sl": 74 },{"sl": 78 },{"sl": 110 },{"sl": 112 },{"sl": 113 },{"sl": 116 },]
 					  },
-		"test_9" : {
-					  "name" : "stickyService",
+		"test_5" : {
+					  "name" : "brokenServices",
 					  "pass" : true,
 					  "methods" : [{"sl": 51 },],
 					  "statements" : [{"sl": 53 },{"sl": 61 },{"sl": 62 },{"sl": 63 },{"sl": 64 },{"sl": 71 },{"sl": 72 },{"sl": 73 },{"sl": 74 },{"sl": 78 },]
-					  },
-		"test_8" : {
-					  "name" : "testPropertyConverter",
-					  "pass" : true,
-					  "methods" : [{"sl": 51 },],
-					  "statements" : [{"sl": 53 },{"sl": 61 },{"sl": 62 },{"sl": 67 },{"sl": 71 },{"sl": 72 },{"sl": 73 },{"sl": 74 },{"sl": 78 },]
-					  },
-		"test_13" : {
-					  "name" : "testObjectClassConverter",
-					  "pass" : true,
-					  "methods" : [{"sl": 109 },],
-					  "statements" : [{"sl": 110 },{"sl": 112 },{"sl": 113 },{"sl": 116 },]
 					  }
  };
 
@@ -106,34 +106,9 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
   [  ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
-  [ 12 , 11 , 4 , 9   ] ,
-  [ 12 , 11 , 4 , 9   ] ,
-  [  ] ,
-  [  ] ,
-  [ 8   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 12 , 8 , 11 , 4 , 9   ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -141,21 +116,24 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
+  [ 0 , 5 , 12 , 10   ] ,
+  [ 0 , 5 , 12 , 10   ] ,
   [  ] ,
-  [ 3   ] ,
   [  ] ,
-  [ 3   ] ,
-  [  ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [ 3   ] ,
-  [  ] ,
-  [ 3   ] ,
+  [ 2   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 3   ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [ 0 , 5 , 12 , 2 , 10   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
@@ -164,14 +142,36 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 4 , 13   ] ,
-  [ 4 , 13   ] ,
+  [ 13   ] ,
   [  ] ,
-  [ 4 , 13   ] ,
-  [ 4 , 13   ] ,
+  [ 13   ] ,
+  [  ] ,
+  [ 13   ] ,
+  [ 13   ] ,
+  [ 13   ] ,
+  [ 13   ] ,
+  [  ] ,
+  [ 13   ] ,
   [  ] ,
   [  ] ,
-  [ 4 , 13   ] ,
+  [  ] ,
+  [ 13   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [ 12 , 4   ] ,
+  [ 12 , 4   ] ,
+  [  ] ,
+  [ 12 , 4   ] ,
+  [ 12 , 4   ] ,
+  [  ] ,
+  [  ] ,
+  [ 12 , 4   ] ,
   [  ] ,
   [  ] 
 ];

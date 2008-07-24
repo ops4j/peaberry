@@ -6,45 +6,45 @@
     </groups>
     <test name="ServiceContentionTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceContentionTests">
-        <test-method status="PASS" signature="testContention()" name="testContention" duration-ms="249" started-at="2008-07-24T01:13:02Z" finished-at="2008-07-24T01:13:02Z">
+        <test-method status="PASS" signature="testContention()" name="testContention" duration-ms="262" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
     <test name="DirectServiceTests">
       <class name="org.ops4j.peaberry.test.osgi.DirectServiceTests">
-        <test-method status="PASS" signature="testWiring()" name="testWiring" duration-ms="47" started-at="2008-07-24T01:13:02Z" finished-at="2008-07-24T01:13:02Z">
+        <test-method status="PASS" signature="testWiring()" name="testWiring" duration-ms="20" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceRankingTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceRankingTests">
-        <test-method status="PASS" signature="checkRanking()" name="checkRanking" duration-ms="16" started-at="2008-07-24T01:13:02Z" finished-at="2008-07-24T01:13:03Z">
+        <test-method status="PASS" signature="checkRanking()" name="checkRanking" duration-ms="11" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceDecorationTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceDecorationTests">
-        <test-method status="PASS" signature="brokenServices()" name="brokenServices" duration-ms="16" started-at="2008-07-24T01:13:02Z" finished-at="2008-07-24T01:13:02Z">
+        <test-method status="PASS" signature="brokenServices()" name="brokenServices" duration-ms="18" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
-        <test-method status="PASS" signature="stickyService()" name="stickyService" duration-ms="16" started-at="2008-07-24T01:13:02Z" finished-at="2008-07-24T01:13:02Z">
+        <test-method status="PASS" signature="stickyService()" name="stickyService" duration-ms="10" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceScopingTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceScopingTests">
-        <test-method status="PASS" signature="checkScoping()" name="checkScoping" duration-ms="16" started-at="2008-07-24T01:13:03Z" finished-at="2008-07-24T01:13:03Z">
+        <test-method status="PASS" signature="checkScoping()" name="checkScoping" duration-ms="11" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceInjectionTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceInjectionTests">
-        <test-method status="PASS" signature="checkInjection()" name="checkInjection" duration-ms="62" started-at="2008-07-24T01:13:02Z" finished-at="2008-07-24T01:13:02Z">
+        <test-method status="PASS" signature="checkInjection()" name="checkInjection" duration-ms="51" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
     <test name="ServiceExportTests">
       <class name="org.ops4j.peaberry.test.osgi.ServiceExportTests">
-        <test-method status="PASS" signature="testWiring()" name="testWiring" duration-ms="15" started-at="2008-07-24T01:13:02Z" finished-at="2008-07-24T01:13:02Z">
+        <test-method status="PASS" signature="testWiring()" name="testWiring" duration-ms="11" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
@@ -54,15 +54,15 @@
     </groups>
     <test name="AttributeTests">
       <class name="org.ops4j.peaberry.test.util.AttributeTests">
-        <test-method status="PASS" signature="testPropertyConverter()" name="testPropertyConverter" duration-ms="16" started-at="2008-07-24T01:13:03Z" finished-at="2008-07-24T01:13:03Z">
+        <test-method status="PASS" signature="testPropertyConverter()" name="testPropertyConverter" duration-ms="14" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
-        <test-method status="PASS" signature="testNameConverter()" name="testNameConverter" duration-ms="0" started-at="2008-07-24T01:13:03Z" finished-at="2008-07-24T01:13:03Z">
+        <test-method status="PASS" signature="testNameConverter()" name="testNameConverter" duration-ms="10" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
     <test name="FilterTests">
       <class name="org.ops4j.peaberry.test.util.FilterTests">
-        <test-method status="PASS" signature="testObjectClassConverter()" name="testObjectClassConverter" duration-ms="16" started-at="2008-07-24T01:13:03Z" finished-at="2008-07-24T01:13:03Z">
+        <test-method status="PASS" signature="testObjectClassConverter()" name="testObjectClassConverter" duration-ms="14" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:30Z">
         </test-method>
       </class>
     </test>
@@ -72,13 +72,13 @@
     </groups>
     <test name="ServiceRankingTests">
       <class name="org.ops4j.peaberry.internal.ServiceRankingTests">
-        <test-method status="PASS" signature="cornerCases()" name="cornerCases" duration-ms="31" started-at="2008-07-24T01:13:03Z" finished-at="2008-07-24T01:13:03Z">
+        <test-method status="PASS" signature="cornerCases()" name="cornerCases" duration-ms="14" started-at="2008-07-24T14:03:31Z" finished-at="2008-07-24T14:03:31Z">
         </test-method>
       </class>
     </test>
     <test name="ClassLoaderTests">
       <class name="org.ops4j.peaberry.internal.ClassLoaderTests">
-        <test-method status="PASS" signature="cornerCases()" name="cornerCases" duration-ms="140" started-at="2008-07-24T01:13:03Z" finished-at="2008-07-24T01:13:03Z">
+        <test-method status="PASS" signature="cornerCases()" name="cornerCases" duration-ms="118" started-at="2008-07-24T14:03:30Z" finished-at="2008-07-24T14:03:31Z">
         </test-method>
       </class>
     </test>

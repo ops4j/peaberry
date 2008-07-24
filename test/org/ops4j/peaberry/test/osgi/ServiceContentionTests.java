@@ -98,6 +98,5 @@ public final class ServiceContentionTests
       importedService.test();
       assert false : "No service expected";
     } catch (final ServiceUnavailableException e) {}
-
   }
 }

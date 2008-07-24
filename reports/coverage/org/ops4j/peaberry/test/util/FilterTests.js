@@ -2,19 +2,19 @@ var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
 clover.pageData = { "classes" : [
-    {"id" : 378, "sl" : 34, "el" : 52, "name" : "FilterTests",
+    {"id" : 384, "sl" : 34, "el" : 52, "name" : "FilterTests",
     "methods" : [
              {"sl" : 42, "el" : 51, "sc" : 3}  ]}
     ,
-    {"id" : 378, "sl" : 36, "el" : 36, "name" : "FilterTests.A",
+    {"id" : 384, "sl" : 36, "el" : 36, "name" : "FilterTests.A",
     "methods" : [
              ]}
     ,
-    {"id" : 378, "sl" : 38, "el" : 38, "name" : "FilterTests.B",
+    {"id" : 384, "sl" : 38, "el" : 38, "name" : "FilterTests.B",
     "methods" : [
              ]}
     ,
-    {"id" : 378, "sl" : 40, "el" : 40, "name" : "FilterTests.C",
+    {"id" : 384, "sl" : 40, "el" : 40, "name" : "FilterTests.C",
     "methods" : [
               ]}
     
@@ -23,7 +23,7 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_13" : {
+		"test_4" : {
 					  "name" : "testObjectClassConverter",
 					  "pass" : true,
 					  "methods" : [{"sl": 42 },],
@@ -73,12 +73,12 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 13   ] ,
-  [ 13   ] ,
-  [ 13   ] ,
+  [ 4   ] ,
+  [ 4   ] ,
+  [ 4   ] ,
   [  ] ,
-  [ 13   ] ,
-  [ 13   ] ,
+  [ 4   ] ,
+  [ 4   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
