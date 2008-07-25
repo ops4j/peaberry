@@ -15,14 +15,14 @@
  */
 
 /**
- * <i>peaberry</i> - dynamic service extension for <i>Google-Guice</i>.
+ * <i>peaberry</i> - dynamic service extension for <a href="http://code.google.com/p/google-guice/">Google-Guice</a>.
  *
- * <p>The principal public APIs in this package are:
+ * <p>The principal members of this package are:
  *
  * <dl>
  *
  * <dt>{@link org.ops4j.peaberry.Peaberry}
- * <dd>The builder class that assembles providers to inject or register services.
+ * <dd>The builder that can assemble providers to import or export dynamic services.
  *
  * <dt>{@link org.ops4j.peaberry.ServiceUnavailableException}
  * <dd>The exception thrown when you attempt to use a service that is not available.

@@ -32,7 +32,9 @@ public final class Filters {
    * Create an <i>objectClass</i> service filter from the given service API.
    * 
    * @param interfaces service API
-   * @return <a href="http://www.ietf.org/rfc/rfc1960.txt">LDAP</a> filter
+   * @return service filter
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
    */
   public static String objectClass(final Class<?>... interfaces) {
     final StringBuilder filter = new StringBuilder();

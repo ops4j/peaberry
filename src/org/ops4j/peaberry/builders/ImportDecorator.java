@@ -26,7 +26,7 @@ import org.ops4j.peaberry.Import;
 public interface ImportDecorator<S> {
 
   /**
-   * Decorate an imported service.
+   * Decorate the given imported service.
    * 
    * @param handle service handle
    * @return decorated service handle

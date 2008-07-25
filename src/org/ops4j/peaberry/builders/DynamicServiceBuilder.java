@@ -19,17 +19,17 @@ package org.ops4j.peaberry.builders;
 import org.ops4j.peaberry.Peaberry;
 
 /**
- * See the dynamic service EDSL examples at {@link Peaberry}.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface DynamicServiceBuilder<T>
-    extends DecoratedServiceBuilder<T> {
+    extends ServiceProxyBuilder<T> {
 
   /**
-   * Inject the service instance directly, do not use a dynamic proxy.
+   * Provide direct service instance(s) when requested, not a dynamic proxy.
    * 
-   * @return service EDSL builder
+   * @return dynamic service builder
    */
-  DecoratedServiceBuilder<T> direct();
+  ServiceProxyBuilder<T> direct();
 }

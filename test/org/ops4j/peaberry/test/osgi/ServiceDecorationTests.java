@@ -44,7 +44,7 @@ public final class ServiceDecorationTests
   public static void configure(final Binder binder) {
 
     binder.bind(iterable(SimpleService.class)).annotatedWith(named("Broken")).toProvider(
-        service(SimpleService.class).direct().decoratedWith(Key.get(BrokenDecorator.class))
+        service(SimpleService.class).decoratedWith(Key.get(BrokenDecorator.class)).direct()
             .multiple());
 
     binder.bind(SimpleService.class).annotatedWith(named("Sticky")).toProvider(

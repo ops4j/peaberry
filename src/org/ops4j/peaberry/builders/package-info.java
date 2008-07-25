@@ -15,20 +15,20 @@
  */
 
 /**
- * Fluent builder API.
+ * Fluent APIs for importing and exporting dynamic services.
  *
- * <p>The principal public APIs in this package are:
+ * <p>The principal members of this package are:
  *
  * <dl>
  *
- * <dt>{@link org.ops4j.peaberry.builders.DynamicServiceBuilder}
+ * <dt>{@link org.ops4j.peaberry.builders.DecoratedServiceBuilder}
  * <dd>The interface that describes how to build dynamic service providers.
  *
  * <dt>{@link org.ops4j.peaberry.builders.QualifiedRegistrationBuilder}
  * <dd>The interface that describes how to build service registration providers.
  *
  * <dt>{@link org.ops4j.peaberry.builders.ImportDecorator}
- * <dd>The interface you can implement in order to decorate or intercept services.
+ * <dd>The interface you can implement in order to decorate dynamic services.
  *
  * </dl>
  *

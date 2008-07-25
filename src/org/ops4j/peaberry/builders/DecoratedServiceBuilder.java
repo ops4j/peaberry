@@ -21,7 +21,7 @@ import org.ops4j.peaberry.Peaberry;
 import com.google.inject.Key;
 
 /**
- * See the dynamic service EDSL examples at {@link Peaberry}.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -29,10 +29,10 @@ public interface DecoratedServiceBuilder<T>
     extends FilteredServiceBuilder<T> {
 
   /**
-   * Dynamically decorate the result of each service lookup.
+   * Apply the given decoration to the result of each dynamic service lookup.
    * 
    * @param key decorating key
-   * @return service EDSL builder
+   * @return dynamic service builder
    */
   FilteredServiceBuilder<T> decoratedWith(Key<? extends ImportDecorator<? super T>> key);
 }

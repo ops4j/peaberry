@@ -21,7 +21,7 @@ import org.ops4j.peaberry.Peaberry;
 import com.google.inject.Provider;
 
 /**
- * See the dynamic service EDSL examples at {@link Peaberry}.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

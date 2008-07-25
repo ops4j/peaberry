@@ -22,7 +22,7 @@ import org.ops4j.peaberry.Peaberry;
 import com.google.inject.Provider;
 
 /**
- * See the service registration EDSL examples at {@link Peaberry}.
+ * See {@link Peaberry} for examples of the service registration builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

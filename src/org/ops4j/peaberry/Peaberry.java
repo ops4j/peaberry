@@ -16,9 +16,9 @@
 
 package org.ops4j.peaberry;
 
-import org.ops4j.peaberry.builders.DynamicServiceBuilder;
+import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
-import org.ops4j.peaberry.internal.DynamicServiceBuilderImpl;
+import org.ops4j.peaberry.internal.DecoratedServiceBuilderImpl;
 import org.ops4j.peaberry.internal.OSGiServiceRegistry;
 import org.ops4j.peaberry.internal.QualifiedRegistrationBuilderImpl;
 import org.osgi.framework.BundleContext;
@@ -43,8 +43,8 @@ public final class Peaberry {
    * @param clazz service interface
    * @return dynamic service builder
    */
-  public static <T> DynamicServiceBuilder<T> service(final Class<? extends T> clazz) {
-    return new DynamicServiceBuilderImpl<T>(clazz);
+  public static <T> DecoratedServiceBuilder<T> service(final Class<? extends T> clazz) {
+    return new DecoratedServiceBuilderImpl<T>(clazz);
   }
 
   /**

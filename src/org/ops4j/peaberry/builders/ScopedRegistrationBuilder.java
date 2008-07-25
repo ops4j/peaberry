@@ -22,7 +22,7 @@ import org.ops4j.peaberry.ServiceRegistry;
 import com.google.inject.Key;
 
 /**
- * See the service registration EDSL examples at {@link Peaberry}.
+ * See {@link Peaberry} for examples of the service registration builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -30,10 +30,10 @@ public interface ScopedRegistrationBuilder<T>
     extends RegistrationProxyBuilder<T> {
 
   /**
-   * Scope the service registration to a specific {@link ServiceRegistry}.
+   * Scope the service registration to a specific registry.
    * 
    * @param key registry key
-   * @return registration EDSL builder
+   * @return service registration builder
    */
   RegistrationProxyBuilder<T> in(Key<? extends ServiceRegistry> key);
 }

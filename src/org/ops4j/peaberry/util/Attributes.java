@@ -45,6 +45,7 @@ public final class Attributes {
 
   /**
    * Convert the given service properties into a service attribute map.
+   * Properties with non-String keys will not appear in the final map.
    * 
    * @param properties service properties
    * @return service attributes
@@ -82,8 +83,10 @@ public final class Attributes {
   /**
    * Convert the given LDAP distinguished names into a service attribute map.
    * 
-   * @param names <a href="http://www.ietf.org/rfc/rfc2253.txt">LDAP</a> names
+   * @param names distinguished names
    * @return service attributes
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
   public static Map<String, ?> names(final String... names) {
 

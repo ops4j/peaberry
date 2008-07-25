@@ -35,31 +35,26 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
- * Default {@link DynamicServiceBuilder} implementation.
+ * Default {@link DecoratedServiceBuilder} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class DynamicServiceBuilderImpl<T>
-    implements DynamicServiceBuilder<T> {
+public final class DecoratedServiceBuilderImpl<T>
+    implements DecoratedServiceBuilder<T> {
 
   // primary configuration item
   final Class<? extends T> clazz;
 
   // default configuration
-  boolean direct = false;
   String filter = null;
+  boolean direct = false;
 
   // custom configuration keys
   Key<? extends ImportDecorator<? super T>> decoratorKey = null;
   Key<? extends ServiceRegistry> registryKey = null;
 
-  public DynamicServiceBuilderImpl(final Class<? extends T> clazz) {
+  public DecoratedServiceBuilderImpl(final Class<? extends T> clazz) {
     this.clazz = clazz;
-  }
-
-  public DecoratedServiceBuilder<T> direct() {
-    direct = true;
-    return this;
   }
 
   public FilteredServiceBuilder<T> decoratedWith(final Key<? extends ImportDecorator<? super T>> key) {
@@ -77,8 +72,13 @@ public final class DynamicServiceBuilderImpl<T>
     return this;
   }
 
-  public ServiceProxyBuilder<T> in(final Key<? extends ServiceRegistry> key) {
+  public DynamicServiceBuilder<T> in(final Key<? extends ServiceRegistry> key) {
     registryKey = key;
+    return this;
+  }
+
+  public ServiceProxyBuilder<T> direct() {
+    direct = true;
     return this;
   }
 

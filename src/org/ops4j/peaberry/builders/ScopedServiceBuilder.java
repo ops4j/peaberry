@@ -22,18 +22,18 @@ import org.ops4j.peaberry.ServiceRegistry;
 import com.google.inject.Key;
 
 /**
- * See the dynamic service EDSL examples at {@link Peaberry}.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ScopedServiceBuilder<T>
-    extends ServiceProxyBuilder<T> {
+    extends DynamicServiceBuilder<T> {
 
   /**
-   * Scope the dynamic services to a specific {@link ServiceRegistry}.
+   * Scope the dynamic service lookup to a specific registry.
    * 
    * @param key registry key
-   * @return service EDSL builder
+   * @return dynamic service builder
    */
-  ServiceProxyBuilder<T> in(Key<? extends ServiceRegistry> key);
+  DynamicServiceBuilder<T> in(Key<? extends ServiceRegistry> key);
 }
