@@ -28,25 +28,26 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 /**
- * Collection of utility methods for dealing with service attributes.
+ * Methods for dealing with service attributes.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class Attributes {
 
-  private static final Logger LOGGER = Logger.getLogger(Attributes.class.getName());
-
   // instances not allowed
   private Attributes() {}
 
+  private static final Logger LOGGER = Logger.getLogger(Attributes.class.getName());
+
   /**
-   * Converts a {@link Properties} object to a type-safe attribute map.
+   * Convert the given service properties into a service attribute map.
    * 
    * @param properties service properties
-   * @return type-safe map of service attributes
+   * @return service attributes
    */
   public static Map<String, ?> properties(final Properties properties) {
 
@@ -79,10 +80,10 @@ public final class Attributes {
   }
 
   /**
-   * Converts LDAP names to a type-safe attribute map.
+   * Convert the given LDAP distinguished names into a service attribute map.
    * 
-   * @param names sequence of name=value strings
-   * @return type-safe map of service attributes
+   * @param names <a href="http://www.ietf.org/rfc/rfc2253.txt">LDAP</a> names
+   * @return service attributes
    */
   public static Map<String, ?> names(final String... names) {
 
@@ -90,8 +91,9 @@ public final class Attributes {
 
     for (final String n : names) {
       try {
-        final Rdn rdn = new Rdn(n); // NOPMD
-        attributes.put(rdn.getType(), rdn.getValue());
+        for (final Rdn rdn : new LdapName(n).getRdns()) {
+          attributes.put(rdn.getType(), rdn.getValue());
+        }
       } catch (final InvalidNameException e) {
         LOGGER.warning("Bad LDAP name: " + n);
       }
@@ -101,10 +103,10 @@ public final class Attributes {
   }
 
   /**
-   * Convert service API to the appropriate <i>objectClass</i> attribute(s).
+   * Create an <i>objectClass</i> service attribute from the given service API.
    * 
    * @param interfaces service API
-   * @return type-safe map of service attributes
+   * @return service attributes
    */
   public static Map<String, ?> objectClass(final Class<?>... interfaces) {
     final String[] objectclass = new String[interfaces.length];

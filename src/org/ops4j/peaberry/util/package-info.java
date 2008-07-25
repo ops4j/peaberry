@@ -15,7 +15,7 @@
  */
 
 /**
- * Non-essential utility classes for working with <i>peaberry</i>.
+ * Optional helper methods.
  */
 package org.ops4j.peaberry.util;
 

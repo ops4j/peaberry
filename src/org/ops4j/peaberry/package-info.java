@@ -22,7 +22,7 @@
  * <dl>
  *
  * <dt>{@link org.ops4j.peaberry.Peaberry}
- * <dd>The entry-point for building dynamic service providers, plus OSGi integration.
+ * <dd>The builder class that assembles providers to inject or register services.
  *
  * <dt>{@link org.ops4j.peaberry.ServiceUnavailableException}
  * <dd>The exception thrown when you attempt to use a service that is not available.

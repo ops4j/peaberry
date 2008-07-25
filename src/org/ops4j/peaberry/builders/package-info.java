@@ -15,7 +15,9 @@
  */
 
 /**
- * Fluent builder API for <i>peaberry</i>:
+ * Fluent builder API.
+ *
+ * <p>The principal public APIs in this package are:
  *
  * <dl>
  *

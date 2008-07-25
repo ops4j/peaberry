@@ -24,7 +24,7 @@ import org.ops4j.peaberry.Export;
 import com.google.inject.TypeLiteral;
 
 /**
- * Collection of utility methods for dealing with generic TypeLiterals.
+ * Methods for creating various type-literals.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -34,14 +34,14 @@ public final class TypeLiterals {
   private TypeLiterals() {}
 
   /**
-   * Create a TypeLiteral representing <code>Iterable&lt;T&gt;</code>.
+   * Create a type-literal representing an iterable sequence of the given type.
    * 
    * @param clazz service interface
-   * @return Iterable<T> type literal
+   * @return parameterised type-literal
    */
   @SuppressWarnings("unchecked")
-  public static <T> TypeLiteral<Iterable<T>> iterable(final Class<T> clazz) {
-    return (TypeLiteral<Iterable<T>>) TypeLiteral.get(new ParameterizedType() {
+  public static <T> TypeLiteral<Iterable<? extends T>> iterable(final Class<T> clazz) {
+    return (TypeLiteral<Iterable<? extends T>>) TypeLiteral.get(new ParameterizedType() {
 
       public Type[] getActualTypeArguments() {
         return new Type[] {clazz};
@@ -58,10 +58,10 @@ public final class TypeLiterals {
   }
 
   /**
-   * Create a TypeLiteral representing <code>Export&lt;T&gt;</code>.
+   * Create a type-literal representing an exported handle of the given type.
    * 
    * @param clazz service interface
-   * @return Export<T> type literal
+   * @return parameterised type-literal
    */
   @SuppressWarnings("unchecked")
   public static <T> TypeLiteral<Export<? extends T>> export(final Class<T> clazz) {
