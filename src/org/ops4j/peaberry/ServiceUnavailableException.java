@@ -27,14 +27,14 @@ public final class ServiceUnavailableException
   private static final long serialVersionUID = 9207041522801931804L;
 
   /**
-   * Constructs a {@link ServiceUnavailableException} with no message or cause.
+   * Constructs a {@code ServiceUnavailableException} with no message or cause.
    */
   public ServiceUnavailableException() {
     super();
   }
 
   /**
-   * Constructs a {@link ServiceUnavailableException} with a specific message.
+   * Constructs a {@code ServiceUnavailableException} with a specific message.
    * 
    * @param message detailed message
    */
@@ -43,7 +43,7 @@ public final class ServiceUnavailableException
   }
 
   /**
-   * Constructs a {@link ServiceUnavailableException} with a specific cause.
+   * Constructs a {@code ServiceUnavailableException} with a specific cause.
    * 
    * @param cause underlying cause
    */
@@ -52,7 +52,7 @@ public final class ServiceUnavailableException
   }
 
   /**
-   * Constructs a {@link ServiceUnavailableException} with message and cause.
+   * Constructs a {@code ServiceUnavailableException} with message and cause.
    * 
    * @param message detailed message
    * @param cause underlying cause

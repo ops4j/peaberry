@@ -28,7 +28,7 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 
 /**
- * Guice extension that supports injection of dynamic services.
+ * Guice extension that supports injection and registration of dynamic services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -58,21 +58,21 @@ public final class Peaberry {
   }
 
   /**
-   * Creates a new OSGi {@link ServiceRegistry} adaptor for the given bundle.
+   * Create a new OSGi {@code ServiceRegistry} for the given bundle context.
    * 
    * @param bundleContext current bundle context
-   * @return OSGi specific {@link ServiceRegistry}
+   * @return OSGi specific {@code ServiceRegistry}
    */
   public static ServiceRegistry osgiServiceRegistry(final BundleContext bundleContext) {
     return new OSGiServiceRegistry(bundleContext);
   }
 
   /**
-   * Creates a Guice module for an OSGi bundle, with bindings to the OSGi
-   * specific {@link ServiceRegistry} and current {@link BundleContext}.
+   * Create a new Guice module with bindings to the given bundle context and
+   * OSGi {@code ServiceRegistry}.
    * 
    * @param bundleContext current bundle context
-   * @return OSGi bindings
+   * @return OSGi specific Guice bindings
    */
   public static Module osgiModule(final BundleContext bundleContext) {
 

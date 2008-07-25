@@ -27,14 +27,14 @@ public class ServiceException
   private static final long serialVersionUID = -1744260261446638374L;
 
   /**
-   * Constructs a {@link ServiceException} with no message or cause.
+   * Constructs a {@code ServiceException} with no message or cause.
    */
   public ServiceException() {
     super();
   }
 
   /**
-   * Constructs a {@link ServiceException} with a specific message.
+   * Constructs a {@code ServiceException} with a specific message.
    * 
    * @param message detailed message
    */
@@ -43,7 +43,7 @@ public class ServiceException
   }
 
   /**
-   * Constructs a {@link ServiceException} with a specific cause.
+   * Constructs a {@code ServiceException} with a specific cause.
    * 
    * @param cause underlying cause
    */
@@ -52,7 +52,7 @@ public class ServiceException
   }
 
   /**
-   * Constructs a {@link ServiceException} with message and cause.
+   * Constructs a {@code ServiceException} with message and cause.
    * 
    * @param message detailed message
    * @param cause underlying cause

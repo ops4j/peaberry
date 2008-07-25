@@ -30,6 +30,8 @@ import org.ops4j.peaberry.ServiceException;
 import com.google.common.collect.ReferenceMap;
 
 /**
+ * Custom classloader that provides optimised proxies for imported services.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ImportProxyClassLoader

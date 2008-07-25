@@ -25,7 +25,7 @@ import java.util.Comparator;
 import org.osgi.framework.ServiceReference;
 
 /**
- * OSGi service {@link Comparator} that puts <i>best</i> services first, using
+ * OSGi service {@code Comparator} that puts <i>best</i> services first, using
  * the definition of <i>best</i> service from the OSGi R4 core specification.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)

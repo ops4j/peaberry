@@ -56,7 +56,7 @@ import org.objectweb.asm.Type;
 import org.ops4j.peaberry.Import;
 
 /**
- * Around-advice glue code, specifically optimised for peaberry.
+ * Around-advice glue code, specifically optimised for imported services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

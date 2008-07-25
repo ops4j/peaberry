@@ -35,7 +35,7 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
- * Default {@link DecoratedServiceBuilder} implementation.
+ * Default {@code DecoratedServiceBuilder} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

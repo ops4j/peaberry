@@ -30,7 +30,7 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 
 /**
- * Default {@link QualifiedRegistrationBuilder} implementation.
+ * Default {@code QualifiedRegistrationBuilder} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

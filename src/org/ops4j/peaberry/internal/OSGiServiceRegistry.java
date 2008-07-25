@@ -39,7 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * OSGi {@link ServiceRegistry} adaptor (proof-of-concept, not optimised)
+ * OSGi {@code ServiceRegistry} adaptor (proof-of-concept, not optimised)
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

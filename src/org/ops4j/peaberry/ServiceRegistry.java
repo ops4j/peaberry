@@ -25,12 +25,14 @@ public interface ServiceRegistry
     extends ServiceScope {
 
   /**
-   * Lookup services from the registry, constrained by the LDAP filter.
+   * Lookup services from the registry, constrained by the given LDAP filter.
    * 
-   * @param clazz expected service class
+   * @param clazz expected service interface
    * @param filter RFC-1960 LDAP filter
    * 
    * @return sequence of imported service handles
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
    */
   <T> Iterable<Import<T>> lookup(Class<? extends T> clazz, String filter);
 }

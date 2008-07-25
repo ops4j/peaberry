@@ -17,7 +17,7 @@
 package org.ops4j.peaberry;
 
 /**
- * Handle to a service instance imported from a {@link ServiceRegistry}.
+ * Handle to a service instance imported from a {@code ServiceRegistry}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

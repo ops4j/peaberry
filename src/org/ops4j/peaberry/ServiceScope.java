@@ -20,18 +20,20 @@ import java.util.Map;
 
 /**
  * A dynamic collection of exported services with associated attributes.
- * 
- * {@link ServiceScope}s can be nested - when a service is exported it will be
- * automatically exported to any contained {@link ServiceScope} instances that
- * have &quot;scope.filter&quot; attributes that match the exported service.
+ * <p>
+ * Service scopes can be nested - when a service is exported to a scope, it is
+ * automatically exported to any contained {@code ServiceScope} instances that
+ * have {@code scope.filter} attributes that match the exported service.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceScope {
 
   /**
-   * &quot;scope.filter&quot; attribute name - an LDAP filter that defines which
-   * services can also be exported to the nested {@link ServiceScope} instance.
+   * {@code scope.filter} attribute, an RFC-1960 LDAP filter that defines which
+   * services can be exported to the associated {@code ServiceScope} instance.
+   * 
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
    */
   static final String SCOPE_FILTER = "scope.filter";
 

@@ -94,7 +94,7 @@ public final class Attributes {
 
     for (final String n : names) {
       try {
-        for (final Rdn rdn : new LdapName(n).getRdns()) {
+        for (final Rdn rdn : new LdapName(n).getRdns()) { // NOPMD
           attributes.put(rdn.getType(), rdn.getValue());
         }
       } catch (final InvalidNameException e) {
