@@ -29,6 +29,51 @@ import com.google.inject.Module;
 
 /**
  * Guice extension that supports injection and registration of dynamic services.
+ * <p>
+ * For example, injecting a dictionary service:
+ * 
+ * <pre> {@literal @}Inject
+ * DictionaryService dictionaryService;
+ * ...
+ * bind(DictionaryService.class).to(service(DictionaryService.class).single());</pre>
+ * 
+ * Injecting many dictionary services:
+ * 
+ * <pre> {@literal @}Inject
+ * Iterable&lt;DictionaryService&gt; dictionaryServices;
+ * ...
+ * bind(iterable(DictionaryService.class)).to(service(DictionaryService.class).multiple());</pre>
+ * 
+ * Exporting an implementation as a dictionary service:
+ * 
+ * <pre> {@literal @}Inject
+ * // the service can be controlled by the Export handle
+ * Export&lt;DictionaryService&gt; exportedDictionaryService;
+ * ...
+ * // the service is actually exported at injection time
+ * bind(export(DictionaryService.class)).to(registration(dictionaryImplKey).export());</pre>
+ * 
+ * Applying an LDAP filter to find a specific service:
+ * 
+ * <pre> service(DictionaryService.class).filter(&quot;Language=French&quot;).single();</pre>
+ * 
+ * Applying custom attributes to an exported service:
+ * 
+ * <pre> registration(dictionaryKey).attributes(names(&quot;Language=French&quot;)).export();</pre>
+ * 
+ * NOTE: helper methods for dealing with filters and attributes are in the
+ * {@code org.ops4j.peaberry.util} package.
+ * <p>
+ * You can also decorate an imported service with additional behaviour:
+ * 
+ * <pre> service(DictionaryService.class).decoratedWith(decoratorImplKey).single();</pre>
+ * 
+ * or ask for the service to be injected directly, instead of a dynamic proxy:
+ * 
+ * <pre> service(DictionaryService.class).direct().single();</pre>
+ * 
+ * See the <a href="http://code.google.com/p/peaberry/wiki/UserGuide"
+ * target="_blank">User Guide</a> for more examples.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
