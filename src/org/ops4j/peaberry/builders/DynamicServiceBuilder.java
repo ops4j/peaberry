@@ -27,7 +27,7 @@ public interface DynamicServiceBuilder<T>
     extends ServiceProxyBuilder<T> {
 
   /**
-   * Provide direct service instance(s) when requested, not a dynamic proxy.
+   * Provide direct (static) service instances, not a dynamic proxy.
    * 
    * @return dynamic service builder
    */

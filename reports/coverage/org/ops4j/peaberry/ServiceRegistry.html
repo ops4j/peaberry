@@ -30,7 +30,7 @@
       <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
       <div class="roundedContent">
     <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
-    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Thu Jul 24 2008 14:03:31 SGT</div>
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Sat Jul 26 2008 17:57:48 SGT</div>
 
         
     
@@ -59,7 +59,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
-           <td >      36
+           <td >      38
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
@@ -127,7 +127,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
-           <td >      36
+           <td >      38
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
@@ -652,7 +652,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-28" class="srcLine"><span class="comment">   * Lookup services from the registry, constrained by the LDAP filter.</span></span></td>
+    <span class="spacer"></span><span id="src-28" class="srcLine"><span class="comment">   * Lookup services from the registry, constrained by the given LDAP filter.</span></span></td>
 </tr>
         
 
@@ -676,7 +676,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-30" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> clazz expected service class</span></span></td>
+    <span class="spacer"></span><span id="src-30" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> clazz expected service interface</span></span></td>
 </tr>
         
 
@@ -712,7 +712,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-33" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> sequence of imported service handles</span></span></td>
+    <span class="spacer"></span><span id="src-33" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> ordered sequence of imported services, recommended service first</span></span></td>
 </tr>
         
 
@@ -724,7 +724,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-34" class="srcLine"><span class="comment">   */</span></span></td>
+    <span class="spacer"></span><span id="src-34" class="srcLine"><span class="comment">   * </span></span></td>
 </tr>
         
 
@@ -736,7 +736,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-35" class="srcLine">  &lt;T&gt; Iterable&lt;<a href="../../../org/ops4j/peaberry/Import.html#Import">Import</a>&lt;T&gt;&gt; lookup(Class&lt;? <span class="keyword">extends</span> T&gt; clazz, String filter);</span></td>
+    <span class="spacer"></span><span id="src-35" class="srcLine"><span class="comment">   * </span><span class="javadoc">@see</span><span class="comment"> &lt;a href=&quot;http://www.ietf.org/rfc/rfc1960.txt&quot;&gt;RFC-1960&lt;/a&gt;</span></span></td>
 </tr>
         
 
@@ -748,14 +748,38 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-36" class="srcLine">}</span></td>
+    <span class="spacer"></span><span id="src-36" class="srcLine"><span class="comment">   */</span></span></td>
+</tr>
+        
+
+<tr id="l37">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=37#src-37">37</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-37" class="srcLine">  &lt;T&gt; Iterable&lt;<a href="../../../org/ops4j/peaberry/Import.html#Import">Import</a>&lt;T&gt;&gt; lookup(Class&lt;? <span class="keyword">extends</span> T&gt; clazz, String filter);</span></td>
+</tr>
+        
+
+<tr id="l38">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=38#src-38">38</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-38" class="srcLine">}</span></td>
 </tr>
 </tbody></table>
 <table width="100%"><tr><td class="hbreak" colspan="6">&nbsp;</td></tr>
 <tr><td class="footer" colspan="6">
 <table>
 <tr>
- <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Thu Jul 24 2008 14:03:31 SGT</i>.</td>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Sat Jul 26 2008 17:57:48 SGT</i>.</td>
 <td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Open Source License registered to peaberry 	. </td>
 </tr>
 </table>

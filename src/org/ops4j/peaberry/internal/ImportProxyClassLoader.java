@@ -30,7 +30,7 @@ import org.ops4j.peaberry.ServiceException;
 import com.google.common.collect.ReferenceMap;
 
 /**
- * Custom classloader that provides optimised proxies for imported services.
+ * Custom classloaders that provide optimised proxies for imported services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -39,6 +39,7 @@ final class ImportProxyClassLoader
 
   public static <T> T importProxy(final Class<? extends T> clazz, final Import<T> handle) {
     try {
+      // use a different custom classloader for each class space, to avoid leaks
       final ClassLoader proxyLoader = getProxyClassLoader(clazz.getClassLoader());
       final Class<?> proxyClazz = proxyLoader.loadClass(getProxyName(clazz.getName()));
       return clazz.cast(proxyClazz.getConstructor(Import.class).newInstance(handle));
@@ -49,6 +50,7 @@ final class ImportProxyClassLoader
     }
   }
 
+  // weak reference map, to allow eager collection of proxy-generated classes
   private static final ReferenceMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
       new ReferenceMap<ClassLoader, ClassLoader>(WEAK, WEAK);
 
@@ -81,11 +83,13 @@ final class ImportProxyClassLoader
 
     final String clazzName = getClazzName(clazzOrProxyName);
 
+    // is this a new proxy class request?
     if (!clazzName.equals(clazzOrProxyName)) {
       final byte[] byteCode = generateProxy(loadClass(clazzName));
       return defineClass(clazzOrProxyName, byteCode, 0, byteCode.length);
     }
 
+    // ignore any non-proxy requests
     throw new ClassNotFoundException();
   }
 }

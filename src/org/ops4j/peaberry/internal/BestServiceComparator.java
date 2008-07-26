@@ -48,12 +48,15 @@ final class BestServiceComparator
     final long rhsRanking = getNumber(rhs, SERVICE_RANKING);
 
     if (lhsRanking == rhsRanking) {
+      // favour lower service id
       return lhsId < rhsId ? -1 : 1;
     }
 
+    // but higher service ranking beats all
     return lhsRanking < rhsRanking ? 1 : -1;
   }
 
+  // service id is Long, service ranking is Integer - but both are Number
   private static long getNumber(final ServiceReference ref, final String key) {
     final Object value = ref.getProperty(key);
     if (value instanceof Number) {

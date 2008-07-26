@@ -30,7 +30,7 @@
       <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
       <div class="roundedContent">
     <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
-    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Thu Jul 24 2008 14:03:31 SGT</div>
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Sat Jul 26 2008 17:57:48 SGT</div>
 
         
     
@@ -59,7 +59,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
-           <td >      47
+           <td >      49
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
@@ -127,7 +127,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'file';">LOC:</label></td>
-           <td >      47
+           <td >      49
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'file';">Total cmp:</label></td>
@@ -571,7 +571,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-23" class="srcLine"><span class="comment"> * </span></span></td>
+    <span class="spacer"></span><span id="src-23" class="srcLine"><span class="comment"> * &lt;p&gt;</span></span></td>
 </tr>
         
 
@@ -583,7 +583,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-24" class="srcLine"><span class="comment"> * {</span><span class="javadoc">@link</span><span class="comment"> ServiceScope}s can be nested - when a service is exported it will be</span></span></td>
+    <span class="spacer"></span><span id="src-24" class="srcLine"><span class="comment"> * Service scopes can be nested - when a service is exported to a scope, it is</span></span></td>
 </tr>
         
 
@@ -595,7 +595,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-25" class="srcLine"><span class="comment"> * automatically exported to any contained {</span><span class="javadoc">@link</span><span class="comment"> ServiceScope} instances that</span></span></td>
+    <span class="spacer"></span><span id="src-25" class="srcLine"><span class="comment"> * automatically exported to any contained {</span><span class="comment">@code ServiceScope} instances that</span></span></td>
 </tr>
         
 
@@ -607,7 +607,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-26" class="srcLine"><span class="comment"> * have &amp;quot;scope.filter&amp;quot; attributes that match the exported service.</span></span></td>
+    <span class="spacer"></span><span id="src-26" class="srcLine"><span class="comment"> * have {</span><span class="comment">@code scope.filter} attributes that match the exported service.</span></span></td>
 </tr>
         
 
@@ -712,7 +712,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-33" class="srcLine"><span class="comment">   * &amp;quot;scope.filter&amp;quot; attribute name - an LDAP filter that defines which</span></span></td>
+    <span class="spacer"></span><span id="src-33" class="srcLine"><span class="comment">   * {</span><span class="comment">@code scope.filter} attribute, an RFC-1960 LDAP filter that defines which</span></span></td>
 </tr>
         
 
@@ -724,7 +724,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-34" class="srcLine"><span class="comment">   * services can also be exported to the nested {</span><span class="javadoc">@link</span><span class="comment"> ServiceScope} instance.</span></span></td>
+    <span class="spacer"></span><span id="src-34" class="srcLine"><span class="comment">   * services can be exported to the associated {</span><span class="comment">@code ServiceScope} instance.</span></span></td>
 </tr>
         
 
@@ -736,7 +736,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-35" class="srcLine"><span class="comment">   */</span></span></td>
+    <span class="spacer"></span><span id="src-35" class="srcLine"><span class="comment">   * </span></span></td>
 </tr>
         
 
@@ -748,7 +748,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-36" class="srcLine">  <span class="keyword">static</span> <span class="keyword">final</span> String SCOPE_FILTER = <span class="string">&quot;scope.filter&quot;</span>;</span></td>
+    <span class="spacer"></span><span id="src-36" class="srcLine"><span class="comment">   * </span><span class="javadoc">@see</span><span class="comment"> &lt;a href=&quot;http://www.ietf.org/rfc/rfc1960.txt&quot;&gt;RFC-1960&lt;/a&gt;</span></span></td>
 </tr>
         
 
@@ -760,7 +760,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-37" class="srcLine"></span></td>
+    <span class="spacer"></span><span id="src-37" class="srcLine"><span class="comment">   */</span></span></td>
 </tr>
         
 
@@ -772,7 +772,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-38" class="srcLine">  <span class="comment">/**</span></span></td>
+    <span class="spacer"></span><span id="src-38" class="srcLine">  <span class="keyword">static</span> <span class="keyword">final</span> String SCOPE_FILTER = <span class="string">&quot;scope.filter&quot;</span>;</span></td>
 </tr>
         
 
@@ -784,7 +784,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-39" class="srcLine"><span class="comment">   * Export the given service to this scope with the associated attributes.</span></span></td>
+    <span class="spacer"></span><span id="src-39" class="srcLine"></span></td>
 </tr>
         
 
@@ -796,7 +796,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-40" class="srcLine"><span class="comment">   * </span></span></td>
+    <span class="spacer"></span><span id="src-40" class="srcLine">  <span class="comment">/**</span></span></td>
 </tr>
         
 
@@ -808,7 +808,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-41" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> service service instance</span></span></td>
+    <span class="spacer"></span><span id="src-41" class="srcLine"><span class="comment">   * Export the given service to this scope with the associated attributes.</span></span></td>
 </tr>
         
 
@@ -820,7 +820,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-42" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> attributes service attributes</span></span></td>
+    <span class="spacer"></span><span id="src-42" class="srcLine"><span class="comment">   * </span></span></td>
 </tr>
         
 
@@ -832,7 +832,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-43" class="srcLine"><span class="comment">   * </span></span></td>
+    <span class="spacer"></span><span id="src-43" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> service service instance</span></span></td>
 </tr>
         
 
@@ -844,7 +844,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-44" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> exported service handle, null if the scope is not interested</span></span></td>
+    <span class="spacer"></span><span id="src-44" class="srcLine"><span class="comment">   * </span><span class="javadoc">@param</span><span class="comment"> attributes service attributes</span></span></td>
 </tr>
         
 
@@ -856,7 +856,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-45" class="srcLine"><span class="comment">   */</span></span></td>
+    <span class="spacer"></span><span id="src-45" class="srcLine"><span class="comment">   * </span></span></td>
 </tr>
         
 
@@ -868,7 +868,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-46" class="srcLine">  &lt;S, T <span class="keyword">extends</span> S&gt; <a href="../../../org/ops4j/peaberry/Export.html#Export">Export</a>&lt;S&gt; export(T service, Map&lt;String, ?&gt; attributes);</span></td>
+    <span class="spacer"></span><span id="src-46" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> exported service handle, null if the scope is not interested</span></span></td>
 </tr>
         
 
@@ -880,14 +880,38 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-47" class="srcLine">}</span></td>
+    <span class="spacer"></span><span id="src-47" class="srcLine"><span class="comment">   */</span></span></td>
+</tr>
+        
+
+<tr id="l48">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=48#src-48">48</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-48" class="srcLine">  &lt;S, T <span class="keyword">extends</span> S&gt; <a href="../../../org/ops4j/peaberry/Export.html#Export">Export</a>&lt;S&gt; export(T service, Map&lt;String, ?&gt; attributes);</span></td>
+</tr>
+        
+
+<tr id="l49">
+<td align="right" class="lineCount NoHilight"><a class="lineNumHref" href="?line=49#src-49">49</a></td>
+<td align="right" class="coverageCount NoHilight "
+         >
+    &nbsp;&nbsp;
+
+</td>
+<td class="  srcCell"  >
+    <span class="spacer"></span><span id="src-49" class="srcLine">}</span></td>
 </tr>
 </tbody></table>
 <table width="100%"><tr><td class="hbreak" colspan="6">&nbsp;</td></tr>
 <tr><td class="footer" colspan="6">
 <table>
 <tr>
- <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Thu Jul 24 2008 14:03:31 SGT</i>.</td>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Sat Jul 26 2008 17:57:48 SGT</i>.</td>
 <td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Open Source License registered to peaberry 	. </td>
 </tr>
 </table>

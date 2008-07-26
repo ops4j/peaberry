@@ -11,7 +11,7 @@ clover.pageData = { "classes" : [
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {
-		"test_3" : {
+		"test_5" : {
 					  "name" : "cornerCases",
 					  "pass" : true,
 					  "methods" : [{"sl": 30 },],
@@ -49,22 +49,22 @@ clover.srcFileLines = [  [],   [  ] ,
   [  ] ,
   [  ] ,
   [  ] ,
-  [ 3   ] ,
+  [ 5   ] ,
   [  ] ,
-  [ 3   ] ,
+  [ 5   ] ,
   [  ] ,
-  [ 3   ] ,
-  [  ] ,
-  [  ] ,
-  [  ] ,
-  [ 3   ] ,
-  [  ] ,
-  [ 3   ] ,
+  [ 5   ] ,
   [  ] ,
   [  ] ,
   [  ] ,
+  [ 5   ] ,
   [  ] ,
-  [ 3   ] ,
+  [ 5   ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [  ] ,
+  [ 5   ] ,
   [  ] ,
   [  ] 
 ];

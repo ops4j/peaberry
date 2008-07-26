@@ -30,7 +30,7 @@
       <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
       <div class="roundedContent">
     <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
-    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Thu Jul 24 2008 14:03:31 SGT</div>
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Sat Jul 26 2008 17:57:48 SGT</div>
 
         
     
@@ -356,8 +356,8 @@
                    </tr>
                 <tr id="TypeLiterals-2" style="display:none">
             <td class="methodSummary" id="summary-42-3">
-                <span class="sortValue">iterable(Class&lt;T&gt;)&nbsp;:&nbsp;TypeLiteral&lt;Iterable&lt;T&gt;&gt;</span>
-                &nbsp;&nbsp;<a href="#42" title="iterable(Class&lt;T&gt;)&nbsp;:&nbsp;TypeLiteral&lt;Iterable&lt;T&gt;&gt;" name="sl-42">iterable(Class&lt;T&gt;)&nbsp;:&nbsp;TypeLiteral&lt;Iterable&lt;T&gt;&gt;</a>
+                <span class="sortValue">iterable(Class&lt;T&gt;)&nbsp;:&nbsp;TypeLiteral&lt;Iterable&lt;?&nbsp;extends&nbsp;T&gt;&gt;</span>
+                &nbsp;&nbsp;<a href="#42" title="iterable(Class&lt;T&gt;)&nbsp;:&nbsp;TypeLiteral&lt;Iterable&lt;?&nbsp;extends&nbsp;T&gt;&gt;" name="sl-42">iterable(Class&lt;T&gt;)&nbsp;:&nbsp;TypeLiteral&lt;Iterable&lt;?&nbsp;extends&nbsp;T&gt;&gt;</a>
                             </td>
             <td class="graphPercent" align="right">
                 <span class="sortValue">42</span>
@@ -993,7 +993,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-27" class="srcLine"><span class="comment"> * Collection of utility methods for dealing with generic TypeLiterals.</span></span></td>
+    <span class="spacer"></span><span id="src-27" class="srcLine"><span class="comment"> * Methods for creating various type-literals.</span></span></td>
 </tr>
         
 
@@ -1157,7 +1157,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-37" class="srcLine"><span class="comment">   * Create a TypeLiteral representing &lt;code&gt;Iterable&amp;lt;T&amp;gt;&lt;/code&gt;.</span></span></td>
+    <span class="spacer"></span><span id="src-37" class="srcLine"><span class="comment">   * Create a type-literal representing an iterable sequence of the given type.</span></span></td>
 </tr>
         
 
@@ -1193,7 +1193,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-40" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> Iterable&lt;T&gt; type literal</span></span></td>
+    <span class="spacer"></span><span id="src-40" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> parameterised type-literal</span></span></td>
 </tr>
         
 
@@ -1252,7 +1252,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-43" class="srcLine">  <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; TypeLiteral&lt;Iterable&lt;T&gt;&gt; iterable(<span class="keyword">final</span> Class&lt;T&gt; clazz) {</span></td>
+    <span class="spacer"></span><span id="src-43" class="srcLine">  <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; TypeLiteral&lt;Iterable&lt;? <span class="keyword">extends</span> T&gt;&gt; iterable(<span class="keyword">final</span> Class&lt;T&gt; clazz) {</span></td>
 </tr>
         
 
@@ -1264,7 +1264,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-44" class="srcLine"><span class="nolink" title="Line 44, Col 5: statement executed 3 times.">    <span class="keyword">return</span> (TypeLiteral&lt;Iterable&lt;T&gt;&gt;) TypeLiteral.get(<span class="keyword">new</span> ParameterizedType() {</span></span></td>
+    <span class="spacer"></span><span id="src-44" class="srcLine"><span class="nolink" title="Line 44, Col 5: statement executed 3 times.">    <span class="keyword">return</span> (TypeLiteral&lt;Iterable&lt;? <span class="keyword">extends</span> T&gt;&gt;) TypeLiteral.get(<span class="keyword">new</span> ParameterizedType() {</span></span></td>
 </tr>
         
 
@@ -1537,7 +1537,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-61" class="srcLine"><span class="comment">   * Create a TypeLiteral representing &lt;code&gt;Export&amp;lt;T&amp;gt;&lt;/code&gt;.</span></span></td>
+    <span class="spacer"></span><span id="src-61" class="srcLine"><span class="comment">   * Create a type-literal representing an exported handle of the given type.</span></span></td>
 </tr>
         
 
@@ -1573,7 +1573,7 @@
 
 </td>
 <td class="  srcCell"  >
-    <span class="spacer"></span><span id="src-64" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> Export&lt;T&gt; type literal</span></span></td>
+    <span class="spacer"></span><span id="src-64" class="srcLine"><span class="comment">   * </span><span class="javadoc">@return</span><span class="comment"> parameterised type-literal</span></span></td>
 </tr>
         
 
@@ -1900,7 +1900,7 @@
 <tr><td class="footer" colspan="6">
 <table>
 <tr>
- <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Thu Jul 24 2008 14:03:31 SGT</i>.</td>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="../../../../img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Sat Jul 26 2008 17:57:48 SGT</i>.</td>
 <td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Open Source License registered to peaberry 	. </td>
 </tr>
 </table>

@@ -31,7 +31,6 @@
  * <dd>The interface you can implement in order to decorate dynamic services.
  *
  * </dl>
- *
  */
 package org.ops4j.peaberry.builders;
 

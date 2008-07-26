@@ -26,7 +26,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * Factory methods for direct static services.
+ * Factory methods for direct (static) services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -42,6 +42,7 @@ final class DirectServiceFactory {
     final Iterator<Import<T>> i = handles.iterator();
 
     while (i.hasNext()) {
+      // collect direct instances into a fixed list
       final T instance = nextService(i, decorator);
       if (instance != null) {
         services.add(instance);
@@ -54,6 +55,7 @@ final class DirectServiceFactory {
   public static <S, T extends S> T directService(final Iterable<Import<T>> handles,
       final ImportDecorator<S> decorator) {
 
+    // just return the first service from the sequence
     return nextService(handles.iterator(), decorator);
   }
 

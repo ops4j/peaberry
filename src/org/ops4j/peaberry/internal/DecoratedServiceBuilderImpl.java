@@ -90,6 +90,7 @@ public final class DecoratedServiceBuilderImpl<T>
 
       public T get() {
 
+        // time to lookup the actual implementation bindings
         final ImportDecorator<? super T> decorator = getDecorator(injector);
         final ServiceRegistry registry = getRegistry(injector);
 
@@ -110,6 +111,7 @@ public final class DecoratedServiceBuilderImpl<T>
 
       public Iterable<T> get() {
 
+        // time to lookup the actual implementation bindings
         final ImportDecorator<? super T> decorator = getDecorator(injector);
         final ServiceRegistry registry = getRegistry(injector);
 
@@ -133,6 +135,7 @@ public final class DecoratedServiceBuilderImpl<T>
     if (registryKey != null) {
       return injector.getInstance(registryKey);
     }
+    // use default service registry (typically OSGi)
     return injector.getInstance(ServiceRegistry.class);
   }
 }

@@ -41,6 +41,7 @@ final class ServiceProxyFactory {
       public Iterator<T> iterator() {
         return new Iterator<T>() {
 
+          // original service iterator, provided by the registry
           private final Iterator<Import<T>> i = handles.iterator();
 
           public boolean hasNext() {
@@ -48,6 +49,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
+            // wrap each element up as a decorated dynamic proxy
             return importProxy(clazz, apply(decorator, i.next()));
           }
 
@@ -62,6 +64,16 @@ final class ServiceProxyFactory {
   public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
+    /*
+     * Provide an import handle that dynamically delegates to the first service,
+     * but also tracks its use (even across multiple threads) so that unget() is
+     * always called on the same handle as get() was originally.
+     * 
+     * The solution below will use the same handle until no threads are actively
+     * using the injected instance. This might keep a service in use for longer
+     * than expected when there is heavy contention, but it doesn't require any
+     * use of thread locals or additional context stacks.
+     */
     final Import<T> lookup = new Import<T>() {
       private long count = 0L;
       private Import<T> handle;
@@ -70,10 +82,12 @@ final class ServiceProxyFactory {
       public synchronized T get() {
         count++;
         if (null == handle) {
+          // first valid handle may appear at any time
           handle = handles.iterator().next();
-          instance = handle.get();
+          instance = handle.get(); // only called once
         }
         if (null == instance) {
+          // have handle, but service wasn't available
           throw new ServiceUnavailableException();
         }
         return instance;
@@ -82,6 +96,7 @@ final class ServiceProxyFactory {
       public synchronized void unget() {
         if (--count == 0) {
           try {
+            // last thread out
             if (null != handle) {
               handle.unget();
             }
@@ -93,6 +108,7 @@ final class ServiceProxyFactory {
       }
     };
 
+    // can now wrap import as decorated dynamic proxy
     return importProxy(clazz, apply(decorator, lookup));
   }
 

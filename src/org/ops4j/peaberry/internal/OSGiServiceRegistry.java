@@ -39,7 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * OSGi {@code ServiceRegistry} adaptor (proof-of-concept, not optimised)
+ * OSGi {@code ServiceRegistry} adaptor [** proof-of-concept, not optimised **]
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -63,8 +63,8 @@ public final class OSGiServiceRegistry
 
     /*
      * This is just a quick proof-of-concept implementation, it doesn't track
-     * services and suffers from potential race conditions. A production ready
-     * implementation will be available soon.
+     * services and might suffer from potential race conditions. A production
+     * ready implementation will be available around Summer 2008.
      */
 
     return new Iterable<Import<T>>() {
@@ -92,12 +92,14 @@ public final class OSGiServiceRegistry
           @SuppressWarnings("null")
           public Import<T> next() {
             final ServiceReference ref;
+
             try {
               ref = services[i++];
             } catch (final Exception e) {
               throw new ServiceUnavailableException();
             }
 
+            // wrap reference as import
             return new Import<T>() {
               public T get() {
                 try {
@@ -129,28 +131,32 @@ public final class OSGiServiceRegistry
 
   public <T, S extends T> Export<T> export(final S service, final Map<String, ?> attributes) {
 
+    // unfortunately, the OSGi API expects a Dictionary rather than a Map :(
     final Hashtable<String, Object> dictionary = new Hashtable<String, Object>();
     if (null != attributes) {
       dictionary.putAll(attributes);
     }
 
-    /*
-     * investigate various ways to determine service API...
-     */
-    String[] interfaces;
-    final Object objectclass = dictionary.get(OBJECTCLASS);
-    if (objectclass instanceof String[]) {
-      interfaces = (String[]) objectclass;
+    final String[] interfaces;
+
+    final Object objectClass = dictionary.get(OBJECTCLASS);
+    if (objectClass instanceof String[]) {
+      // use service attributes setting
+      interfaces = (String[]) objectClass;
     } else {
+      // use simple algorithm - don't search the hierarchy
       final Collection<String> api = new HashSet<String>();
       final Class<?> clazz = service.getClass();
+
       if (clazz.isInterface()) {
         api.add(clazz.getName());
       } else {
+        // just use the interfaces directly declared for this class
         for (final Class<?> i : service.getClass().getInterfaces()) {
           api.add(i.getName());
         }
       }
+
       interfaces = api.toArray(new String[api.size()]);
     }
 
@@ -162,6 +168,7 @@ public final class OSGiServiceRegistry
       throw new ServiceException(e);
     }
 
+    // wrap registration as export
     return new Export<T>() {
 
       @SuppressWarnings("unchecked")
@@ -172,6 +179,8 @@ public final class OSGiServiceRegistry
       public void unget() {}
 
       public void modify(final Map<String, ?> map) {
+
+        // unfortunately, the OSGi API expects a Dictionary rather than a Map :(
         final Hashtable<String, Object> dict = new Hashtable<String, Object>();
         if (null != map) {
           dict.putAll(map);

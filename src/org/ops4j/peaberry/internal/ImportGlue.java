@@ -73,6 +73,8 @@ final class ImportGlue {
 
   public static String getProxyName(final String clazzName) {
     final String safeName;
+
+    // support proxy of java.* interfaces by changing the package
     if (clazzName.startsWith("java.")) {
       safeName = clazzName.replace(".", "$$");
     } else if (clazzName.startsWith("java/")) {
@@ -85,9 +87,12 @@ final class ImportGlue {
 
   public static String getClazzName(final String proxyName) {
     final String clazzName = proxyName.replaceFirst("\\$\\$Proxy$", "");
+
+    // support proxy of java.* interfaces by changing the package
     if (clazzName.startsWith("java$$")) {
       return clazzName.replace("$$", ".");
     }
+
     return clazzName;
   }
 
@@ -113,6 +118,7 @@ final class ImportGlue {
 
     init(cw, superName, proxyName);
     for (final Method m : clazz.getMethods()) {
+      // we cannot proxy any static, final, or native methods
       if ((m.getModifiers() & (STATIC | FINAL | NATIVE)) == 0) {
         wrap(cw, proxyName, m);
       }

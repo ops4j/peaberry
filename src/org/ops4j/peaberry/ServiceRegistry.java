@@ -30,7 +30,7 @@ public interface ServiceRegistry
    * @param clazz expected service interface
    * @param filter RFC-1960 LDAP filter
    * 
-   * @return sequence of imported service handles
+   * @return ordered sequence of imported services, recommended service first
    * 
    * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
    */

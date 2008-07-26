@@ -32,7 +32,6 @@
  * <dd>The interface you can implement in order to plug-in other service frameworks.
  *
  * </dl>
- *
  */
 package org.ops4j.peaberry;
 
