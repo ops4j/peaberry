@@ -58,12 +58,16 @@
     <jar destfile="${peaberry.base}-sources.jar" basedir="${src}">
       <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
-    <copy file="pom.xml" tofile="${peaberry.base}.pom"/>
+    <copy file="pom.xml" tofile="${peaberry.base}.pom">
+      <filterset>
+        <filter token="VERSION" value="${version}"/>
+      </filterset>
+    </copy>
     <copy todir="${build}/dist">
       <filelist dir="." files="NOTICE,LICENSE,README.TXT"/>
     </copy>
     <checksum format="MD5SUM" algorithm="md5">
-      <fileset dir="${build}/dist" includes="*.jar"/>
+      <fileset dir="${build}/dist" includes="*.jar,*.pom"/>
     </checksum>
     <zip destfile="${build}/peaberry-${version}.zip" basedir="${build}/dist"/>
     <checksum format="MD5SUM" algorithm="md5" file="${build}/peaberry-${version}.zip"/>

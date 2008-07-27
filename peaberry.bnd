@@ -6,6 +6,7 @@ Bundle-Version: ${version}
 Bundle-Description: ${title}
 Bundle-DocURL: http://code.google.com/p/peaberry/
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 
 Include-Resource:\
  OSGI-OPT/NOTICE=NOTICE,\
