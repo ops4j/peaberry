@@ -19,7 +19,7 @@
 
   <target name="aopalliance">
     <mkdir dir="${build}/dist"/>
-    <bnd files="aopalliance.bnd"/>
+    <bnd files="aopalliance.bnd" classpath="${guice}/lib/aopalliance.jar"/>
   </target>
 
 </project>

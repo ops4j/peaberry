@@ -279,6 +279,10 @@ TD.methodStart {
     cursor: pointer;
 }
 
+.link:hover {
+    text-decoration:underline;
+}
+
 .selected {
     background-color: #00008B;
     color: white;
@@ -872,4 +876,8 @@ div.errorTraceStrong {
 
 .bold {
     font-weight:bold;
+}
+
+.red {
+    color:red;
 }

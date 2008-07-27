@@ -2,8 +2,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>peaberry</title>    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="SHORTCUT ICON" href="img/clover.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+        <link rel="SHORTCUT ICON" href="img/clover.ico" />
 
     <style type="text/css" media="screen">
         @import url('style.css');
@@ -16,7 +17,8 @@
     <script src="clover.js" type="text/javascript"></script>
     <script src="cloud.js" type="text/javascript"></script>
     <script src="help.js" type="text/javascript"></script>
-  </head>
+  <title>peaberry</title>
+</head>
 <body onload="setBrowserTitle('peaberry: Dashboard')">
 <table cellspacing="0" cellpadding="2" class="barGraph">
 
@@ -27,7 +29,7 @@
       <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
       <div class="roundedContent">
     <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
-    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Sat Jul 26 2008 17:57:48 SGT</div>
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Mon Jul 28 2008 01:14:28 SGT</div>
 
         
     
@@ -48,7 +50,7 @@
      <td  id="td-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: ;">
          <table style="text-align: right; white-space:nowrap;">
          <tr>
-           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Sat Jul 26 2008 17:57:41 SGT:</label></td>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Mon Jul 28 2008 01:14:21 SGT:</label></td>
          </tr>
          <tr>
            <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
@@ -56,7 +58,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
-           <td >      1,677
+           <td >      1,722
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
@@ -130,7 +132,7 @@
      <td  id="td-filtered-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: none;">
          <table style="text-align: right; white-space:nowrap;">
          <tr>
-           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Sat Jul 26 2008 17:57:41 SGT:</label></td>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Mon Jul 28 2008 01:14:21 SGT:</label></td>
          </tr>
          <tr>
            <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
@@ -138,7 +140,7 @@
   </td>
            <td style="width: 5%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
-           <td >      1,677
+           <td >      1,722
   </td>
            <td style="width: 10%">&nbsp;</td>
            <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
@@ -228,7 +230,7 @@
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
                 
-            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_coverage;">Coverage</label></a><span> 24 classes, 375 / 375 elements</span>
+            <label class="titleText link" onkeyup="return help_dash_coverage;" onclick="self.location='pkg-summary.html'">Coverage</label><span> 24 classes, 375 / 375 elements</span>
             <table><tr><td>100%
 </td>
 <td class="graphBar " align="center">
@@ -246,7 +248,7 @@
                         <div class="tags roundedLarge" style="padding: 5px;">
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
-                <div><a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_coverage;">Class Coverage Distribution</label> </a></div>
+                <div><label class="titleText link" onkeyup="return help_dash_coverage;" onclick="self.location='pkg-summary.html'">Class Coverage Distribution</label></div>
             <div class="center"><img src="img/classDistrubutionChart.png" alt="img/classDistrubutionChart.png" usemap="#classDistrubutionChart.png"/>
             <map id="classDistrubutionChart.png" name="classDistrubutionChart.png">
 <area shape="rect" coords="245,12,263,148" title="11 classes have 91-100% coverage" alt=""/>
@@ -258,7 +260,7 @@
                         <div class="tags roundedLarge" style="padding: 5px;">
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
-                <div><a href="proj-risks.html" class="titleText"><label onkeyup="return help_dash_risks;">Class Complexity</label> </a></div>
+                <div><label class="titleText link" onkeyup="return help_dash_risks;" onclick="self.location='proj-risks.html'">Class Complexity</label></div>
             <div class="center"><img src="img/classComplexityChart.png" alt="img/classComplexityChart.png" usemap="#classComplexityChart.png"/>
             <map id="classComplexityChart.png" name="classComplexityChart.png">
 <area shape="poly" coords="260,103,257,106,255,103,257,101,260,103,260,103" title="Cmp: 6; Cov: 100%; DirectServiceFactory" alt="" href="org/ops4j/peaberry/internal/DirectServiceFactory.html#DirectServiceFactory"/>
@@ -280,7 +282,7 @@
                 <div class="tags roundedLarge" style="padding: 5px;">
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
-            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_packages;">Most Complex Packages</label></a>
+            <label class="titleText link" onkeyup="return help_dash_packages;" onclick="self.location='pkg-summary.html'">Most Complex Packages</label>
         
         <table>
                     
@@ -332,7 +334,7 @@
                     <div class="tags roundedLarge" style="padding: 5px;">
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
-            <a href="pkg-summary.html" class="titleText"><label onkeyup="return help_dash_classes;">Most Complex Classes</label></a>
+            <label class="titleText link" onkeyup="return help_dash_classes;" onclick="self.location='pkg-summary.html'">Most Complex Classes</label>
         <table>
                     
                         <tr><td>1. </td><td>100%
@@ -416,9 +418,8 @@
                 <div class="tags roundedLarge" style="padding: 5px;">
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
-                <a class="titleText" href="test-pkg-summary.html">
-                <label onkeyup="return help_dash_test_results;">Test Results</label></a>
-                <span> 16 / 16 tests 0.69 secs</span>
+                            <label class="titleText link" onkeyup="return help_dash_test_results;" onclick="self.location='test-pkg-summary.html'">Test Results</label>
+                <span> <span class="">18 / 18</span> tests 0.34 secs</span>
             <table>
                                 <tr>
                     <td>100%</td>
@@ -443,7 +444,7 @@
                 <div class="tags roundedLarge" style="padding: 5px;">
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
-                <a href="proj-risks.html" class="titleText"><label onkeyup="return help_dash_risks;">Top 0 Project Risks</label></a>
+                <label class="titleText link" onkeyup="return help_dash_risks;" onclick="self.location='proj-risks.html'">Top 0 Project Risks</label>
             <div>
                         </div>
                 </div>
@@ -453,7 +454,7 @@
                         <div class="tags roundedLarge" style="padding: 5px;">
             <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
         <div class="roundedContent" style="padding: 5px;">
-                <a class="titleText" href="test-pkg-summary.html"><label onkeyup="return help_dash_untested_methods;">Least Tested Methods</label></a>
+                <label class="titleText link" onkeyup="return help_dash_untested_methods;" onclick="self.location='test-pkg-summary.html'">Least Tested Methods</label>
             <table>
                             </table>
                 </div>
@@ -470,7 +471,7 @@
 <tr><td class="footer" colspan="2">
 <table>
 <tr>
- <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.2.1</a><i><br/>Sat Jul 26 2008 17:57:48 SGT</i>.</td>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i><a target="_new" href="http://www.atlassian.com/software/clover">Clover Code Coverage v2.3.2</a><i><br/>Mon Jul 28 2008 01:14:29 SGT</i>.</td>
 <td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Open Source License registered to peaberry 	. </td>
 </tr>
 </table>

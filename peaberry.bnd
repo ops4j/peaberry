@@ -7,9 +7,6 @@ Bundle-Description: ${title}
 Bundle-DocURL: http://code.google.com/p/peaberry/
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
 
-Bundle-ClassPath:\
- .,asm.jar
-
 Include-Resource:\
  OSGI-OPT/NOTICE=NOTICE,\
  OSGI-OPT/LICENSE=LICENSE,\

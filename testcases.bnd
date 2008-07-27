@@ -9,7 +9,6 @@ Private-Package:\
 
 -removeheaders:\
  Bnd-LastModified,\
- Ignore-Package,\
  Include-Resource,\
  Private-Package,\
  Tool

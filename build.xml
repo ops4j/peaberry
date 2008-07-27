@@ -53,11 +53,16 @@
     <delete dir="${guice}"/>
   </target>
 
-  <target name="dist" depends="peaberry">
-    <zip destfile="${build}/peaberry-${version}.zip" basedir="${build}/dist" update="true"/>
+  <target name="dist" depends="peaberry,doc">
+    <jar destfile="${peaberry.base}-javadoc.jar" basedir="${doc}/javadoc"/>
+    <jar destfile="${peaberry.base}-sources.jar" basedir="${src}">
+      <metainf dir="." includes="NOTICE,LICENSE"/>
+    </jar>
+    <copy file="pom.xml" tofile="${peaberry.base}.pom"/>
+    <zip destfile="${build}/peaberry-${version}.zip" basedir="${build}/dist"/>
   </target>
 
-  <target name="test.dist" depends="dist,test.peaberry"/>
+  <target name="test.dist" depends="peaberry,test.peaberry"/>
 
   <target name="reports" depends="guice,clean,with.clover,peaberry,test.peaberry,clover.report,pmd"/>
 
