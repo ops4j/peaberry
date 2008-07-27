@@ -1,13 +1,8 @@
 <?xml version="1.0"?>
 <project name="doc">
 
-  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
-    <classpath>
-      <pathelement location="${antlib}/jaxen.jar"/>
-      <pathelement location="${antlib}/pmd.jar"/>
-      <pathelement location="${asm.jar}"/>
-    </classpath>
-  </taskdef>
+  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
+      classpath="${antlib}/jaxen.jar;${antlib}/pmd.jar;${asm.jar}"/>
 
   <target name="pmd">
     <mkdir dir="${doc}/coverage"/>

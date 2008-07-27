@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
 <project name="bnd">
 
-  <taskdef resource="aQute/bnd/ant/taskdef.properties">
-    <classpath>
-      <pathelement location="${antlib}/bnd.jar"/>
-    </classpath>
-  </taskdef>
+  <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${antlib}/bnd.jar"/>
 
   <target name="peaberry" depends="compile,aopalliance">
     <copy file="${guice.jar}" todir="${build}/dist"/>

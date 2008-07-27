@@ -59,7 +59,14 @@
       <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
     <copy file="pom.xml" tofile="${peaberry.base}.pom"/>
+    <copy todir="${build}/dist">
+      <filelist dir="." files="NOTICE,LICENSE,README.TXT"/>
+    </copy>
+    <checksum format="MD5SUM" algorithm="md5">
+      <fileset dir="${build}/dist" includes="*.jar"/>
+    </checksum>
     <zip destfile="${build}/peaberry-${version}.zip" basedir="${build}/dist"/>
+    <checksum format="MD5SUM" algorithm="md5" file="${build}/peaberry-${version}.zip"/>
   </target>
 
   <target name="test.dist" depends="peaberry,test.peaberry"/>
