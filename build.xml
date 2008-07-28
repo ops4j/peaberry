@@ -60,10 +60,9 @@
     </jar>
     <copy todir="${build}/dist">
       <fileset dir="." includes="NOTICE,LICENSE*,README.TXT,pom.xml"/>
-      <compositemapper>
-        <identitymapper/>
-        <globmapper from="pom.xml" to="peaberry-${version}.pom"/>
-      </compositemapper>
+      <filtermapper>
+        <replacestring from="pom.xml" to="peaberry-${version}.pom"/>
+      </filtermapper>
       <filterset>
         <filter token="VERSION" value="${version}"/>
       </filterset>
