@@ -18,6 +18,7 @@
       <arg value="export"/>
       <arg value="--force"/>
       <arg value="-N"/>
+      <arg value="-r${google.guice.revision}"/>
       <arg value="${google.guice.repo}"/>
       <arg value="${guice}"/>
     </java>
@@ -25,6 +26,7 @@
       <classpath refId="svn.path"/>
       <arg value="export"/>
       <arg value="--force"/>
+      <arg value="-r${google.guice.revision}"/>
       <arg value="${google.guice.repo}/src"/>
       <arg value="${guice}/src"/>
     </java>
@@ -32,6 +34,7 @@
       <classpath refId="svn.path"/>
       <arg value="export"/>
       <arg value="--force"/>
+      <arg value="-r${google.guice.revision}"/>
       <arg value="${google.guice.repo}/test"/>
       <arg value="${guice}/test"/>
     </java>
@@ -39,6 +42,7 @@
       <classpath refId="svn.path"/>
       <arg value="export"/>
       <arg value="--force"/>
+      <arg value="-r${google.guice.revision}"/>
       <arg value="${google.guice.repo}/lib"/>
       <arg value="${guice}/lib"/>
     </java>
