@@ -54,17 +54,19 @@
   </target>
 
   <target name="dist" depends="peaberry,doc">
-    <jar destfile="${peaberry.base}-javadoc.jar" basedir="${doc}/javadoc"/>
-    <jar destfile="${peaberry.base}-sources.jar" basedir="${src}">
+    <jar destfile="${build}/dist/peaberry-${version}-javadoc.jar" basedir="${doc}/javadoc"/>
+    <jar destfile="${build}/dist/peaberry-${version}-sources.jar" basedir="${src}">
       <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
-    <copy file="pom.xml" tofile="${peaberry.base}.pom">
+    <copy todir="${build}/dist">
+      <fileset dir="." includes="NOTICE,LICENSE*,README.TXT,pom.xml"/>
+      <compositemapper>
+        <identitymapper/>
+        <globmapper from="pom.xml" to="peaberry-${version}.pom"/>
+      </compositemapper>
       <filterset>
         <filter token="VERSION" value="${version}"/>
       </filterset>
-    </copy>
-    <copy todir="${build}/dist">
-      <filelist dir="." files="NOTICE,LICENSE,README.TXT"/>
     </copy>
     <checksum format="MD5SUM" algorithm="md5">
       <fileset dir="${build}/dist" includes="*.jar,*.pom"/>
