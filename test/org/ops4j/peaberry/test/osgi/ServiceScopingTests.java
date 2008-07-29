@@ -80,7 +80,6 @@ public final class ServiceScopingTests {
       final ServiceRegistry osgiRegistry = osgiServiceRegistry(bundleContext);
       return new ServiceRegistry() {
 
-        @SuppressWarnings("unchecked")
         public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz, final String filter) {
 
           lookupCount++;

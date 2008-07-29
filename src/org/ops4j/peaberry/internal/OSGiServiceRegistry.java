@@ -171,7 +171,6 @@ public final class OSGiServiceRegistry
     // wrap registration as export
     return new Export<T>() {
 
-      @SuppressWarnings("unchecked")
       public T get() {
         return service;
       }
