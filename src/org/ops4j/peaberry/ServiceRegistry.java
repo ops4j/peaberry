@@ -32,7 +32,7 @@ public interface ServiceRegistry
    * 
    * @return ordered sequence of imported services, recommended service first
    * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960< /a>
    */
   <T> Iterable<Import<T>> lookup(Class<? extends T> clazz, String filter);
 }

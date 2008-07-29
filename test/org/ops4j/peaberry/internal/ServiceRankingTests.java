@@ -36,7 +36,7 @@ public final class ServiceRankingTests {
     // service reference with no properties at all
     final ServiceReference empty = new ServiceReference() {
 
-      public int compareTo(Object reference) {
+      public int compareTo(final Object reference) {
         return 0;
       }
 
@@ -44,7 +44,7 @@ public final class ServiceRankingTests {
         return null;
       }
 
-      public Object getProperty(String key) {
+      public Object getProperty(final String key) {
         return null;
       }
 
@@ -56,7 +56,7 @@ public final class ServiceRankingTests {
         return null;
       }
 
-      public boolean isAssignableTo(Bundle bundle, String className) {
+      public boolean isAssignableTo(final Bundle bundle, final String className) {
         return false;
       }
     };
@@ -64,7 +64,7 @@ public final class ServiceRankingTests {
     // service reference with only a service ID
     final ServiceReference basic = new ServiceReference() {
 
-      public int compareTo(Object reference) {
+      public int compareTo(final Object reference) {
         return 0;
       }
 
@@ -72,7 +72,7 @@ public final class ServiceRankingTests {
         return null;
       }
 
-      public Object getProperty(String key) {
+      public Object getProperty(final String key) {
         if (SERVICE_ID.equals(key)) {
           return 1;
         }
@@ -87,7 +87,7 @@ public final class ServiceRankingTests {
         return null;
       }
 
-      public boolean isAssignableTo(Bundle bundle, String className) {
+      public boolean isAssignableTo(final Bundle bundle, final String className) {
         return false;
       }
     };

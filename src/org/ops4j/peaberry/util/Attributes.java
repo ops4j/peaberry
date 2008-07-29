@@ -56,8 +56,8 @@ public final class Attributes {
 
     /*
      * Sigh, Properties is a really messed-up class... in Java5 there is only
-     * one method that looks up all keys *including default keys* and that can
-     * throw a ClassCastException if there happen to be any non-String keys.
+     * one method that returns all the keys _including default keys_ and that
+     * throws a ClassCastException if there happen to be any non-String keys.
      * (Java6 adds stringPropertyNames, but we're currently targeting Java5)
      */
     try {
@@ -86,7 +86,7 @@ public final class Attributes {
    * @param names distinguished names
    * @return service attributes
    * 
-   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
+   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253< /a>
    */
   public static Map<String, ?> names(final String... names) {
 

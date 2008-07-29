@@ -34,7 +34,7 @@ public final class Filters {
    * @param interfaces service API
    * @return service filter
    * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960< /a>
    */
   public static String objectClass(final Class<?>... interfaces) {
     final StringBuilder filter = new StringBuilder();

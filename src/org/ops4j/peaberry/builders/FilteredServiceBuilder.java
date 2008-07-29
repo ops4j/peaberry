@@ -32,7 +32,7 @@ public interface FilteredServiceBuilder<T>
    * @param filter RFC-1960 LDAP filter
    * @return dynamic service builder
    * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960< /a>
    */
   ScopedServiceBuilder<T> filter(String filter);
 }
