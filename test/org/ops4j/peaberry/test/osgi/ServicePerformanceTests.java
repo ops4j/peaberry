@@ -137,10 +137,10 @@ public final class ServicePerformanceTests
     timeExample(holder.direct);
     timeExample(holder.sticky);
 
-    System.out.format("RAW INSTANCE   %.8f ms / call\n", timeExample(holder.raw));
-    System.out.format("SERVICE PROXY  %.8f ms / call\n", timeExample(holder.service));
-    System.out.format("DIRECT SERVICE %.8f ms / call\n", timeExample(holder.direct));
-    System.out.format("STICKY SERVICE %.8f ms / call\n", timeExample(holder.sticky));
+    System.out.format("RAW INSTANCE   %8.2f ns / call\n", timeExample(holder.raw));
+    System.out.format("SERVICE PROXY  %8.2f ns / call\n", timeExample(holder.service));
+    System.out.format("DIRECT SERVICE %8.2f ns / call\n", timeExample(holder.direct));
+    System.out.format("STICKY SERVICE %8.2f ns / call\n", timeExample(holder.sticky));
   }
 
   private static double timeExample(final Example example) {
@@ -148,6 +148,6 @@ public final class ServicePerformanceTests
     for (int i = 0; i < 1000000; i++) {
       example.action("This is a test", i);
     }
-    return (System.currentTimeMillis() - now) / 1000000.0;
+    return System.currentTimeMillis() - now;
   }
 }
