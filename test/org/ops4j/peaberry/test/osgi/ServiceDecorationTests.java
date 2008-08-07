@@ -84,9 +84,9 @@ public final class ServiceDecorationTests
                 instance = handle.get();
               }
             }
-          }
-          if (null == instance) {
-            throw new ServiceUnavailableException();
+            if (null == instance) {
+              throw new ServiceUnavailableException();
+            }
           }
           return instance;
         }
