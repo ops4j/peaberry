@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import java.util.Map;
 
 /**
- * A dynamic collection of exported services with associated attributes.
+ * A write-only collection of exported services with associated attributes.
  * <p>
  * Service scopes can be nested - when a service is exported to a scope, it is
  * automatically exported to any contained {@code ServiceScope} instances that
