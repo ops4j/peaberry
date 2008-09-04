@@ -16,15 +16,18 @@
 
 package org.ops4j.peaberry.util.ldap;
 
-import java.io.IOException;
 import java.io.StringReader;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
+import org.apache.felix.framework.util.ldap.EvaluationException;
 import org.apache.felix.framework.util.ldap.Evaluator;
 import org.apache.felix.framework.util.ldap.LdapLexer;
-import org.apache.felix.framework.util.ldap.ParseException;
+import org.apache.felix.framework.util.ldap.Mapper;
 import org.apache.felix.framework.util.ldap.Parser;
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.ServiceException;
 
 /**
  * LDAP attribute filter, uses utility code from Apache Felix.
@@ -33,6 +36,12 @@ import org.ops4j.peaberry.AttributeFilter;
  */
 public final class LdapAttributeFilter
     implements AttributeFilter {
+
+  private static final Comparator<String> IGNORE_CASE_COMPARATOR = new Comparator<String>() {
+    public int compare(final String lhs, final String rhs) {
+      return null == lhs ? -1 : lhs.compareToIgnoreCase(rhs);
+    }
+  };
 
   private final Object[] program;
 
@@ -43,9 +52,7 @@ public final class LdapAttributeFilter
 
     try {
       parser.start();
-    } catch (final ParseException e) {
-      throw new IllegalArgumentException("Bad LDAP filter: " + filter, e);
-    } catch (final IOException e) {
+    } catch (final Exception e) {
       throw new IllegalArgumentException("Bad LDAP filter: " + filter, e);
     }
 
@@ -56,9 +63,28 @@ public final class LdapAttributeFilter
     }
   }
 
+  @SuppressWarnings("unchecked")
   public boolean matches(final Map<String, ?> attributes, final boolean ignoreCase) {
-    // TODO Auto-generated method stub
-    return true;
+    final Map map;
+
+    if (ignoreCase) {
+      map = new TreeMap(IGNORE_CASE_COMPARATOR);
+      map.putAll(attributes);
+    } else {
+      map = attributes;
+    }
+
+    final Mapper mapper = new Mapper() {
+      public Object lookup(final String key) {
+        return map.get(key);
+      }
+    };
+
+    try {
+      return new Evaluator(program).evaluate(mapper);
+    } catch (final EvaluationException e) {
+      throw new ServiceException("Problem evaluating filter: " + this, e);
+    }
   }
 
   @Override
