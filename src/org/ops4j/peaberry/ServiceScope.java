@@ -30,7 +30,7 @@ import java.util.Map;
 public interface ServiceScope {
 
   /**
-   * {@code scope.filter} attribute, an {@Code AttributeFilter} that
+   * {@code scope.filter} attribute, an {@code AttributeFilter} that
    * defines which services can be exported to the associated {@code
    * ServiceScope} instance.
    */
