@@ -53,9 +53,9 @@ import com.google.inject.Module;
  * // the service is actually exported at injection time
  * bind(export(DictionaryService.class)).to(registration(dictionaryImplKey).export());</pre>
  * 
- * Applying an LDAP filter to find a specific service:
+ * Applying a custom filter to find a specific service:
  * 
- * <pre> service(DictionaryService.class).filter(&quot;Language=French&quot;).single();</pre>
+ * <pre> service(DictionaryService.class).filter(ldap(&quot;(Language=French)&quot;)).single();</pre>
  * 
  * Applying custom attributes to an exported service:
  * 

@@ -72,8 +72,8 @@ public final class ServicePerformanceTests
 
   static class ExampleImpl
       implements Example {
-    public double action(String name, double id) {
-      return id * name.hashCode();
+    public double action(final String name, final double id) {
+      return id * name.hashCode() * Math.cosh(id);
     }
   }
 
@@ -129,7 +129,7 @@ public final class ServicePerformanceTests
   public void testWiring() {
 
     injector.getInstance(Key.get(export(Example.class)));
-    Holder holder = injector.getInstance(Holder.class);
+    final Holder holder = injector.getInstance(Holder.class);
 
     // warm-up...
     timeExample(holder.raw);
@@ -145,7 +145,7 @@ public final class ServicePerformanceTests
 
   private static double timeExample(final Example example) {
     final long now = System.currentTimeMillis();
-    for (int i = 0; i < 1000000; i++) {
+    for (double i = 0; i < 1; i += 0.000001) {
       example.action("This is a test", i);
     }
     return System.currentTimeMillis() - now;

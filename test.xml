@@ -8,6 +8,8 @@
 
     <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.OSGiTestNG">
 
+      <jvmarg value="-server"/>
+
       <classfileset dir="${build}/test-classes" includes="**/*Tests.class"/>
 
       <classpath>
@@ -21,7 +23,6 @@
 
       <sysproperty key="build" value="${build}"/>
 
-      <sysproperty key="cmpn.jar" value="${cmpn.jar}"/>
       <sysproperty key="aop.jar" value="${aop.jar}"/>
       <sysproperty key="guice.jar" value="${guice.jar}"/>
       <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>

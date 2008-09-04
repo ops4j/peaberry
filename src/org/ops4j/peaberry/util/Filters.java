@@ -18,8 +18,11 @@ package org.ops4j.peaberry.util;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
+import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.util.ldap.LdapAttributeFilter;
+
 /**
- * Methods for dealing with service filters.
+ * Methods for dealing with service attribute filters.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -29,14 +32,24 @@ public final class Filters {
   private Filters() {}
 
   /**
-   * Create an <i>objectClass</i> service filter from the given service API.
+   * Create a custom attribute filter based on the given LDAP filter string.
    * 
-   * @param interfaces service API
-   * @return service filter
+   * @param filter RFC-1960 LDAP filter
+   * @return service attribute filter
    * 
    * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960< /a>
    */
-  public static String objectClass(final Class<?>... interfaces) {
+  public static AttributeFilter ldap(final String filter) {
+    return new LdapAttributeFilter(filter);
+  }
+
+  /**
+   * Create an <i>objectClass</i> attribute filter from the given service API.
+   * 
+   * @param interfaces service API
+   * @return service attribute filter
+   */
+  public static AttributeFilter objectClass(final Class<?>... interfaces) {
     final StringBuilder filter = new StringBuilder();
 
     for (final Class<?> i : interfaces) {
@@ -45,9 +58,9 @@ public final class Filters {
 
     // must AND multiple clauses
     if (interfaces.length > 1) {
-      return "(&" + filter + ')';
+      return ldap("(&" + filter + ')');
     }
 
-    return filter.toString();
+    return ldap(filter.toString());
   }
 }

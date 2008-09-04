@@ -41,8 +41,6 @@ public final class Attributes {
   // instances not allowed
   private Attributes() {}
 
-  private static final Logger LOGGER = Logger.getLogger(Attributes.class.getName());
-
   /**
    * Convert the given service properties into a service attribute map.
    * Properties with non-String keys will not appear in the final map.
@@ -66,7 +64,8 @@ public final class Attributes {
         attributes.put(key, properties.getProperty(key));
       }
     } catch (final ClassCastException e) {
-      LOGGER.warning("Property map contains non-String key: " + e);
+      Logger.getLogger(Attributes.class.getName()).warning(
+          "Property map contains non-String key: " + e);
     }
 
     // now add non-String values that have String keys
@@ -98,7 +97,7 @@ public final class Attributes {
           attributes.put(rdn.getType(), rdn.getValue());
         }
       } catch (final InvalidNameException e) {
-        LOGGER.warning("Bad LDAP name: " + n);
+        throw new IllegalArgumentException("Bad LDAP name: " + n, e);
       }
     }
 

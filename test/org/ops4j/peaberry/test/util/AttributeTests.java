@@ -49,11 +49,9 @@ public final class AttributeTests {
   }
 
   public void testNameConverter() {
-    final Map<String, ?> attributes = names("a=b", "=", "c=d");
-
-    assert attributes.get("a").equals("b");
-    assert attributes.get("c").equals("d");
-
-    assert 2 == attributes.size();
+    try {
+      names("cn=John Doe", "=", "dc=com");
+      assert false : "Expected IllegalArgumentException";
+    } catch (final IllegalArgumentException e) {}
   }
 }

@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
@@ -80,7 +81,8 @@ public final class ServiceScopingTests {
       final ServiceRegistry osgiRegistry = osgiServiceRegistry(bundleContext);
       return new ServiceRegistry() {
 
-        public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz, final String filter) {
+        public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz,
+            final AttributeFilter filter) {
 
           lookupCount++;
           final Iterable<Import<T>> services = osgiRegistry.lookup(clazz, filter);
@@ -132,7 +134,9 @@ public final class ServiceScopingTests {
     };
 
     @SuppressWarnings( {"unused", "unchecked"})
-    public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz, final String filter) {
+    public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz,
+        final AttributeFilter filter) {
+
       return Collections.singletonList((Import<T>) BLANK_IMPORT);
     }
 

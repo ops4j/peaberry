@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.builders;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Peaberry;
 
 /**
@@ -27,12 +28,10 @@ public interface FilteredServiceBuilder<T>
     extends ScopedServiceBuilder<T> {
 
   /**
-   * Apply the given RFC-1960 LDAP filter to the dynamic service lookup.
+   * Apply the given filter to the dynamic service lookup.
    * 
-   * @param filter RFC-1960 LDAP filter
+   * @param filter service attribute filter
    * @return dynamic service builder
-   * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960< /a>
    */
-  ScopedServiceBuilder<T> filter(String filter);
+  ScopedServiceBuilder<T> filter(AttributeFilter filter);
 }

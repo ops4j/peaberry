@@ -16,13 +16,11 @@
 
 package org.ops4j.peaberry.test.util;
 
-import java.util.Hashtable;
 import java.util.Map;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.util.Attributes;
 import org.ops4j.peaberry.util.Filters;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.testng.annotations.Test;
 
 /**
@@ -40,13 +38,9 @@ public final class FilterTests {
   interface C {}
 
   public void testObjectClassConverter() {
-    final String filter = Filters.objectClass(A.class, B.class, C.class);
+    final AttributeFilter filter = Filters.objectClass(A.class, B.class, C.class);
     final Map<String, ?> attributes = Attributes.objectClass(A.class, B.class, C.class);
 
-    try {
-      assert FrameworkUtil.createFilter(filter).match(new Hashtable<String, Object>(attributes));
-    } catch (final InvalidSyntaxException e) {
-      assert false : "Unexpected exception " + e;
-    }
+    assert filter.matches(attributes, false);
   }
 }

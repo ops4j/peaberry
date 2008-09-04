@@ -30,10 +30,9 @@ import java.util.Map;
 public interface ServiceScope {
 
   /**
-   * {@code scope.filter} attribute, an RFC-1960 LDAP filter that defines which
-   * services can be exported to the associated {@code ServiceScope} instance.
-   * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960< /a>
+   * {@code scope.filter} attribute, an {@Code AttributeFilter} that
+   * defines which services can be exported to the associated {@code
+   * ServiceScope} instance.
    */
   static final String SCOPE_FILTER = "scope.filter";
 

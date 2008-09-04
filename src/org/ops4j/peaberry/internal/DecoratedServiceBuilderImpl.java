@@ -21,6 +21,7 @@ import static org.ops4j.peaberry.internal.DirectServiceFactory.directServices;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.serviceProxies;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.serviceProxy;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 import org.ops4j.peaberry.builders.DynamicServiceBuilder;
@@ -46,7 +47,7 @@ public final class DecoratedServiceBuilderImpl<T>
   final Class<? extends T> clazz;
 
   // default configuration
-  String filter = null;
+  AttributeFilter attributeFilter = null;
   boolean direct = false;
 
   // custom configuration keys
@@ -62,13 +63,8 @@ public final class DecoratedServiceBuilderImpl<T>
     return this;
   }
 
-  public ScopedServiceBuilder<T> filter(final String customFilter) {
-    // provide some basic normalisation of LDAP filter strings
-    if (null == customFilter || customFilter.charAt(0) == '(') {
-      filter = customFilter;
-    } else {
-      filter = '(' + customFilter + ')';
-    }
+  public ScopedServiceBuilder<T> filter(final AttributeFilter filter) {
+    attributeFilter = filter;
     return this;
   }
 
@@ -95,10 +91,10 @@ public final class DecoratedServiceBuilderImpl<T>
         final ServiceRegistry registry = getRegistry(injector);
 
         if (direct) {
-          return directService(registry.lookup(clazz, filter), decorator);
+          return directService(registry.lookup(clazz, attributeFilter), decorator);
         }
 
-        return serviceProxy(clazz, registry.lookup(clazz, filter), decorator);
+        return serviceProxy(clazz, registry.lookup(clazz, attributeFilter), decorator);
       }
     };
   }
@@ -116,10 +112,10 @@ public final class DecoratedServiceBuilderImpl<T>
         final ServiceRegistry registry = getRegistry(injector);
 
         if (direct) {
-          return directServices(registry.lookup(clazz, filter), decorator);
+          return directServices(registry.lookup(clazz, attributeFilter), decorator);
         }
 
-        return serviceProxies(clazz, registry.lookup(clazz, filter), decorator);
+        return serviceProxies(clazz, registry.lookup(clazz, attributeFilter), decorator);
       }
     };
   }

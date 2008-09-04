@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
@@ -59,7 +60,7 @@ public final class OSGiServiceRegistry
     this.bundleContext = bundleContext;
   }
 
-  public <T> Iterable<Import<T>> lookup(final Class<? extends T> type, final String filter) {
+  public <T> Iterable<Import<T>> lookup(final Class<? extends T> type, final AttributeFilter filter) {
 
     /*
      * This is just a quick proof-of-concept implementation, it doesn't track
@@ -73,7 +74,8 @@ public final class OSGiServiceRegistry
         final ServiceReference[] services;
 
         try {
-          services = bundleContext.getServiceReferences(type.getName(), filter);
+          final String attributeFilter = null == filter ? null : filter.toString();
+          services = bundleContext.getServiceReferences(type.getName(), attributeFilter);
         } catch (final Exception e) {
           throw new ServiceException(e);
         }

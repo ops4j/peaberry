@@ -21,6 +21,7 @@ import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.names;
+import static org.ops4j.peaberry.util.Filters.ldap;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 
 import org.ops4j.peaberry.Export;
@@ -51,10 +52,10 @@ public final class ServiceExportTests {
         registration(Key.get(HelloServiceShort.class)).attributes(names("style=short")).export());
 
     binder.bind(HelloService.class).annotatedWith(named("A")).toProvider(
-        service(HelloService.class).filter("style=long").single());
+        service(HelloService.class).filter(ldap("(style=long)")).single());
 
     binder.bind(HelloService.class).annotatedWith(named("B")).toProvider(
-        service(HelloService.class).filter("style=short").single());
+        service(HelloService.class).filter(ldap("(style=short)")).single());
   }
 
   protected interface HelloService {
