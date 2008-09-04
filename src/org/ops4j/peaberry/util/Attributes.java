@@ -85,7 +85,7 @@ public final class Attributes {
    * @param names distinguished names
    * @return service attributes
    * 
-   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253< /a>
+   * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
   public static Map<String, ?> names(final String... names) {
 

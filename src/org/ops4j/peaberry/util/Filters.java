@@ -37,7 +37,7 @@ public final class Filters {
    * @param filter RFC-1960 LDAP filter
    * @return service attribute filter
    * 
-   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960< /a>
+   * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
    */
   public static AttributeFilter ldap(final String filter) {
     return new LdapAttributeFilter(filter);
