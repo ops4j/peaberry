@@ -81,6 +81,11 @@ final class ImportProxyClassLoader
   protected Class<?> findClass(final String clazzOrProxyName)
       throws ClassNotFoundException {
 
+    // generated proxy will need to access Import class
+    if (clazzOrProxyName.equals(Import.class.getName())){
+      return Import.class;
+    }
+
     final String clazzName = getClazzName(clazzOrProxyName);
 
     // is this a new proxy class request?
