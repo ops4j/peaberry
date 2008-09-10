@@ -82,7 +82,7 @@ final class ImportProxyClassLoader
       throws ClassNotFoundException {
 
     // generated proxy will need to access Import class
-    if (clazzOrProxyName.equals(Import.class.getName())){
+    if (clazzOrProxyName.equals(Import.class.getName())) {
       return Import.class;
     }
 
