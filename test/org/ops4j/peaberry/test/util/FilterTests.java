@@ -18,7 +18,6 @@ package org.ops4j.peaberry.test.util;
 
 import static java.util.Collections.singletonMap;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
@@ -41,22 +40,11 @@ public final class FilterTests {
 
   interface C {}
 
-  public void testCaseInsensitivity() {
-    final AttributeFilter filter = Filters.ldap("(food=pizza)");
-    final Map<String, String> attributes = new LinkedHashMap<String, String>();
-
-    attributes.put("FooD", "pizza");
-    attributes.put("fOOd", "pizza");
-    attributes.put(null, "nothing");
-
-    assert filter.matches(attributes, true);
-  }
-
   public void testObjectClassConverter() {
-    final AttributeFilter filter = Filters.objectClass(A.class, B.class, C.class);
+    final AttributeFilter filter = Filters.objectClass(B.class, C.class, A.class);
     final Map<String, ?> attributes = Attributes.objectClass(A.class, B.class, C.class);
 
-    assert filter.matches(attributes, false);
+    assert filter.matches(attributes);
   }
 
   public void testHashCodeAndEquals() {
@@ -82,7 +70,7 @@ public final class FilterTests {
     } catch (final IllegalArgumentException e) {}
 
     try {
-      Filters.ldap("(name=*bad-type*)").matches(singletonMap("name", true), false);
+      Filters.ldap("(name=*bad-type*)").matches(singletonMap("name", true));
       assert false : "Expected ServiceException";
     } catch (final ServiceException e) {}
   }

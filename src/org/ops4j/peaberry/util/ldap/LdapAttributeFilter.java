@@ -17,9 +17,7 @@
 package org.ops4j.peaberry.util.ldap;
 
 import java.io.StringReader;
-import java.util.Comparator;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.felix.framework.util.ldap.EvaluationException;
 import org.apache.felix.framework.util.ldap.Evaluator;
@@ -37,14 +35,7 @@ import org.ops4j.peaberry.ServiceException;
 public final class LdapAttributeFilter
     implements AttributeFilter {
 
-  private static final Comparator<String> IGNORE_CASE_COMPARATOR = new Comparator<String>() {
-    public int compare(final String lhs, final String rhs) {
-      return null == lhs ? -1 : lhs.compareToIgnoreCase(rhs);
-    }
-  };
-
   private final Object[] program;
-
   private volatile String filter;
 
   public LdapAttributeFilter(final String filter) {
@@ -63,20 +54,10 @@ public final class LdapAttributeFilter
     }
   }
 
-  @SuppressWarnings("unchecked")
-  public boolean matches(final Map<String, ?> attributes, final boolean ignoreCase) {
-    final Map map;
-
-    if (ignoreCase) {
-      map = new TreeMap(IGNORE_CASE_COMPARATOR);
-      map.putAll(attributes);
-    } else {
-      map = attributes;
-    }
-
+  public boolean matches(final Map<String, ?> attributes) {
     final Mapper mapper = new Mapper() {
       public Object lookup(final String key) {
-        return map.get(key);
+        return attributes.get(key);
       }
     };
 

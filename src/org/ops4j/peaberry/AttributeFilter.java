@@ -29,9 +29,8 @@ public interface AttributeFilter {
    * Tests whether or not this filter matches the given service attributes.
    * 
    * @param attributes service attributes
-   * @param ignoreCase if true, ignore case when matching.
    * 
    * @return true if the attributes were matched by the filter, otherwise false
    */
-  boolean matches(Map<String, ?> attributes, boolean ignoreCase);
+  boolean matches(Map<String, ?> attributes);
 }
