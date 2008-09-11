@@ -22,6 +22,7 @@ import static org.ops4j.peaberry.internal.ImportGlue.generateProxy;
 import static org.ops4j.peaberry.internal.ImportGlue.getClazzName;
 import static org.ops4j.peaberry.internal.ImportGlue.getProxyName;
 
+import java.lang.reflect.Constructor;
 import java.security.PrivilegedAction;
 
 import org.ops4j.peaberry.Import;
@@ -37,12 +38,13 @@ import com.google.common.collect.ReferenceMap;
 final class ImportProxyClassLoader
     extends ClassLoader {
 
-  public static <T> T importProxy(final Class<? extends T> clazz, final Import<T> handle) {
+  @SuppressWarnings("unchecked")
+  public static <T> Constructor<T> getProxyConstructor(final Class<? extends T> clazz) {
     try {
       // use a different custom classloader for each class space, to avoid leaks
       final ClassLoader proxyLoader = getProxyClassLoader(clazz.getClassLoader());
       final Class<?> proxyClazz = proxyLoader.loadClass(getProxyName(clazz.getName()));
-      return clazz.cast(proxyClazz.getConstructor(Import.class).newInstance(handle));
+      return (Constructor<T>) proxyClazz.getConstructor(Import.class);
     } catch (final LinkageError e) {
       throw new ServiceException(e);
     } catch (final Exception e) {

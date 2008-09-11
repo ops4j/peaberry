@@ -16,11 +16,13 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ImportProxyClassLoader.importProxy;
+import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 
+import java.lang.reflect.Constructor;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
@@ -40,6 +42,7 @@ final class ServiceProxyFactory {
     return new Iterable<T>() {
       public Iterator<T> iterator() {
         return new Iterator<T>() {
+          private final Constructor<T> ctor = getProxyConstructor(clazz);
 
           // original service iterator, provided by the registry
           private final Iterator<Import<T>> i = handles.iterator();
@@ -50,7 +53,7 @@ final class ServiceProxyFactory {
 
           public T next() {
             // wrap each element up as a decorated dynamic proxy
-            return importProxy(clazz, apply(decorator, i.next()));
+            return buildProxy(ctor, apply(decorator, i.next()));
           }
 
           public void remove() {
@@ -108,8 +111,16 @@ final class ServiceProxyFactory {
       }
     };
 
-    // can now wrap import as decorated dynamic proxy
-    return importProxy(clazz, apply(decorator, lookup));
+    // we can now wrap our delegating import as a decorated dynamic proxy
+    return buildProxy(getProxyConstructor(clazz), apply(decorator, lookup));
+  }
+
+  static <T> T buildProxy(final Constructor<T> constructor, final Import<T> handle) {
+    try {
+      return constructor.newInstance(handle);
+    } catch (final Exception e) {
+      throw new ServiceException(e);
+    }
   }
 
   static <S, T extends S> Import<T> apply(final ImportDecorator<S> decorator, final Import<T> handle) {
