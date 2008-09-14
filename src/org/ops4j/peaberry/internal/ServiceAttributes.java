@@ -16,9 +16,11 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.util.Collections.addAll;
+import static java.util.Collections.unmodifiableSet;
+
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
@@ -60,8 +62,8 @@ final class ServiceAttributes
   public Set<String> keySet() {
     if (null == keySet) {
       final Set<String> ks = new TreeSet<String>(IGNORE_CASE_COMPARATOR);
-      Collections.addAll(ks, ref.getPropertyKeys());
-      keySet = Collections.unmodifiableSet(ks);
+      addAll(ks, ref.getPropertyKeys());
+      keySet = unmodifiableSet(ks);
     }
     return keySet;
   }

@@ -16,14 +16,18 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.util.Collections.binarySearch;
+import static org.osgi.framework.ServiceEvent.MODIFIED;
+import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.List;
 
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
@@ -34,42 +38,84 @@ import org.osgi.framework.ServiceReference;
 final class OSGiServiceListener
     implements ServiceListener {
 
-  private final SortedSet<ServiceReference> services;
+  private static final Comparator<ServiceReference> BEST_SERVICE_COMPARATOR =
+      new BestServiceComparator();
+
+  final List<ServiceReference> services;
 
   public OSGiServiceListener() {
-    services = new TreeSet<ServiceReference>(new BestServiceComparator());
+    services = new ArrayList<ServiceReference>();
   }
 
   public void serviceChanged(final ServiceEvent event) {
     final ServiceReference ref = event.getServiceReference();
 
-    if (UNREGISTERING == event.getType()) {
-      services.remove(ref);
-    } else {
-      services.add(ref);
+    synchronized (services) {
+      switch (event.getType()) {
+      case REGISTERED:
+        insertService(ref);
+        break;
+      case MODIFIED:
+        services.remove(ref);
+        insertService(ref);
+        break;
+      case UNREGISTERING:
+        services.remove(ref);
+        break;
+      default:
+        break;
+      }
+    }
+  }
+
+  private void insertService(final ServiceReference ref) {
+    final int insertIndex = binarySearch(services, ref, BEST_SERVICE_COMPARATOR);
+    if (insertIndex < 0) {
+      services.add(~insertIndex, ref);
     }
   }
 
   public Iterator<ServiceReference> iterator(final AttributeFilter filter) {
     return new Iterator<ServiceReference>() {
+      private ServiceReference nextRef;
+      private int index;
 
       public boolean hasNext() {
-        // TODO Auto-generated method stub
-        return false;
+        if (null == nextRef) {
+          nextRef = findNextService();
+        }
+        return nextRef != null;
       }
 
       public ServiceReference next() {
-        // TODO Auto-generated method stub
-        return null;
+        if (null == nextRef) {
+          nextRef = findNextService();
+        }
+        try {
+          if (null == nextRef) {
+            throw new ServiceUnavailableException();
+          }
+          return nextRef;
+        } finally {
+          nextRef = null;
+        }
+      }
+
+      private ServiceReference findNextService() {
+        synchronized (services) {
+          while (index < services.size()) {
+            final ServiceReference ref = services.get(index++);
+            if (filter.matches(new ServiceAttributes(ref))) {
+              return ref;
+            }
+          }
+          return null;
+        }
       }
 
       public void remove() {
         throw new UnsupportedOperationException();
       }
     };
-  }
-
-  private Map<String, ?> attributes(final ServiceReference ref) {
-    return new ServiceAttributes(ref);
   }
 }
