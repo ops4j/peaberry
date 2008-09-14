@@ -8,7 +8,7 @@
     <mkdir dir="${doc}/coverage"/>
     <pmd rulesetfiles="pmd.xml" shortFilenames="true">
       <formatter type="html" toFile="${doc}/coverage/pmd.html" linkPrefix="" linePrefix="src-"/>
-      <fileset dir="${src}" includes="**/*.java" excludes="**/OSGiServiceRegistry.java"/>
+      <fileset dir="${src}" includes="**/*.java"/>
       <auxclasspath>
         <pathelement location="${build}/classes"/>
       </auxclasspath>

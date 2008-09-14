@@ -17,7 +17,7 @@
 package org.ops4j.peaberry;
 
 /**
- * Simple abstraction of a dynamic service registry.
+ * A service registry is a @{code ServiceScope} that allows lookup of services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -30,7 +30,7 @@ public interface ServiceRegistry
    * @param clazz expected service interface
    * @param filter service attribute filter
    * 
-   * @return ordered sequence of imported services, recommended service first
+   * @return ordered sequence of imported services, most recommended first
    */
   <T> Iterable<Import<T>> lookup(Class<? extends T> clazz, AttributeFilter filter);
 }

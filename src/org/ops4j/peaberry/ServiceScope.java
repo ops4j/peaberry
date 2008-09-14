@@ -21,27 +21,28 @@ import java.util.Map;
 /**
  * A write-only collection of exported services with associated attributes.
  * <p>
- * Service scopes can be nested - when a service is exported to a scope, it is
- * automatically exported to any contained {@code ServiceScope} instances that
- * have {@code scope.filter} attributes that match the exported service.
+ * <i>Scopes can be monitored by exporting your own custom scope as a service.
+ * When a service is exported to a scope, it is also exported to any contained
+ * {@code ServiceScope} services who have {@code scope.filter}s that match the
+ * service being exported.</i>
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceScope {
 
   /**
-   * {@code scope.filter} attribute, an {@code AttributeFilter} that defines
-   * which services can be exported to the associated {@code ServiceScope}.
+   * {@code scope.filter} service attribute, an {@code AttributeFilter} that
+   * defines which services should be exported to the associated scope service.
    */
   static final String SCOPE_FILTER = "scope.filter";
 
   /**
-   * Export the given service to this scope with the associated attributes.
+   * Export the given service to this scope, and any matching scope services.
    * 
    * @param service service instance
    * @param attributes service attributes
    * 
-   * @return exported service handle, null if the scope is not interested
+   * @return exported service handle, null if this scope is not interested
    */
   <S, T extends S> Export<S> export(T service, Map<String, ?> attributes);
 }

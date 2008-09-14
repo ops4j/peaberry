@@ -28,7 +28,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.ServiceException;
 
 /**
- * LDAP attribute filter, uses utility code from Apache Felix.
+ * Implementation of LDAP attribute filter, uses utility code from Apache Felix.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
