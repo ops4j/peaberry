@@ -49,7 +49,6 @@ final class OSGiServiceListener
 
   public void serviceChanged(final ServiceEvent event) {
     final ServiceReference ref = event.getServiceReference();
-
     synchronized (services) {
       switch (event.getType()) {
       case REGISTERED:
@@ -105,7 +104,7 @@ final class OSGiServiceListener
         synchronized (services) {
           while (index < services.size()) {
             final ServiceReference ref = services.get(index++);
-            if (filter.matches(new ServiceAttributes(ref))) {
+            if (null == filter || filter.matches(new ServiceAttributes(ref))) {
               return ref;
             }
           }
