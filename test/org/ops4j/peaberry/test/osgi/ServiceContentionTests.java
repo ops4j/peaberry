@@ -19,9 +19,15 @@ package org.ops4j.peaberry.test.osgi;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
+import static org.ops4j.peaberry.util.TypeLiterals.iterable;
+import static org.osgi.framework.Constants.SERVICE_RANKING;
+
+import java.util.Properties;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceUnavailableException;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.testng.annotations.Test;
 
 import com.google.inject.Binder;
@@ -44,6 +50,8 @@ public final class ServiceContentionTests
         registration(Key.get(DummyServiceImpl.class)).export());
 
     binder.bind(DummyService.class).toProvider(service(DummyService.class).single());
+
+    binder.bind(iterable(RankService.class)).toProvider(service(RankService.class).multiple());
   }
 
   protected static interface DummyService {
@@ -70,7 +78,7 @@ public final class ServiceContentionTests
 
   public void testContention() {
 
-    final Thread[] threads = new Thread[8];
+    final Thread[] threads = new Thread[42];
 
     for (int i = 0; i < threads.length; i++) {
       threads[i] = new Thread(new Runnable() {
@@ -98,5 +106,73 @@ public final class ServiceContentionTests
       importedService.test();
       assert false : "No service expected";
     } catch (final ServiceUnavailableException e) {}
+  }
+
+  protected static interface RankService {
+    int rank();
+  }
+
+  @Inject
+  BundleContext bundleContext;
+
+  @Inject
+  Iterable<RankService> rankings;
+
+  public void testIntegrity() {
+
+    final Thread[] threads = new Thread[42];
+
+    for (int i = 0; i < threads.length; i++) {
+      threads[i] = new Thread(new Runnable() {
+        public void run() {
+
+          try {
+            Thread.sleep(1000 + (int) (10 * Math.random()));
+          } catch (final InterruptedException e1) {}
+
+          final int rank = (int) (1000 * Math.random());
+
+          Properties props = new Properties();
+          props.put(SERVICE_RANKING, rank);
+
+          ServiceRegistration registration =
+              bundleContext.registerService(RankService.class.getName(), new RankService() {
+                public int rank() {
+                  return rank;
+                }
+              }, props);
+
+          try {
+            Thread.sleep((int) (10 * Math.random()));
+          } catch (final InterruptedException e2) {}
+
+          registration.unregister();
+        }
+      });
+    }
+
+    for (final Thread t : threads) {
+      t.start();
+    }
+
+    boolean started = false;
+
+    int prevRank;
+    do {
+      prevRank = Integer.MAX_VALUE;
+      for (RankService next : rankings) {
+        try {
+          assert prevRank >= next.rank() : "Expected " + prevRank + " >= " + next.rank();
+          prevRank = next.rank();
+        } catch (final ServiceUnavailableException e) {}
+        started = true;
+      }
+    } while (!started || prevRank < Integer.MAX_VALUE);
+
+    for (final Thread t : threads) {
+      try {
+        t.join();
+      } catch (final InterruptedException e) {}
+    }
   }
 }
