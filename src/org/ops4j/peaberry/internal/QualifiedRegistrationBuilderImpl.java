@@ -41,13 +41,13 @@ public final class QualifiedRegistrationBuilderImpl<T>
   final Key<? extends T> implementationKey;
 
   // default configuration
-  Map<String, ?> attributes = null;
+  Map<String, ?> attributes;
 
   // custom configuration keys
-  Key<? extends ServiceRegistry> registryKey = null;
+  Key<? extends ServiceRegistry> registryKey;
 
   public QualifiedRegistrationBuilderImpl(final Key<? extends T> key) {
-    this.implementationKey = key;
+    implementationKey = key;
   }
 
   public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> customAttributes) {

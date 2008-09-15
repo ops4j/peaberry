@@ -47,12 +47,12 @@ public final class DecoratedServiceBuilderImpl<T>
   final Class<? extends T> clazz;
 
   // default configuration
-  AttributeFilter attributeFilter = null;
+  AttributeFilter attributeFilter;
   boolean direct = false;
 
   // custom configuration keys
-  Key<? extends ImportDecorator<? super T>> decoratorKey = null;
-  Key<? extends ServiceRegistry> registryKey = null;
+  Key<? extends ImportDecorator<? super T>> decoratorKey;
+  Key<? extends ServiceRegistry> registryKey;
 
   public DecoratedServiceBuilderImpl(final Class<? extends T> clazz) {
     this.clazz = clazz;

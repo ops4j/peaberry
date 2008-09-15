@@ -29,11 +29,14 @@ import java.util.TreeSet;
 import org.osgi.framework.ServiceReference;
 
 /**
+ * Lazy service attribute map, backed by an OSGi @{code ServiceReference}.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ServiceAttributes
     extends AbstractMap<String, Object> {
 
+  // OSGi service attributes use case-less keys
   private static final Comparator<String> IGNORE_CASE_COMPARATOR = new Comparator<String>() {
     public int compare(final String lhs, final String rhs) {
       return lhs.compareToIgnoreCase(rhs);
@@ -56,6 +59,7 @@ final class ServiceAttributes
     return keySet().contains(key);
   }
 
+  // cache to avoid concurrency issues
   private volatile Set<String> keySet;
 
   @Override
@@ -68,6 +72,7 @@ final class ServiceAttributes
     return keySet;
   }
 
+  // can safely cache entry set, as it has no state
   private volatile Set<Entry<String, Object>> entrySet;
 
   @Override

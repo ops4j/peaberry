@@ -17,10 +17,8 @@
 package org.ops4j.peaberry.internal;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
-import static org.osgi.framework.ServiceEvent.REGISTERED;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -32,18 +30,14 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceEvent;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * OSGi {@code ServiceRegistry} adaptor [** proof-of-concept, not optimised **]
+ * OSGi specific {@code ServiceRegistry} adaptor.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -51,86 +45,33 @@ import com.google.inject.Singleton;
 public final class OSGiServiceRegistry
     implements ServiceRegistry {
 
-  static final Comparator<ServiceReference> BEST_SERVICE_COMPARATOR = new BestServiceComparator();
-
   final Map<String, OSGiServiceListener> listenerMap;
-
-  /**
-   * Current bundle context, used to interrogate the registry.
-   */
   final BundleContext bundleContext;
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
-    this.listenerMap = new HashMap<String, OSGiServiceListener>();
+    listenerMap = new HashMap<String, OSGiServiceListener>();
     this.bundleContext = bundleContext;
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<? extends T> type, final AttributeFilter filter) {
-    final OSGiServiceListener serviceListener;
-
-    synchronized (listenerMap) {
-      final String clazzName = type.getName();
-      OSGiServiceListener listener = listenerMap.get(clazzName);
-      if (null == listener) {
-        listener = new OSGiServiceListener();
-        listenerMap.put(clazzName, listener);
-        try {
-          bundleContext.addServiceListener(listener, "(" + OBJECTCLASS + '=' + clazzName + ')');
-          final ServiceReference[] services = bundleContext.getServiceReferences(clazzName, null);
-          if (null != services) {
-            for (final ServiceReference ref : services) {
-              listener.serviceChanged(new ServiceEvent(REGISTERED, ref));
-            }
-          }
-        } catch (InvalidSyntaxException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      serviceListener = listener;
-    }
-
+    final OSGiServiceListener listener = getServiceListener(type.getName());
     return new Iterable<Import<T>>() {
       public Iterator<Import<T>> iterator() {
-        return new Iterator<Import<T>>() {
-          final Iterator<ServiceReference> i = serviceListener.iterator(filter);
-
-          public boolean hasNext() {
-            return i.hasNext();
-          }
-
-          public Import<T> next() {
-            final ServiceReference ref = i.next();
-
-            // wrap reference as import
-            return new Import<T>() {
-              public T get() {
-                try {
-                  final T obj = type.cast(bundleContext.getService(ref));
-                  if (null == obj) {
-                    throw new ServiceUnavailableException();
-                  }
-                  return obj;
-                } catch (final Exception e) {
-                  throw new ServiceUnavailableException(e);
-                }
-              }
-
-              public void unget() {
-                try {
-                  bundleContext.ungetService(ref);
-                } catch (final Exception e) {}
-              }
-            };
-          }
-
-          public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
+        return listener.iterator(type, filter);
       }
     };
+  }
+
+  OSGiServiceListener getServiceListener(final String clazzName) {
+    synchronized (listenerMap) {
+      OSGiServiceListener listener = listenerMap.get(clazzName);
+      if (null == listener) {
+        listener = new OSGiServiceListener(bundleContext, clazzName);
+        listenerMap.put(clazzName, listener);
+      }
+      return listener;
+    }
   }
 
   public <T, S extends T> Export<T> export(final S service, final Map<String, ?> attributes) {

@@ -16,7 +16,10 @@
 
 package org.ops4j.peaberry.internal;
 
+import static java.util.Collections.addAll;
 import static java.util.Collections.binarySearch;
+import static java.util.Collections.sort;
+import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.ServiceEvent.MODIFIED;
 import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
@@ -27,12 +30,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 /**
+ * Keep track of OSGi services that provide a specific interface.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class OSGiServiceListener
@@ -42,9 +50,24 @@ final class OSGiServiceListener
       new BestServiceComparator();
 
   final List<ServiceReference> services;
+  final BundleContext bundleContext;
 
-  public OSGiServiceListener() {
+  public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     services = new ArrayList<ServiceReference>();
+    this.bundleContext = bundleContext;
+
+    try {
+      synchronized (services) {
+        bundleContext.addServiceListener(this, "(" + OBJECTCLASS + '=' + clazzName + ')');
+        final ServiceReference[] initialRefs = bundleContext.getServiceReferences(clazzName, null);
+        if (null != initialRefs) {
+          addAll(services, initialRefs);
+          sort(services, BEST_SERVICE_COMPARATOR);
+        }
+      }
+    } catch (final InvalidSyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void serviceChanged(final ServiceEvent event) {
@@ -74,46 +97,70 @@ final class OSGiServiceListener
     }
   }
 
-  public Iterator<ServiceReference> iterator(final AttributeFilter filter) {
-    return new Iterator<ServiceReference>() {
-      private ServiceReference nextRef;
+  public <T> Iterator<Import<T>> iterator(final Class<? extends T> type,
+      final AttributeFilter filter) {
+    return new Iterator<Import<T>>() {
+      private Import<T> nextService;
       private int index;
 
       public boolean hasNext() {
-        if (null == nextRef) {
-          nextRef = findNextService();
-        }
-        return nextRef != null;
+        findNextService();
+        return nextService != null;
       }
 
-      public ServiceReference next() {
-        if (null == nextRef) {
-          nextRef = findNextService();
+      public Import<T> next() {
+        findNextService();
+        if (null == nextService) {
+          throw new ServiceUnavailableException();
         }
         try {
-          if (null == nextRef) {
-            throw new ServiceUnavailableException();
-          }
-          return nextRef;
+          return nextService;
         } finally {
-          nextRef = null;
+          nextService = null;
         }
       }
 
-      private ServiceReference findNextService() {
-        synchronized (services) {
-          while (index < services.size()) {
-            final ServiceReference ref = services.get(index++);
-            if (null == filter || filter.matches(new ServiceAttributes(ref))) {
-              return ref;
+      private void findNextService() {
+        if (null == nextService) {
+          try {
+            while (true) {
+              final ServiceReference ref;
+              synchronized (services) {
+                ref = services.get(index++);
+              }
+              if (null == filter || filter.matches(new ServiceAttributes(ref))) {
+                nextService = getServiceImport(ref);
+                break;
+              }
             }
-          }
-          return null;
+          } catch (final IndexOutOfBoundsException e) {}
         }
       }
 
       public void remove() {
         throw new UnsupportedOperationException();
+      }
+
+      private Import<T> getServiceImport(final ServiceReference ref) {
+        return new Import<T>() {
+          public T get() {
+            try {
+              final T obj = type.cast(bundleContext.getService(ref));
+              if (null == obj) {
+                throw new ServiceUnavailableException();
+              }
+              return obj;
+            } catch (final Exception e) {
+              throw new ServiceUnavailableException(e);
+            }
+          }
+
+          public void unget() {
+            try {
+              bundleContext.ungetService(ref);
+            } catch (final Exception e) {}
+          }
+        };
       }
     };
   }

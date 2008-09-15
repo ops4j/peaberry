@@ -39,10 +39,11 @@ final class ServiceProxyFactory {
   public static <S, T extends S> Iterable<T> serviceProxies(final Class<? extends T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
+    final Constructor<T> ctor = getProxyConstructor(clazz);
+
     return new Iterable<T>() {
       public Iterator<T> iterator() {
         return new Iterator<T>() {
-          private final Constructor<T> ctor = getProxyConstructor(clazz);
 
           // original service iterator, provided by the registry
           private final Iterator<Import<T>> i = handles.iterator();

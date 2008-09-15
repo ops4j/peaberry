@@ -55,7 +55,7 @@ import org.objectweb.asm.Type;
 import org.ops4j.peaberry.Import;
 
 /**
- * Around-advice glue code, specifically optimised for imported services.
+ * Around-advice glue code, specifically optimized for imported services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -84,15 +84,18 @@ final class ImportGlue {
       safeName = clazzName;
     }
 
-    return safeName + "$$Proxy";
+    return safeName + "$PeaberryProxy";
   }
 
   public static String getClazzName(final String proxyName) {
-    final String clazzName = proxyName.replaceFirst("\\$\\$Proxy$", "");
+    final String safeName = proxyName.replaceFirst("\\$PeaberryProxy$", "");
+    final String clazzName;
 
     // support proxy of java.* interfaces by changing the package
-    if (clazzName.startsWith("java$$")) {
-      return clazzName.replace("$$", ".");
+    if (safeName.startsWith("java$$")) {
+      clazzName = safeName.replace("$$", ".");
+    } else {
+      clazzName = safeName;
     }
 
     return clazzName;
