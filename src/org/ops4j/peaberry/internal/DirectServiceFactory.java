@@ -44,7 +44,7 @@ final class DirectServiceFactory {
     while (i.hasNext()) {
       // collect direct instances into a fixed list
       final T instance = nextService(i, decorator);
-      if (instance != null) {
+      if (null != instance) {
         services.add(instance);
       }
     }

@@ -84,11 +84,11 @@ final class ImportGlue {
       safeName = clazzName;
     }
 
-    return safeName + "$PeaberryProxy";
+    return (safeName + "$PeaberryGlue").intern();
   }
 
   public static String getClazzName(final String proxyName) {
-    final String safeName = proxyName.replaceFirst("\\$PeaberryProxy$", "");
+    final String safeName = proxyName.replaceFirst("\\$PeaberryGlue$", "");
     final String clazzName;
 
     // support proxy of java.* interfaces by changing the package
@@ -98,7 +98,7 @@ final class ImportGlue {
       clazzName = safeName;
     }
 
-    return clazzName;
+    return clazzName.intern();
   }
 
   public static byte[] generateProxy(final Class<?> clazz) {

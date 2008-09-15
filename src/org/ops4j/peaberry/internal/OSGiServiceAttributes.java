@@ -23,35 +23,37 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.osgi.framework.ServiceReference;
 
 /**
- * Lazy service attribute map, backed by an OSGi @{code ServiceReference}.
+ * Re-usable service attributes adapter for OSGi @{code ServiceReference}s.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class ServiceAttributes
+final class OSGiServiceAttributes
     extends AbstractMap<String, Object> {
 
   // OSGi service attributes use case-less keys
-  private static final Comparator<String> IGNORE_CASE_COMPARATOR = new Comparator<String>() {
+  private static final Comparator<String> IGNORE_CASE = new Comparator<String>() {
     public int compare(final String lhs, final String rhs) {
       return lhs.compareToIgnoreCase(rhs);
     }
   };
 
-  final ServiceReference ref;
+  private ServiceReference cachedRef;
 
-  public ServiceAttributes(final ServiceReference ref) {
-    this.ref = ref;
+  public Map<String, ?> reset(final ServiceReference ref) {
+    cachedRef = ref;
+    return this;
   }
 
   @Override
   public Object get(final Object key) {
-    return ref.getProperty((String) key);
+    return cachedRef.getProperty((String) key);
   }
 
   @Override
@@ -59,17 +61,11 @@ final class ServiceAttributes
     return keySet().contains(key);
   }
 
-  // cache to avoid concurrency issues
-  private volatile Set<String> keySet;
-
   @Override
   public Set<String> keySet() {
-    if (null == keySet) {
-      final Set<String> ks = new TreeSet<String>(IGNORE_CASE_COMPARATOR);
-      addAll(ks, ref.getPropertyKeys());
-      keySet = unmodifiableSet(ks);
-    }
-    return keySet;
+    final Set<String> ks = new TreeSet<String>(IGNORE_CASE);
+    addAll(ks, cachedRef.getPropertyKeys());
+    return unmodifiableSet(ks);
   }
 
   // can safely cache entry set, as it has no state
@@ -91,7 +87,7 @@ final class ServiceAttributes
 
             public Entry<String, Object> next() {
               final String key = i.next();
-              return new SimpleImmutableEntry<String, Object>(key, ref.getProperty(key));
+              return new SimpleImmutableEntry<String, Object>(key, get(key));
             }
 
             public void remove() {

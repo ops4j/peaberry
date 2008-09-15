@@ -98,7 +98,7 @@ final class ServiceProxyFactory {
       }
 
       public synchronized void unget() {
-        if (--count == 0) {
+        if (0 == --count) {
           try {
             // last thread out
             if (null != handle) {

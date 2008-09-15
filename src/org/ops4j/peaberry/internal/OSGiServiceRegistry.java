@@ -19,10 +19,9 @@ package org.ops4j.peaberry.internal;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Dictionary;
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
@@ -45,70 +44,38 @@ import com.google.inject.Singleton;
 public final class OSGiServiceRegistry
     implements ServiceRegistry {
 
-  final Map<String, OSGiServiceListener> listenerMap;
-  final BundleContext bundleContext;
+  private final Map<String, OSGiServiceListener> listenerMap;
+  private final BundleContext bundleContext;
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
-    listenerMap = new HashMap<String, OSGiServiceListener>();
+    listenerMap = new IdentityHashMap<String, OSGiServiceListener>();
     this.bundleContext = bundleContext;
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<? extends T> type, final AttributeFilter filter) {
-    final OSGiServiceListener listener = getServiceListener(type.getName());
-    return new Iterable<Import<T>>() {
-      public Iterator<Import<T>> iterator() {
-        return listener.iterator(type, filter);
-      }
-    };
-  }
+    final String clazzName = type.getName();
+    OSGiServiceListener listener;
 
-  OSGiServiceListener getServiceListener(final String clazzName) {
     synchronized (listenerMap) {
-      OSGiServiceListener listener = listenerMap.get(clazzName);
+      listener = listenerMap.get(clazzName);
       if (null == listener) {
         listener = new OSGiServiceListener(bundleContext, clazzName);
         listenerMap.put(clazzName, listener);
       }
-      return listener;
     }
+
+    return new IterableOSGiService<T>(bundleContext, listener, type, filter);
   }
 
   public <T, S extends T> Export<T> export(final S service, final Map<String, ?> attributes) {
-
-    // unfortunately, the OSGi API expects a Dictionary rather than a Map :(
-    final Hashtable<String, Object> dictionary = new Hashtable<String, Object>();
-    if (null != attributes) {
-      dictionary.putAll(attributes);
-    }
-
-    final String[] interfaces;
-
-    final Object objectClass = dictionary.get(OBJECTCLASS);
-    if (objectClass instanceof String[]) {
-      // use service attributes setting
-      interfaces = (String[]) objectClass;
-    } else {
-      // use simple algorithm - don't search the hierarchy
-      final Collection<String> api = new HashSet<String>();
-      final Class<?> clazz = service.getClass();
-
-      if (clazz.isInterface()) {
-        api.add(clazz.getName());
-      } else {
-        // just use the interfaces directly declared for this class
-        for (final Class<?> i : service.getClass().getInterfaces()) {
-          api.add(i.getName());
-        }
-      }
-
-      interfaces = api.toArray(new String[api.size()]);
-    }
+    final Dictionary<String, ?> props = dictionary(attributes);
+    final String[] interfaces = getInterfaceNames(service, props);
 
     final ServiceRegistration registration;
 
     try {
-      registration = bundleContext.registerService(interfaces, service, dictionary);
+      registration = bundleContext.registerService(interfaces, service, props);
     } catch (final Exception e) {
       throw new ServiceException(e);
     }
@@ -120,18 +87,11 @@ public final class OSGiServiceRegistry
         return service;
       }
 
-      public void unget() {}
+      public void unget() {/* nothing to do */}
 
-      public void modify(final Map<String, ?> map) {
-
-        // unfortunately, the OSGi API expects a Dictionary rather than a Map :(
-        final Hashtable<String, Object> dict = new Hashtable<String, Object>();
-        if (null != map) {
-          dict.putAll(map);
-        }
-
+      public void modify(final Map<String, ?> newAttributes) {
         try {
-          registration.setProperties(dict);
+          registration.setProperties(dictionary(newAttributes));
         } catch (final Exception e) {
           throw new ServiceException(e);
         }
@@ -140,9 +100,43 @@ public final class OSGiServiceRegistry
       public void remove() {
         try {
           registration.unregister();
-        } catch (final Exception e) {}
+        } catch (final Exception e) {} // NOPMD
       }
     };
+  }
+
+  private <S> String[] getInterfaceNames(final S service, final Dictionary<String, ?> props) {
+    final Object objectClass = null == props ? null : props.get(OBJECTCLASS);
+    final String[] interfaces;
+
+    // check service attributes setting
+    if (objectClass instanceof String[]) {
+      interfaces = (String[]) objectClass;
+    } else {
+      // use simple algorithm - don't search the hierarchy
+      final Collection<String> api = new HashSet<String>();
+      final Class<?> clazz = service.getClass();
+
+      if (clazz.isInterface()) {
+        api.add(clazz.getName());
+      } else {
+        // just use the interfaces declared for this class
+        for (final Class<?> i : clazz.getInterfaces()) {
+          api.add(i.getName());
+        }
+      }
+
+      interfaces = api.toArray(new String[api.size()]);
+    }
+    return interfaces;
+  }
+
+  // unfortunately the OSGi API expects Dictionary rather than Map :(
+  static Dictionary<String, ?> dictionary(final Map<String, ?> attributes) {
+    if (null == attributes) {
+      return null;
+    }
+    return new AttributeDictionary(attributes);
   }
 
   @Override

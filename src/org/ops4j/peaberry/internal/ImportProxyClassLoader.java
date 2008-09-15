@@ -38,6 +38,8 @@ import com.google.common.collect.ReferenceMap;
 final class ImportProxyClassLoader
     extends ClassLoader {
 
+  private static final String IMPORT_CLAZZ_NAME = Import.class.getName();
+
   @SuppressWarnings("unchecked")
   public static <T> Constructor<T> getProxyConstructor(final Class<? extends T> clazz) {
     try {
@@ -84,7 +86,7 @@ final class ImportProxyClassLoader
       throws ClassNotFoundException {
 
     // generated proxy will need to access Import class
-    if (clazzOrProxyName.equals(Import.class.getName())) {
+    if (IMPORT_CLAZZ_NAME.equals(clazzOrProxyName)) {
       return Import.class;
     }
 

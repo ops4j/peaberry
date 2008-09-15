@@ -79,10 +79,10 @@ public final class QualifiedRegistrationBuilderImpl<T>
   }
 
   ServiceRegistry getRegistry(final Injector injector) {
-    if (registryKey != null) {
-      return injector.getInstance(registryKey);
+    if (null == registryKey) {
+      // use default service registry (typically OSGi)
+      return injector.getInstance(ServiceRegistry.class);
     }
-    // use default service registry (typically OSGi)
-    return injector.getInstance(ServiceRegistry.class);
+    return injector.getInstance(registryKey);
   }
 }

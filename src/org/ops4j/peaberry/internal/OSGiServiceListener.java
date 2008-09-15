@@ -20,18 +20,15 @@ import static java.util.Collections.addAll;
 import static java.util.Collections.binarySearch;
 import static java.util.Collections.sort;
 import static org.osgi.framework.Constants.OBJECTCLASS;
-import static org.osgi.framework.ServiceEvent.MODIFIED;
 import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.ops4j.peaberry.AttributeFilter;
-import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceUnavailableException;
+import org.ops4j.peaberry.ServiceException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -46,28 +43,34 @@ import org.osgi.framework.ServiceReference;
 final class OSGiServiceListener
     implements ServiceListener {
 
-  private static final Comparator<ServiceReference> BEST_SERVICE_COMPARATOR =
-      new BestServiceComparator();
+  private static final Comparator<ServiceReference> BEST_SERVICE = new BestServiceComparator();
+  private static final String OBJECT_CLAZZ_NAME = Object.class.getName();
 
-  final List<ServiceReference> services;
-  final BundleContext bundleContext;
+  private final List<ServiceReference> services;
 
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     services = new ArrayList<ServiceReference>();
-    this.bundleContext = bundleContext;
+
+    final String filter = getClazzFilter(clazzName);
 
     try {
       synchronized (services) {
-        bundleContext.addServiceListener(this, "(" + OBJECTCLASS + '=' + clazzName + ')');
-        final ServiceReference[] initialRefs = bundleContext.getServiceReferences(clazzName, null);
+        bundleContext.addServiceListener(this, filter);
+        final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, filter);
         if (null != initialRefs) {
           addAll(services, initialRefs);
-          sort(services, BEST_SERVICE_COMPARATOR);
+          if (services.size() > 1) {
+            sort(services, BEST_SERVICE);
+          }
         }
       }
     } catch (final InvalidSyntaxException e) {
-      throw new RuntimeException(e);
+      throw new ServiceException(e);
     }
+  }
+
+  private String getClazzFilter(final String clazzName) {
+    return OBJECT_CLAZZ_NAME.equals(clazzName) ? null : '(' + OBJECTCLASS + '=' + clazzName + ')';
   }
 
   public void serviceChanged(final ServiceEvent event) {
@@ -77,91 +80,50 @@ final class OSGiServiceListener
       case REGISTERED:
         insertService(ref);
         break;
-      case MODIFIED:
-        services.remove(ref);
-        insertService(ref);
-        break;
       case UNREGISTERING:
         services.remove(ref);
         break;
       default:
+        services.remove(ref);
+        insertService(ref);
         break;
       }
     }
   }
 
   private void insertService(final ServiceReference ref) {
-    final int insertIndex = binarySearch(services, ref, BEST_SERVICE_COMPARATOR);
+    final int insertIndex = binarySearch(services, ref, BEST_SERVICE);
     if (insertIndex < 0) {
       services.add(~insertIndex, ref);
     }
   }
 
-  public <T> Iterator<Import<T>> iterator(final Class<? extends T> type,
-      final AttributeFilter filter) {
-    return new Iterator<Import<T>>() {
-      private Import<T> nextService;
-      private int index;
+  public ServiceReference findNextService(final ServiceReference prev, final AttributeFilter filter) {
+    synchronized (services) {
 
-      public boolean hasNext() {
-        findNextService();
-        return nextService != null;
+      // tail optimization
+      if (services.isEmpty() || services.get(services.size() - 1) == prev) {
+        return null;
+      }
+      // head optimization
+      if (prev == null && filter == null) {
+        return services.get(0);
       }
 
-      public Import<T> next() {
-        findNextService();
-        if (null == nextService) {
-          throw new ServiceUnavailableException();
-        }
-        try {
-          return nextService;
-        } finally {
-          nextService = null;
-        }
-      }
+      return findNextService(filter, null == prev ? ~0 : binarySearch(services, prev, BEST_SERVICE));
+    }
+  }
 
-      private void findNextService() {
-        if (null == nextService) {
-          try {
-            while (true) {
-              final ServiceReference ref;
-              synchronized (services) {
-                ref = services.get(index++);
-              }
-              if (null == filter || filter.matches(new ServiceAttributes(ref))) {
-                nextService = getServiceImport(ref);
-                break;
-              }
-            }
-          } catch (final IndexOutOfBoundsException e) {}
-        }
-      }
+  private ServiceReference findNextService(final AttributeFilter filter, final int prevIndex) {
+    final OSGiServiceAttributes attributes = new OSGiServiceAttributes();
 
-      public void remove() {
-        throw new UnsupportedOperationException();
+    for (int i = prevIndex < 0 ? ~prevIndex : prevIndex + 1; i < services.size(); i++) {
+      final ServiceReference next = services.get(i);
+      if (null == filter || filter.matches(attributes.reset(next))) {
+        return next;
       }
+    }
 
-      private Import<T> getServiceImport(final ServiceReference ref) {
-        return new Import<T>() {
-          public T get() {
-            try {
-              final T obj = type.cast(bundleContext.getService(ref));
-              if (null == obj) {
-                throw new ServiceUnavailableException();
-              }
-              return obj;
-            } catch (final Exception e) {
-              throw new ServiceUnavailableException(e);
-            }
-          }
-
-          public void unget() {
-            try {
-              bundleContext.ungetService(ref);
-            } catch (final Exception e) {}
-          }
-        };
-      }
-    };
+    return null;
   }
 }

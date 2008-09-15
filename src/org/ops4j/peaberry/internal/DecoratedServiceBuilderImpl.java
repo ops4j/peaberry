@@ -121,17 +121,14 @@ public final class DecoratedServiceBuilderImpl<T>
   }
 
   ImportDecorator<? super T> getDecorator(final Injector injector) {
-    if (decoratorKey != null) {
-      return injector.getInstance(decoratorKey);
-    }
-    return null;
+    return null == decoratorKey ? null : injector.getInstance(decoratorKey);
   }
 
   ServiceRegistry getRegistry(final Injector injector) {
-    if (registryKey != null) {
-      return injector.getInstance(registryKey);
+    if (null == registryKey) {
+      // use default service registry (typically OSGi)
+      return injector.getInstance(ServiceRegistry.class);
     }
-    // use default service registry (typically OSGi)
-    return injector.getInstance(ServiceRegistry.class);
+    return injector.getInstance(registryKey);
   }
 }
