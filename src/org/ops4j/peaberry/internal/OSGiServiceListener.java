@@ -26,6 +26,8 @@ import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.ServiceException;
@@ -48,24 +50,34 @@ final class OSGiServiceListener
 
   private final List<ServiceReference> services;
 
+  private final Lock writeLock;
+  private final Lock readLock;
+
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     services = new ArrayList<ServiceReference>();
 
+    final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
+    writeLock = rwl.writeLock();
+    readLock = rwl.readLock();
+
     final String filter = getClazzFilter(clazzName);
 
+    writeLock.lock();
     try {
-      synchronized (services) {
-        bundleContext.addServiceListener(this, filter);
-        final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, filter);
-        if (null != initialRefs) {
-          addAll(services, initialRefs);
-          if (services.size() > 1) {
-            sort(services, BEST_SERVICE);
-          }
+
+      bundleContext.addServiceListener(this, filter);
+      final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, filter);
+      if (null != initialRefs) {
+        addAll(services, initialRefs);
+        if (services.size() > 1) {
+          sort(services, BEST_SERVICE);
         }
       }
+
     } catch (final InvalidSyntaxException e) {
       throw new ServiceException(e);
+    } finally {
+      writeLock.unlock();
     }
   }
 
@@ -75,7 +87,9 @@ final class OSGiServiceListener
 
   public void serviceChanged(final ServiceEvent event) {
     final ServiceReference ref = event.getServiceReference();
-    synchronized (services) {
+    writeLock.lock();
+    try {
+
       switch (event.getType()) {
       case REGISTERED:
         insertService(ref);
@@ -88,6 +102,9 @@ final class OSGiServiceListener
         insertService(ref);
         break;
       }
+
+    } finally {
+      writeLock.unlock();
     }
   }
 
@@ -99,7 +116,8 @@ final class OSGiServiceListener
   }
 
   public ServiceReference findNextService(final ServiceReference prev, final AttributeFilter filter) {
-    synchronized (services) {
+    readLock.lock();
+    try {
 
       // tail optimization
       if (services.isEmpty() || services.get(services.size() - 1) == prev) {
@@ -111,6 +129,9 @@ final class OSGiServiceListener
       }
 
       return findNextService(filter, null == prev ? ~0 : binarySearch(services, prev, BEST_SERVICE));
+
+    } finally {
+      readLock.unlock();
     }
   }
 
