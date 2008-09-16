@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.internal;
+package org.ops4j.peaberry.osgi;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;

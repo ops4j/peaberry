@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.internal;
+package org.ops4j.peaberry.osgi;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 

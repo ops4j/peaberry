@@ -19,8 +19,8 @@ package org.ops4j.peaberry;
 import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
 import org.ops4j.peaberry.internal.DecoratedServiceBuilderImpl;
-import org.ops4j.peaberry.internal.OSGiServiceRegistry;
 import org.ops4j.peaberry.internal.QualifiedRegistrationBuilderImpl;
+import org.ops4j.peaberry.osgi.OSGiServiceRegistry;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Binder;
