@@ -1,9 +1,6 @@
 
-Import-Package:\
- !org.apache.felix.*,*
-
 Private-Package:\
- org.ops4j.peaberry.test.*
+ org.ops4j.peaberry.test.base
 
 -nouses: true
 
@@ -14,5 +11,5 @@ Private-Package:\
  Tool
 
 -output:\
- ${testcases.jar}
+ ${testbase.jar}
 

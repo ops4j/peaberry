@@ -3,7 +3,7 @@
 
   <taskdef resource="testngtasks" classpath="${testng.jar}"/>
 
-  <target name="test.peaberry" depends="testcases">
+  <target name="test.peaberry" depends="testbase">
     <delete dir="${build}/test/felix"/>
 
     <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.OSGiTestNG">
@@ -14,8 +14,7 @@
 
       <classpath>
         <pathelement location="${felix.jar}"/>
-        <pathelement location="${peaberry.jar}"/>
-        <pathelement location="${build}/test-classes"/>
+        <pathelement location="${testbase.jar}"/>
         <pathelement location="${clover.jar}"/>
       </classpath>
 
@@ -26,7 +25,6 @@
       <sysproperty key="aop.jar" value="${aop.jar}"/>
       <sysproperty key="guice.jar" value="${guice.jar}"/>
       <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>
-      <sysproperty key="testcases.jar" value="${testcases.jar}"/>
 
       <sysproperty key="guice.custom.loader" value="true"/>
 
