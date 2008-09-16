@@ -1,6 +1,6 @@
 
 Private-Package:\
- org.ops4j.peaberry.test.base
+ org.ops4j.peaberry.test
 
 -nouses: true
 
@@ -11,5 +11,5 @@ Private-Package:\
  Tool
 
 -output:\
- ${testbase.jar}
+ ${director.jar}
 

@@ -22,28 +22,28 @@ import org.ops4j.peaberry.ServiceException;
 import org.testng.annotations.Test;
 
 /**
- * Test internal proxy classloader.
+ * Internal tests for our custom proxy classloader.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Test(testName = "ClassLoaderTests", suiteName = "Internal")
-public final class ClassLoaderTests {
+@Test
+public final class ImportProxyClassLoaderTests {
 
-  public void cornerCases() {
+  public void testGetProxyConstructor() {
 
     try {
       // cannot proxy a null class
       getProxyConstructor(null);
-      assert false : "Expected service exception";
+      assert false : "Expected ServiceException";
     } catch (final ServiceException e) {}
 
     try {
       // cannot proxy a final class
       getProxyConstructor(String.class);
-      assert false : "Expected service exception";
+      assert false : "Expected ServiceException";
     } catch (final ServiceException e) {}
 
-    // but can proxy an interface from the java.* packages
+    // can proxy interface from java.*
     getProxyConstructor(Runnable.class);
   }
 }

@@ -23,15 +23,15 @@ import org.osgi.framework.ServiceReference;
 import org.testng.annotations.Test;
 
 /**
- * Test internal service ranking code.
+ * Internal tests for our service ranking algorithm.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Test(testName = "ServiceRankingTests", suiteName = "Internal")
-public final class ServiceRankingTests {
+@Test
+public final class BestServiceComparatorTests {
 
   @SuppressWarnings("unused")
-  public void cornerCases() {
+  public void testCompare() {
 
     // service reference with no properties at all
     final ServiceReference empty = new ServiceReference() {
@@ -94,8 +94,9 @@ public final class ServiceRankingTests {
 
     final BestServiceComparator comparator = new BestServiceComparator();
 
-    assert 0 == comparator.compare(empty, empty);
-    assert 0 == comparator.compare(basic, basic);
-    assert 1 == comparator.compare(basic, empty);
+    assert +0 == comparator.compare(empty, empty);
+    assert +1 == comparator.compare(basic, empty);
+    assert +0 == comparator.compare(basic, basic);
+    assert -1 == comparator.compare(empty, basic);
   }
 }

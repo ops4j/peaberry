@@ -13,9 +13,9 @@
     <bnd files="peaberry.bnd" classpath="${build}/classes"/>
   </target>
 
-  <target name="testbase" depends="test.compile">
+  <target name="director" depends="test.compile">
     <mkdir dir="${build}/test"/>
-    <bnd files="testbase.bnd" classpath="${build}/test-classes"/>
+    <bnd files="director.bnd" classpath="${build}/test-classes"/>
   </target>
 
 </project>

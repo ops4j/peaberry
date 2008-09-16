@@ -3,20 +3,20 @@
 
   <taskdef resource="testngtasks" classpath="${testng.jar}"/>
 
-  <target name="test.peaberry" depends="testbase">
+  <target name="test.peaberry" depends="director">
     <delete dir="${build}/test/felix"/>
 
-    <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.OSGiTestNG">
+    <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.Director">
 
-      <jvmarg value="-server"/>
-
-      <classfileset dir="${build}/test-classes" includes="**/*Tests.class"/>
+      <xmlfileset dir="${test}"/>
 
       <classpath>
         <pathelement location="${felix.jar}"/>
-        <pathelement location="${testbase.jar}"/>
+        <pathelement location="${director.jar}"/>
         <pathelement location="${clover.jar}"/>
       </classpath>
+
+      <jvmarg value="-server"/>
 
       <sysproperty key="felix.config.properties" value="file:test/felix.properties"/>
 
