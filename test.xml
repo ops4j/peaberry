@@ -3,10 +3,10 @@
 
   <taskdef resource="testngtasks" classpath="${testng.jar}"/>
 
-  <target name="test.peaberry" depends="director">
+  <target name="test.peaberry" depends="testcases">
     <delete dir="${build}/test/felix"/>
 
-    <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.Director">
+    <testng outputDir="${doc}/testNG" suiteRunnerClass="${module}.test.Director">
 
       <xmlfileset dir="${test}"/>
 

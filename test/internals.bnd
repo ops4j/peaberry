@@ -1,0 +1,8 @@
+-include: ../common.bnd
+
+-classpath: ../${peaberry.jar}
+
+Private-Package:\
+ com.google.*, org.objectweb.*, org.apache.*,\
+ ${module}(|.builders|.internal|.osgi);-split-package:=merge-first
+

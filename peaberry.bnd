@@ -1,3 +1,4 @@
+-include: common.bnd
 
 Bundle-Name: peaberry
 Bundle-SymbolicName: ${module}
@@ -34,15 +35,6 @@ Private-Package:\
 
 -exportcontents:\
  ${module}(|.builders|.util);version=${api.version}
-
--nouses: true
-
--removeheaders:\
- Bnd-LastModified,\
- Ignore-Package,\
- Include-Resource,\
- Private-Package,\
- Tool
 
 -output:\
  ${peaberry.jar}

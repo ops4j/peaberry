@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 public final class BestServiceComparatorTests {
 
   @SuppressWarnings("unused")
-  public void testCompare() {
+  public void testBestServiceCompare() {
 
     // service reference with no properties at all
     final ServiceReference empty = new ServiceReference() {

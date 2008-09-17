@@ -1,14 +1,7 @@
+-include: common.bnd
 
 Private-Package:\
- org.ops4j.peaberry.test
-
--nouses: true
-
--removeheaders:\
- Bnd-LastModified,\
- Include-Resource,\
- Private-Package,\
- Tool
+ ${module}.test
 
 -output:\
  ${director.jar}

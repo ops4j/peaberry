@@ -18,4 +18,19 @@
     <bnd files="director.bnd" classpath="${build}/test-classes"/>
   </target>
 
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${antlib}/contrib.jar"/>
+
+  <target name="testcases" depends="director">
+    <mkdir dir="${build}/test/bundles"/>
+    <foreach target="test.bundle" param="test.bnd">
+      <path>
+        <fileset dir="${test}" includes="*.bnd"/>
+      </path>
+    </foreach>
+  </target>
+
+  <target name="test.bundle">
+    <bnd files="${test.bnd}" output="${build}/test/bundles" classpath="${build}/test-classes"/>
+  </target>
+
 </project>
