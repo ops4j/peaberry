@@ -57,6 +57,6 @@ final class OSGiServiceImport<T>
   public void unget() {
     try {
       bundleContext.ungetService(ref);
-    } catch (final RuntimeException e) {}
+    } catch (final RuntimeException e) {} // NOPMD
   }
 }

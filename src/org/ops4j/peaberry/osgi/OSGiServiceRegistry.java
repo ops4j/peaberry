@@ -100,7 +100,7 @@ public final class OSGiServiceRegistry
       public void remove() {
         try {
           registration.unregister();
-        } catch (final RuntimeException e) {}
+        } catch (final RuntimeException e) {} // NOPMD
       }
     };
   }

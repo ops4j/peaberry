@@ -1,0 +1,5 @@
+-include: ../common.bnd
+
+Export-Package:\
+ examples.types
+

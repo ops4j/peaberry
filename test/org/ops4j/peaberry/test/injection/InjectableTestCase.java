@@ -19,8 +19,6 @@ package org.ops4j.peaberry.test.injection;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.test.Director.findContext;
 
-import org.osgi.framework.BundleContext;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
@@ -31,12 +29,6 @@ public abstract class InjectableTestCase
     extends AbstractModule {
 
   public InjectableTestCase() {
-    final BundleContext ctx = findContext(getClass());
-    try {
-      Guice.createInjector(osgiModule(ctx), this).injectMembers(this);
-    } catch (final RuntimeException e) {
-      e.printStackTrace();
-      throw e;
-    }
+    Guice.createInjector(osgiModule(findContext(getClass())), this).injectMembers(this);
   }
 }

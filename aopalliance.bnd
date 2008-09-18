@@ -1,15 +1,6 @@
+-include: common.bnd
 
 Export-Package: *
-
--nouses: true
-
--removeheaders:\
- Originally-Created-By,\
- Bnd-LastModified,\
- Ignore-Package,\
- Include-Resource,\
- Private-Package,\
- Tool
 
 -output:\
  ${aop.jar}

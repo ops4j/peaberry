@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.osgi;
 
 import static org.osgi.framework.Constants.SERVICE_ID;
+import static org.testng.Assert.assertEquals;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -94,9 +95,9 @@ public final class BestServiceComparatorTests {
 
     final BestServiceComparator comparator = new BestServiceComparator();
 
-    assert +0 == comparator.compare(empty, empty);
-    assert +1 == comparator.compare(basic, empty);
-    assert +0 == comparator.compare(basic, basic);
-    assert -1 == comparator.compare(empty, basic);
+    assertEquals(comparator.compare(empty, empty), 0);
+    assertEquals(comparator.compare(basic, empty), +1);
+    assertEquals(comparator.compare(empty, basic), -1);
+    assertEquals(comparator.compare(basic, basic), 0);
   }
 }

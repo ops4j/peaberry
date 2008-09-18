@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.internal;
 
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
+import static org.testng.Assert.fail;
 
 import org.ops4j.peaberry.ServiceException;
 import org.testng.annotations.Test;
@@ -34,13 +35,13 @@ public final class ImportProxyClassLoaderTests {
     try {
       // cannot proxy a null class
       getProxyConstructor(null);
-      assert false : "Expected ServiceException";
+      fail("Expected ServiceException");
     } catch (final ServiceException e) {}
 
     try {
       // cannot proxy a final class
       getProxyConstructor(String.class);
-      assert false : "Expected ServiceException";
+      fail("Expected ServiceException");
     } catch (final ServiceException e) {}
 
     // can proxy interface from java.*

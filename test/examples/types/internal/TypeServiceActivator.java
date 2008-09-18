@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2008 Stuart McCulloch
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License"){}
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test.injection;
+package examples.types.internal;
 
-import static org.ops4j.peaberry.Peaberry.service;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
-import org.osgi.service.packageadmin.PackageAdmin;
-import org.testng.annotations.Test;
-
-import com.google.inject.Inject;
+import examples.types.TypeService;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Test
-public class ServiceInjectionTests
-    extends InjectableTestCase {
+public class TypeServiceActivator
+    implements BundleActivator {
 
-  @Inject
-  PackageAdmin packageAdmin;
-
-  @Override
-  protected void configure() {
-    bind(PackageAdmin.class).toProvider(service(PackageAdmin.class).single());
+  public void start(final BundleContext ctx) {
+    ctx.registerService(TypeService.class.getName(), new TypeServiceImpl(), null);
   }
 
-  public void testMe() {
-    packageAdmin.refreshPackages(null);
-  }
+  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {}
 }

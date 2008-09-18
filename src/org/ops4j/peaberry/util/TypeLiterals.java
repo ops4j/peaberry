@@ -16,8 +16,7 @@
 
 package org.ops4j.peaberry.util;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import static com.google.inject.util.Types.newParameterizedType;
 
 import org.ops4j.peaberry.Export;
 
@@ -41,20 +40,7 @@ public final class TypeLiterals {
    */
   @SuppressWarnings("unchecked")
   public static <T> TypeLiteral<Iterable<? extends T>> iterable(final Class<T> clazz) {
-    return (TypeLiteral<Iterable<? extends T>>) TypeLiteral.get(new ParameterizedType() {
-
-      public Type[] getActualTypeArguments() {
-        return new Type[] {clazz};
-      }
-
-      public Type getRawType() {
-        return Iterable.class;
-      }
-
-      public Type getOwnerType() {
-        return null;
-      }
-    });
+    return (TypeLiteral) TypeLiteral.get(newParameterizedType(Iterable.class, clazz));
   }
 
   /**
@@ -65,19 +51,6 @@ public final class TypeLiterals {
    */
   @SuppressWarnings("unchecked")
   public static <T> TypeLiteral<Export<? extends T>> export(final Class<T> clazz) {
-    return (TypeLiteral<Export<? extends T>>) TypeLiteral.get(new ParameterizedType() {
-
-      public Type[] getActualTypeArguments() {
-        return new Type[] {clazz};
-      }
-
-      public Type getRawType() {
-        return Export.class;
-      }
-
-      public Type getOwnerType() {
-        return null;
-      }
-    });
+    return (TypeLiteral) TypeLiteral.get(newParameterizedType(Export.class, clazz));
   }
 }

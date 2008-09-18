@@ -20,6 +20,8 @@ import static org.apache.felix.main.Main.loadConfigProperties;
 import static org.testng.TestNGCommandLineArgs.parseCommandLine;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +38,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
+import org.testng.IObjectFactory;
 import org.testng.TestNG;
 import org.testng.TestNGException;
 
@@ -71,6 +74,22 @@ public final class Director
     FELIX = new Felix(config, autoActivatorList);
   }
 
+  public static class ObjectFactory
+      implements IObjectFactory {
+
+    private static final long serialVersionUID = 1L;
+
+    public Object newInstance(final Constructor ctor, final Object... args) {
+      try {
+        return ctor.newInstance(args);
+      } catch (final InvocationTargetException e) {
+        throw new TestNGException(e.getCause());
+      } catch (final Exception e) {
+        throw new TestNGException(e);
+      }
+    }
+  }
+
   @Override
   public void run() {
 
@@ -87,11 +106,12 @@ public final class Director
     setDefaultSuiteName("Peaberry");
     setDefaultTestName("Unit Tests");
 
+    setObjectFactory(ObjectFactory.class);
     setXmlSuites(new ArrayList());
 
     try {
 
-      setTestClasses(installTestBundles());
+      setTestClasses(installTestCases(installTestBundles()));
 
       super.run();
 
@@ -111,32 +131,43 @@ public final class Director
     }
   }
 
-  private Class[] installTestBundles() {
-    final Collection<Class> clazzes = new HashSet();
+  private Bundle[] installTestBundles() {
+    final Collection<Bundle> bundles = new HashSet();
 
     final BundleContext ctx = FELIX.getBundleContext();
     final File testBundleDir = new File(ctx.getProperty("test.bundle.dir"));
-
-    System.out.println();
 
     for (final File f : testBundleDir.listFiles()) {
       if (f.getName().endsWith(".jar")) {
         try {
 
           final String location = f.toURI().toASCIIString();
-          final Bundle bundle = ctx.installBundle(location);
-
-          System.out.println("[Director] Starting: " + bundle);
-
-          bundle.start();
-
-          clazzes.addAll(installTestCases(bundle));
-
-          System.out.println();
+          bundles.add(ctx.installBundle(location));
 
         } catch (final BundleException e) {
           System.err.println("Error installing test bundle: " + f + " message: " + e.getMessage());
         }
+      }
+    }
+
+    return bundles.toArray(new Bundle[bundles.size()]);
+  }
+
+  private Class[] installTestCases(final Bundle[] bundles) {
+    final Collection<Class> clazzes = new HashSet();
+
+    System.out.println();
+
+    for (final Bundle b : bundles) {
+      try {
+        System.out.println("[Director] Starting: " + b);
+
+        clazzes.addAll(installTestCases(b));
+        b.start();
+
+        System.out.println();
+      } catch (final BundleException e) {
+        System.err.println("Error starting test bundle: " + b + " message: " + e.getMessage());
       }
     }
 
