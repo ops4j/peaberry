@@ -45,7 +45,7 @@ final class OSGiServiceImport<T>
     final T obj;
     try {
       obj = type.cast(bundleContext.getService(ref));
-    } catch (final Exception e) {
+    } catch (final RuntimeException e) {
       throw new ServiceUnavailableException(e);
     }
     if (null == obj) {
@@ -57,6 +57,6 @@ final class OSGiServiceImport<T>
   public void unget() {
     try {
       bundleContext.ungetService(ref);
-    } catch (final Exception e) {} // NOPMD
+    } catch (final RuntimeException e) {}
   }
 }

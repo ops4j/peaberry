@@ -76,7 +76,7 @@ public final class OSGiServiceRegistry
 
     try {
       registration = bundleContext.registerService(interfaces, service, props);
-    } catch (final Exception e) {
+    } catch (final RuntimeException e) {
       throw new ServiceException(e);
     }
 
@@ -92,7 +92,7 @@ public final class OSGiServiceRegistry
       public void modify(final Map<String, ?> newAttributes) {
         try {
           registration.setProperties(dictionary(newAttributes));
-        } catch (final Exception e) {
+        } catch (final RuntimeException e) {
           throw new ServiceException(e);
         }
       }
@@ -100,7 +100,7 @@ public final class OSGiServiceRegistry
       public void remove() {
         try {
           registration.unregister();
-        } catch (final Exception e) {} // NOPMD
+        } catch (final RuntimeException e) {}
       }
     };
   }

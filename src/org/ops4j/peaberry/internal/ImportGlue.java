@@ -22,7 +22,7 @@ import static java.lang.reflect.Modifier.NATIVE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.SYNCHRONIZED;
-import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
+import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ASTORE;
@@ -117,7 +117,7 @@ final class ImportGlue {
       interfaceNames = getInternalNames(clazz.getInterfaces());
     }
 
-    final ClassWriter cw = new ClassWriter(COMPUTE_FRAMES);
+    final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
 
     cw.visit(V1_5, PUBLIC | FINAL, proxyName, null, superName, interfaceNames);
     cw.visitField(FINAL, "handle", IMPORT_DESC, null, null).visitEnd();

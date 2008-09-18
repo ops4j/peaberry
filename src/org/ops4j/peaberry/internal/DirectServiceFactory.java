@@ -64,7 +64,7 @@ final class DirectServiceFactory {
 
     try {
       return (null == decorator ? i.next() : decorator.decorate(i.next())).get();
-    } catch (final Exception e) {
+    } catch (final RuntimeException e) {
       return null;
     }
   }

@@ -27,9 +27,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.StringMap;
@@ -37,19 +34,42 @@ import org.apache.felix.main.AutoActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.packageadmin.PackageAdmin;
 import org.testng.TestNG;
 import org.testng.TestNGException;
-import org.testng.xml.XmlSuite;
 
 /**
  * TestNG launcher that runs tests as OSGi bundles on the Felix framework.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
+@SuppressWarnings("unchecked")
 public final class Director
     extends TestNG {
 
-  private static final Logger LOG = Logger.getLogger(Director.class.getName());
+  public static void main(final String[] args) {
+    final TestNG testNG = new Director();
+
+    testNG.configure(checkConditions(parseCommandLine(args)));
+
+    try {
+      testNG.run();
+    } catch (final TestNGException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static final Felix FELIX;
+
+  static {
+    final Map config = new StringMap(loadConfigProperties(), false);
+
+    final List autoActivatorList = new ArrayList();
+    autoActivatorList.add(new AutoActivator(config));
+
+    FELIX = new Felix(config, autoActivatorList);
+  }
 
   @Override
   public void run() {
@@ -58,97 +78,103 @@ public final class Director
     System.out.println("Start Felix container");
     System.out.println("=====================");
 
-    final Map<?, ?> config = new StringMap(loadConfigProperties(), false);
-
-    final List<Object> autoActivatorList = new ArrayList<Object>();
-    autoActivatorList.add(new AutoActivator(config));
-
-    final Felix felix = new Felix(config, autoActivatorList);
-
     try {
-      felix.start();
+      FELIX.start();
     } catch (final BundleException e) {
       throw new RuntimeException(e);
     }
 
+    setDefaultSuiteName("Peaberry");
+    setDefaultTestName("Unit Tests");
+
+    setXmlSuites(new ArrayList());
+
     try {
 
-      setDefaultSuiteName("Peaberry");
-      setDefaultTestName("Unit Tests");
-
-      setXmlSuites(new ArrayList<XmlSuite>());
-      setTestClasses(installTestBundles(felix, config));
+      setTestClasses(installTestBundles());
 
       super.run();
 
     } catch (final Exception e) {
       throw new RuntimeException(e);
     } finally {
+
+      System.out.println("=====================");
+      System.out.println("Stop Felix container ");
+      System.out.println("=====================");
+
       try {
-        felix.stop();
+        FELIX.stop();
       } catch (final BundleException e) {
         throw new RuntimeException(e);
       }
     }
   }
 
-  private Class<?>[] installTestBundles(final Felix felix, final Map<?, ?> config) {
-    final Collection<Class<?>> clazzes = new HashSet<Class<?>>();
+  private Class[] installTestBundles() {
+    final Collection<Class> clazzes = new HashSet();
 
-    final File testBundleDir = new File((String) config.get("test.bundle.dir"));
-    final BundleContext ctx = felix.getBundleContext();
+    final BundleContext ctx = FELIX.getBundleContext();
+    final File testBundleDir = new File(ctx.getProperty("test.bundle.dir"));
+
+    System.out.println();
 
     for (final File f : testBundleDir.listFiles()) {
       if (f.getName().endsWith(".jar")) {
         try {
-          final Bundle bundle = ctx.installBundle(f.toURI().toASCIIString());
-          clazzes.addAll(installTestCases(bundle));
+
+          final String location = f.toURI().toASCIIString();
+          final Bundle bundle = ctx.installBundle(location);
+
+          System.out.println("[Director] Starting: " + bundle);
+
           bundle.start();
+
+          clazzes.addAll(installTestCases(bundle));
+
+          System.out.println();
+
         } catch (final BundleException e) {
-          LOG.warning("Error installing test bundle: " + f + " message: " + e.getMessage());
+          System.err.println("Error installing test bundle: " + f + " message: " + e.getMessage());
         }
       }
     }
 
-    return clazzes.toArray(new Class<?>[clazzes.size()]);
+    return clazzes.toArray(new Class[clazzes.size()]);
   }
 
-  private Collection<Class<?>> installTestCases(final Bundle bundle) {
-    final Collection<Class<?>> clazzes = new HashSet<Class<?>>();
+  private Collection installTestCases(final Bundle bundle) {
+    final Collection clazzes = new HashSet();
 
-    final Enumeration<?> i = bundle.findEntries("/", "*Tests.class", true);
+    final Enumeration i = bundle.findEntries("/", "*Tests.class", true);
 
     while (i != null && i.hasMoreElements()) {
+
       final String path = ((URL) i.nextElement()).getPath();
       final String name = path.substring(1, path.length() - 6).replace('/', '.');
+
+      System.out.println("[Director]  Loading: " + name);
+
       try {
         clazzes.add(bundle.loadClass(name));
       } catch (final ClassNotFoundException e) {
-        LOG.warning("Error loading test class: " + name + " message: " + e.getMessage());
+        System.err.println("Error loading test class: " + name + " message: " + e.getMessage());
       }
     }
 
     return clazzes;
   }
 
-  public static void main(final String[] args) {
+  private static volatile PackageAdmin PACKAGE_ADMIN;
 
-    // Enable detailed tracing when testing
-    final Logger rootLogger = Logger.getLogger("");
-    for (final Handler h : rootLogger.getHandlers()) {
-      h.setLevel(Level.FINE);
+  public static BundleContext findContext(final Class clazz) {
+
+    if (null == PACKAGE_ADMIN) {
+      final BundleContext ctx = FELIX.getBundleContext();
+      final ServiceReference ref = ctx.getServiceReference(PackageAdmin.class.getName());
+      PACKAGE_ADMIN = (PackageAdmin) ctx.getService(ref);
     }
-    rootLogger.setLevel(Level.FINE);
 
-    final Map<?, ?> params = checkConditions(parseCommandLine(args));
-
-    final TestNG testNG = new Director();
-    testNG.configure(params);
-
-    try {
-      testNG.run();
-    } catch (final TestNGException e) {
-      e.printStackTrace();
-    }
+    return PACKAGE_ADMIN.getBundle(clazz).getBundleContext();
   }
 }
