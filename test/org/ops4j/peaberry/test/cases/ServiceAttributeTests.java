@@ -33,24 +33,29 @@ import org.testng.annotations.Test;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test
-public final class AttributeTests {
+public final class ServiceAttributeTests {
 
-  public void testPropertyConverter() {
+  public void testPropertyAttributes() {
     final Properties properties = new Properties();
 
-    properties.put(1, "badKey");
     properties.setProperty("string", "one");
     properties.put("integer", 1);
 
-    final Map<?, ?> attributes = properties(properties);
+    final Map<?, ?> attributes1 = properties(properties);
 
-    assertNull(attributes.get(1));
-    assertEquals(attributes.get("string"), "one");
-    assertEquals(attributes.get("integer"), 1);
-    assertEquals(attributes.size(), 2);
+    properties.put(1, "badKey");
+
+    final Map<?, ?> attributes2 = properties(properties);
+
+    assertNull(attributes2.get(1));
+    assertEquals(attributes2.get("string"), "one");
+    assertEquals(attributes2.get("integer"), 1);
+    assertEquals(attributes2.size(), 2);
+
+    assertEquals(attributes1, attributes2);
   }
 
-  public void testNameConverter() {
+  public void testNameAttributes() {
     try {
       names("cn=John Doe", "=", "dc=com");
       fail("Expected IllegalArgumentException");

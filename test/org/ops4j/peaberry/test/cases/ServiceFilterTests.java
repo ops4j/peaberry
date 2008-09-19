@@ -31,12 +31,12 @@ import org.ops4j.peaberry.util.Filters;
 import org.testng.annotations.Test;
 
 /**
- * Test filter helper methods.
+ * Test runtime filtering of dynamic services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test
-public final class FilterTests {
+public final class ServiceFilterTests {
 
   interface A {}
 
@@ -44,14 +44,21 @@ public final class FilterTests {
 
   interface C {}
 
-  public void testObjectClassConverter() {
+  public void testSingleObjectClassFilter() {
+    final AttributeFilter filter = Filters.objectClass(A.class);
+    final Map<String, ?> attributes = Attributes.objectClass(A.class);
+
+    assertTrue(filter.matches(attributes));
+  }
+
+  public void testMultipleObjectClassFilter() {
     final AttributeFilter filter = Filters.objectClass(B.class, C.class, A.class);
     final Map<String, ?> attributes = Attributes.objectClass(A.class, B.class, C.class);
 
     assertTrue(filter.matches(attributes));
   }
 
-  public void testHashCodeAndEquals() {
+  public void testFilterHashCodeAndEquals() {
     final AttributeFilter filterA = Filters.ldap("(language=french)");
     final AttributeFilter filterB = Filters.ldap("  (  language  =french)");
 
@@ -62,7 +69,7 @@ public final class FilterTests {
     assertEquals(filterA.hashCode(), filterB.hashCode());
   }
 
-  public void testBogusFilterString() {
+  public void testBrokenLdapFilterStrings() {
     try {
       Filters.ldap("missing-brackets");
       fail("Expected IllegalArgumentException");

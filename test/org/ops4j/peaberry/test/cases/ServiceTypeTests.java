@@ -45,7 +45,7 @@ public final class ServiceTypeTests
     bind(TypeService.class).toProvider(service(TypeService.class).single());
   }
 
-  public void testServiceTypes()
+  public void testServiceTypesAndSignatures()
       throws Exception {
 
     typeService.parse(typeService.toString());

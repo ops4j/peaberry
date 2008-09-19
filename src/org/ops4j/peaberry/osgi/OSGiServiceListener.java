@@ -57,6 +57,7 @@ final class OSGiServiceListener
     services = new ArrayList<ServiceReference>();
 
     final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
+
     writeLock = rwl.writeLock();
     readLock = rwl.readLock();
 

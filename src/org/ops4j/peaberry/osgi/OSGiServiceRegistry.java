@@ -20,8 +20,8 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
@@ -49,7 +49,7 @@ public final class OSGiServiceRegistry
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
-    listenerMap = new IdentityHashMap<String, OSGiServiceListener>();
+    listenerMap = new HashMap<String, OSGiServiceListener>();
     this.bundleContext = bundleContext;
   }
 
@@ -133,10 +133,7 @@ public final class OSGiServiceRegistry
 
   // unfortunately the OSGi API expects Dictionary rather than Map :(
   static Dictionary<String, ?> dictionary(final Map<String, ?> attributes) {
-    if (null == attributes) {
-      return null;
-    }
-    return new AttributeDictionary(attributes);
+    return null == attributes ? null : new AttributeDictionary(attributes);
   }
 
   @Override

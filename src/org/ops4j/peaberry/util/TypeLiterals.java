@@ -36,7 +36,7 @@ public final class TypeLiterals {
    * Create a type-literal representing an iterable sequence of the given type.
    * 
    * @param clazz service interface
-   * @return parameterised type-literal
+   * @return parameterized type-literal
    */
   @SuppressWarnings("unchecked")
   public static <T> TypeLiteral<Iterable<? extends T>> iterable(final Class<T> clazz) {
@@ -47,7 +47,7 @@ public final class TypeLiterals {
    * Create a type-literal representing an exported handle of the given type.
    * 
    * @param clazz service interface
-   * @return parameterised type-literal
+   * @return parameterized type-literal
    */
   @SuppressWarnings("unchecked")
   public static <T> TypeLiteral<Export<? extends T>> export(final Class<T> clazz) {

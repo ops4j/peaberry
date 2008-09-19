@@ -61,7 +61,7 @@ public final class RegistryServiceImpl
   public void unregister(final String... ids) {
     for (final String id : ids) {
       assertNotNull(idMap.get(id));
-      idMap.get(id).unregister();
+      idMap.remove(id).unregister();
     }
   }
 

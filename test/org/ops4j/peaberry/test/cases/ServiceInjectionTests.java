@@ -20,6 +20,7 @@ import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.fail;
 
 import java.util.Iterator;
 
@@ -85,8 +86,12 @@ public final class ServiceInjectionTests
     assertFalse(i.hasNext()); // only B is left
     assertEquals(b, id);
 
-    unregister("B");
+    try {
+      i.remove();
+      fail("Expected UnsupportedOperationException");
+    } catch (final UnsupportedOperationException e) {}
 
+    unregister("B");
     missing(b); // service has gone
   }
 }
