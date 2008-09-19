@@ -17,13 +17,15 @@
 package examples.ids;
 
 /**
- * Very simple identity service API.
+ * Service API to register and unregister identities.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface IdService {
 
-  String toString();
+  void register(int ranking, String... ids);
 
-  boolean equals(Object rhs);
+  void unregister(String... ids);
+
+  void reset();
 }

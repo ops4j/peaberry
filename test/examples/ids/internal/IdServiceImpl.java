@@ -16,6 +16,18 @@
 
 package examples.ids.internal;
 
+import static org.osgi.framework.Constants.SERVICE_RANKING;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+
+import examples.ids.Id;
 import examples.ids.IdService;
 
 /**
@@ -23,25 +35,37 @@ import examples.ids.IdService;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class IdServiceImpl
+final class IdServiceImpl
     implements IdService {
 
-  private final String id;
+  private final Map<String, ServiceRegistration> idMap;
+  private final BundleContext ctx;
 
-  public IdServiceImpl(final String id) {
-    this.id = id;
+  public IdServiceImpl(final BundleContext ctx) {
+    idMap = new HashMap<String, ServiceRegistration>();
+    this.ctx = ctx;
   }
 
-  @Override
-  public String toString() {
-    return id;
-  }
+  public void register(final int ranking, final String... ids) {
+    for (final String id : ids) {
+      assertNull(idMap.get(id));
 
-  @Override
-  public boolean equals(final Object rhs) {
-    if (rhs instanceof IdService) {
-      return toString().equals(id.toString());
+      final Properties props = new Properties();
+      props.put(SERVICE_RANKING, ranking);
+      props.setProperty("id", id);
+
+      idMap.put(id, ctx.registerService(Id.class.getName(), new IdImpl(id), props));
     }
-    return false;
+  }
+
+  public void unregister(final String... ids) {
+    for (final String id : ids) {
+      assertTrue(idMap.containsKey(id));
+      idMap.remove(id).unregister();
+    }
+  }
+
+  public void reset() {
+    unregister(idMap.keySet().toArray(new String[idMap.size()]));
   }
 }

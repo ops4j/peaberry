@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2008 Stuart McCulloch
  *
- * Licensed under the Apache License, Version 2.0 (the "License"){}
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-package examples.types.internal;
-
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
-import examples.types.TypeService;
+package examples.ids;
 
 /**
- * Register {@code TypeService} implementation with {@code ServiceRegistry}.
+ * Trivial identity type.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class TypeServiceActivator
-    implements BundleActivator {
-
-  public void start(final BundleContext ctx) {
-    ctx.registerService(TypeService.class.getName(), new TypeServiceImpl(), null);
-  }
-
-  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {}
-}
+public interface Id {}

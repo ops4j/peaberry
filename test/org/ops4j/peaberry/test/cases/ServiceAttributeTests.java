@@ -28,7 +28,7 @@ import java.util.Properties;
 import org.testng.annotations.Test;
 
 /**
- * Test attribute helper methods.
+ * Test service attribute behaviour.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -36,23 +36,26 @@ import org.testng.annotations.Test;
 public final class ServiceAttributeTests {
 
   public void testPropertyAttributes() {
-    final Properties properties = new Properties();
+    final Properties sysProp = new Properties();
 
-    properties.setProperty("string", "one");
-    properties.put("integer", 1);
+    sysProp.putAll(System.getProperties());
+    sysProp.setProperty("string", "one");
+    sysProp.put("integer", 1);
 
-    final Map<?, ?> attributes1 = properties(properties);
+    final Map<String, ?> cleanAttributes = properties(sysProp);
 
-    properties.put(1, "badKey");
+    sysProp.put(1, "badKey");
 
-    final Map<?, ?> attributes2 = properties(properties);
+    final Map<String, ?> fixedAttributes = properties(sysProp);
 
-    assertNull(attributes2.get(1));
-    assertEquals(attributes2.get("string"), "one");
-    assertEquals(attributes2.get("integer"), 1);
-    assertEquals(attributes2.size(), 2);
+    assertNull(fixedAttributes.get(1));
 
-    assertEquals(attributes1, attributes2);
+    assertEquals(fixedAttributes.get("string"), "one");
+    assertEquals(fixedAttributes.get("integer"), 1);
+
+    assertEquals(fixedAttributes.size(), System.getProperties().size() + 2);
+
+    assertEquals(cleanAttributes, fixedAttributes);
   }
 
   public void testNameAttributes() {

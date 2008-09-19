@@ -31,7 +31,7 @@ import org.ops4j.peaberry.util.Filters;
 import org.testng.annotations.Test;
 
 /**
- * Test runtime filtering of dynamic services.
+ * Test service filter behaviour.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
 
-import examples.ids.IdService;
+import examples.ids.Id;
 
 /**
  * Test single and multiple service injection, plus iterator flexibility.
@@ -40,21 +40,21 @@ public final class ServiceInjectionTests
     extends InjectableTestCase {
 
   @Inject
-  IdService id;
+  Id id;
 
   @Inject
-  Iterable<IdService> ids;
+  Iterable<Id> ids;
 
   @Override
   protected void configure() {
-    bind(IdService.class).toProvider(service(IdService.class).single());
-    bind(iterable(IdService.class)).toProvider(service(IdService.class).multiple());
+    bind(Id.class).toProvider(service(Id.class).single());
+    bind(iterable(Id.class)).toProvider(service(Id.class).multiple());
   }
 
   public void testServiceInjection() {
     reset();
 
-    final Iterator<IdService> i = ids.iterator();
+    final Iterator<Id> i = ids.iterator();
 
     missing(id);
     check(ids, "[]");
@@ -70,7 +70,7 @@ public final class ServiceInjectionTests
 
     check(id, "A");
     check(ids, "[A, B]");
-    final IdService b = i.next(); // we have a B
+    final Id b = i.next(); // we have a B
     check(b, "B");
 
     register(8, "C");

@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2008 Stuart McCulloch
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License"){}
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,18 +14,39 @@
  * limitations under the License.
  */
 
-package examples.ids;
+package examples.ids.internal;
+
+import examples.ids.Id;
 
 /**
- * Service API to register and unregister identities.
+ * Trivial {@code Id} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface RegistryService {
+final class IdImpl
+    implements Id {
 
-  void register(int ranking, String... ids);
+  private final String id;
 
-  void unregister(String... ids);
+  public IdImpl(final String id) {
+    this.id = id;
+  }
 
-  void reset();
+  @Override
+  public String toString() {
+    return id;
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof Id) {
+      return toString().equals(rhs.toString());
+    }
+    return false;
+  }
 }

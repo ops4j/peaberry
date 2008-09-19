@@ -19,18 +19,18 @@ package examples.ids.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import examples.ids.RegistryService;
+import examples.ids.IdService;
 
 /**
- * Register {@code IdService} implementations on demand.
+ * Register {@code IdService} implementation with {@code ServiceRegistry}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public class IdServiceActivator
+public final class IdServiceActivator
     implements BundleActivator {
 
   public void start(final BundleContext ctx) {
-    ctx.registerService(RegistryService.class.getName(), new RegistryServiceImpl(ctx), null);
+    ctx.registerService(IdService.class.getName(), new IdServiceImpl(ctx), null);
   }
 
   public void stop(@SuppressWarnings("unused") final BundleContext ctx) {}

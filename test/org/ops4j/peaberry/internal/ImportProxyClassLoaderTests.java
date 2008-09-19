@@ -19,11 +19,13 @@ package org.ops4j.peaberry.internal;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 import static org.testng.Assert.fail;
 
+import java.lang.reflect.Constructor;
+
 import org.ops4j.peaberry.ServiceException;
 import org.testng.annotations.Test;
 
 /**
- * Internal tests for our custom proxy classloader.
+ * Corner-case tests for custom proxy classloader.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -46,5 +48,12 @@ public final class ImportProxyClassLoaderTests {
 
     // can proxy interface from java.*
     getProxyConstructor(Runnable.class);
+
+    try {
+      // check proxy classloader hides its own internal classes
+      final Constructor<?> ctor = getProxyConstructor(Object.class);
+      ctor.getDeclaringClass().getClassLoader().loadClass(ImportGlue.class.getName());
+      fail("Expected ClassNotFoundException");
+    } catch (final ClassNotFoundException e) {}
   }
 }

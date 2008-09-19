@@ -18,7 +18,7 @@ package org.ops4j.peaberry.test.cases;
 
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
-import static org.ops4j.peaberry.util.Attributes.*;
+import static org.ops4j.peaberry.util.Attributes.names;
 import static org.ops4j.peaberry.util.Filters.ldap;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 
@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 import com.google.inject.Inject;
 import com.google.inject.Key;
 
-import examples.ids.IdService;
+import examples.ids.Id;
 
 /**
  * Test exporting of service implementations to the {@code ServiceRegistry}.
@@ -40,13 +40,13 @@ public final class ServiceExportTests
     extends InjectableTestCase {
 
   @Inject
-  Export<IdService> exportedId;
+  Export<Id> exportedId;
 
   @Inject
-  IdService importedId;
+  Id importedId;
 
-  private static class IdServiceImpl
-      implements IdService {
+  private static class IdImpl
+      implements Id {
 
     @Override
     public String toString() {
@@ -56,8 +56,8 @@ public final class ServiceExportTests
 
   @Override
   protected void configure() {
-    bind(IdService.class).toProvider(service(IdService.class).filter(ldap("(id=TEST)")).single());
-    bind(export(IdService.class)).toProvider(registration(Key.get(IdServiceImpl.class)).export());
+    bind(Id.class).toProvider(service(Id.class).filter(ldap("(id=TEST)")).single());
+    bind(export(Id.class)).toProvider(registration(Key.get(IdImpl.class)).export());
   }
 
   public void testServiceExports() {

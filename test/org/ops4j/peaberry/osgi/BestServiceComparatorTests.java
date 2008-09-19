@@ -24,7 +24,7 @@ import org.osgi.framework.ServiceReference;
 import org.testng.annotations.Test;
 
 /**
- * Internal tests for our custom service ranking algorithm.
+ * Corner-case tests for custom service-ranking algorithm.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
