@@ -63,6 +63,7 @@ public final class Director
     }
   }
 
+  // globally cached system bundle
   private static final Felix FELIX;
 
   static {
@@ -79,6 +80,7 @@ public final class Director
 
     private static final long serialVersionUID = 1L;
 
+    // improve reporting by unwrapping certain wrapped exceptions, like ITE
     public Object newInstance(final Constructor ctor, final Object... args) {
       try {
         return ctor.newInstance(args);
@@ -106,14 +108,16 @@ public final class Director
     setDefaultSuiteName("Peaberry");
     setDefaultTestName("Unit Tests");
 
+    // clear out dummy command-line tests
     setObjectFactory(ObjectFactory.class);
     setXmlSuites(new ArrayList());
 
+    // load testcase classes from the appropriate bundles
+    setTestClasses(installTestCases(installTestBundles()));
+
     try {
 
-      setTestClasses(installTestCases(installTestBundles()));
-
-      super.run();
+      super.run(); // run tests!
 
     } catch (final Exception e) {
       throw new RuntimeException(e);
@@ -132,18 +136,17 @@ public final class Director
   }
 
   private Bundle[] installTestBundles() {
-    final Collection<Bundle> bundles = new HashSet();
 
     final BundleContext ctx = FELIX.getBundleContext();
+    final Collection<Bundle> bundles = new HashSet();
+
     final File testBundleDir = new File(ctx.getProperty("test.bundle.dir"));
 
     for (final File f : testBundleDir.listFiles()) {
       if (f.getName().endsWith(".jar")) {
         try {
-
           final String location = f.toURI().toASCIIString();
           bundles.add(ctx.installBundle(location));
-
         } catch (final BundleException e) {
           System.err.println("Error installing test bundle: " + f + " message: " + e.getMessage());
         }
@@ -159,16 +162,14 @@ public final class Director
     System.out.println();
 
     for (final Bundle b : bundles) {
+      System.out.println("[Director] Starting: " + b);
       try {
-        System.out.println("[Director] Starting: " + b);
-
         clazzes.addAll(installTestCases(b));
         b.start();
-
-        System.out.println();
       } catch (final BundleException e) {
         System.err.println("Error starting test bundle: " + b + " message: " + e.getMessage());
       }
+      System.out.println();
     }
 
     return clazzes.toArray(new Class[clazzes.size()]);
@@ -178,9 +179,9 @@ public final class Director
     final Collection clazzes = new HashSet();
 
     final Enumeration i = bundle.findEntries("/", "*Tests.class", true);
-
     while (i != null && i.hasMoreElements()) {
 
+      // convert jar entry path into dotted class name...
       final String path = ((URL) i.nextElement()).getPath();
       final String name = path.substring(1, path.length() - 6).replace('/', '.');
 
@@ -201,11 +202,13 @@ public final class Director
   public static BundleContext findContext(final Class clazz) {
 
     if (null == PACKAGE_ADMIN) {
+      // lazy-load the framework package-admin service
       final BundleContext ctx = FELIX.getBundleContext();
       final ServiceReference ref = ctx.getServiceReference(PackageAdmin.class.getName());
       PACKAGE_ADMIN = (PackageAdmin) ctx.getService(ref);
     }
 
+    // find the bundle which loaded the given testcase class
     return PACKAGE_ADMIN.getBundle(clazz).getBundleContext();
   }
 }

@@ -16,9 +16,12 @@
 
 package examples.types;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
+ * Exercise service proxy creation by supplying various type signatures.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface TypeService {
@@ -108,5 +111,6 @@ public interface TypeService {
   Object[] parseObjectArray(String s);
 
   <T> List<T> parseGenericType(Class<T> clazz, String s)
-      throws Exception;
+      throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException;
 }

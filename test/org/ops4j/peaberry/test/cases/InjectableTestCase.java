@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test.injection;
+package org.ops4j.peaberry.test.cases;
 
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.test.Director.findContext;
@@ -23,6 +23,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
 /**
+ * Base class for service testcases, instances are injected during construction.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public abstract class InjectableTestCase

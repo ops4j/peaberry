@@ -18,12 +18,15 @@ package examples.types.internal;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
 import examples.types.TypeService;
 
 /**
+ * {@code TypeService} implementation, uses standard type-to-string conversions.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public class TypeServiceImpl
@@ -246,7 +249,8 @@ public class TypeServiceImpl
 
   @SuppressWarnings("unchecked")
   public <T> List<T> parseGenericType(final Class<T> clazz, final String s)
-      throws Exception {
+      throws SecurityException, NoSuchMethodException, IllegalArgumentException,
+      InstantiationException, IllegalAccessException, InvocationTargetException {
     final Constructor<T> ctor = clazz.getConstructor(String.class);
     final String[] elems = parseArray(s);
     final T[] os = (T[]) Array.newInstance(clazz, elems.length);

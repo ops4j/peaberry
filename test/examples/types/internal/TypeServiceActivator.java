@@ -22,6 +22,8 @@ import org.osgi.framework.BundleContext;
 import examples.types.TypeService;
 
 /**
+ * Register {@code TypeService} implementation with {@code OSGiServiceRegistry}.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public class TypeServiceActivator
