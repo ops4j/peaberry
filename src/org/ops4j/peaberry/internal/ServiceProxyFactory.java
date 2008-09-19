@@ -62,6 +62,18 @@ final class ServiceProxyFactory {
           }
         };
       }
+
+      @Override
+      public String toString() {
+        final StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        String delim = "";
+        for (final T t : this) {
+          buf.append(delim).append(t);
+          delim = ", ";
+        }
+        return buf.append(']').toString();
+      }
     };
   }
 

@@ -14,24 +14,34 @@
  * limitations under the License.
  */
 
-package examples.types.internal;
+package examples.ids.internal;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
-import examples.types.TypeService;
+import examples.ids.IdService;
 
 /**
- * Register {@code TypeService} implementation with {@code OSGiServiceRegistry}.
+ * {@code IdService} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class TypeServiceActivator
-    implements BundleActivator {
+public final class IdServiceImpl
+    implements IdService {
 
-  public void start(final BundleContext ctx) {
-    ctx.registerService(TypeService.class.getName(), new TypeServiceImpl(), null);
+  private final String id;
+
+  public IdServiceImpl(final String id) {
+    this.id = id;
   }
 
-  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {}
+  @Override
+  public String toString() {
+    return id;
+  }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof IdService) {
+      return toString().equals(id.toString());
+    }
+    return false;
+  }
 }

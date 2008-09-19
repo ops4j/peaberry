@@ -29,7 +29,7 @@ import examples.types.TypeService;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public class TypeServiceImpl
+public final class TypeServiceImpl
     implements TypeService {
 
   @Override

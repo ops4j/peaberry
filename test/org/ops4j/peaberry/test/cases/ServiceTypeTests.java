@@ -34,7 +34,7 @@ import examples.types.TypeService;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test
-public class ServiceTypeTests
+public final class ServiceTypeTests
     extends InjectableTestCase {
 
   @Inject

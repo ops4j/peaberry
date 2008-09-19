@@ -17,10 +17,18 @@
 package org.ops4j.peaberry.test.cases;
 
 import static org.ops4j.peaberry.Peaberry.osgiModule;
+import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.test.Director.findContext;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
+
+import org.ops4j.peaberry.ServiceUnavailableException;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
+
+import examples.ids.RegistryService;
 
 /**
  * Base class for service testcases, instances are injected during construction.
@@ -28,9 +36,45 @@ import com.google.inject.Guice;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public abstract class InjectableTestCase
-    extends AbstractModule {
+    extends AbstractModule
+    implements RegistryService {
+
+  @Inject
+  protected RegistryService registryService;
 
   public InjectableTestCase() {
-    Guice.createInjector(osgiModule(findContext(getClass())), this).injectMembers(this);
+    Guice.createInjector(this, osgiModule(findContext(getClass())), new AbstractModule() {
+      @Override
+      public void configure() {
+        bind(RegistryService.class).toProvider(service(RegistryService.class).single());
+      }
+    }).injectMembers(this);
+  }
+
+  public void register(final String... ids) {
+    registryService.register(0, ids);
+  }
+
+  public void register(final int ranking, final String... ids) {
+    registryService.register(ranking, ids);
+  }
+
+  public void missing(final Object obj) {
+    try {
+      obj.toString();
+      fail("Expected ServiceUnavailableException");
+    } catch (final ServiceUnavailableException e) {}
+  }
+
+  public void check(final Object obj, final String text) {
+    assertEquals(obj.toString(), text);
+  }
+
+  public void unregister(final String... ids) {
+    registryService.unregister(ids);
+  }
+
+  public void reset() {
+    registryService.reset();
   }
 }
