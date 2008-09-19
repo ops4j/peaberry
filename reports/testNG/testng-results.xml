@@ -1,0 +1,40 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="Peaberry">
+    <groups>
+    </groups>
+    <test name="Unit Tests">
+      <class name="org.ops4j.peaberry.internal.ImportProxyClassLoaderTests">
+        <test-method status="PASS" signature="testGetProxyConstructor()" name="testGetProxyConstructor" duration-ms="98" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+      </class>
+      <class name="org.ops4j.peaberry.test.cases.FilterTests">
+        <test-method status="PASS" signature="testBogusFilterString()" name="testBogusFilterString" duration-ms="47" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+        <test-method status="PASS" signature="testHashCodeAndEquals()" name="testHashCodeAndEquals" duration-ms="19" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+        <test-method status="PASS" signature="testObjectClassConverter()" name="testObjectClassConverter" duration-ms="157" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+      </class>
+      <class name="org.ops4j.peaberry.test.cases.ServiceInjectionTests">
+        <test-method status="PASS" signature="testServiceInjection()" name="testServiceInjection" duration-ms="20" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+      </class>
+      <class name="org.ops4j.peaberry.test.cases.AttributeTests">
+        <test-method status="PASS" signature="testNameConverter()" name="testNameConverter" duration-ms="26" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+        <test-method status="PASS" signature="testPropertyConverter()" name="testPropertyConverter" duration-ms="155" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+      </class>
+      <class name="org.ops4j.peaberry.test.cases.ServiceTypeTests">
+        <test-method status="PASS" signature="testServiceTypes()" name="testServiceTypes" duration-ms="219" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:26Z">
+        </test-method>
+      </class>
+      <class name="org.ops4j.peaberry.osgi.BestServiceComparatorTests">
+        <test-method status="PASS" signature="testBestServiceCompare()" name="testBestServiceCompare" duration-ms="23" started-at="2008-09-19T11:30:25Z" finished-at="2008-09-19T11:30:25Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>
