@@ -47,6 +47,9 @@ import static org.objectweb.asm.Type.getMethodDescriptor;
 import static org.objectweb.asm.Type.getReturnType;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -71,6 +74,8 @@ final class ImportGlue {
 
   private static final String IMPORT_DESC = getDescriptor(Import.class);
   private static final String OBJECT_DESC = getDescriptor(Object.class);
+
+  private static final Method[] OBJECT_METHODS = Object.class.getMethods();
 
   public static String getProxyName(final String clazzName) {
     final String safeName;
@@ -123,7 +128,24 @@ final class ImportGlue {
     cw.visitField(FINAL, "handle", IMPORT_DESC, null, null).visitEnd();
 
     init(cw, superName, proxyName);
-    for (final Method m : clazz.getMethods()) {
+
+    // for the moment only proxy the public API...
+    final List<Method> methods = new ArrayList<Method>();
+    Collections.addAll(methods, clazz.getMethods());
+
+    if (clazz.isInterface()) {
+      // patch in missing Object methods...
+      for (final Method m : OBJECT_METHODS) {
+        try {
+          // need to check they're not duplicated in the API
+          clazz.getMethod(m.getName(), m.getParameterTypes());
+        } catch (final NoSuchMethodException e) {
+          methods.add(m);
+        }
+      }
+    }
+
+    for (final Method m : methods) {
       // we cannot proxy any static, final, or native methods
       if ((m.getModifiers() & (STATIC | FINAL | NATIVE)) == 0) {
         wrap(cw, proxyName, m);

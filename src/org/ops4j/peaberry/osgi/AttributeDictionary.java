@@ -42,13 +42,18 @@ final class AttributeDictionary
   }
 
   @Override
+  public Enumeration<String> keys() {
+    return enumeration(attributes.keySet());
+  }
+
+  @Override
   public boolean isEmpty() {
     return attributes.isEmpty();
   }
 
   @Override
-  public Enumeration<String> keys() {
-    return enumeration(attributes.keySet());
+  public int size() {
+    return attributes.size();
   }
 
   @Override
@@ -67,10 +72,5 @@ final class AttributeDictionary
   @SuppressWarnings("unused")
   public Object remove(final Object key) {
     throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public int size() {
-    return attributes.size();
   }
 }
