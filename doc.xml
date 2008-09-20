@@ -15,7 +15,13 @@
     </pmd>
   </target>
 
-  <target name="doc">
+  <target name="doc" depends="check.doc,make.doc"/>
+
+  <target name="check.doc">
+    <available file="${doc}/javadoc/index.html" property="have.doc"/>
+  </target>
+
+  <target name="make.doc" unless="have.doc">
     <mkdir dir="${doc}/javadoc"/>
     <javadoc destdir="${doc}/javadoc" classpath="${build.cp}" sourcepath="${src}"
         packagenames="${module},${module}.builders,${module}.util"
