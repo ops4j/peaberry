@@ -16,11 +16,13 @@
 
 package org.ops4j.peaberry.test.cases;
 
+import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.names;
 import static org.ops4j.peaberry.util.Filters.ldap;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
+import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import org.ops4j.peaberry.Export;
 import org.testng.annotations.Test;
@@ -57,16 +59,32 @@ public final class ServiceExportTests
   @Override
   protected void configure() {
     bind(Id.class).toProvider(service(Id.class).filter(ldap("(id=TEST)")).single());
-    bind(export(Id.class)).toProvider(registration(Key.get(IdImpl.class)).export());
+
+    bind(export(Id.class)).toProvider(
+        registration(Key.get(IdImpl.class)).attributes(singletonMap(SERVICE_RANKING, 8)).export());
   }
 
   public void testServiceExports() {
     reset();
 
     missing(importedId);
+
+    // standard service
+    register("TEST");
+    check(importedId, "TEST");
+
+    // modify our exported service so it matches the import filter
     exportedId.modify(names("id=TEST"));
+
+    // exported service should now be used, as it has a higher ranking
     check(importedId, "OK");
+
+    // drop our exported service
     exportedId.remove();
+    check(importedId, "TEST");
+
+    // drop standard service
+    unregister("TEST");
     missing(importedId);
   }
 }

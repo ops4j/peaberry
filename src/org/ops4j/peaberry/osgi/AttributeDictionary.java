@@ -20,6 +20,7 @@ import static java.util.Collections.enumeration;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ final class AttributeDictionary
   private final Map<String, ?> attributes;
 
   public AttributeDictionary(final Map<String, ?> attributes) {
-    this.attributes = attributes;
+    this.attributes = new HashMap<String, Object>(attributes);
   }
 
   @Override

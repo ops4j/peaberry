@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="UnitTests" failures="0" tests="12" time="0.914" errors="0">
+  <properties/>
+  <testcase name="testGetProxyConstructor" time="0.112" classname="org.ops4j.peaberry.internal.ImportProxyClassLoaderTests"/>
+  <testcase name="testAttributeDictionaryAdapter" time="0.029" classname="org.ops4j.peaberry.osgi.AttributeDictionaryTests"/>
+  <testcase name="testBestServiceCompare" time="0.017" classname="org.ops4j.peaberry.osgi.BestServiceComparatorTests"/>
+  <testcase name="testNameAttributes" time="0.034" classname="org.ops4j.peaberry.test.cases.ServiceAttributeTests"/>
+  <testcase name="testPropertyAttributes" time="0.217" classname="org.ops4j.peaberry.test.cases.ServiceAttributeTests"/>
+  <testcase name="testServiceExports" time="0.022" classname="org.ops4j.peaberry.test.cases.ServiceExportTests"/>
+  <testcase name="testBrokenLdapFilterStrings" time="0.209" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testFilterHashCodeAndEquals" time="0.164" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testSingleObjectClassFilter" time="0.012" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testMultipleObjectClassFilter" time="0.0040" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testServiceInjection" time="0.0080" classname="org.ops4j.peaberry.test.cases.ServiceInjectionTests"/>
+  <testcase name="testServiceTypesAndSignatures" time="0.06" classname="org.ops4j.peaberry.test.cases.ServiceTypeTests"/>
+</testsuite>

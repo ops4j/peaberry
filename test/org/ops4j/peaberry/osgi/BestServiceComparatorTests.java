@@ -33,6 +33,7 @@ public final class BestServiceComparatorTests {
 
   @SuppressWarnings("unused")
   public void testBestServiceCompare() {
+    // /CLOVER:OFF
 
     // service reference with no properties at all
     final ServiceReference empty = new ServiceReference() {
@@ -92,6 +93,8 @@ public final class BestServiceComparatorTests {
         return false;
       }
     };
+
+    // /CLOVER:ON
 
     final BestServiceComparator comparator = new BestServiceComparator();
 

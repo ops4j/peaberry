@@ -4,45 +4,45 @@
   <suite name="Peaberry">
     <groups>
     </groups>
-    <test name="Unit Tests">
+    <test name="UnitTests">
       <class name="org.ops4j.peaberry.internal.ImportProxyClassLoaderTests">
-        <test-method status="PASS" signature="testGetProxyConstructor()" name="testGetProxyConstructor" duration-ms="43" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:07Z">
+        <test-method status="PASS" signature="testGetProxyConstructor()" name="testGetProxyConstructor" duration-ms="112" started-at="2008-09-21T00:44:11Z" finished-at="2008-09-21T00:44:11Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceAttributeTests">
-        <test-method status="PASS" signature="testNameAttributes()" name="testNameAttributes" duration-ms="87" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:07Z">
+        <test-method status="PASS" signature="testNameAttributes()" name="testNameAttributes" duration-ms="34" started-at="2008-09-21T00:44:11Z" finished-at="2008-09-21T00:44:11Z">
         </test-method>
-        <test-method status="PASS" signature="testPropertyAttributes()" name="testPropertyAttributes" duration-ms="258" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:07Z">
+        <test-method status="PASS" signature="testPropertyAttributes()" name="testPropertyAttributes" duration-ms="217" started-at="2008-09-21T00:44:11Z" finished-at="2008-09-21T00:44:11Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.osgi.AttributeDictionaryTests">
-        <test-method status="PASS" signature="testAttributeDictionaryAdapter()" name="testAttributeDictionaryAdapter" duration-ms="8" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:07Z">
+        <test-method status="PASS" signature="testAttributeDictionaryAdapter()" name="testAttributeDictionaryAdapter" duration-ms="29" started-at="2008-09-21T00:44:11Z" finished-at="2008-09-21T00:44:11Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceInjectionTests">
-        <test-method status="PASS" signature="testServiceInjection()" name="testServiceInjection" duration-ms="16" started-at="2008-09-20T23:35:08Z" finished-at="2008-09-20T23:35:08Z">
+        <test-method status="PASS" signature="testServiceInjection()" name="testServiceInjection" duration-ms="8" started-at="2008-09-21T00:44:12Z" finished-at="2008-09-21T00:44:12Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceFilterTests">
-        <test-method status="PASS" signature="testSingleObjectClassFilter()" name="testSingleObjectClassFilter" duration-ms="144" started-at="2008-09-20T23:35:08Z" finished-at="2008-09-20T23:35:08Z">
+        <test-method status="PASS" signature="testMultipleObjectClassFilter()" name="testMultipleObjectClassFilter" duration-ms="4" started-at="2008-09-21T00:44:12Z" finished-at="2008-09-21T00:44:12Z">
         </test-method>
-        <test-method status="PASS" signature="testMultipleObjectClassFilter()" name="testMultipleObjectClassFilter" duration-ms="6" started-at="2008-09-20T23:35:08Z" finished-at="2008-09-20T23:35:08Z">
+        <test-method status="PASS" signature="testFilterHashCodeAndEquals()" name="testFilterHashCodeAndEquals" duration-ms="164" started-at="2008-09-21T00:44:12Z" finished-at="2008-09-21T00:44:12Z">
         </test-method>
-        <test-method status="PASS" signature="testFilterHashCodeAndEquals()" name="testFilterHashCodeAndEquals" duration-ms="317" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:08Z">
+        <test-method status="PASS" signature="testBrokenLdapFilterStrings()" name="testBrokenLdapFilterStrings" duration-ms="209" started-at="2008-09-21T00:44:11Z" finished-at="2008-09-21T00:44:12Z">
         </test-method>
-        <test-method status="PASS" signature="testBrokenLdapFilterStrings()" name="testBrokenLdapFilterStrings" duration-ms="17" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:07Z">
+        <test-method status="PASS" signature="testSingleObjectClassFilter()" name="testSingleObjectClassFilter" duration-ms="12" started-at="2008-09-21T00:44:12Z" finished-at="2008-09-21T00:44:12Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceTypeTests">
-        <test-method status="PASS" signature="testServiceTypesAndSignatures()" name="testServiceTypesAndSignatures" duration-ms="12" started-at="2008-09-20T23:35:08Z" finished-at="2008-09-20T23:35:08Z">
+        <test-method status="PASS" signature="testServiceTypesAndSignatures()" name="testServiceTypesAndSignatures" duration-ms="60" started-at="2008-09-21T00:44:12Z" finished-at="2008-09-21T00:44:12Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceExportTests">
-        <test-method status="PASS" signature="testServiceExports()" name="testServiceExports" duration-ms="18" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:07Z">
+        <test-method status="PASS" signature="testServiceExports()" name="testServiceExports" duration-ms="22" started-at="2008-09-21T00:44:11Z" finished-at="2008-09-21T00:44:11Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.osgi.BestServiceComparatorTests">
-        <test-method status="PASS" signature="testBestServiceCompare()" name="testBestServiceCompare" duration-ms="7" started-at="2008-09-20T23:35:07Z" finished-at="2008-09-20T23:35:07Z">
+        <test-method status="PASS" signature="testBestServiceCompare()" name="testBestServiceCompare" duration-ms="17" started-at="2008-09-21T00:44:11Z" finished-at="2008-09-21T00:44:11Z">
         </test-method>
       </class>
     </test>

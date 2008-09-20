@@ -59,7 +59,9 @@ public final class Director
     try {
       testNG.run();
     } catch (final TestNGException e) {
+      // /CLOVER:OFF
       e.printStackTrace();
+      // /CLOVER:ON
     }
   }
 
@@ -82,6 +84,7 @@ public final class Director
 
     // improve reporting by unwrapping certain wrapped exceptions, like ITE
     public Object newInstance(final Constructor ctor, final Object... args) {
+      // /CLOVER:OFF
       try {
         return ctor.newInstance(args);
       } catch (final InvocationTargetException e) {
@@ -89,6 +92,7 @@ public final class Director
       } catch (final Exception e) {
         throw new TestNGException(e);
       }
+      // /CLOVER:ON
     }
   }
 
@@ -102,11 +106,13 @@ public final class Director
     try {
       FELIX.start();
     } catch (final BundleException e) {
+      // /CLOVER:OFF
       throw new RuntimeException(e);
+      // /CLOVER:ON
     }
 
     setDefaultSuiteName("Peaberry");
-    setDefaultTestName("Unit Tests");
+    setDefaultTestName("UnitTests");
 
     // clear out dummy command-line tests
     setObjectFactory(ObjectFactory.class);
@@ -120,7 +126,9 @@ public final class Director
       super.run(); // run tests!
 
     } catch (final Exception e) {
+      // /CLOVER:OFF
       throw new RuntimeException(e);
+      // /CLOVER:ON
     } finally {
 
       System.out.println("=====================");
@@ -130,7 +138,9 @@ public final class Director
       try {
         FELIX.stop();
       } catch (final BundleException e) {
+        // /CLOVER:OFF
         throw new RuntimeException(e);
+        // /CLOVER:ON
       }
     }
   }
@@ -143,12 +153,16 @@ public final class Director
     final File testBundleDir = new File(ctx.getProperty("test.bundle.dir"));
 
     for (final File f : testBundleDir.listFiles()) {
+      // /CLOVER:OFF
       if (f.getName().endsWith(".jar")) {
+        // /CLOVER:ON
         try {
           final String location = f.toURI().toASCIIString();
           bundles.add(ctx.installBundle(location));
         } catch (final BundleException e) {
+          // /CLOVER:OFF
           System.err.println("Error installing test bundle: " + f + " message: " + e.getMessage());
+          // /CLOVER:ON
         }
       }
     }
@@ -167,7 +181,9 @@ public final class Director
         clazzes.addAll(installTestCases(b));
         b.start();
       } catch (final BundleException e) {
+        // /CLOVER:OFF
         System.err.println("Error starting test bundle: " + b + " message: " + e.getMessage());
+        // /CLOVER:ON
       }
       System.out.println();
     }
@@ -190,7 +206,9 @@ public final class Director
       try {
         clazzes.add(bundle.loadClass(name));
       } catch (final ClassNotFoundException e) {
+        // /CLOVER:OFF
         System.err.println("Error loading test class: " + name + " message: " + e.getMessage());
+        // /CLOVER:ON
       }
     }
 

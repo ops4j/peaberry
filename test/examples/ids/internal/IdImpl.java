@@ -37,6 +37,8 @@ final class IdImpl
     return id;
   }
 
+  ///CLOVER:OFF
+  
   @Override
   public int hashCode() {
     return id.hashCode();
@@ -49,4 +51,6 @@ final class IdImpl
     }
     return false;
   }
+
+  ///CLOVER:ON
 }
