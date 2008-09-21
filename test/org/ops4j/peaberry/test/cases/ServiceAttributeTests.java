@@ -55,7 +55,6 @@ public final class ServiceAttributeTests {
 
     assertEquals(fixedAttributes.size(), System.getProperties().size() + 2);
 
-    assertEquals(fixedAttributes.keySet(), cleanAttributes.keySet());
     for (final String key : fixedAttributes.keySet()) {
       assertEquals(fixedAttributes.get(key), cleanAttributes.get(key));
     }

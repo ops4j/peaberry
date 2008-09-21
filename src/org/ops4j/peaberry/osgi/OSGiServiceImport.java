@@ -29,34 +29,26 @@ import org.osgi.framework.ServiceReference;
 final class OSGiServiceImport<T>
     implements Import<T> {
 
+  static final ServiceUnavailableException NO_SERVICE = new ServiceUnavailableException();
+
   private final BundleContext bundleContext;
-  private final Class<? extends T> type;
   private final ServiceReference ref;
 
-  public OSGiServiceImport(final BundleContext bundleContext, final Class<? extends T> type,
-      final ServiceReference ref) {
-
+  public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
     this.bundleContext = bundleContext;
-    this.type = type;
     this.ref = ref;
   }
 
+  @SuppressWarnings("unchecked")
   public T get() {
-    final T obj;
-    try {
-      obj = type.cast(bundleContext.getService(ref));
-    } catch (final RuntimeException e) {
-      throw new ServiceUnavailableException(e);
+    final Object service = bundleContext.getService(ref);
+    if (null == service) {
+      throw NO_SERVICE;
     }
-    if (null == obj) {
-      throw new ServiceUnavailableException();
-    }
-    return obj;
+    return (T) service;
   }
 
   public void unget() {
-    try {
-      bundleContext.ungetService(ref);
-    } catch (final RuntimeException e) {} // NOPMD
+    bundleContext.ungetService(ref);
   }
 }

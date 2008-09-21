@@ -27,7 +27,6 @@ import java.util.Map;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -72,13 +71,8 @@ public final class OSGiServiceRegistry
     final Dictionary<String, ?> props = dictionary(attributes);
     final String[] interfaces = getInterfaceNames(service, props);
 
-    final ServiceRegistration registration;
-
-    try {
-      registration = bundleContext.registerService(interfaces, service, props);
-    } catch (final RuntimeException e) {
-      throw new ServiceException(e);
-    }
+    final ServiceRegistration registration =
+        bundleContext.registerService(interfaces, service, props);
 
     // wrap registration as export
     return new Export<T>() {
@@ -90,17 +84,11 @@ public final class OSGiServiceRegistry
       public void unget() {/* nothing to do */}
 
       public void modify(final Map<String, ?> newAttributes) {
-        try {
-          registration.setProperties(dictionary(newAttributes));
-        } catch (final RuntimeException e) {
-          throw new ServiceException(e);
-        }
+        registration.setProperties(dictionary(newAttributes));
       }
 
       public void remove() {
-        try {
-          registration.unregister();
-        } catch (final RuntimeException e) {} // NOPMD
+        registration.unregister();
       }
     };
   }

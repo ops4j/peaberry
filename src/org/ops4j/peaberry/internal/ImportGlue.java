@@ -206,19 +206,22 @@ final class ImportGlue {
 
     v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "get", "()" + OBJECT_DESC);
 
+    final Class<?> clazz = method.getDeclaringClass();
+    final String subjectName = getInternalName(clazz);
+
+    if (!clazz.isInterface()) {
+      v.visitTypeInsn(CHECKCAST, subjectName);
+    }
+
     int i = 1;
     for (final Type t : getArgumentTypes(method)) {
       v.visitVarInsn(t.getOpcode(ILOAD), i);
       i = i + t.getSize();
     }
 
-    final Class<?> clazz = method.getDeclaringClass();
-    final String subjectName = getInternalName(clazz);
-
     if (clazz.isInterface()) {
       v.visitMethodInsn(INVOKEINTERFACE, subjectName, methodName, descriptor);
     } else {
-      v.visitTypeInsn(CHECKCAST, subjectName);
       v.visitMethodInsn(INVOKEVIRTUAL, subjectName, methodName, descriptor);
     }
 

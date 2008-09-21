@@ -17,10 +17,10 @@
 package org.ops4j.peaberry.osgi;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -60,7 +60,7 @@ final class IterableOSGiService<T>
       public Import<T> next() {
         findNextImport();
         if (null == nextImport) {
-          throw new ServiceUnavailableException();
+          throw new NoSuchElementException();
         }
 
         final Import<T> tempImport = nextImport;
@@ -73,7 +73,7 @@ final class IterableOSGiService<T>
         if (null == nextImport) {
           final ServiceReference nextRef = listener.findNextService(ref, filter);
           if (nextRef != null) {
-            nextImport = new OSGiServiceImport<T>(bundleContext, type, nextRef);
+            nextImport = new OSGiServiceImport<T>(bundleContext, nextRef);
             ref = nextRef;
           }
         }

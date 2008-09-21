@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
@@ -62,10 +63,12 @@ final class DirectServiceFactory {
   private static <S, T extends S> T nextService(final Iterator<Import<T>> i,
       final ImportDecorator<S> decorator) {
 
-    try {
-      return (null == decorator ? i.next() : decorator.decorate(i.next())).get();
-    } catch (final RuntimeException e) {
-      return null;
+    if (i.hasNext()) {
+      try {
+        return null == decorator ? i.next().get() : decorator.decorate(i.next()).get();
+      } catch (final ServiceUnavailableException e) {/* default to null */} // NOPMD
     }
+
+    return null;
   }
 }

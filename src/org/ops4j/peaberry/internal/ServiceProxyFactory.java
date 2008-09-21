@@ -33,6 +33,8 @@ import org.ops4j.peaberry.builders.ImportDecorator;
  */
 final class ServiceProxyFactory {
 
+  static final ServiceUnavailableException NO_SERVICE = new ServiceUnavailableException();
+
   // instances not allowed
   private ServiceProxyFactory() {}
 
@@ -99,12 +101,15 @@ final class ServiceProxyFactory {
         count++;
         if (null == handle) {
           // first valid handle may appear at any time
-          handle = handles.iterator().next();
-          instance = handle.get(); // only called once
+          final Iterator<Import<T>> i = handles.iterator();
+          if (i.hasNext()) {
+            handle = i.next();
+            instance = handle.get(); // only called once
+          }
         }
         if (null == instance) {
           // have handle, but service wasn't available
-          throw new ServiceUnavailableException();
+          throw NO_SERVICE;
         }
         return instance;
       }

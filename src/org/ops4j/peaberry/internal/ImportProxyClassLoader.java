@@ -38,6 +38,8 @@ import com.google.common.collect.ReferenceMap;
 final class ImportProxyClassLoader
     extends ClassLoader {
 
+  private static final ClassNotFoundException NO_SUCH_CLASS = new ClassNotFoundException();
+
   private static final String IMPORT_CLAZZ_NAME = Import.class.getName();
 
   @SuppressWarnings("unchecked")
@@ -94,11 +96,11 @@ final class ImportProxyClassLoader
 
     // is this a new proxy class request?
     if (!clazzName.equals(clazzOrProxyName)) {
-      final byte[] byteCode = generateProxy(loadClass(clazzName));
-      return defineClass(clazzOrProxyName, byteCode, 0, byteCode.length);
+      final byte[] code = generateProxy(loadClass(clazzName));
+      return defineClass(clazzOrProxyName, code, 0, code.length);
     }
 
     // ignore any non-proxy requests
-    throw new ClassNotFoundException();
+    throw NO_SUCH_CLASS;
   }
 }
