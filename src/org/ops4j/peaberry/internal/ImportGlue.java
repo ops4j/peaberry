@@ -144,8 +144,8 @@ final class ImportGlue {
     }
 
     for (final Method m : methods) {
-      // we cannot proxy any static, final, or native methods
-      if ((m.getModifiers() & (STATIC | FINAL | NATIVE)) == 0) {
+      // we cannot proxy any static or final methods
+      if ((m.getModifiers() & (STATIC | FINAL)) == 0) {
         wrap(cw, proxyName, m);
       }
     }
@@ -178,7 +178,7 @@ final class ImportGlue {
 
     final String descriptor = getMethodDescriptor(method);
     final String[] exceptions = getInternalNames(method.getExceptionTypes());
-    final int modifiers = method.getModifiers() & ~(ABSTRACT | SYNCHRONIZED);
+    final int modifiers = method.getModifiers() & ~(ABSTRACT | NATIVE | SYNCHRONIZED);
 
     final MethodVisitor v = cw.visitMethod(modifiers, methodName, descriptor, null, exceptions);
 
