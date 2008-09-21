@@ -24,8 +24,6 @@ import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
 import org.ops4j.peaberry.builders.RegistrationProxyBuilder;
 import org.ops4j.peaberry.builders.ScopedRegistrationBuilder;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 
@@ -37,52 +35,31 @@ import com.google.inject.Provider;
 public final class QualifiedRegistrationBuilderImpl<T>
     implements QualifiedRegistrationBuilder<T> {
 
-  // primary configuration item
-  final Key<? extends T> implementationKey;
+  private final Key<? extends T> serviceKey;
+  private final Configuration<T> config;
 
-  // default configuration
-  Map<String, ?> attributes;
-
-  // custom configuration keys
-  Key<? extends ServiceRegistry> registryKey;
-
-  public QualifiedRegistrationBuilderImpl(final Key<? extends T> key) {
-    implementationKey = key;
+  // mutable builder settings
+  static class Configuration<T> {
+    Map<String, ?> attributes;
+    Key<? extends ServiceRegistry> registryKey;
   }
 
-  public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> customAttributes) {
-    attributes = customAttributes;
+  public QualifiedRegistrationBuilderImpl(final Key<? extends T> key) {
+    config = new Configuration<T>();
+    serviceKey = key;
+  }
+
+  public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> attributes) {
+    config.attributes = attributes;
     return this;
   }
 
   public RegistrationProxyBuilder<T> in(final Key<? extends ServiceRegistry> key) {
-    registryKey = key;
+    config.registryKey = key;
     return this;
   }
 
   public Provider<Export<T>> export() {
-    return new Provider<Export<T>>() {
-
-      @Inject
-      Injector injector;
-
-      public Export<T> get() {
-
-        // time to lookup the actual implementation bindings
-        final ServiceRegistry registry = getRegistry(injector);
-        final T serviceImpl = injector.getInstance(implementationKey);
-
-        // register implementation with service registry
-        return registry.export(serviceImpl, attributes);
-      }
-    };
-  }
-
-  ServiceRegistry getRegistry(final Injector injector) {
-    if (null == registryKey) {
-      // use default service registry (typically OSGi)
-      return injector.getInstance(ServiceRegistry.class);
-    }
-    return injector.getInstance(registryKey);
+    return new ServiceRegistrationProvider<T>(serviceKey, config);
   }
 }

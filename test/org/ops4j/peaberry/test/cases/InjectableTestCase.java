@@ -27,6 +27,8 @@ import org.ops4j.peaberry.ServiceUnavailableException;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 
 import examples.ids.IdService;
 
@@ -36,45 +38,54 @@ import examples.ids.IdService;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public abstract class InjectableTestCase
-    extends AbstractModule
-    implements IdService {
+    extends AbstractModule {
 
   @Inject
-  protected IdService idService;
+  final Injector injector;
+
+  @Inject
+  IdService idService;
 
   public InjectableTestCase() {
-    Guice.createInjector(this, osgiModule(findContext(getClass())), new AbstractModule() {
-      @Override
-      public void configure() {
-        bind(IdService.class).toProvider(service(IdService.class).single());
-      }
-    }).injectMembers(this);
+    injector =
+        Guice.createInjector(this, osgiModule(findContext(getClass())), new AbstractModule() {
+          @Override
+          public void configure() {
+            bind(IdService.class).toProvider(service(IdService.class).single());
+          }
+        });
+
+    injector.injectMembers(this);
   }
 
-  public void register(final String... ids) {
+  protected <T> T getInstance(final Key<? extends T> key) {
+    return injector.getInstance(key);
+  }
+
+  protected void register(final String... ids) {
     idService.register(0, ids);
   }
 
-  public void register(final int ranking, final String... ids) {
+  protected void register(final int ranking, final String... ids) {
     idService.register(ranking, ids);
   }
 
-  public void missing(final Object obj) {
+  protected void missing(final Object obj) {
     try {
       obj.toString();
       fail("Expected ServiceUnavailableException");
     } catch (final ServiceUnavailableException e) {}
   }
 
-  public void check(final Object obj, final String text) {
+  protected void check(final Object obj, final String text) {
     assertEquals(obj.toString(), text);
   }
 
-  public void unregister(final String... ids) {
+  protected void unregister(final String... ids) {
     idService.unregister(ids);
   }
 
-  public void reset() {
+  protected void reset() {
     idService.reset();
   }
 }

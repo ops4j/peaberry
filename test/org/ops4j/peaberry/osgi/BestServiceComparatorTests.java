@@ -47,6 +47,9 @@ public final class BestServiceComparatorTests {
       }
 
       public Object getProperty(final String key) {
+        if (SERVICE_ID.equals(key)) {
+          return 0L;
+        }
         return null;
       }
 
@@ -76,7 +79,7 @@ public final class BestServiceComparatorTests {
 
       public Object getProperty(final String key) {
         if (SERVICE_ID.equals(key)) {
-          return 1;
+          return 1L;
         }
         return null;
       }

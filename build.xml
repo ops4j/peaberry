@@ -75,6 +75,6 @@
 
   <target name="test.dist" depends="peaberry,test.peaberry"/>
 
-  <target name="reports" depends="guice,clean,with.clover,peaberry,make.doc,test.peaberry,clover.report,pmd"/>
+  <target name="reports" depends="guice,clean,with.clover,peaberry,test.peaberry,clover.report,pmd"/>
 
 </project>

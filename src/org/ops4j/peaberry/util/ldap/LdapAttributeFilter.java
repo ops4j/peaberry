@@ -55,6 +55,8 @@ public final class LdapAttributeFilter
   }
 
   public boolean matches(final Map<String, ?> attributes) {
+
+    // adapt attribute map to expected type
     final Mapper mapper = new Mapper() {
       public Object lookup(final String key) {
         return attributes.get(key);

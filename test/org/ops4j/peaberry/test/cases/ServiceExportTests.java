@@ -42,17 +42,14 @@ public final class ServiceExportTests
     extends InjectableTestCase {
 
   @Inject
-  Export<Id> exportedId;
-
-  @Inject
   Id importedId;
 
-  private static class IdImpl
+  static class ExportedIdImpl
       implements Id {
 
     @Override
     public String toString() {
-      return "OK";
+      return "EXPORTED";
     }
   }
 
@@ -61,11 +58,14 @@ public final class ServiceExportTests
     bind(Id.class).toProvider(service(Id.class).filter(ldap("(id=TEST)")).single());
 
     bind(export(Id.class)).toProvider(
-        registration(Key.get(IdImpl.class)).attributes(singletonMap(SERVICE_RANKING, 8)).export());
+        registration(Key.get(ExportedIdImpl.class)).attributes(singletonMap(SERVICE_RANKING, 8))
+            .export());
   }
 
   public void testServiceExports() {
     reset();
+
+    final Export<? extends Id> exportedId = getInstance(Key.get(export(Id.class)));
 
     missing(importedId);
 
@@ -77,7 +77,7 @@ public final class ServiceExportTests
     exportedId.modify(names("id=TEST"));
 
     // exported service should now be used, as it has a higher ranking
-    check(importedId, "OK");
+    check(importedId, "EXPORTED");
 
     // drop our exported service
     exportedId.remove();

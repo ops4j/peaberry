@@ -22,6 +22,7 @@ import static java.lang.reflect.Modifier.NATIVE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.SYNCHRONIZED;
+import static java.util.Collections.addAll;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
@@ -48,7 +49,7 @@ import static org.objectweb.asm.Type.getReturnType;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import org.objectweb.asm.ClassWriter;
@@ -89,7 +90,7 @@ final class ImportGlue {
       safeName = clazzName;
     }
 
-    return (safeName + "$PeaberryGlue").intern();
+    return safeName + "$PeaberryGlue";
   }
 
   public static String getClazzName(final String proxyName) {
@@ -103,7 +104,7 @@ final class ImportGlue {
       clazzName = safeName;
     }
 
-    return clazzName.intern();
+    return clazzName;
   }
 
   public static byte[] generateProxy(final Class<?> clazz) {
@@ -131,15 +132,12 @@ final class ImportGlue {
 
     // for the moment only proxy the public API...
     final List<Method> methods = new ArrayList<Method>();
-    Collections.addAll(methods, clazz.getMethods());
+    addAll(methods, clazz.getMethods());
 
     if (clazz.isInterface()) {
-      // patch in missing Object methods...
+      // patch in any missing Object methods...
       for (final Method m : OBJECT_METHODS) {
-        try {
-          // need to check they're not duplicated in the API
-          clazz.getMethod(m.getName(), m.getParameterTypes());
-        } catch (final NoSuchMethodException e) {
+        if (missingMethod(methods, m)) {
           methods.add(m);
         }
       }
@@ -269,5 +267,18 @@ final class ImportGlue {
       names[i] = getInternalName(clazzes[i]);
     }
     return names;
+  }
+
+  private static boolean missingMethod(final List<Method> methods, final Method method) {
+    final String sig = Arrays.toString(method.getParameterTypes());
+    final String name = method.getName();
+
+    for (final Method m : methods) {
+      // only filter on name and signature, ignore the actual declaring class...
+      if (name.equals(m.getName()) && sig.equals(Arrays.toString(m.getParameterTypes()))) {
+        return false;
+      }
+    }
+    return true;
   }
 }

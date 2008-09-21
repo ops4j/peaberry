@@ -30,8 +30,6 @@ import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.builders.ScopedServiceBuilder;
 import org.ops4j.peaberry.builders.ServiceProxyBuilder;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 
@@ -43,92 +41,61 @@ import com.google.inject.Provider;
 public final class DecoratedServiceBuilderImpl<T>
     implements DecoratedServiceBuilder<T> {
 
-  // primary configuration item
-  final Class<? extends T> clazz;
+  private final Class<? extends T> serviceClazz;
+  private final Configuration<T> config;
 
-  // default configuration
-  AttributeFilter attributeFilter;
-  boolean direct = false;
-
-  // custom configuration keys
-  Key<? extends ImportDecorator<? super T>> decoratorKey;
-  Key<? extends ServiceRegistry> registryKey;
+  // mutable builder settings
+  static class Configuration<T> {
+    AttributeFilter attributeFilter;
+    boolean isDirect = false;
+    Key<? extends ImportDecorator<? super T>> decoratorKey;
+    Key<? extends ServiceRegistry> registryKey;
+  }
 
   public DecoratedServiceBuilderImpl(final Class<? extends T> clazz) {
-    this.clazz = clazz;
+    config = new Configuration<T>();
+    serviceClazz = clazz;
   }
 
   public FilteredServiceBuilder<T> decoratedWith(final Key<? extends ImportDecorator<? super T>> key) {
-    decoratorKey = key;
+    config.decoratorKey = key;
     return this;
   }
 
   public ScopedServiceBuilder<T> filter(final AttributeFilter filter) {
-    attributeFilter = filter;
+    config.attributeFilter = filter;
     return this;
   }
 
   public DynamicServiceBuilder<T> in(final Key<? extends ServiceRegistry> key) {
-    registryKey = key;
+    config.registryKey = key;
     return this;
   }
 
   public ServiceProxyBuilder<T> direct() {
-    direct = true;
+    config.isDirect = true;
     return this;
   }
 
   public Provider<T> single() {
-    return new Provider<T>() {
-
-      @Inject
-      Injector injector;
-
+    return new AbstractServiceProvider<T, T>(serviceClazz, config) {
       public T get() {
-
-        // time to lookup the actual implementation bindings
-        final ImportDecorator<? super T> decorator = getDecorator(injector);
-        final ServiceRegistry registry = getRegistry(injector);
-
-        if (direct) {
-          return directService(registry.lookup(clazz, attributeFilter), decorator);
+        if (isDirect) {
+          return directService(getServices(), getDecorator());
         }
-
-        return serviceProxy(clazz, registry.lookup(clazz, attributeFilter), decorator);
+        return serviceProxy(serviceClazz, getServices(), getDecorator());
       }
     };
   }
 
   public Provider<Iterable<T>> multiple() {
-    return new Provider<Iterable<T>>() {
-
-      @Inject
-      Injector injector;
-
+    return new AbstractServiceProvider<T, Iterable<T>>(serviceClazz, config) {
       public Iterable<T> get() {
-
-        // time to lookup the actual implementation bindings
-        final ImportDecorator<? super T> decorator = getDecorator(injector);
-        final ServiceRegistry registry = getRegistry(injector);
-
-        if (direct) {
-          return directServices(registry.lookup(clazz, attributeFilter), decorator);
+        if (isDirect) {
+          return directServices(getServices(), getDecorator());
         }
-
-        return serviceProxies(clazz, registry.lookup(clazz, attributeFilter), decorator);
+        return serviceProxies(serviceClazz, getServices(), getDecorator());
       }
     };
-  }
-
-  ImportDecorator<? super T> getDecorator(final Injector injector) {
-    return null == decoratorKey ? null : injector.getInstance(decoratorKey);
-  }
-
-  ServiceRegistry getRegistry(final Injector injector) {
-    if (null == registryKey) {
-      // use default service registry (typically OSGi)
-      return injector.getInstance(ServiceRegistry.class);
-    }
-    return injector.getInstance(registryKey);
   }
 }

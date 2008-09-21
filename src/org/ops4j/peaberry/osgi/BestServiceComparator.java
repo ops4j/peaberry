@@ -37,15 +37,15 @@ final class BestServiceComparator
 
   public int compare(final ServiceReference lhs, final ServiceReference rhs) {
 
-    final long lhsId = getNumber(lhs, SERVICE_ID);
-    final long rhsId = getNumber(rhs, SERVICE_ID);
+    final long lhsId = getId(lhs);
+    final long rhsId = getId(rhs);
 
     if (lhsId == rhsId) {
       return 0;
     }
 
-    final long lhsRanking = getNumber(lhs, SERVICE_RANKING);
-    final long rhsRanking = getNumber(rhs, SERVICE_RANKING);
+    final int lhsRanking = getRanking(lhs);
+    final int rhsRanking = getRanking(rhs);
 
     if (lhsRanking == rhsRanking) {
       // favour lower service id
@@ -56,12 +56,12 @@ final class BestServiceComparator
     return lhsRanking < rhsRanking ? 1 : -1;
   }
 
-  // service id is Long, service ranking is Integer - but both are Number
-  private static long getNumber(final ServiceReference ref, final String key) {
-    final Object value = ref.getProperty(key);
-    if (value instanceof Number) {
-      return ((Number) value).longValue();
-    }
-    return 0L;
+  private static long getId(final ServiceReference ref) {
+    return (Long) ref.getProperty(SERVICE_ID);
+  }
+
+  private static int getRanking(final ServiceReference ref) {
+    final Object rank = ref.getProperty(SERVICE_RANKING);
+    return rank instanceof Integer ? (Integer) rank : 0;
   }
 }

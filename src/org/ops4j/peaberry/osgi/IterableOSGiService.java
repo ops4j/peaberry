@@ -79,9 +79,11 @@ final class IterableOSGiService<T>
         }
       }
 
+      // /CLOVER:OFF
       public void remove() {
         throw new UnsupportedOperationException();
       }
+      // /CLOVER:ON
     };
   }
 }

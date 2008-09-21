@@ -52,13 +52,19 @@ public final class Filters {
   public static AttributeFilter objectClass(final Class<?>... interfaces) {
     final StringBuilder filter = new StringBuilder();
 
-    for (final Class<?> i : interfaces) {
-      filter.append('(' + OBJECTCLASS + '=' + i.getName() + ')');
-    }
-
     // must AND multiple clauses
     if (interfaces.length > 1) {
-      return ldap("(&" + filter + ')');
+      filter.append("(&");
+    }
+
+    for (final Class<?> i : interfaces) {
+      filter.append('(' + OBJECTCLASS + '=');
+      filter.append(i.getName());
+      filter.append(')');
+    }
+
+    if (interfaces.length > 1) {
+      filter.append(')');
     }
 
     return ldap(filter.toString());
