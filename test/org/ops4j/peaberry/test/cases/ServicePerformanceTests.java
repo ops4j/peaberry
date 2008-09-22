@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test.osgi;
+package org.ops4j.peaberry.test.cases;
 
 import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.registration;
@@ -26,9 +26,7 @@ import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.testng.annotations.Test;
 
-import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Named;
 
@@ -37,33 +35,31 @@ import com.google.inject.name.Named;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Test(testName = "ServicePerformanceTests", suiteName = "OSGi")
+@Test
 public final class ServicePerformanceTests
-    extends OSGiServiceTester {
+    extends InjectableTestCase {
 
-  @Test(enabled = false)
-  public static void configure(final Binder binder) {
+  @Override
+  protected void configure() {
 
     // service uses same implementation
-    binder.bind(export(Example.class))
-        .toProvider(registration(Key.get(ExampleImpl.class)).export());
+    bind(export(Example.class)).toProvider(registration(Key.get(ExampleImpl.class)).export());
 
     // standard injection: raw method invocation
-    binder.bind(Example.class).annotatedWith(named("Raw")).to(ExampleImpl.class);
+    bind(Example.class).annotatedWith(named("Raw")).to(ExampleImpl.class);
 
     // service registry lookup: indirect method invocation via normal proxy
-    binder.bind(Example.class).annotatedWith(named("Service")).toProvider(
-        service(Example.class).single());
+    bind(Example.class).annotatedWith(named("Service")).toProvider(service(Example.class).single());
 
     // service registry lookup: raw method invocation
-    binder.bind(Example.class).annotatedWith(named("Direct")).toProvider(
+    bind(Example.class).annotatedWith(named("Direct")).toProvider(
         service(Example.class).direct().single());
 
     // service registry lookup: indirect method invocation via sticky proxy
-    binder.bind(Example.class).annotatedWith(named("Sticky")).toProvider(
+    bind(Example.class).annotatedWith(named("Sticky")).toProvider(
         service(Example.class).decoratedWith(Key.get(StickyDecorator.class)).single());
 
-    binder.bind(Holder.class);
+    bind(Holder.class);
   }
 
   protected interface Example {
@@ -123,10 +119,7 @@ public final class ServicePerformanceTests
     public Example sticky;
   }
 
-  @Inject
-  Injector injector;
-
-  public void testWiring() {
+  public void testServiceLookupPerformance() {
 
     injector.getInstance(Key.get(export(Example.class)));
     final Holder holder = injector.getInstance(Holder.class);
@@ -137,6 +130,7 @@ public final class ServicePerformanceTests
     timeExample(holder.direct);
     timeExample(holder.sticky);
 
+    System.out.println();
     System.out.format("RAW INSTANCE   %8.2f ns / call\n", timeExample(holder.raw));
     System.out.format("SERVICE PROXY  %8.2f ns / call\n", timeExample(holder.service));
     System.out.format("DIRECT SERVICE %8.2f ns / call\n", timeExample(holder.direct));

@@ -21,62 +21,59 @@ import java.util.NoSuchElementException;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Import;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
- * Filtered iterable view over a collection of OSGi @{code ServiceReference}s.
+ * Filtered iterable view over a collection of @{code OSGiServiceImport}s.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class IterableOSGiService<T>
     implements Iterable<Import<T>> {
 
-  final BundleContext bundleContext;
-  final Class<? extends T> type;
   final OSGiServiceListener listener;
   final AttributeFilter filter;
 
-  public IterableOSGiService(final BundleContext bundleContext, final OSGiServiceListener listener,
-      final Class<? extends T> type, final AttributeFilter filter) {
+  public IterableOSGiService(final OSGiServiceListener listener, final AttributeFilter filter) {
 
-    this.bundleContext = bundleContext;
     this.listener = listener;
-    this.type = type;
     this.filter = filter;
   }
 
   public Iterator<Import<T>> iterator() {
     return new Iterator<Import<T>>() {
 
-      private Import<T> nextImport;
-      private ServiceReference ref;
+      private OSGiServiceImport prevImport;
+      private OSGiServiceImport nextImport;
 
       public boolean hasNext() {
-        findNextImport();
-        return nextImport != null;
+        return findNextImport() != null;
       }
 
+      @SuppressWarnings("unchecked")
       public Import<T> next() {
-        findNextImport();
-        if (null == nextImport) {
+
+        if (null == findNextImport()) {
           throw new NoSuchElementException();
         }
 
-        final Import<T> tempImport = nextImport;
-
+        prevImport = nextImport;
         nextImport = null;
-        return tempImport;
+
+        return (Import) prevImport;
       }
 
-      private void findNextImport() {
+      private OSGiServiceImport findNextImport() {
         if (null == nextImport) {
-          final ServiceReference nextRef = listener.findNextService(ref, filter);
-          if (nextRef != null) {
-            nextImport = new OSGiServiceImport<T>(bundleContext, nextRef);
-            ref = nextRef;
+
+          final OSGiServiceImport tempImport = listener.findNextImport(prevImport, filter);
+
+          if (null != tempImport) {
+            prevImport = null;
+            nextImport = tempImport;
           }
         }
+
+        return nextImport;
       }
 
       // /CLOVER:OFF

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test.osgi;
+package org.ops4j.peaberry.test.cases;
 
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
@@ -30,7 +30,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.testng.annotations.Test;
 
-import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Key;
 
@@ -39,19 +38,19 @@ import com.google.inject.Key;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Test(testName = "ServiceContentionTests", suiteName = "OSGi")
+@Test
 public final class ServiceContentionTests
-    extends OSGiServiceTester {
+    extends InjectableTestCase {
 
-  @Test(enabled = false)
-  public static void configure(final Binder binder) {
+  @Override
+  protected void configure() {
 
-    binder.bind(export(DummyService.class)).toProvider(
+    bind(export(DummyService.class)).toProvider(
         registration(Key.get(DummyServiceImpl.class)).export());
 
-    binder.bind(DummyService.class).toProvider(service(DummyService.class).single());
+    bind(DummyService.class).toProvider(service(DummyService.class).single());
 
-    binder.bind(iterable(RankService.class)).toProvider(service(RankService.class).multiple());
+    bind(iterable(RankService.class)).toProvider(service(RankService.class).multiple());
   }
 
   protected static interface DummyService {
@@ -76,7 +75,7 @@ public final class ServiceContentionTests
   @Inject
   Export<DummyService> exportedService;
 
-  public void testContention() {
+  public void testSingleServiceContention() {
 
     final Thread[] threads = new Thread[42];
 
@@ -118,7 +117,7 @@ public final class ServiceContentionTests
   @Inject
   Iterable<RankService> rankings;
 
-  public void testIntegrity() {
+  public void testServiceRankingIntegrity() {
 
     final Thread[] threads = new Thread[42];
 
@@ -126,9 +125,11 @@ public final class ServiceContentionTests
       threads[i] = new Thread(new Runnable() {
         public void run() {
 
-          try {
-            Thread.sleep(1000 + (int) (10 * Math.random()));
-          } catch (final InterruptedException e1) {}
+          synchronized (ServiceContentionTests.this) {
+            try {
+              ServiceContentionTests.this.wait();
+            } catch (InterruptedException e) {}
+          }
 
           final int rank = (int) (1000 * Math.random());
 
@@ -155,24 +156,35 @@ public final class ServiceContentionTests
       t.start();
     }
 
-    boolean started = false;
+    final Thread[] testThread = new Thread[1];
+    testThread[0] = new Thread(new Runnable() {
+      public void run() {
 
-    int prevRank;
-    do {
-      prevRank = Integer.MAX_VALUE;
-      for (RankService next : rankings) {
-        try {
-          assert prevRank >= next.rank() : "Expected " + prevRank + " >= " + next.rank();
-          prevRank = next.rank();
-        } catch (final ServiceUnavailableException e) {}
-        started = true;
+        synchronized (ServiceContentionTests.this) {
+          ServiceContentionTests.this.notifyAll();
+        }
+
+        int prevRank;
+        do {
+          prevRank = Integer.MAX_VALUE;
+          for (RankService next : rankings) {
+            try {
+              assert prevRank >= next.rank() : "Expected " + prevRank + " >= " + next.rank();
+              prevRank = next.rank();
+            } catch (final ServiceUnavailableException e) {}
+          }
+        } while (testThread[0] == Thread.currentThread());
       }
-    } while (!started || prevRank < Integer.MAX_VALUE);
+    });
+
+    testThread[0].start();
 
     for (final Thread t : threads) {
       try {
         t.join();
       } catch (final InterruptedException e) {}
     }
+
+    testThread[0] = null;
   }
 }

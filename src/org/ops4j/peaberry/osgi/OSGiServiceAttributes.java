@@ -23,7 +23,6 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -44,16 +43,15 @@ final class OSGiServiceAttributes
     }
   };
 
-  private ServiceReference cachedRef;
+  private final ServiceReference ref;
 
-  public Map<String, ?> reset(final ServiceReference ref) {
-    cachedRef = ref;
-    return this;
+  public OSGiServiceAttributes(final ServiceReference ref) {
+    this.ref = ref;
   }
 
   @Override
   public Object get(final Object key) {
-    return cachedRef.getProperty((String) key);
+    return ref.getProperty((String) key);
   }
 
   @Override
@@ -64,7 +62,7 @@ final class OSGiServiceAttributes
   @Override
   public Set<String> keySet() {
     final Set<String> ks = new TreeSet<String>(IGNORE_CASE);
-    addAll(ks, cachedRef.getPropertyKeys());
+    addAll(ks, ref.getPropertyKeys());
     return unmodifiableSet(ks);
   }
 

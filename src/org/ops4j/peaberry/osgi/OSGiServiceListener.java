@@ -16,7 +16,6 @@
 
 package org.ops4j.peaberry.osgi;
 
-import static java.util.Collections.addAll;
 import static java.util.Collections.binarySearch;
 import static java.util.Collections.sort;
 import static org.osgi.framework.Constants.OBJECTCLASS;
@@ -24,7 +23,6 @@ import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -38,23 +36,24 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Keep track of OSGi services that provide a specific interface.
+ * Keep track of imported OSGi services that provide a specific interface.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class OSGiServiceListener
     implements ServiceListener {
 
-  private static final Comparator<ServiceReference> BEST_SERVICE = new BestServiceComparator();
   private static final String OBJECT_CLAZZ_NAME = Object.class.getName();
 
-  private final List<ServiceReference> services;
+  private final List<OSGiServiceImport> imports;
+  private final BundleContext bundleContext;
 
   private final Lock writeLock;
   private final Lock readLock;
 
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
-    services = new ArrayList<ServiceReference>();
+    imports = new ArrayList<OSGiServiceImport>();
+    this.bundleContext = bundleContext;
 
     final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
 
@@ -69,9 +68,11 @@ final class OSGiServiceListener
       bundleContext.addServiceListener(this, filter);
       final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, filter);
       if (null != initialRefs) {
-        addAll(services, initialRefs);
-        if (services.size() > 1) {
-          sort(services, BEST_SERVICE);
+        for (final ServiceReference ref : initialRefs) {
+          imports.add(new OSGiServiceImport(bundleContext, ref));
+        }
+        if (imports.size() > 1) {
+          sort(imports);
         }
       }
 
@@ -87,20 +88,20 @@ final class OSGiServiceListener
   }
 
   public void serviceChanged(final ServiceEvent event) {
-    final ServiceReference ref = event.getServiceReference();
+    final OSGiServiceImport i = new OSGiServiceImport(bundleContext, event.getServiceReference());
     writeLock.lock();
     try {
 
       switch (event.getType()) {
       case REGISTERED:
-        insertService(ref);
+        insertService(i);
         break;
       case UNREGISTERING:
-        services.remove(ref);
+        imports.remove(i);
         break;
       default:
-        services.remove(ref);
-        insertService(ref);
+        imports.remove(i);
+        insertService(i);
         break;
       }
 
@@ -109,40 +110,41 @@ final class OSGiServiceListener
     }
   }
 
-  private void insertService(final ServiceReference ref) {
-    final int insertIndex = binarySearch(services, ref, BEST_SERVICE);
+  private void insertService(final OSGiServiceImport i) {
+    final int insertIndex = binarySearch(imports, i);
     if (insertIndex < 0) {
-      services.add(~insertIndex, ref);
+      imports.add(~insertIndex, i);
     }
   }
 
-  public ServiceReference findNextService(final ServiceReference prev, final AttributeFilter filter) {
+  public OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
+      final AttributeFilter filter) {
+
     readLock.lock();
     try {
 
       // tail optimization
-      if (services.isEmpty() || services.get(services.size() - 1) == prev) {
+      if (imports.isEmpty() || imports.get(imports.size() - 1).equals(prevImport)) {
         return null;
       }
       // head optimization
-      if (prev == null && filter == null) {
-        return services.get(0);
+      if (prevImport == null && filter == null) {
+        return imports.get(0);
       }
 
-      return findNextService(filter, null == prev ? ~0 : binarySearch(services, prev, BEST_SERVICE));
+      return findNextImport(filter, null == prevImport ? ~0 : binarySearch(imports, prevImport));
 
     } finally {
       readLock.unlock();
     }
   }
 
-  private ServiceReference findNextService(final AttributeFilter filter, final int prevIndex) {
-    final OSGiServiceAttributes attributes = new OSGiServiceAttributes();
+  private OSGiServiceImport findNextImport(final AttributeFilter filter, final int prevIndex) {
 
-    for (int i = prevIndex < 0 ? ~prevIndex : prevIndex + 1; i < services.size(); i++) {
-      final ServiceReference next = services.get(i);
-      if (null == filter || filter.matches(attributes.reset(next))) {
-        return next;
+    for (int i = prevIndex < 0 ? ~prevIndex : prevIndex + 1; i < imports.size(); i++) {
+      final OSGiServiceImport nextImport = imports.get(i);
+      if (null == filter || filter.matches(nextImport.getAttributes())) {
+        return nextImport;
       }
     }
 

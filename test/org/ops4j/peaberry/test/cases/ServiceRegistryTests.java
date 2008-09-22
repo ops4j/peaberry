@@ -20,18 +20,10 @@ import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
-import static org.ops4j.peaberry.util.TypeLiterals.iterable;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
-import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.builders.DynamicServiceBuilder;
 import org.testng.annotations.Test;
@@ -41,77 +33,19 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 /**
- * Test single and multiple service injection, plus iterator flexibility.
+ * Test using a custom service registry (non-OSGi).
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test
 public final class ServiceRegistryTests {
 
-  @Singleton
-  @SuppressWarnings("unchecked")
-  static class MockServiceRegistry
-      implements ServiceRegistry {
-
-    final Map<Object, Map> registry = new HashMap<Object, Map>();
-
-    public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz,
-        final AttributeFilter filter) {
-      return new Iterable() {
-        public Iterator iterator() {
-
-          final List<Import<T>> imports = new ArrayList<Import<T>>();
-
-          for (final Entry<Object, Map> e : registry.entrySet()) {
-            final Object service = e.getKey();
-
-            if (clazz.isInstance(service) && (null == filter || filter.matches(e.getValue()))) {
-              imports.add(new Import<T>() {
-
-                public T get() {
-                  return (T) service;
-                }
-
-                public void unget() {}
-              });
-            }
-          }
-
-          return imports.iterator();
-        }
-      };
-    }
-
-    public <S, T extends S> Export<S> export(final T service, final Map<String, ?> attributes) {
-      registry.put(service, attributes);
-
-      return new Export() {
-
-        public void modify(final Map newAttributes) {
-          registry.put(service, newAttributes);
-        }
-
-        public void remove() {
-          registry.remove(service);
-        }
-
-        public Object get() {
-          return service;
-        }
-
-        public void unget() {}
-      };
-    }
-  }
-
   @Inject
-  ClassLoader loader;
-
-  @Inject
-  Iterable<ClassLoader> loaders;
+  @Named("service")
+  ClassLoader importedLoader;
 
   public void testCustomServiceRegistry() {
     final Injector injector = Guice.createInjector(new AbstractModule() {
@@ -119,31 +53,33 @@ public final class ServiceRegistryTests {
       @Override
       protected void configure() {
         final Key<? extends ServiceRegistry> registryKey = Key.get(MockServiceRegistry.class);
-        final Key<ClassLoader> loaderImplKey = Key.get(ClassLoader.class, named("impl"));
 
         final DynamicServiceBuilder<ClassLoader> builder =
             service(ClassLoader.class).in(registryKey);
 
-        bind(ClassLoader.class).toProvider(builder.single());
-        bind(iterable(ClassLoader.class)).toProvider(builder.multiple());
+        bind(ClassLoader.class).annotatedWith(named("service")).toProvider(builder.single());
+
+        final Key<ClassLoader> loaderImplKey = Key.get(ClassLoader.class, named("impl"));
+
+        bind(loaderImplKey).toInstance(getClass().getClassLoader());
 
         bind(export(ClassLoader.class)).toProvider(
             registration(loaderImplKey).in(registryKey).export());
-
-        bind(loaderImplKey).toInstance(getClass().getClassLoader());
       }
     });
 
     injector.injectMembers(this);
 
-    final Export<? extends ClassLoader> exportedLoader =
+    Export<? extends ClassLoader> exportedLoader =
         injector.getInstance(Key.get(export(ClassLoader.class)));
 
     try {
-      System.out.println(loader.loadClass(getClass().getName()));
-    } catch (final ClassNotFoundException e) {
-      e.printStackTrace();
+      assertEquals(importedLoader.loadClass(getClass().getName()), getClass());
+    } catch (ClassNotFoundException e) {
+      fail("Unexpected ClassNotFoundException", e);
     }
+
+    assertEquals(importedLoader.hashCode(), getClass().getClassLoader().hashCode());
 
     exportedLoader.remove();
   }

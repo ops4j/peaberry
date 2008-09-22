@@ -64,7 +64,7 @@ public final class OSGiServiceRegistry
       }
     }
 
-    return new IterableOSGiService<T>(bundleContext, listener, type, filter);
+    return new IterableOSGiService<T>(listener, filter);
   }
 
   public <T, S extends T> Export<T> export(final S service, final Map<String, ?> attributes) {
