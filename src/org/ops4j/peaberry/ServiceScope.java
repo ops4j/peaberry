@@ -20,24 +20,13 @@ import java.util.Map;
 
 /**
  * A write-only collection of exported services with associated attributes.
- * <p>
- * <i>Scopes can be monitored by exporting your own custom scope as a service.
- * When a service is exported to a scope, it is also exported to any contained
- * {@code ServiceScope} services who have {@code scope.filter}s that match the
- * service being exported.</i>
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceScope {
 
   /**
-   * {@code scope.filter} service attribute, an {@code AttributeFilter} that
-   * defines which services should be exported to the associated scope service.
-   */
-  static final String SCOPE_FILTER = "scope.filter";
-
-  /**
-   * Export the given service to this scope, and any matching scope services.
+   * Export the given service to this scope.
    * 
    * @param service service instance
    * @param attributes service attributes

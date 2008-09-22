@@ -93,41 +93,37 @@ final class ServiceProxyFactory {
      * use of thread locals or additional context stacks.
      */
     final Import<T> lookup = new Import<T>() {
+      private long count = 0L;
+      private Import<T> handle;
+      private T instance;
 
-      private volatile Import<T> handle;
-      private volatile T instance;
-
-      public T get() {
-        final Iterator<Import<T>> i = handles.iterator();
-
-        if (i.hasNext()) {
-          updateHandle(i.next());
-        } else {
-          updateHandle(null);
+      public synchronized T get() {
+        count++;
+        if (null == handle) {
+          // first valid handle may appear at any time
+          final Iterator<Import<T>> i = handles.iterator();
+          if (i.hasNext()) {
+            handle = i.next();
+            instance = handle.get(); // only called once
+          }
         }
-
         if (null == instance) {
+          // have handle, but service wasn't available
           throw NO_SERVICE;
         }
-
         return instance;
       }
 
-      public void unget() {}
-
-      private void updateHandle(final Import<T> h) {
-        if (handle != h) {
-          synchronized (this) {
-            if (handle != h) {
-              try {
-                if (null != handle) {
-                  handle.unget();
-                }
-              } finally {
-                handle = h;
-                instance = null == h ? null : h.get();
-              }
+      public synchronized void unget() {
+        if (0 == --count) {
+          try {
+            // last thread out
+            if (null != handle) {
+              handle.unget();
             }
+          } finally {
+            instance = null;
+            handle = null;
           }
         }
       }
