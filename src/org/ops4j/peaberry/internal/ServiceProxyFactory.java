@@ -93,7 +93,7 @@ final class ServiceProxyFactory {
      * use of thread locals or additional context stacks.
      */
     final Import<T> lookup = new Import<T>() {
-      private long count = 0L;
+      private int count = 0;
       private Import<T> handle;
       private T instance;
 
@@ -116,14 +116,14 @@ final class ServiceProxyFactory {
 
       public synchronized void unget() {
         if (0 == --count) {
-          try {
-            // last thread out
-            if (null != handle) {
+          // last thread out
+          if (null != handle) {
+            try {
               handle.unget();
+            } finally {
+              instance = null;
+              handle = null;
             }
-          } finally {
-            instance = null;
-            handle = null;
           }
         }
       }

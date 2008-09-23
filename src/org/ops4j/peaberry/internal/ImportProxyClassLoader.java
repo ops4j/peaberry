@@ -64,15 +64,16 @@ final class ImportProxyClassLoader
     final ClassLoader parent = null == typeLoader ? getSystemClassLoader() : typeLoader;
     ClassLoader proxyLoader;
 
-    synchronized (PROXY_LOADER_MAP) {
-      proxyLoader = PROXY_LOADER_MAP.get(parent);
+    proxyLoader = PROXY_LOADER_MAP.get(parent);
+    if (null == proxyLoader) {
+      final ClassLoader newProxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
+        public ClassLoader run() {
+          return new ImportProxyClassLoader(parent);
+        }
+      });
+      proxyLoader = PROXY_LOADER_MAP.putIfAbsent(parent, newProxyLoader);
       if (null == proxyLoader) {
-        proxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
-          public ClassLoader run() {
-            return new ImportProxyClassLoader(parent);
-          }
-        });
-        PROXY_LOADER_MAP.put(parent, proxyLoader);
+        proxyLoader = newProxyLoader;
       }
     }
 

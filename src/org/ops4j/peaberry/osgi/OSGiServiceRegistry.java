@@ -20,9 +20,10 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
@@ -43,12 +44,12 @@ import com.google.inject.Singleton;
 public final class OSGiServiceRegistry
     implements ServiceRegistry {
 
-  private final Map<String, OSGiServiceListener> listenerMap;
+  private final ConcurrentMap<String, OSGiServiceListener> listenerMap;
   private final BundleContext bundleContext;
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
-    listenerMap = new HashMap<String, OSGiServiceListener>();
+    listenerMap = new ConcurrentHashMap<String, OSGiServiceListener>();
     this.bundleContext = bundleContext;
   }
 
@@ -56,11 +57,13 @@ public final class OSGiServiceRegistry
     final String clazzName = type.getName();
     OSGiServiceListener listener;
 
-    synchronized (listenerMap) {
-      listener = listenerMap.get(clazzName);
+    listener = listenerMap.get(clazzName);
+    if (null == listener) {
+      final OSGiServiceListener newListener = new OSGiServiceListener(bundleContext, clazzName);
+      listener = listenerMap.putIfAbsent(clazzName, newListener);
       if (null == listener) {
-        listener = new OSGiServiceListener(bundleContext, clazzName);
-        listenerMap.put(clazzName, listener);
+        listener = newListener;
+        newListener.start();
       }
     }
 

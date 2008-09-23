@@ -46,27 +46,36 @@ final class OSGiServiceListener
   private static final String OBJECT_CLAZZ_NAME = Object.class.getName();
 
   private final List<OSGiServiceImport> imports;
+
   private final BundleContext bundleContext;
+  private final String clazzFilter;
 
   private final Lock writeLock;
   private final Lock readLock;
 
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     imports = new ArrayList<OSGiServiceImport>();
+
     this.bundleContext = bundleContext;
+    if (!OBJECT_CLAZZ_NAME.equals(clazzName)) {
+      this.clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
+    } else {
+      this.clazzFilter = null;
+    }
 
     final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
 
     writeLock = rwl.writeLock();
     readLock = rwl.readLock();
+  }
 
-    final String filter = getClazzFilter(clazzName);
-
+  public void start() {
     writeLock.lock();
     try {
 
-      bundleContext.addServiceListener(this, filter);
-      final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, filter);
+      bundleContext.addServiceListener(this, clazzFilter);
+
+      final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, clazzFilter);
       if (null != initialRefs) {
         for (final ServiceReference ref : initialRefs) {
           imports.add(new OSGiServiceImport(bundleContext, ref));
@@ -81,10 +90,6 @@ final class OSGiServiceListener
     } finally {
       writeLock.unlock();
     }
-  }
-
-  private String getClazzFilter(final String clazzName) {
-    return OBJECT_CLAZZ_NAME.equals(clazzName) ? null : '(' + OBJECTCLASS + '=' + clazzName + ')';
   }
 
   public void serviceChanged(final ServiceEvent event) {
