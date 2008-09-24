@@ -20,6 +20,7 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstru
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
@@ -93,12 +94,14 @@ final class ServiceProxyFactory {
      * use of thread locals or additional context stacks.
      */
     final Import<T> lookup = new Import<T>() {
-      private int count = 0;
+
+      private final AtomicInteger count = new AtomicInteger();
+
       private Import<T> handle;
       private T instance;
 
       public synchronized T get() {
-        count++;
+        count.set(count.get() + 1);
         if (null == handle) {
           // first valid handle may appear at any time
           final Iterator<Import<T>> i = handles.iterator();
@@ -108,21 +111,19 @@ final class ServiceProxyFactory {
           }
         }
         if (null == instance) {
-          // have handle, but service wasn't available
           throw NO_SERVICE;
         }
         return instance;
       }
 
-      public synchronized void unget() {
-        if (0 == --count) {
-          // last thread out
-          if (null != handle) {
-            try {
-              handle.unget();
-            } finally {
+      public void unget() {
+        if (0 == count.decrementAndGet()) {
+          synchronized (this) {
+            if (null != handle && 0 == count.get()) {
+              final Import<T> h = handle;
               instance = null;
               handle = null;
+              h.unget();
             }
           }
         }

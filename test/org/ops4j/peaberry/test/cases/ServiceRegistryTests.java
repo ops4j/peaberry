@@ -70,12 +70,12 @@ public final class ServiceRegistryTests {
 
     injector.injectMembers(this);
 
-    Export<? extends ClassLoader> exportedLoader =
+    final Export<? extends ClassLoader> exportedLoader =
         injector.getInstance(Key.get(export(ClassLoader.class)));
 
     try {
       assertEquals(importedLoader.loadClass(getClass().getName()), getClass());
-    } catch (ClassNotFoundException e) {
+    } catch (final ClassNotFoundException e) {
       fail("Unexpected ClassNotFoundException", e);
     }
 

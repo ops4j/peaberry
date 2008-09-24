@@ -24,8 +24,6 @@ import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.ServiceException;
@@ -50,27 +48,18 @@ final class OSGiServiceListener
   private final BundleContext bundleContext;
   private final String clazzFilter;
 
-  private final Lock writeLock;
-  private final Lock readLock;
-
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     imports = new ArrayList<OSGiServiceImport>();
 
     this.bundleContext = bundleContext;
     if (!OBJECT_CLAZZ_NAME.equals(clazzName)) {
-      this.clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
+      clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
     } else {
-      this.clazzFilter = null;
+      clazzFilter = null;
     }
-
-    final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock(true);
-
-    writeLock = rwl.writeLock();
-    readLock = rwl.readLock();
   }
 
-  public void start() {
-    writeLock.lock();
+  public synchronized void start() {
     try {
 
       bundleContext.addServiceListener(this, clazzFilter);
@@ -87,31 +76,22 @@ final class OSGiServiceListener
 
     } catch (final InvalidSyntaxException e) {
       throw new ServiceException(e);
-    } finally {
-      writeLock.unlock();
     }
   }
 
-  public void serviceChanged(final ServiceEvent event) {
+  public synchronized void serviceChanged(final ServiceEvent event) {
     final OSGiServiceImport i = new OSGiServiceImport(bundleContext, event.getServiceReference());
-    writeLock.lock();
-    try {
 
-      switch (event.getType()) {
-      case REGISTERED:
-        insertService(i);
-        break;
-      case UNREGISTERING:
-        imports.remove(i);
-        break;
-      default:
-        imports.remove(i);
-        insertService(i);
-        break;
-      }
-
-    } finally {
-      writeLock.unlock();
+    switch (event.getType()) {
+    case REGISTERED:
+      insertService(i);
+      break;
+    case UNREGISTERING:
+      removeService(i);
+      break;
+    default:
+      updateService(i);
+      break;
     }
   }
 
@@ -122,26 +102,40 @@ final class OSGiServiceListener
     }
   }
 
-  public OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
+  private void updateService(final OSGiServiceImport i) {
+    final int index = imports.indexOf(i);
+    if (index >= 0) {
+      final OSGiServiceImport orig = imports.get(index);
+      if (orig.updateRanking()) {
+        imports.remove(index);
+        insertService(orig);
+      }
+    } else {
+      insertService(i);
+    }
+  }
+
+  private void removeService(final OSGiServiceImport i) {
+    final int index = imports.indexOf(i);
+    if (index >= 0) {
+      imports.remove(index).discard(true);
+    }
+  }
+
+  public synchronized OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
       final AttributeFilter filter) {
 
-    readLock.lock();
-    try {
-
-      // tail optimization
-      if (imports.isEmpty() || imports.get(imports.size() - 1).equals(prevImport)) {
-        return null;
-      }
-      // head optimization
-      if (prevImport == null && filter == null) {
-        return imports.get(0);
-      }
-
-      return findNextImport(filter, null == prevImport ? ~0 : binarySearch(imports, prevImport));
-
-    } finally {
-      readLock.unlock();
+    // tail optimization
+    if (imports.isEmpty() || imports.get(imports.size() - 1).equals(prevImport)) {
+      return null;
     }
+
+    // head optimization
+    if (prevImport == null && filter == null) {
+      return imports.get(0);
+    }
+
+    return findNextImport(filter, null == prevImport ? ~0 : binarySearch(imports, prevImport));
   }
 
   private OSGiServiceImport findNextImport(final AttributeFilter filter, final int prevIndex) {

@@ -20,6 +20,7 @@ import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -40,11 +41,15 @@ final class OSGiServiceImport
   private final ServiceReference ref;
 
   private final long id;
-  private final int rank;
+  private volatile int rank;
 
   private final Map<String, ?> attributes;
 
+  private final AtomicInteger count;
+  private volatile Object instance;
+
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
+
     this.bundleContext = bundleContext;
     this.ref = ref;
 
@@ -52,6 +57,8 @@ final class OSGiServiceImport
     rank = getNumberProperty(SERVICE_RANKING).intValue();
 
     attributes = new OSGiServiceAttributes(ref);
+
+    count = new AtomicInteger();
   }
 
   public long getId() {
@@ -62,20 +69,47 @@ final class OSGiServiceImport
     return rank;
   }
 
+  public boolean updateRanking() {
+    final int oldRank = rank;
+    rank = getNumberProperty(SERVICE_RANKING).intValue();
+    return oldRank != rank;
+  }
+
   public Map<String, ?> getAttributes() {
     return attributes;
   }
 
-  public Object get() {
-    final Object service = bundleContext.getService(ref);
-    if (null == service) {
+  public synchronized Object get() {
+    final int n = count.get();
+    count.set(n + 1);
+    if (0 == n) {
+      instance = bundleContext.getService(ref);
+    }
+    if (null == instance) {
       throw NO_SERVICE;
     }
-    return service;
+    return instance;
   }
 
   public void unget() {
-    bundleContext.ungetService(ref);
+    count.decrementAndGet();
+  }
+
+  public void discard(final boolean removed) {
+    if (removed) {
+      synchronized (this) {
+        instance = null;
+      }
+    } else if (null != instance && 0 == count.get()) {
+      synchronized (this) {
+        if (null != instance && 0 == count.get()) {
+          instance = null;
+          try {
+            bundleContext.ungetService(ref);
+          } catch (final IllegalStateException e) {}
+        }
+      }
+    }
   }
 
   @Override
@@ -88,10 +122,10 @@ final class OSGiServiceImport
 
   @Override
   public int hashCode() {
-    return (int) (id ^ (id >>> 32));
+    return (int) (id ^ id >>> 32);
   }
 
-  public int compareTo(OSGiServiceImport rhs) {
+  public int compareTo(final OSGiServiceImport rhs) {
 
     if (id == rhs.id) {
       return 0;

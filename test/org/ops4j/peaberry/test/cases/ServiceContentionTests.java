@@ -128,15 +128,15 @@ public final class ServiceContentionTests
           synchronized (ServiceContentionTests.this) {
             try {
               ServiceContentionTests.this.wait();
-            } catch (InterruptedException e) {}
+            } catch (final InterruptedException e) {}
           }
 
           final int rank = (int) (1000 * Math.random());
 
-          Properties props = new Properties();
+          final Properties props = new Properties();
           props.put(SERVICE_RANKING, rank);
 
-          ServiceRegistration registration =
+          final ServiceRegistration registration =
               bundleContext.registerService(RankService.class.getName(), new RankService() {
                 public int rank() {
                   return rank;
@@ -160,14 +160,14 @@ public final class ServiceContentionTests
     testThread[0] = new Thread(new Runnable() {
       public void run() {
 
-        synchronized (ServiceContentionTests.this) {
-          ServiceContentionTests.this.notifyAll();
-        }
-
         int prevRank;
         do {
+          synchronized (ServiceContentionTests.this) {
+            ServiceContentionTests.this.notifyAll();
+          }
+
           prevRank = Integer.MAX_VALUE;
-          for (RankService next : rankings) {
+          for (final RankService next : rankings) {
             try {
               assert prevRank >= next.rank() : "Expected " + prevRank + " >= " + next.rank();
               prevRank = next.rank();
