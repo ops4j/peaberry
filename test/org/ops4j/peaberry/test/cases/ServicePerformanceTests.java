@@ -19,11 +19,9 @@ package org.ops4j.peaberry.test.cases;
 import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
+import static org.ops4j.peaberry.util.Decorators.sticky;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 
-import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceUnavailableException;
-import org.ops4j.peaberry.builders.ImportDecorator;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -57,7 +55,7 @@ public final class ServicePerformanceTests
 
     // service registry lookup: indirect method invocation via sticky proxy
     bind(Example.class).annotatedWith(named("Sticky")).toProvider(
-        service(Example.class).decoratedWith(Key.get(StickyDecorator.class)).single());
+        service(Example.class).decoratedWith(sticky()).single());
 
     bind(Holder.class);
   }
@@ -70,33 +68,6 @@ public final class ServicePerformanceTests
       implements Example {
     public double action(final String name, final double id) {
       return id * name.hashCode() * Math.cosh(id);
-    }
-  }
-
-  static class StickyDecorator
-      implements ImportDecorator<Example> {
-
-    public <T extends Example> Import<T> decorate(final Import<T> handle) {
-
-      return new Import<T>() {
-        private volatile T instance;
-
-        public T get() {
-          if (null == instance) {
-            synchronized (this) {
-              if (null == instance) {
-                instance = handle.get();
-              }
-            }
-            if (null == instance) {
-              throw new ServiceUnavailableException();
-            }
-          }
-          return instance;
-        }
-
-        public void unget() {}
-      };
     }
   }
 

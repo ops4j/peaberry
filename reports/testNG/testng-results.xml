@@ -6,61 +6,61 @@
     </groups>
     <test name="UnitTests">
       <class name="org.ops4j.peaberry.internal.ImportProxyClassLoaderTests">
-        <test-method status="PASS" signature="testGetProxyConstructor()" name="testGetProxyConstructor" duration-ms="70" started-at="2008-09-27T02:44:26Z" finished-at="2008-09-27T02:44:26Z">
+        <test-method status="PASS" signature="testGetProxyConstructor()" name="testGetProxyConstructor" duration-ms="521" started-at="2008-09-27T03:39:58Z" finished-at="2008-09-27T03:39:59Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.DecoratedServiceTests">
-        <test-method status="PASS" signature="testDecoratedServiceInjection()" name="testDecoratedServiceInjection" duration-ms="7" started-at="2008-09-27T02:44:26Z" finished-at="2008-09-27T02:44:26Z">
+        <test-method status="PASS" signature="testDecoratedServiceInjection()" name="testDecoratedServiceInjection" duration-ms="13" started-at="2008-09-27T03:39:59Z" finished-at="2008-09-27T03:39:59Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceRegistryTests">
-        <test-method status="PASS" signature="testCustomServiceRegistry()" name="testCustomServiceRegistry" duration-ms="20" started-at="2008-09-27T02:44:30Z" finished-at="2008-09-27T02:44:30Z">
+        <test-method status="PASS" signature="testCustomServiceRegistry()" name="testCustomServiceRegistry" duration-ms="27" started-at="2008-09-27T03:40:04Z" finished-at="2008-09-27T03:40:04Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.DirectServiceTests">
-        <test-method status="PASS" signature="testDirectServiceInjection()" name="testDirectServiceInjection" duration-ms="8" started-at="2008-09-27T02:44:26Z" finished-at="2008-09-27T02:44:26Z">
+        <test-method status="PASS" signature="testDirectServiceInjection()" name="testDirectServiceInjection" duration-ms="15" started-at="2008-09-27T03:39:59Z" finished-at="2008-09-27T03:39:59Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceAttributeTests">
-        <test-method status="PASS" signature="testPropertyAttributes()" name="testPropertyAttributes" duration-ms="111" started-at="2008-09-27T02:44:26Z" finished-at="2008-09-27T02:44:26Z">
+        <test-method status="PASS" signature="testNameAttributes()" name="testNameAttributes" duration-ms="46" started-at="2008-09-27T03:39:59Z" finished-at="2008-09-27T03:39:59Z">
         </test-method>
-        <test-method status="PASS" signature="testNameAttributes()" name="testNameAttributes" duration-ms="4" started-at="2008-09-27T02:44:26Z" finished-at="2008-09-27T02:44:26Z">
+        <test-method status="PASS" signature="testPropertyAttributes()" name="testPropertyAttributes" duration-ms="946" started-at="2008-09-27T03:39:59Z" finished-at="2008-09-27T03:40:00Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceContentionTests">
-        <test-method status="PASS" signature="testServiceRankingIntegrity()" name="testServiceRankingIntegrity" duration-ms="212" started-at="2008-09-27T02:44:27Z" finished-at="2008-09-27T02:44:28Z">
+        <test-method status="PASS" signature="testSingleServiceContention()" name="testSingleServiceContention" duration-ms="1534" started-at="2008-09-27T03:40:00Z" finished-at="2008-09-27T03:40:01Z">
         </test-method>
-        <test-method status="PASS" signature="testSingleServiceContention()" name="testSingleServiceContention" duration-ms="1113" started-at="2008-09-27T02:44:26Z" finished-at="2008-09-27T02:44:27Z">
+        <test-method status="PASS" signature="testServiceRankingIntegrity()" name="testServiceRankingIntegrity" duration-ms="187" started-at="2008-09-27T03:40:01Z" finished-at="2008-09-27T03:40:01Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServicePerformanceTests">
-        <test-method status="PASS" signature="testServiceLookupPerformance()" name="testServiceLookupPerformance" duration-ms="2089" started-at="2008-09-27T02:44:28Z" finished-at="2008-09-27T02:44:30Z">
+        <test-method status="PASS" signature="testServiceLookupPerformance()" name="testServiceLookupPerformance" duration-ms="2654" started-at="2008-09-27T03:40:02Z" finished-at="2008-09-27T03:40:04Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.osgi.AttributeDictionaryTests">
-        <test-method status="PASS" signature="testAttributeDictionaryAdapter()" name="testAttributeDictionaryAdapter" duration-ms="31" started-at="2008-09-27T02:44:26Z" finished-at="2008-09-27T02:44:26Z">
+        <test-method status="PASS" signature="testAttributeDictionaryAdapter()" name="testAttributeDictionaryAdapter" duration-ms="96" started-at="2008-09-27T03:39:59Z" finished-at="2008-09-27T03:39:59Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceInjectionTests">
-        <test-method status="PASS" signature="testServiceInjection()" name="testServiceInjection" duration-ms="4" started-at="2008-09-27T02:44:28Z" finished-at="2008-09-27T02:44:28Z">
+        <test-method status="PASS" signature="testServiceInjection()" name="testServiceInjection" duration-ms="5" started-at="2008-09-27T03:40:02Z" finished-at="2008-09-27T03:40:02Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceFilterTests">
-        <test-method status="PASS" signature="testSingleObjectClassFilter()" name="testSingleObjectClassFilter" duration-ms="3" started-at="2008-09-27T02:44:28Z" finished-at="2008-09-27T02:44:28Z">
+        <test-method status="PASS" signature="testBrokenLdapFilterStrings()" name="testBrokenLdapFilterStrings" duration-ms="3" started-at="2008-09-27T03:40:02Z" finished-at="2008-09-27T03:40:02Z">
         </test-method>
-        <test-method status="PASS" signature="testBrokenLdapFilterStrings()" name="testBrokenLdapFilterStrings" duration-ms="3" started-at="2008-09-27T02:44:28Z" finished-at="2008-09-27T02:44:28Z">
+        <test-method status="PASS" signature="testSingleObjectClassFilter()" name="testSingleObjectClassFilter" duration-ms="56" started-at="2008-09-27T03:40:02Z" finished-at="2008-09-27T03:40:02Z">
         </test-method>
-        <test-method status="PASS" signature="testFilterHashCodeAndEquals()" name="testFilterHashCodeAndEquals" duration-ms="2" started-at="2008-09-27T02:44:28Z" finished-at="2008-09-27T02:44:28Z">
+        <test-method status="PASS" signature="testMultipleObjectClassFilter()" name="testMultipleObjectClassFilter" duration-ms="8" started-at="2008-09-27T03:40:01Z" finished-at="2008-09-27T03:40:02Z">
         </test-method>
-        <test-method status="PASS" signature="testMultipleObjectClassFilter()" name="testMultipleObjectClassFilter" duration-ms="3" started-at="2008-09-27T02:44:28Z" finished-at="2008-09-27T02:44:28Z">
-        </test-method>
-      </class>
-      <class name="org.ops4j.peaberry.test.cases.ServiceExportTests">
-        <test-method status="PASS" signature="testServiceExports()" name="testServiceExports" duration-ms="62" started-at="2008-09-27T02:44:28Z" finished-at="2008-09-27T02:44:28Z">
+        <test-method status="PASS" signature="testFilterHashCodeAndEquals()" name="testFilterHashCodeAndEquals" duration-ms="2" started-at="2008-09-27T03:40:02Z" finished-at="2008-09-27T03:40:02Z">
         </test-method>
       </class>
       <class name="org.ops4j.peaberry.test.cases.ServiceTypeTests">
-        <test-method status="PASS" signature="testServiceTypesAndSignatures()" name="testServiceTypesAndSignatures" duration-ms="42" started-at="2008-09-27T02:44:30Z" finished-at="2008-09-27T02:44:30Z">
+        <test-method status="PASS" signature="testServiceTypesAndSignatures()" name="testServiceTypesAndSignatures" duration-ms="39" started-at="2008-09-27T03:40:04Z" finished-at="2008-09-27T03:40:04Z">
+        </test-method>
+      </class>
+      <class name="org.ops4j.peaberry.test.cases.ServiceExportTests">
+        <test-method status="PASS" signature="testServiceExports()" name="testServiceExports" duration-ms="130" started-at="2008-09-27T03:40:01Z" finished-at="2008-09-27T03:40:01Z">
         </test-method>
       </class>
     </test>
