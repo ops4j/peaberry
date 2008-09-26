@@ -42,8 +42,12 @@ public final class Activator
    */
   private static final String FLUSH_INTERVAL_KEY = "org.ops4j.peaberry.osgi.flushInterval";
 
+  // use static for cooperative stop
   static volatile Thread cleanupThread;
 
+  /**
+   * Cleans up registered {@code CachingServiceRegistry}s at a fixed interval.
+   */
   protected static final class ImportManager
       implements Runnable {
 
@@ -71,6 +75,7 @@ public final class Activator
           Thread.sleep(flushInterval);
         } catch (final InterruptedException e) {}
 
+        // flush out any unused cached service instances...
         for (final CachingServiceRegistry i : registries) {
           i.flush();
         }
@@ -82,6 +87,8 @@ public final class Activator
 
     final Injector injector = Guice.createInjector(osgiModule(bundleContext), new Module() {
       public void configure(final Binder binder) {
+
+        // eat our own cat-food: lookup registered caching registries from OSGi
         binder.bind(Runnable.class).to(ImportManager.class).asEagerSingleton();
         binder.bind(iterable(CachingServiceRegistry.class)).toProvider(
             service(CachingServiceRegistry.class).multiple());
@@ -93,9 +100,11 @@ public final class Activator
     cleanupThread.start();
   }
 
-  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {
+  public void stop(@SuppressWarnings("unused") final BundleContext bundleContext) {
     if (null != cleanupThread) {
       final Thread zombie = cleanupThread;
+
+      // use cooperative stop
       cleanupThread = null;
       zombie.interrupt();
     }

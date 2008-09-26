@@ -20,7 +20,6 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstru
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
@@ -95,15 +94,13 @@ final class ServiceProxyFactory {
      */
     final Import<T> lookup = new Import<T>() {
 
-      // an atomic integer means unget can be unsynchronized
-      private final AtomicInteger count = new AtomicInteger();
-
       private Import<T> handle;
       private T instance;
+      private int count;
 
       // need barrier on entry...
       public synchronized T get() {
-        count.set(count.get() + 1);
+        count++;
         if (null == handle) {
           // first valid handle may appear at any time
           final Iterator<Import<T>> i = handles.iterator();
@@ -118,17 +115,13 @@ final class ServiceProxyFactory {
         return instance;
       }
 
-      public void unget() {
-        if (0 == count.decrementAndGet()) {
-          synchronized (this) {
-            // last thread to exit does the unget...
-            if (null != handle && 0 == count.get()) {
-              final Import<T> h = handle;
-              instance = null;
-              handle = null;
-              h.unget();
-            }
-          }
+      public synchronized void unget() {
+        // last thread to exit does the unget...
+        if (0 == --count && null != handle) {
+          final Import<T> h = handle;
+          instance = null;
+          handle = null;
+          h.unget();
         }
       }
     };

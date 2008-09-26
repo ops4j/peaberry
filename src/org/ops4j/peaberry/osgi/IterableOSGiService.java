@@ -24,6 +24,10 @@ import org.ops4j.peaberry.Import;
 
 /**
  * Filtered iterable view over a collection of @{code OSGiServiceImport}s.
+ * <p>
+ * The iterator provided by this view is valid even if the underlying collection
+ * of services changes, because it keeps track of where it would be in the list,
+ * based on the service id and ranking.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -42,6 +46,7 @@ final class IterableOSGiService<T>
   public Iterator<Import<T>> iterator() {
     return new Iterator<Import<T>>() {
 
+      // keep track of where we've been...
       private OSGiServiceImport prevImport;
       private OSGiServiceImport nextImport;
 
@@ -56,6 +61,7 @@ final class IterableOSGiService<T>
           throw new NoSuchElementException();
         }
 
+        // used cached result
         prevImport = nextImport;
         nextImport = null;
 
@@ -65,8 +71,10 @@ final class IterableOSGiService<T>
       private OSGiServiceImport findNextImport() {
         if (null == nextImport) {
 
+          // based on our last result and the current list, find next result...
           final OSGiServiceImport tempImport = listener.findNextImport(prevImport, filter);
 
+          // ...and cache it
           if (null != tempImport) {
             prevImport = null;
             nextImport = tempImport;

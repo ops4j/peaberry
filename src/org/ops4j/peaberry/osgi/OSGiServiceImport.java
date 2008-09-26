@@ -20,7 +20,6 @@ import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -28,7 +27,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
- * {@code Import} implementation based on an OSGi {@code ServiceReference}.
+ * {@code Import} implementation backed by an OSGi {@code ServiceReference}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -40,25 +39,26 @@ final class OSGiServiceImport
   private final BundleContext bundleContext;
   private final ServiceReference ref;
 
+  // heavily used attributes
   private final long id;
   private volatile int rank;
 
   private final Map<String, ?> attributes;
 
-  private final AtomicInteger count;
-  private volatile Object instance;
+  // cached service object
+  private Object instance;
+  private int count;
 
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
 
     this.bundleContext = bundleContext;
     this.ref = ref;
 
+    // cache attributes used when sorting services
     id = getNumberProperty(SERVICE_ID).longValue();
     rank = getNumberProperty(SERVICE_RANKING).intValue();
 
     attributes = new OSGiServiceAttributes(ref);
-
-    count = new AtomicInteger();
   }
 
   public long getId() {
@@ -70,6 +70,7 @@ final class OSGiServiceImport
   }
 
   public boolean updateRanking() {
+    // ranking is mutable...
     final int oldRank = rank;
     rank = getNumberProperty(SERVICE_RANKING).intValue();
     return oldRank != rank;
@@ -80,9 +81,8 @@ final class OSGiServiceImport
   }
 
   public synchronized Object get() {
-    final int n = count.get();
-    count.set(n + 1);
-    if (0 == n) {
+    if (0 == count++) {
+      // first thread in caches the result
       instance = bundleContext.getService(ref);
     }
     if (null == instance) {
@@ -91,30 +91,26 @@ final class OSGiServiceImport
     return instance;
   }
 
-  public void unget() {
-    count.decrementAndGet();
+  public synchronized void unget() {
+    --count;
   }
 
-  public void flush(final boolean removed) {
-    if (removed) {
-      synchronized (this) {
-        instance = null;
-      }
-    } else if (null != instance && 0 == count.get()) {
-      synchronized (this) {
-        if (null != instance && 0 == count.get()) {
-          instance = null;
-          try {
-            bundleContext.ungetService(ref);
-          } catch (final IllegalStateException e) {}
-        }
-      }
+  public synchronized void flush(final boolean serviceUnregistered) {
+    if (serviceUnregistered) {
+      instance = null; // no need to unget
+    } else if (0 == count && null != instance) {
+      instance = null;
+      try {
+        // cached result not being used
+        bundleContext.ungetService(ref);
+      } catch (final IllegalStateException e) {}
     }
   }
 
   @Override
   public boolean equals(final Object rhs) {
     if (rhs instanceof OSGiServiceImport) {
+      // service id is a unique identifier
       return id == ((OSGiServiceImport) rhs).id;
     }
     return false;

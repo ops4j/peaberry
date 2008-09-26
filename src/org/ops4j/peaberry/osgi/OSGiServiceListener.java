@@ -43,39 +43,48 @@ final class OSGiServiceListener
 
   private static final String OBJECT_CLAZZ_NAME = Object.class.getName();
 
+  // maintain cached list of imported services
   private final List<OSGiServiceImport> imports;
 
   private final BundleContext bundleContext;
   private final String clazzFilter;
 
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
+
+    // need random access to indexed positions
     imports = new ArrayList<OSGiServiceImport>();
 
     this.bundleContext = bundleContext;
     if (!OBJECT_CLAZZ_NAME.equals(clazzName)) {
       clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
     } else {
-      clazzFilter = null;
+      clazzFilter = null; // match all registered services
     }
   }
 
   public synchronized void start() {
     try {
 
+      // register listener first to avoid race condition
       bundleContext.addServiceListener(this, clazzFilter);
 
+      // now retrieve snapshot of services that have already been registered
       final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, clazzFilter);
       if (null != initialRefs) {
+
+        // wrap service references to optimize sorting
         for (final ServiceReference ref : initialRefs) {
           imports.add(new OSGiServiceImport(bundleContext, ref));
         }
+
+        // no point sorting singleton
         if (imports.size() > 1) {
           sort(imports);
         }
       }
 
     } catch (final InvalidSyntaxException e) {
-      throw new ServiceException(e);
+      throw new ServiceException(e); // this should never happen
     }
   }
 
@@ -96,34 +105,46 @@ final class OSGiServiceListener
   }
 
   public synchronized void flush() {
+    // flush any unused cached service instances
     for (final OSGiServiceImport i : imports) {
       i.flush(false);
     }
   }
 
   private void insertService(final OSGiServiceImport i) {
+    // find insertion point that maintains ordering
     final int insertIndex = binarySearch(imports, i);
+
     if (insertIndex < 0) {
+      // new object, must flip index
       imports.add(~insertIndex, i);
     }
   }
 
   private void updateService(final OSGiServiceImport i) {
+    // use linear search as ranking may have changed
     final int index = imports.indexOf(i);
+
     if (index >= 0) {
+      // keep existing instance as it might be in use
       final OSGiServiceImport orig = imports.get(index);
+
+      // need to re-order list?
       if (orig.updateRanking()) {
         imports.remove(index);
         insertService(orig);
       }
     } else {
+      // not seen before
       insertService(i);
     }
   }
 
   private void removeService(final OSGiServiceImport i) {
+    // use linear search as we need existing import
     final int index = imports.indexOf(i);
     if (index >= 0) {
+      // flush cache even if being used
       imports.remove(index).flush(true);
     }
   }
@@ -131,28 +152,32 @@ final class OSGiServiceListener
   public synchronized OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
       final AttributeFilter filter) {
 
-    // tail optimization
+    // tail optimization - no services or already at the end
     if (imports.isEmpty() || imports.get(imports.size() - 1).equals(prevImport)) {
       return null;
     }
 
-    // head optimization
+    // head optimization - brand new iterator
     if (prevImport == null && filter == null) {
       return imports.get(0);
     }
 
+    // estimate last position based on previous value and current list
     return findNextImport(filter, null == prevImport ? ~0 : binarySearch(imports, prevImport));
   }
 
   private OSGiServiceImport findNextImport(final AttributeFilter filter, final int prevIndex) {
 
+    // may need to flip position if previous import is no longer in the list
     for (int i = prevIndex < 0 ? ~prevIndex : prevIndex + 1; i < imports.size(); i++) {
+
+      // now do a linear search applying the given filter
       final OSGiServiceImport nextImport = imports.get(i);
       if (null == filter || filter.matches(nextImport.getAttributes())) {
         return nextImport;
       }
     }
 
-    return null;
+    return null; // no matching service
   }
 }

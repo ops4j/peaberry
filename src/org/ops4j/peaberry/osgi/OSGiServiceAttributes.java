@@ -29,14 +29,14 @@ import java.util.TreeSet;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Re-usable service attributes adapter for OSGi @{code ServiceReference}s.
+ * Service attributes adapter backed by an OSGi @{code ServiceReference}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class OSGiServiceAttributes
     extends AbstractMap<String, Object> {
 
-  // OSGi service attributes use case-less keys
+  // OSGi service attributes use case-less keys, so we need to honour this...
   private static final Comparator<String> IGNORE_CASE = new Comparator<String>() {
     public int compare(final String lhs, final String rhs) {
       return lhs.compareToIgnoreCase(rhs);
@@ -61,6 +61,7 @@ final class OSGiServiceAttributes
 
   @Override
   public Set<String> keySet() {
+    // service ref is mutable, so build new set each time
     final Set<String> ks = new TreeSet<String>(IGNORE_CASE);
     addAll(ks, ref.getPropertyKeys());
     return unmodifiableSet(ks);

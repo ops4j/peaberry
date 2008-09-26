@@ -35,7 +35,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * OSGi specific {@code ServiceRegistry} adaptor.
+ * OSGi specific {@code ServiceRegistry} adapter.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -43,14 +43,17 @@ import com.google.inject.Singleton;
 public final class OSGiServiceRegistry
     implements CachingServiceRegistry {
 
+  // per-class map of service listeners (much faster than polling)
   private final ConcurrentMap<String, OSGiServiceListener> listenerMap;
   private final BundleContext bundleContext;
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
+
     listenerMap = new ConcurrentHashMap<String, OSGiServiceListener>();
     this.bundleContext = bundleContext;
 
+    // register this as a caching registry, so it can be regularly flushed...
     bundleContext.registerService(CachingServiceRegistry.class.getName(), this, null);
   }
 
@@ -68,10 +71,13 @@ public final class OSGiServiceRegistry
       }
     }
 
+    // wrap filtered iterable around unfiltered list
     return new IterableOSGiService<T>(listener, filter);
   }
 
   public <T, S extends T> Export<T> export(final S service, final Map<String, ?> attributes) {
+
+    // map generic service attributes to OSGi expected types
     final Dictionary<String, ?> props = dictionary(attributes);
     final String[] interfaces = getInterfaceNames(service, props);
 
@@ -98,12 +104,13 @@ public final class OSGiServiceRegistry
   }
 
   public void flush() {
+    // look for unused cached service instances to flush...
     for (final OSGiServiceListener i : listenerMap.values()) {
       i.flush();
     }
   }
 
-  private <S> String[] getInterfaceNames(final S service, final Dictionary<String, ?> props) {
+  private String[] getInterfaceNames(final Object service, final Dictionary<String, ?> props) {
     final Object objectClass = null == props ? null : props.get(OBJECTCLASS);
     final String[] interfaces;
 
@@ -118,7 +125,7 @@ public final class OSGiServiceRegistry
       if (clazz.isInterface()) {
         api.add(clazz.getName());
       } else {
-        // just use the interfaces declared for this class
+        // use direct interfaces declared by this class
         for (final Class<?> i : clazz.getInterfaces()) {
           api.add(i.getName());
         }
