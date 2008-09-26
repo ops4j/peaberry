@@ -1,0 +1,10 @@
+var clover = new Object();
+
+// JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
+clover.pageData = {"classes":[{"id":1258,"sl":39,"methods":[{"sl":42,"el":63,"sc":3},{"sl":122,"el":138,"sc":3},{"sl":140,"el":146,"sc":3}],"el":147,"name":"ServicePerformanceTests"},{"id":1265,"sl":65,"methods":[],"el":67,"name":"ServicePerformanceTests.Example"},{"id":1265,"sl":69,"methods":[{"sl":71,"el":73,"sc":5}],"el":74,"name":"ServicePerformanceTests.ExampleImpl"},{"id":1267,"sl":76,"methods":[{"sl":79,"el":100,"sc":5},{"sl":84,"el":96,"sc":9},{"sl":98,"el":98,"sc":9}],"el":101,"name":"ServicePerformanceTests.StickyDecorator"},{"id":1284,"sl":103,"methods":[],"el":120,"name":"ServicePerformanceTests.Holder"}]}
+
+// JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
+clover.testTargets = {"test_21":{"methods":[{"sl":71},{"sl":79},{"sl":84},{"sl":98},{"sl":122},{"sl":140}],"name":"testServiceLookupPerformance","statements":[{"sl":72},{"sl":81},{"sl":85},{"sl":86},{"sl":87},{"sl":88},{"sl":91},{"sl":95},{"sl":124},{"sl":125},{"sl":128},{"sl":129},{"sl":130},{"sl":131},{"sl":133},{"sl":134},{"sl":135},{"sl":136},{"sl":137},{"sl":141},{"sl":142},{"sl":143},{"sl":145}],"pass":true},"test_19":{"methods":[{"sl":42}],"name":"configure","statements":[{"sl":46},{"sl":49},{"sl":52},{"sl":55},{"sl":59},{"sl":62}],"pass":true}}
+
+// JSON: { lines : [{tests : [testid1, testid2, testid3, ...]}, ...]};
+clover.srcFileLines = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [19], [], [], [], [19], [], [], [19], [], [], [19], [], [], [19], [], [], [], [19], [], [], [19], [], [], [], [], [], [], [], [], [21], [21], [], [], [], [], [], [], [21], [], [21], [], [], [21], [21], [21], [21], [21], [], [], [21], [], [], [], [21], [], [], [21], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [21], [], [21], [21], [], [], [21], [21], [21], [21], [], [21], [21], [21], [21], [21], [], [], [21], [21], [21], [21], [], [21], [], []]

@@ -66,7 +66,7 @@ public final class Activator
       }
 
       this.registries = registries;
-      this.flushInterval = millis;
+      flushInterval = millis;
     }
 
     public void run() {

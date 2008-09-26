@@ -35,6 +35,7 @@
     <exclude name="AvoidFieldNameMatchingMethodName"/>
     <exclude name="ShortMethodName"/>
     <exclude name="ShortVariable"/>
+    <exclude name="LongVariable"/>
   </rule>
 
   <rule ref="rulesets/optimizations.xml"/>

@@ -103,7 +103,7 @@ final class OSGiServiceImport
       try {
         // cached result not being used
         bundleContext.ungetService(ref);
-      } catch (final IllegalStateException e) {}
+      } catch (final IllegalStateException e) {/* already gone */} // NOPMD
     }
   }
 

@@ -43,23 +43,23 @@ final class OSGiServiceListener
 
   private static final String OBJECT_CLAZZ_NAME = Object.class.getName();
 
-  // maintain cached list of imported services
-  private final List<OSGiServiceImport> imports;
-
   private final BundleContext bundleContext;
   private final String clazzFilter;
 
+  // maintain cached list of imported services
+  private final List<OSGiServiceImport> imports;
+
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
+    this.bundleContext = bundleContext;
+
+    if (OBJECT_CLAZZ_NAME.equals(clazzName)) {
+      clazzFilter = null; // match all registered services
+    } else {
+      clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
+    }
 
     // need random access to indexed positions
     imports = new ArrayList<OSGiServiceImport>();
-
-    this.bundleContext = bundleContext;
-    if (!OBJECT_CLAZZ_NAME.equals(clazzName)) {
-      clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
-    } else {
-      clazzFilter = null; // match all registered services
-    }
   }
 
   public synchronized void start() {
@@ -74,7 +74,7 @@ final class OSGiServiceListener
 
         // wrap service references to optimize sorting
         for (final ServiceReference ref : initialRefs) {
-          imports.add(new OSGiServiceImport(bundleContext, ref));
+          imports.add(new OSGiServiceImport(bundleContext, ref)); // NOPMD
         }
 
         // no point sorting singleton

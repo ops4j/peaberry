@@ -1,7 +1,7 @@
 var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
-clover.pageData = {"classes":[{"id":389,"sl":29,"methods":[],"el":35,"name":"RegistrationProxyBuilder"}]}
+clover.pageData = {"classes":[{"id":454,"sl":29,"methods":[],"el":35,"name":"RegistrationProxyBuilder"}]}
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {}

@@ -1,10 +1,10 @@
 var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
-clover.pageData = {"classes":[{"id":265,"sl":33,"methods":[{"sl":36,"el":36,"sc":3},{"sl":38,"el":53,"sc":3},{"sl":55,"el":60,"sc":3},{"sl":62,"el":70,"sc":3}],"el":71,"name":"DirectServiceFactory"}]}
+clover.pageData = {"classes":[{"id":275,"sl":34,"methods":[{"sl":37,"el":37,"sc":3},{"sl":39,"el":54,"sc":3},{"sl":56,"el":61,"sc":3},{"sl":63,"el":73,"sc":3}],"el":74,"name":"DirectServiceFactory"}]}
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
-clover.testTargets = {}
+clover.testTargets = {"test_0":{"methods":[{"sl":39},{"sl":56},{"sl":63}],"name":"testDirectServiceInjection","statements":[{"sl":42},{"sl":43},{"sl":45},{"sl":47},{"sl":48},{"sl":49},{"sl":53},{"sl":60},{"sl":66},{"sl":67},{"sl":68},{"sl":72}],"pass":true},"test_21":{"methods":[{"sl":56},{"sl":63}],"name":"testServiceLookupPerformance","statements":[{"sl":60},{"sl":66},{"sl":67},{"sl":68}],"pass":true},"test_15":{"methods":[{"sl":56},{"sl":63}],"name":"testDecoratedServiceInjection","statements":[{"sl":60},{"sl":66},{"sl":67},{"sl":68}],"pass":true}}
 
 // JSON: { lines : [{tests : [testid1, testid2, testid3, ...]}, ...]};
-clover.srcFileLines = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+clover.srcFileLines = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [0], [], [], [0], [0], [], [0], [], [0], [0], [0], [], [], [], [0], [], [], [0, 21, 15], [], [], [], [0, 21, 15], [], [], [0, 21, 15], [], [], [0, 21, 15], [0, 21, 15], [0, 21, 15], [], [], [], [0], [], []]
