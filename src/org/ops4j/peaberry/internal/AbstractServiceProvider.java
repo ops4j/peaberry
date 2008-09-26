@@ -36,8 +36,9 @@ abstract class AbstractServiceProvider<T, X>
     implements Provider<X> {
 
   @Inject
-  Injector injector;
+  Injector injector; // field-injection
 
+  // snapshot of builder configuration
   final Class<? extends T> serviceClazz;
   final AttributeFilter attributeFilter;
   final boolean isDirect;
@@ -46,9 +47,7 @@ abstract class AbstractServiceProvider<T, X>
   private final Key<? extends ServiceRegistry> registryKey;
 
   public AbstractServiceProvider(final Class<? extends T> clazz, final Configuration<T> config) {
-
     this.serviceClazz = clazz;
-
     this.attributeFilter = config.attributeFilter;
     this.isDirect = config.isDirect;
     this.decoratorKey = config.decoratorKey;

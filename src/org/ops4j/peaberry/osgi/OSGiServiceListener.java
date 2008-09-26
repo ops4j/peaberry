@@ -95,6 +95,12 @@ final class OSGiServiceListener
     }
   }
 
+  public synchronized void flush() {
+    for (final OSGiServiceImport i : imports) {
+      i.flush(false);
+    }
+  }
+
   private void insertService(final OSGiServiceImport i) {
     final int insertIndex = binarySearch(imports, i);
     if (insertIndex < 0) {
@@ -118,7 +124,7 @@ final class OSGiServiceListener
   private void removeService(final OSGiServiceImport i) {
     final int index = imports.indexOf(i);
     if (index >= 0) {
-      imports.remove(index).discard(true);
+      imports.remove(index).flush(true);
     }
   }
 

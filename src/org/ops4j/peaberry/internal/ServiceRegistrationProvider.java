@@ -36,17 +36,15 @@ final class ServiceRegistrationProvider<T>
     implements Provider<Export<T>> {
 
   @Inject
-  Injector injector;
+  Injector injector; // field-injection
 
+  // snapshot of builder configuration
   private final Key<? extends T> serviceKey;
   private final Map<String, ?> attributes;
-
   private final Key<? extends ServiceRegistry> registryKey;
 
   public ServiceRegistrationProvider(final Key<? extends T> key, final Configuration<T> config) {
-
     this.serviceKey = key;
-
     this.attributes = config.attributes;
     this.registryKey = config.registryKey;
   }

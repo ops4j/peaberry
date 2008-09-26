@@ -1,5 +1,7 @@
 -include: common.bnd
 
+Bundle-Activator: ${module}.osgi.Activator
+
 Bundle-Name: peaberry
 Bundle-SymbolicName: ${module}
 Bundle-Version: ${version}

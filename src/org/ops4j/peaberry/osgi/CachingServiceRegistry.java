@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.osgi;
 
-import java.util.Map;
+import org.ops4j.peaberry.ServiceRegistry;
 
 /**
- * A service scope can receive exported services with associated attributes.
+ * @{code ServiceRegistry} that caches service instances for faster lookup.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ServiceScope {
+public interface CachingServiceRegistry
+    extends ServiceRegistry {
 
   /**
-   * Export the given service to this scope.
-   * 
-   * @param service service instance
-   * @param attributes service attributes
-   * 
-   * @return exported service handle, null if this scope is not interested
+   * Release any unused service instances from the cache.
    */
-  <S, T extends S> Export<S> export(T service, Map<String, ?> attributes);
+  void flush();
 }

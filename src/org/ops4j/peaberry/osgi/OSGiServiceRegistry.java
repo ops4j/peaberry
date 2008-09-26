@@ -28,7 +28,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -42,7 +41,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public final class OSGiServiceRegistry
-    implements ServiceRegistry {
+    implements CachingServiceRegistry {
 
   private final ConcurrentMap<String, OSGiServiceListener> listenerMap;
   private final BundleContext bundleContext;
@@ -51,6 +50,8 @@ public final class OSGiServiceRegistry
   public OSGiServiceRegistry(final BundleContext bundleContext) {
     listenerMap = new ConcurrentHashMap<String, OSGiServiceListener>();
     this.bundleContext = bundleContext;
+
+    bundleContext.registerService(CachingServiceRegistry.class.getName(), this, null);
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<? extends T> type, final AttributeFilter filter) {
@@ -94,6 +95,12 @@ public final class OSGiServiceRegistry
         registration.unregister();
       }
     };
+  }
+
+  public void flush() {
+    for (final OSGiServiceListener i : listenerMap.values()) {
+      i.flush();
+    }
   }
 
   private <S> String[] getInterfaceNames(final S service, final Dictionary<String, ?> props) {

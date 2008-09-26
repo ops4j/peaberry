@@ -95,7 +95,7 @@ final class OSGiServiceImport
     count.decrementAndGet();
   }
 
-  public void discard(final boolean removed) {
+  public void flush(final boolean removed) {
     if (removed) {
       synchronized (this) {
         instance = null;

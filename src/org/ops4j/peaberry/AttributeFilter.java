@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import java.util.Map;
 
 /**
- * Service attribute filter.
+ * Basic matching filter for service attributes.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
