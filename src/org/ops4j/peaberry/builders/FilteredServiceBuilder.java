@@ -19,6 +19,8 @@ package org.ops4j.peaberry.builders;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Peaberry;
 
+import com.google.inject.Key;
+
 /**
  * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
@@ -30,8 +32,16 @@ public interface FilteredServiceBuilder<T>
   /**
    * Apply the given filter to the dynamic service lookup.
    * 
-   * @param filter service attribute filter
+   * @param key attribute filter key
    * @return dynamic service builder
    */
-  ScopedServiceBuilder<T> filter(AttributeFilter filter);
+  ScopedServiceBuilder<T> filter(Key<? extends AttributeFilter> key);
+
+  /**
+   * Apply the given filter to the dynamic service lookup.
+   * 
+   * @param instance attribute filter
+   * @return dynamic service builder
+   */
+  ScopedServiceBuilder<T> filter(AttributeFilter instance);
 }

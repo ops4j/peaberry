@@ -32,8 +32,16 @@ public interface ScopedRegistrationBuilder<T>
   /**
    * Scope the service registration to a specific registry.
    * 
-   * @param key registry key
+   * @param key service registry key
    * @return service registration builder
    */
   RegistrationProxyBuilder<T> in(Key<? extends ServiceRegistry> key);
+
+  /**
+   * Scope the service registration to a specific registry.
+   * 
+   * @param instance service registry
+   * @return service registration builder
+   */
+  RegistrationProxyBuilder<T> in(ServiceRegistry instance);
 }

@@ -32,8 +32,16 @@ public interface ScopedServiceBuilder<T>
   /**
    * Scope the dynamic service lookup to a specific registry.
    * 
-   * @param key registry key
+   * @param key service registry key
    * @return dynamic service builder
    */
   DynamicServiceBuilder<T> in(Key<? extends ServiceRegistry> key);
+
+  /**
+   * Scope the dynamic service lookup to a specific registry.
+   * 
+   * @param instance service registry
+   * @return dynamic service builder
+   */
+  DynamicServiceBuilder<T> in(ServiceRegistry instance);
 }

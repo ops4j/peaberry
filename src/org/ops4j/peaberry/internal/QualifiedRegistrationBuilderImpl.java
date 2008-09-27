@@ -24,6 +24,8 @@ import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
 import org.ops4j.peaberry.builders.RegistrationProxyBuilder;
 import org.ops4j.peaberry.builders.ScopedRegistrationBuilder;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 
@@ -35,31 +37,46 @@ import com.google.inject.Provider;
 public final class QualifiedRegistrationBuilderImpl<T>
     implements QualifiedRegistrationBuilder<T> {
 
-  private final Key<? extends T> serviceKey;
-  private final Configuration<T> config;
-
-  // mutable builder settings
-  static class Configuration<T> {
-    Map<String, ?> attributes;
-    Key<? extends ServiceRegistry> registryKey;
-  }
+  private final RegistrationSettings<T> settings;
 
   public QualifiedRegistrationBuilderImpl(final Key<? extends T> key) {
-    config = new Configuration<T>();
-    serviceKey = key;
+    settings = new RegistrationSettings<T>(new Setting<T>(key));
   }
 
-  public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> attributes) {
-    config.attributes = attributes;
+  public QualifiedRegistrationBuilderImpl(final T instance) {
+    settings = new RegistrationSettings<T>(new Setting<T>(instance));
+  }
+
+  public ScopedRegistrationBuilder<T> attributes(final Key<? extends Map<String, ?>> key) {
+    settings.setAttributes(new Setting<Map<String, ?>>(key));
+    return this;
+  }
+
+  public ScopedRegistrationBuilder<T> attributes(final Map<String, ?> instance) {
+    settings.setAttributes(new Setting<Map<String, ?>>(instance));
     return this;
   }
 
   public RegistrationProxyBuilder<T> in(final Key<? extends ServiceRegistry> key) {
-    config.registryKey = key;
+    settings.setRegistry(new Setting<ServiceRegistry>(key));
+    return this;
+  }
+
+  public RegistrationProxyBuilder<T> in(final ServiceRegistry instance) {
+    settings.setRegistry(new Setting<ServiceRegistry>(instance));
     return this;
   }
 
   public Provider<Export<T>> export() {
-    return new ServiceRegistrationProvider<T>(serviceKey, config);
+    final RegistrationSettings<T> registration = settings.clone();
+    return new Provider<Export<T>>() {
+
+      @Inject
+      Injector injector;
+
+      public Export<T> get() {
+        return registration.export(injector);
+      }
+    };
   }
 }

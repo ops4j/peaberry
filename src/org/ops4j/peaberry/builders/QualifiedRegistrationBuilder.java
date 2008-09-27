@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Peaberry;
 
+import com.google.inject.Key;
+
 /**
  * See {@link Peaberry} for examples of the service registration builder API.
  * 
@@ -31,8 +33,16 @@ public interface QualifiedRegistrationBuilder<T>
   /**
    * Apply the given attributes to the service registration.
    * 
-   * @param attributes service attributes
+   * @param key service attributes key
    * @return service registration builder
    */
-  ScopedRegistrationBuilder<T> attributes(Map<String, ?> attributes);
+  ScopedRegistrationBuilder<T> attributes(Key<? extends Map<String, ?>> key);
+
+  /**
+   * Apply the given attributes to the service registration.
+   * 
+   * @param instance service attributes
+   * @return service registration builder
+   */
+  ScopedRegistrationBuilder<T> attributes(Map<String, ?> instance);
 }

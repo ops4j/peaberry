@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.util.decorators;
 
+import java.util.concurrent.Callable;
+
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
@@ -30,8 +32,13 @@ public final class StickyDecorator<S>
 
   static final ServiceUnavailableException NO_SERVICE = new ServiceUnavailableException();
 
-  public <T extends S> Import<T> decorate(final Import<T> handle) {
+  final Callable<Boolean> resetTask;
 
+  public StickyDecorator(final Callable<Boolean> resetTask) {
+    this.resetTask = resetTask;
+  }
+
+  public <T extends S> Import<T> decorate(final Import<T> handle) {
     return new Import<T>() {
 
       // sticky service
@@ -42,14 +49,40 @@ public final class StickyDecorator<S>
         if (null == instance) {
           synchronized (this) {
             if (null == instance) {
-              instance = handle.get();
+              changeService();
             }
           }
-          if (null == instance) {
-            throw NO_SERVICE;
-          }
+        }
+        if (null == instance) {
+          throw NO_SERVICE;
+        }
+        if (null != resetTask) {
+          checkService();
         }
         return instance;
+      }
+
+      private synchronized void checkService() {
+        try {
+          instance.hashCode();
+        } catch (final RuntimeException re) {
+          try {
+            if (resetTask.call()) {
+              changeService();
+            }
+          } catch (final Exception e) {}
+        }
+      }
+
+      private void changeService() {
+        if (null != instance) {
+          handle.unget();
+        }
+        try {
+          instance = handle.get();
+        } catch (final RuntimeException re) {
+          handle.unget();
+        }
       }
 
       public void unget() {/* nothing to do */}

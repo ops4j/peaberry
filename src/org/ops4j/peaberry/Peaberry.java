@@ -51,7 +51,7 @@ import com.google.inject.Module;
  * Export&lt;DictionaryService&gt; exportedDictionaryService;
  * ...
  * // the service is actually exported at injection time
- * bind(export(DictionaryService.class)).to(registration(dictionaryImplKey).export());</pre>
+ * bind(export(DictionaryService.class)).to(registration(myDictionary).export());</pre>
  * 
  * Applying a custom filter to find a specific service:
  * 
@@ -59,14 +59,14 @@ import com.google.inject.Module;
  * 
  * Applying custom attributes to an exported service:
  * 
- * <pre> registration(dictionaryKey).attributes(names(&quot;Language=French&quot;)).export();</pre>
+ * <pre> registration(myDictionary).attributes(names(&quot;Language=French&quot;)).export();</pre>
  * 
  * NOTE: helper methods for dealing with filters and attributes are in the
  * {@code org.ops4j.peaberry.util} package.
  * <p>
  * You can also decorate an imported service with additional behaviour:
  * 
- * <pre> service(DictionaryService.class).decoratedWith(decoratorImplKey).single();</pre>
+ * <pre> service(DictionaryService.class).decoratedWith(myDecorator).single();</pre>
  * 
  * or ask for the service to be injected directly, instead of a dynamic proxy:
  * 
@@ -95,11 +95,21 @@ public final class Peaberry {
   /**
    * Start building a service registration for the given implementation key.
    * 
-   * @param key implementation key
+   * @param key service implementation key
    * @return service registration builder
    */
   public static <T> QualifiedRegistrationBuilder<T> registration(final Key<? extends T> key) {
     return new QualifiedRegistrationBuilderImpl<T>(key);
+  }
+
+  /**
+   * Start building a service registration for the given implementation.
+   * 
+   * @param instance service implementation
+   * @return service registration builder
+   */
+  public static <S, T extends S> QualifiedRegistrationBuilder<S> registration(final T instance) {
+    return new QualifiedRegistrationBuilderImpl<S>(instance);
   }
 
   /**

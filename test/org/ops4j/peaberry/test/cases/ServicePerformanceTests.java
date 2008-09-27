@@ -55,7 +55,7 @@ public final class ServicePerformanceTests
 
     // service registry lookup: indirect method invocation via sticky proxy
     bind(Example.class).annotatedWith(named("Sticky")).toProvider(
-        service(Example.class).decoratedWith(sticky()).single());
+        service(Example.class).decoratedWith(sticky(null)).single());
 
     bind(Holder.class);
   }

@@ -16,10 +16,10 @@
 
 package org.ops4j.peaberry.util;
 
+import java.util.concurrent.Callable;
+
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.util.decorators.StickyDecorator;
-
-import com.google.inject.Key;
 
 /**
  * Provide keys to various useful generic {@code ImportDecorator}s.
@@ -32,10 +32,14 @@ public final class Decorators {
   private Decorators() {}
 
   /**
-   * @return decorator that caches the service instance until told otherwise.
+   * An {@code ImportDecorator} that lazily caches service instances and calls
+   * the given task when the cached service is no longer available. This task
+   * can perform its own refresh actions, and ask for the service to be reset.
+   * 
+   * @param resetTask task called when the sticky service goes missing
+   * @return decorator that caches service instances.
    */
-  @SuppressWarnings("unchecked")
-  public static <S> Key<? extends ImportDecorator<S>> sticky() {
-    return (Key) Key.get(StickyDecorator.class);
+  public static <S> ImportDecorator<S> sticky(final Callable<Boolean> resetTask) {
+    return new StickyDecorator<S>(resetTask);
   }
 }

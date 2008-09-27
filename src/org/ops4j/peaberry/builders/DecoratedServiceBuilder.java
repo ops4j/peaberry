@@ -31,8 +31,16 @@ public interface DecoratedServiceBuilder<T>
   /**
    * Apply the given decoration to the result of each dynamic service lookup.
    * 
-   * @param key decorating key
+   * @param key decorator key
    * @return dynamic service builder
    */
   FilteredServiceBuilder<T> decoratedWith(Key<? extends ImportDecorator<? super T>> key);
+
+  /**
+   * Apply the given decoration to the result of each dynamic service lookup.
+   * 
+   * @param instance decorator
+   * @return dynamic service builder
+   */
+  FilteredServiceBuilder<T> decoratedWith(ImportDecorator<? super T> instance);
 }
