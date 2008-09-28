@@ -91,6 +91,10 @@ public final class OSGiServiceRegistry
         return service;
       }
 
+      public Map<String, ?> attributes() {
+        return new OSGiServiceAttributes(registration.getReference());
+      }
+
       public void unget() {/* nothing to do */}
 
       public void modify(final Map<String, ?> newAttributes) {

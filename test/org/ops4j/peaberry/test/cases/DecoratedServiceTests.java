@@ -19,6 +19,8 @@ package org.ops4j.peaberry.test.cases;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 
+import java.util.Map;
+
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.FilteredServiceBuilder;
 import org.ops4j.peaberry.builders.ImportDecorator;
@@ -62,6 +64,10 @@ public final class DecoratedServiceTests
         @SuppressWarnings("unchecked")
         public T get() {
           return (T) new IdAdapter(handle.get());
+        }
+
+        public Map<String, ?> attributes() {
+          return handle.attributes();
         }
 
         public void unget() {

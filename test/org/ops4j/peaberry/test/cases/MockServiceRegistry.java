@@ -58,6 +58,10 @@ final class MockServiceRegistry
                 return (T) service;
               }
 
+              public Map attributes() {
+                return e.getValue();
+              }
+
               public void unget() {}
             });
           }
@@ -74,6 +78,16 @@ final class MockServiceRegistry
 
     return new Export() {
 
+      public Object get() {
+        return service;
+      }
+
+      public Map attributes() {
+        return registry.get(service);
+      }
+
+      public void unget() {}
+
       public void modify(final Map newAttributes) {
         registry.put(service, newAttributes);
       }
@@ -81,12 +95,6 @@ final class MockServiceRegistry
       public void remove() {
         registry.remove(service);
       }
-
-      public Object get() {
-        return service;
-      }
-
-      public void unget() {}
     };
   }
   // /CLOVER:ON

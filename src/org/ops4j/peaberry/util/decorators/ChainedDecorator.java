@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
+package org.ops4j.peaberry.util.decorators;
 
-import java.util.Map;
+import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * Handle to a service instance imported from a {@code ServiceRegistry}.
- * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface Import<T> {
+public final class ChainedDecorator<S>
+    implements ImportDecorator<S> {
 
-  /**
-   * Start using the imported service instance.
-   * 
-   * @return service instance
-   * 
-   * @throws ServiceUnavailableException
-   */
-  T get();
+  final ImportDecorator<S>[] decorators;
 
-  /**
-   * Get the attributes associated with the used service.
-   * 
-   * @return attribute map, null if the service is not being used or is invalid
-   */
-  Map<String, ?> attributes();
+  public ChainedDecorator(final ImportDecorator<S>... decorators) {
+    this.decorators = decorators;
+  }
 
-  /**
-   * Stop using the imported service instance.
-   */
-  void unget();
+  public <T extends S> Import<T> decorate(final Import<T> handle) {
+    Import<T> h = handle;
+    for (final ImportDecorator<S> i : decorators) {
+      h = i.decorate(h);
+    }
+    return h;
+  }
 }

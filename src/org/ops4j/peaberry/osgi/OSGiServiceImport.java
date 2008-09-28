@@ -91,6 +91,10 @@ final class OSGiServiceImport
     return instance;
   }
 
+  public synchronized Map<String, ?> attributes() {
+    return instance != null ? getAttributes() : null;
+  }
+
   public synchronized void unget() {
     --count;
   }

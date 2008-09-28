@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.util.decorators;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.Import;
@@ -23,14 +24,16 @@ import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * {@code ImportDecorator} that caches service instances until told otherwise.
+ * An {@code ImportDecorator} that caches the first valid service instance and
+ * uses that until it becomes invalid. The decorator then calls the reset task
+ * to see if it should reset, or throw {@link ServiceUnavailableException}.
+ * <p>
+ * NOTE: a sticky decorator only makes sense for "single" injected services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class StickyDecorator<S>
     implements ImportDecorator<S> {
-
-  static final ServiceUnavailableException NO_SERVICE = new ServiceUnavailableException();
 
   final Callable<Boolean> resetTask;
 
@@ -42,47 +45,33 @@ public final class StickyDecorator<S>
     return new Import<T>() {
 
       // sticky service
-      private volatile T instance;
+      private T instance;
 
-      public T get() {
-        // DCL is safe in Java5+
-        if (null == instance) {
-          synchronized (this) {
-            if (null == instance) {
-              changeService();
+      public synchronized T get() {
+
+        if (null != resetTask && null != instance && null == handle.attributes()) {
+          try {
+            if (resetTask.call()) {
+              instance = null;
+              handle.unget();
             }
+          } catch (Exception e) {}
+        }
+
+        if (null == instance) {
+          try {
+            instance = handle.get();
+          } catch (final RuntimeException re) {
+            handle.unget();
+            throw re;
           }
         }
-        if (null == instance) {
-          throw NO_SERVICE;
-        }
-        if (null != resetTask) {
-          checkService();
-        }
+
         return instance;
       }
 
-      private synchronized void checkService() {
-        try {
-          instance.hashCode();
-        } catch (final RuntimeException re) {
-          try {
-            if (resetTask.call()) {
-              changeService();
-            }
-          } catch (final Exception e) {}
-        }
-      }
-
-      private void changeService() {
-        if (null != instance) {
-          handle.unget();
-        }
-        try {
-          instance = handle.get();
-        } catch (final RuntimeException re) {
-          handle.unget();
-        }
+      public synchronized Map<String, ?> attributes() {
+        return instance != null ? handle.attributes() : null;
       }
 
       public void unget() {/* nothing to do */}

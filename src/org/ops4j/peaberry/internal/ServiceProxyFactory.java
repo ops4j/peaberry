@@ -20,6 +20,7 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstru
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
@@ -113,6 +114,10 @@ final class ServiceProxyFactory {
           throw NO_SERVICE;
         }
         return instance;
+      }
+
+      public synchronized Map<String, ?> attributes() {
+        return instance != null ? handle.attributes() : null;
       }
 
       public synchronized void unget() {
