@@ -33,8 +33,8 @@ public final class ChainedDecorator<S>
 
   public <T extends S> Import<T> decorate(final Import<T> handle) {
     Import<T> h = handle;
-    for (final ImportDecorator<S> i : decorators) {
-      h = i.decorate(h);
+    for (int i = decorators.length - 1; i >= 0; i--) {
+      h = decorators[i].decorate(h);
     }
     return h;
   }

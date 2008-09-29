@@ -61,7 +61,7 @@ final class OSGiServiceAttributes
 
   @Override
   public Set<String> keySet() {
-    // service ref is mutable, so build new set each time
+    // service reference is mutable, so build new set each time
     final Set<String> ks = new TreeSet<String>(IGNORE_CASE);
     addAll(ks, ref.getPropertyKeys());
     return unmodifiableSet(ks);
@@ -86,7 +86,7 @@ final class OSGiServiceAttributes
 
             public Entry<String, Object> next() {
               final String key = i.next();
-              return new SimpleImmutableEntry<String, Object>(key, get(key));
+              return new ImmutableAttribute(key, get(key));
             }
 
             public void remove() {

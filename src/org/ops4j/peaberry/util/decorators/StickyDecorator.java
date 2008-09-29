@@ -55,7 +55,7 @@ public final class StickyDecorator<S>
               instance = null;
               handle.unget();
             }
-          } catch (Exception e) {}
+          } catch (final Exception e) {}
         }
 
         if (null == instance) {

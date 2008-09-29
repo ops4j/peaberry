@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.util.decorators.ChainedDecorator;
 import org.ops4j.peaberry.util.decorators.StickyDecorator;
 
 /**
@@ -44,5 +45,14 @@ public final class Decorators {
    */
   public static <S> ImportDecorator<S> sticky(final Callable<Boolean> resetTask) {
     return new StickyDecorator<S>(resetTask);
+  }
+
+  /**
+   * 
+   * @param decorators
+   * @return
+   */
+  public static <S> ImportDecorator<S> chained(final ImportDecorator<S>... decorators) {
+    return new ChainedDecorator<S>(decorators);
   }
 }
