@@ -73,7 +73,7 @@ final class ImportProxyClassLoader
       });
       proxyLoader = PROXY_LOADER_MAP.putIfAbsent(parent, newProxyLoader);
       if (null == proxyLoader) {
-        proxyLoader = newProxyLoader;
+        return newProxyLoader;
       }
     }
 

@@ -16,17 +16,20 @@
 
 package org.ops4j.peaberry.internal;
 
+import static com.google.common.base.ReferenceType.STRONG;
+import static com.google.common.base.ReferenceType.WEAK;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
+
+import com.google.common.collect.ReferenceMap;
 
 /**
  * Factory methods for dynamic service proxies.
@@ -37,6 +40,9 @@ final class ServiceProxyFactory {
 
   static final ServiceUnavailableException NO_SERVICE = new ServiceUnavailableException();
 
+  static final ReferenceMap<Import<?>, Object> PROXY_CACHE =
+      new ReferenceMap<Import<?>, Object>(WEAK, STRONG);
+
   // instances not allowed
   private ServiceProxyFactory() {}
 
@@ -46,8 +52,6 @@ final class ServiceProxyFactory {
     final Constructor<T> ctor = getProxyConstructor(clazz);
 
     return new Iterable<T>() {
-      final Map<Import<T>, T> proxyCache = new WeakHashMap<Import<T>, T>();
-
       public Iterator<T> iterator() {
         return new Iterator<T>() {
 
@@ -58,14 +62,18 @@ final class ServiceProxyFactory {
             return i.hasNext();
           }
 
+          @SuppressWarnings("unchecked")
           public T next() {
             final Import<T> handle = i.next();
-            T proxy = proxyCache.get(handle);
 
+            T proxy = (T) PROXY_CACHE.get(handle);
             if (null == proxy) {
               // wrap each element as a decorated dynamic proxy
-              proxy = buildProxy(ctor, apply(decorator, handle));
-              proxyCache.put(handle, proxy);
+              final T newProxy = buildProxy(ctor, apply(decorator, handle));
+              proxy = (T) PROXY_CACHE.putIfAbsent(handle, newProxy);
+              if (null == proxy) {
+                return newProxy;
+              }
             }
 
             return proxy;
