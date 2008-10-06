@@ -152,12 +152,10 @@ final class OSGiServiceListener
   public synchronized OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
       final AttributeFilter filter) {
 
-    // tail optimization - no services or already at the end
-    if (imports.isEmpty() || imports.get(imports.size() - 1).equals(prevImport)) {
+    if (imports.isEmpty()) {
       return null;
     }
 
-    // head optimization - brand new iterator
     if (prevImport == null && filter == null) {
       return imports.get(0);
     }

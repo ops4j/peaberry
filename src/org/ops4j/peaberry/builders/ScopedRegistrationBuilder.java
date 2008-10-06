@@ -17,7 +17,7 @@
 package org.ops4j.peaberry.builders;
 
 import org.ops4j.peaberry.Peaberry;
-import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceScope;
 
 import com.google.inject.Key;
 
@@ -30,18 +30,18 @@ public interface ScopedRegistrationBuilder<T>
     extends RegistrationProxyBuilder<T> {
 
   /**
-   * Scope the service registration to a specific registry.
+   * Scope the service registration to a specific scope.
    * 
-   * @param key service registry key
+   * @param key service scope key
    * @return service registration builder
    */
-  RegistrationProxyBuilder<T> in(Key<? extends ServiceRegistry> key);
+  RegistrationProxyBuilder<T> in(Key<? extends ServiceScope> key);
 
   /**
-   * Scope the service registration to a specific registry.
+   * Scope the service registration to a specific scope.
    * 
-   * @param instance service registry
+   * @param instance service scope
    * @return service registration builder
    */
-  RegistrationProxyBuilder<T> in(ServiceRegistry instance);
+  RegistrationProxyBuilder<T> in(ServiceScope instance);
 }

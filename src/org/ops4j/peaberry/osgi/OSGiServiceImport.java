@@ -20,6 +20,7 @@ import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -41,13 +42,14 @@ final class OSGiServiceImport
 
   // heavily used attributes
   private final long id;
-  private volatile int rank;
+  private int rank;
 
   private final Map<String, ?> attributes;
 
-  // cached service object
-  private Object instance;
-  private int count;
+  private volatile Object instance;
+  private volatile boolean calledGet;
+
+  private final AtomicInteger count;
 
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
 
@@ -59,6 +61,8 @@ final class OSGiServiceImport
     rank = getNumberProperty(SERVICE_RANKING).intValue();
 
     attributes = new OSGiServiceAttributes(ref);
+
+    count = new AtomicInteger();
   }
 
   public long getId() {
@@ -80,10 +84,19 @@ final class OSGiServiceImport
     return attributes;
   }
 
-  public synchronized Object get() {
-    if (0 == count++) {
-      // first thread in caches the result
-      instance = bundleContext.getService(ref);
+  public Object get() {
+    count.getAndIncrement();
+    if (false == calledGet) {
+      synchronized (this) {
+        if (false == calledGet) {
+          calledGet = true;
+          try {
+            instance = bundleContext.getService(ref);
+          } catch (final RuntimeException re) {
+            throw new ServiceUnavailableException(re);
+          }
+        }
+      }
     }
     if (null == instance) {
       throw NO_SERVICE;
@@ -91,18 +104,19 @@ final class OSGiServiceImport
     return instance;
   }
 
-  public synchronized Map<String, ?> attributes() {
+  public Map<String, ?> attributes() {
     return instance != null ? getAttributes() : null;
   }
 
-  public synchronized void unget() {
-    --count;
+  public void unget() {
+    count.decrementAndGet();
   }
 
   public synchronized void flush(final boolean serviceUnregistered) {
     if (serviceUnregistered) {
       instance = null; // no need to unget
-    } else if (0 == count && null != instance) {
+    } else if (calledGet && 0 == count.get()) {
+      calledGet = false;
       instance = null;
       try {
         // cached result not being used
@@ -132,7 +146,7 @@ final class OSGiServiceImport
     }
 
     if (rank == rhs.rank) {
-      // favour lower service id
+      // prefer lower service id
       return id < rhs.id ? -1 : 1;
     }
 

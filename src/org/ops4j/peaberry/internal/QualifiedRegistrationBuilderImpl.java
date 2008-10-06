@@ -19,7 +19,7 @@ package org.ops4j.peaberry.internal;
 import java.util.Map;
 
 import org.ops4j.peaberry.Export;
-import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceScope;
 import org.ops4j.peaberry.builders.QualifiedRegistrationBuilder;
 import org.ops4j.peaberry.builders.RegistrationProxyBuilder;
 import org.ops4j.peaberry.builders.ScopedRegistrationBuilder;
@@ -57,13 +57,13 @@ public final class QualifiedRegistrationBuilderImpl<T>
     return this;
   }
 
-  public RegistrationProxyBuilder<T> in(final Key<? extends ServiceRegistry> key) {
-    settings.setRegistry(new Setting<ServiceRegistry>(key));
+  public RegistrationProxyBuilder<T> in(final Key<? extends ServiceScope> key) {
+    settings.setScope(new Setting<ServiceScope>(key));
     return this;
   }
 
-  public RegistrationProxyBuilder<T> in(final ServiceRegistry instance) {
-    settings.setRegistry(new Setting<ServiceRegistry>(instance));
+  public RegistrationProxyBuilder<T> in(final ServiceScope instance) {
+    settings.setScope(new Setting<ServiceScope>(instance));
     return this;
   }
 

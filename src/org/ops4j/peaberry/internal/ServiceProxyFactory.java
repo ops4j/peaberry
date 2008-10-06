@@ -21,6 +21,7 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstru
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
@@ -45,6 +46,8 @@ final class ServiceProxyFactory {
     final Constructor<T> ctor = getProxyConstructor(clazz);
 
     return new Iterable<T>() {
+      final Map<Import<T>, T> proxyCache = new WeakHashMap<Import<T>, T>();
+
       public Iterator<T> iterator() {
         return new Iterator<T>() {
 
@@ -56,8 +59,16 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            // wrap each element up as a decorated dynamic proxy
-            return buildProxy(ctor, apply(decorator, i.next()));
+            final Import<T> handle = i.next();
+            T proxy = proxyCache.get(handle);
+
+            if (null == proxy) {
+              // wrap each element as a decorated dynamic proxy
+              proxy = buildProxy(ctor, apply(decorator, handle));
+              proxyCache.put(handle, proxy);
+            }
+
+            return proxy;
           }
 
           public void remove() {

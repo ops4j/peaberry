@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceScope;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -34,20 +35,20 @@ final class RegistrationSettings<T>
 
   private final Setting<T> implementation;
   private Setting<Map<String, ?>> attributes;
-  private Setting<ServiceRegistry> registry;
+  private Setting<ServiceScope> scope;
 
   public RegistrationSettings(final Setting<T> implementation) {
     this.implementation = implementation;
     this.attributes = nullSetting();
-    this.registry = new Setting<ServiceRegistry>(Key.get(ServiceRegistry.class));
+    this.scope = new Setting<ServiceScope>(Key.get(ServiceRegistry.class));
   }
 
   public void setAttributes(final Setting<Map<String, ?>> attributes) {
     this.attributes = attributes;
   }
 
-  public void setRegistry(final Setting<ServiceRegistry> registry) {
-    this.registry = registry;
+  public void setScope(final Setting<ServiceScope> scope) {
+    this.scope = scope;
   }
 
   @Override
@@ -61,6 +62,6 @@ final class RegistrationSettings<T>
   }
 
   public Export<T> export(final Injector injector) {
-    return registry.get(injector).export(implementation.get(injector), attributes.get(injector));
+    return scope.get(injector).export(implementation.get(injector), attributes.get(injector));
   }
 }
