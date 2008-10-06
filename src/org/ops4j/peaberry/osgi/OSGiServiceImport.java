@@ -98,10 +98,11 @@ final class OSGiServiceImport
         }
       }
     }
-    if (null == instance) {
+    final Object obj = instance;
+    if (null == obj) {
       throw NO_SERVICE;
     }
-    return instance;
+    return obj;
   }
 
   public Map<String, ?> attributes() {
