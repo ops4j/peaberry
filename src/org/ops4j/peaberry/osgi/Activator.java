@@ -16,23 +16,29 @@
 
 package org.ops4j.peaberry.osgi;
 
+import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
+import static org.osgi.framework.Bundle.ACTIVE;
+import static org.osgi.framework.Bundle.STARTING;
 
+import org.ops4j.peaberry.ServiceUnavailableException;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.google.inject.Binder;
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Module;
+import com.google.inject.name.Named;
 
 /**
  * OSGi {@code BundleActivator} that manages a cleanup thread for peaberry.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
+ * @author rinsvind@gmail.com (Todor Boev)
  */
 public final class Activator
     implements BundleActivator {
@@ -42,9 +48,6 @@ public final class Activator
    */
   private static final String FLUSH_INTERVAL_KEY = "org.ops4j.peaberry.osgi.flushInterval";
 
-  // use static for cooperative stop
-  static volatile Thread cleanupThread;
-
   /**
    * Cleans up registered {@code CachingServiceRegistry}s at a fixed interval.
    */
@@ -53,20 +56,15 @@ public final class Activator
 
     private final Iterable<CachingServiceRegistry> registries;
     private final int flushInterval;
+    private final Bundle bundle;
 
     @Inject
-    public ImportManager(final BundleContext bundleContext,
-        final Iterable<CachingServiceRegistry> registries) {
-
-      int millis;
-      try {
-        millis = Integer.parseInt(bundleContext.getProperty(FLUSH_INTERVAL_KEY));
-      } catch (final RuntimeException e) {
-        millis = 8000;
-      }
+    public ImportManager(final Iterable<CachingServiceRegistry> registries,
+        @Named(FLUSH_INTERVAL_KEY) final int flushInterval, final BundleContext ctx) {
 
       this.registries = registries;
-      flushInterval = millis;
+      this.flushInterval = flushInterval;
+      this.bundle = ctx.getBundle();
     }
 
     public void run() {
@@ -77,21 +75,35 @@ public final class Activator
 
         // flush out any unused cached service instances...
         for (final CachingServiceRegistry i : registries) {
-          i.flush();
+          try {
+            i.flush();
+          } catch (final ServiceUnavailableException e) {}
         }
-      } while (Thread.currentThread() == cleanupThread);
+      } while ((bundle.getState() & (STARTING | ACTIVE)) != 0);
     }
   }
 
-  public void start(final BundleContext bundleContext) {
+  private Thread cleanupThread;
 
-    final Injector injector = Guice.createInjector(osgiModule(bundleContext), new Module() {
-      public void configure(final Binder binder) {
+  public void start(final BundleContext ctx) {
+
+    final Injector injector = Guice.createInjector(osgiModule(ctx), new AbstractModule() {
+      @Override
+      protected void configure() {
+
+        // retrieve current flush setting from the OSGi framework
+        bindConstant().annotatedWith(named(FLUSH_INTERVAL_KEY)).to(
+            osgiProperty(FLUSH_INTERVAL_KEY, "8000"));
 
         // eat our own cat-food: lookup registered caching registries from OSGi
-        binder.bind(Runnable.class).to(ImportManager.class).asEagerSingleton();
-        binder.bind(iterable(CachingServiceRegistry.class)).toProvider(
+        bind(Runnable.class).to(ImportManager.class).asEagerSingleton();
+        bind(iterable(CachingServiceRegistry.class)).toProvider(
             service(CachingServiceRegistry.class).multiple());
+      }
+
+      private String osgiProperty(final String name, final String defaultValue) {
+        final String value = ctx.getProperty(name);
+        return null == value ? defaultValue : value;
       }
     });
 
@@ -100,13 +112,11 @@ public final class Activator
     cleanupThread.start();
   }
 
-  public void stop(@SuppressWarnings("unused") final BundleContext bundleContext) {
-    if (null != cleanupThread) {
-      final Thread zombie = cleanupThread;
+  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {
 
-      // use cooperative stop
+    if (null != cleanupThread) {
+      cleanupThread.interrupt();
       cleanupThread = null;
-      zombie.interrupt();
     }
   }
 }

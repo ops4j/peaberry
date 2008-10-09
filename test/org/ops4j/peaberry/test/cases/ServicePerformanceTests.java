@@ -109,6 +109,7 @@ public final class ServicePerformanceTests
   }
 
   private static double timeExample(final Example example) {
+    example.action("This is a test", 1.0);
     final long now = System.currentTimeMillis();
     for (double i = 0; i < 1; i += 0.000001) {
       example.action("This is a test", i);
