@@ -5,7 +5,7 @@
 
   <target name="aopalliance">
     <mkdir dir="${build}/dist"/>
-    <bnd files="aopalliance.bnd" classpath="${guice}/lib/aopalliance.jar"/>
+    <bnd files="aopalliance.bnd" classpath="${lib}/aopalliance.jar"/>
   </target>
 
   <target name="peaberry" depends="compile,aopalliance">

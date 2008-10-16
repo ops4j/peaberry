@@ -26,8 +26,6 @@
       <sysproperty key="guice.jar" value="${guice.jar}"/>
       <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>
 
-      <sysproperty key="guice.custom.loader" value="true"/>
-
     </testng>
   </target>
 

@@ -3,28 +3,12 @@
 
   <property file="build.properties"/>
 
-  <import file="scm.xml"/>
   <import file="clover.xml"/>
   <import file="bnd.xml"/>
   <import file="test.xml"/>
   <import file="doc.xml"/>
 
-  <target name="guice" depends="scm">
-    <ant dir="${guice}" target="jar">
-      <property name="module" value="com.google.inject"/>
-      <property name="version" value="2.0-SNAPSHOT"/>
-    </ant>
-  </target>
-
-  <target name="test.guice" depends="guice">
-    <echo message="Skipping Guice unit tests"/>
-    <mkdir dir="${guice}/build/test"/>
-<!--
-    <ant dir="${guice}" target="test.dist"/>
--->
-  </target>
-
-  <target name="compile" depends="guice">
+  <target name="compile">
     <mkdir dir="${build}/classes"/>
     <javac debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}">
       <compilerarg value="-Xlint"/>
@@ -38,19 +22,13 @@
     </javac>
   </target>
 
-  <target name="clean.guice">
-    <ant dir="${guice}" target="clean"/>
-  </target>
-
   <target name="clean">
     <delete dir="${build}"/>
   </target>
 
-  <target name="clean.all" depends="clean.guice,clean"/>
+  <target name="clean.all" depends="clean"/>
 
-  <target name="wipe" depends="clean">
-    <delete dir="${guice}"/>
-  </target>
+  <target name="wipe" depends="clean"/>
 
   <target name="dist" depends="peaberry,doc">
     <jar destfile="${build}/dist/peaberry-${version}-javadoc.jar" basedir="${doc}/javadoc"/>
@@ -75,6 +53,6 @@
 
   <target name="test.dist" depends="peaberry,test.peaberry"/>
 
-  <target name="reports" depends="guice,clean,with.clover,peaberry,test.peaberry,clover.report,pmd"/>
+  <target name="reports" depends="clean,with.clover,peaberry,test.peaberry,clover.report,pmd"/>
 
 </project>
