@@ -11,7 +11,16 @@
   <rule ref="rulesets/braces.xml"/>
   <rule ref="rulesets/clone.xml"/>
   <rule ref="rulesets/codesize.xml"/>
-  <rule ref="rulesets/controversial.xml"/>
+
+  <rule ref="rulesets/controversial.xml">
+    <exclude name="CallSuperInConstructor"/>
+    <exclude name="DataflowAnomalyAnalysis"/>
+    <exclude name="AvoidFinalLocalVariable"/>
+    <exclude name="AvoidUsingVolatile"/>
+    <exclude name="DefaultPackage"/>
+    <exclude name="NullAssignment"/>
+    <exclude name="OnlyOneReturn"/>
+  </rule>
 
   <rule ref="rulesets/coupling.xml">
     <exclude name="ExcessiveImports"/>
@@ -34,6 +43,9 @@
 
   <rule ref="rulesets/naming.xml">
     <exclude name="AvoidFieldNameMatchingMethodName"/>
+    <exclude name="ShortMethodName"/>
+    <exclude name="ShortVariable"/>
+    <exclude name="LongVariable"/>
   </rule>
 
   <rule ref="rulesets/optimizations.xml"/>

@@ -55,7 +55,7 @@ public final class StickyDecorator<S>
               instance = null;
               handle.unget();
             }
-          } catch (final Exception e) {}
+          } catch (final Exception e) {/* can safely ignore */} // NOPMD
         }
 
         if (null == instance) {
@@ -71,7 +71,7 @@ public final class StickyDecorator<S>
       }
 
       public synchronized Map<String, ?> attributes() {
-        return instance != null ? handle.attributes() : null;
+        return instance == null ? null : handle.attributes();
       }
 
       public void unget() {/* nothing to do */}

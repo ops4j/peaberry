@@ -71,13 +71,13 @@ public final class Activator
       do {
         try {
           Thread.sleep(flushInterval);
-        } catch (final InterruptedException e) {}
+        } catch (final InterruptedException e) {/* wake-up */} // NOPMD
 
         // flush out any unused cached service instances...
         for (final CachingServiceRegistry i : registries) {
           try {
             i.flush();
-          } catch (final ServiceUnavailableException e) {}
+          } catch (final ServiceUnavailableException e) {/* already gone */} // NOPMD
         }
       } while ((bundle.getState() & (STARTING | ACTIVE)) != 0);
     }

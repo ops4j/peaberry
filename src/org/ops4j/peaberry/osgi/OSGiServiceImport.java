@@ -86,9 +86,9 @@ final class OSGiServiceImport
 
   public Object get() {
     count.getAndIncrement();
-    if (false == calledGet) {
+    if (!calledGet) {
       synchronized (this) {
-        if (false == calledGet) {
+        if (!calledGet) {
           calledGet = true;
           try {
             instance = bundleContext.getService(ref);
@@ -106,7 +106,7 @@ final class OSGiServiceImport
   }
 
   public Map<String, ?> attributes() {
-    return instance != null ? getAttributes() : null;
+    return instance == null ? null : getAttributes();
   }
 
   public void unget() {

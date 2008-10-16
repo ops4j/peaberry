@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="build/test-classes" path="test"/>
-	<classpathentry kind="lib" path="guice/lib/aopalliance.jar"/>
-	<classpathentry kind="lib" path="guice/lib/build/asm-3.1.jar"/>
-	<classpathentry kind="lib" path="guice/lib/build/google-collect-snapshot-20080530.jar"/>
-	<classpathentry kind="lib" path="guice/build/dist/guice-2.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="lib/asm-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/google-collect-snapshot-20080820.jar"/>
+	<classpathentry kind="lib" path="lib/google-guice-snapshot-20081016.jar"/>
 	<classpathentry kind="lib" path="lib/test/felix.jar"/>
 	<classpathentry kind="lib" path="lib/ant/testng.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

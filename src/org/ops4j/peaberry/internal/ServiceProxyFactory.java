@@ -136,7 +136,7 @@ final class ServiceProxyFactory {
       }
 
       public synchronized Map<String, ?> attributes() {
-        return instance != null ? handle.attributes() : null;
+        return instance == null ? null : handle.attributes();
       }
 
       public synchronized void unget() {
