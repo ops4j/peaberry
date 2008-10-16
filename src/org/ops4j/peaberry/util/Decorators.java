@@ -48,9 +48,10 @@ public final class Decorators {
   }
 
   /**
+   * An {@code ImportDecorator} that combines several decorators in a chain.
    * 
-   * @param decorators
-   * @return
+   * @param decorators sequence of decorators
+   * @return decorator that combines given decorators
    */
   public static <S> ImportDecorator<S> chained(final ImportDecorator<S>... decorators) {
     return new ChainedDecorator<S>(decorators);
