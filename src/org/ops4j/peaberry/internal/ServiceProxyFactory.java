@@ -142,10 +142,10 @@ final class ServiceProxyFactory {
       public synchronized void unget() {
         // last thread to exit does the unget...
         if (0 == --count && null != handle) {
-          final Import<T> h = handle;
+          final Import<T> oldHandle = handle;
           instance = null;
           handle = null;
-          h.unget();
+          oldHandle.unget();
         }
       }
     };

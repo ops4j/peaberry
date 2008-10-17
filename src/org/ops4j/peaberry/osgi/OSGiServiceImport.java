@@ -46,8 +46,8 @@ final class OSGiServiceImport
 
   private final Map<String, ?> attributes;
 
-  private volatile Object instance;
   private volatile boolean calledGet;
+  private volatile Object instance;
 
   private final AtomicInteger count;
 
@@ -98,11 +98,10 @@ final class OSGiServiceImport
         }
       }
     }
-    final Object obj = instance;
-    if (null == obj) {
+    if (null == instance) {
       throw NO_SERVICE;
     }
-    return obj;
+    return instance;
   }
 
   public Map<String, ?> attributes() {
@@ -119,14 +118,20 @@ final class OSGiServiceImport
       return;
     }
 
-    synchronized (this) {
-      if (calledGet && 0 == count.get()) {
-        calledGet = false;
-        instance = null;
-        try {
-          // cached result not being used
-          bundleContext.ungetService(ref);
-        } catch (final IllegalStateException e) {/* already gone */} // NOPMD
+    if (calledGet && 0 == count.get()) {
+      synchronized (this) {
+        if (calledGet) {
+          calledGet = false;
+          if (count.get() > 0) {
+            calledGet = true;
+          } else {
+            instance = null;
+            try {
+              // cached result not being used
+              bundleContext.ungetService(ref);
+            } catch (final IllegalStateException e) {/* already gone */} // NOPMD
+          }
+        }
       }
     }
   }
