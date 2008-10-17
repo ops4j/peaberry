@@ -113,16 +113,21 @@ final class OSGiServiceImport
     count.decrementAndGet();
   }
 
-  public synchronized void flush(final boolean serviceUnregistered) {
+  public void flush(final boolean serviceUnregistered) {
     if (serviceUnregistered) {
       instance = null; // no need to unget
-    } else if (calledGet && 0 == count.get()) {
-      calledGet = false;
-      instance = null;
-      try {
-        // cached result not being used
-        bundleContext.ungetService(ref);
-      } catch (final IllegalStateException e) {/* already gone */} // NOPMD
+      return;
+    }
+
+    synchronized (this) {
+      if (calledGet && 0 == count.get()) {
+        calledGet = false;
+        instance = null;
+        try {
+          // cached result not being used
+          bundleContext.ungetService(ref);
+        } catch (final IllegalStateException e) {/* already gone */} // NOPMD
+      }
     }
   }
 

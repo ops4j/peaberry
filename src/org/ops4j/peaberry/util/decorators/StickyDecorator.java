@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
@@ -55,7 +56,9 @@ public final class StickyDecorator<S>
               instance = null;
               handle.unget();
             }
-          } catch (final Exception e) {/* can safely ignore */} // NOPMD
+          } catch (final Exception e) {
+            throw new ServiceException("Exception in resetTask", e);
+          }
         }
 
         if (null == instance) {

@@ -84,11 +84,9 @@ final class IterableOSGiService<T>
         return nextImport;
       }
 
-      // /CLOVER:OFF
       public void remove() {
         throw new UnsupportedOperationException();
       }
-      // /CLOVER:ON
     };
   }
 }
