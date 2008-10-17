@@ -65,7 +65,8 @@ public final class Activator
 
       this.registries = registries;
       this.flushInterval = flushInterval;
-      this.bundle = ctx.getBundle();
+
+      bundle = ctx.getBundle();
     }
 
     public void run() {

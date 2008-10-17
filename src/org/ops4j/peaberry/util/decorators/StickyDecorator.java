@@ -42,42 +42,49 @@ public final class StickyDecorator<S>
     this.resetTask = resetTask;
   }
 
-  public <T extends S> Import<T> decorate(final Import<T> handle) {
-    return new Import<T>() {
+  private final class StickyImport<T>
+      implements Import<T> {
 
-      // sticky service
-      private T instance;
+    private final Import<T> handle;
+    private T instance;
 
-      public synchronized T get() {
+    StickyImport(final Import<T> handle) {
+      this.handle = handle;
+    }
 
-        if (null != resetTask && null != instance && null == handle.attributes()) {
-          try {
-            if (resetTask.call()) {
-              instance = null;
-              handle.unget();
-            }
-          } catch (final Exception e) {
-            throw new ServiceException("Exception in resetTask", e);
-          }
-        }
+    public synchronized T get() {
 
-        if (null == instance) {
-          try {
-            instance = handle.get();
-          } catch (final RuntimeException re) {
+      if (null != resetTask && null != instance && null == handle.attributes()) {
+        try {
+          if (resetTask.call()) {
+            instance = null;
             handle.unget();
-            throw re;
           }
+        } catch (final Exception e) {
+          throw new ServiceException("Exception in resetTask", e);
         }
-
-        return instance;
       }
 
-      public synchronized Map<String, ?> attributes() {
-        return instance == null ? null : handle.attributes();
+      if (null == instance) {
+        try {
+          instance = handle.get();
+        } catch (final RuntimeException re) {
+          handle.unget();
+          throw re;
+        }
       }
 
-      public void unget() {/* nothing to do */}
-    };
+      return instance;
+    }
+
+    public synchronized Map<String, ?> attributes() {
+      return instance == null ? null : handle.attributes();
+    }
+
+    public void unget() {/* nothing to do */}
+  }
+
+  public <T extends S> Import<T> decorate(final Import<T> handle) {
+    return new StickyImport<T>(handle);
   }
 }

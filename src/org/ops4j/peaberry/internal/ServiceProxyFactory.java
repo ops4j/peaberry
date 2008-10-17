@@ -22,7 +22,6 @@ import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstru
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
@@ -102,53 +101,8 @@ final class ServiceProxyFactory {
   public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
-    /*
-     * Provide an import handle that dynamically delegates to the first service,
-     * but also tracks its use (even across multiple threads) so that unget() is
-     * always called on the same handle as get() was originally.
-     * 
-     * The solution below will use the same handle until no threads are actively
-     * using the injected instance. This might keep a service in use for longer
-     * than expected when there is heavy contention, but it doesn't require any
-     * use of thread locals or additional context stacks.
-     */
-    final Import<T> lookup = new Import<T>() {
-
-      private Import<T> handle;
-      private T instance;
-      private int count;
-
-      // need barrier on entry...
-      public synchronized T get() {
-        count++;
-        if (null == handle) {
-          // first valid handle may appear at any time
-          final Iterator<Import<T>> i = handles.iterator();
-          if (i.hasNext()) {
-            handle = i.next();
-            instance = handle.get(); // only called once
-          }
-        }
-        if (null == instance) {
-          throw NO_SERVICE;
-        }
-        return instance;
-      }
-
-      public synchronized Map<String, ?> attributes() {
-        return instance == null ? null : handle.attributes();
-      }
-
-      public synchronized void unget() {
-        // last thread to exit does the unget...
-        if (0 == --count && null != handle) {
-          final Import<T> oldHandle = handle;
-          instance = null;
-          handle = null;
-          oldHandle.unget();
-        }
-      }
-    };
+    // provide concurrent access to the head of the import list
+    final Import<T> lookup = new ConcurrentImport<T>(handles);
 
     // we can now wrap our delegating import as a decorated dynamic proxy
     return buildProxy(getProxyConstructor(clazz), apply(decorator, lookup));
