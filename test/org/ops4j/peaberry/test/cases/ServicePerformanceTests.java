@@ -96,20 +96,24 @@ public final class ServicePerformanceTests
     final Holder holder = injector.getInstance(Holder.class);
 
     // warm-up...
-    timeExample(holder.raw);
-    timeExample(holder.service);
-    timeExample(holder.direct);
-    timeExample(holder.sticky);
+    time(holder.raw);
+    time(holder.service);
+    time(holder.sticky);
+    time(holder.direct);
 
-    System.out.println();
-    System.out.format("RAW INSTANCE   %8.2f ns / call\n", timeExample(holder.raw));
-    System.out.format("SERVICE PROXY  %8.2f ns / call\n", timeExample(holder.service));
-    System.out.format("DIRECT SERVICE %8.2f ns / call\n", timeExample(holder.direct));
-    System.out.format("STICKY SERVICE %8.2f ns / call\n", timeExample(holder.sticky));
+    System.out.println("\nProxy overhead\n");
+    final double baseline = time(holder.raw);
+
+    benchmark("SERVICE PROXY ", baseline, time(holder.service));
+    benchmark("STICKY SERVICE", baseline, time(holder.sticky));
+    benchmark("DIRECT SERVICE", baseline, time(holder.direct));
   }
 
-  private static double timeExample(final Example example) {
-    example.action("This is a test", 1.0);
+  private static void benchmark(final String message, double baseline, double time) {
+    System.out.format("%s %8.2f ns/call\n", message, time - baseline);
+  }
+
+  private static double time(final Example example) {
     final long now = System.currentTimeMillis();
     for (double i = 0; i < 1; i += 0.000001) {
       example.action("This is a test", i);

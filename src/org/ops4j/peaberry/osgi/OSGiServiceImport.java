@@ -22,6 +22,7 @@ import static org.osgi.framework.Constants.SERVICE_RANKING;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
@@ -46,9 +47,9 @@ final class OSGiServiceImport
 
   private final Map<String, ?> attributes;
 
-  private volatile boolean calledGet;
-  private volatile Object instance;
+  private Object instance;
 
+  private volatile boolean calledGet;
   private final AtomicInteger count;
 
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
@@ -80,8 +81,8 @@ final class OSGiServiceImport
     return oldRank != rank;
   }
 
-  public Map<String, ?> getAttributes() {
-    return attributes;
+  public boolean matches(final AttributeFilter filter) {
+    return filter.matches(attributes);
   }
 
   public Object get() {
@@ -89,23 +90,26 @@ final class OSGiServiceImport
     if (!calledGet) {
       synchronized (this) {
         if (!calledGet) {
-          calledGet = true;
           try {
             instance = bundleContext.getService(ref);
           } catch (final RuntimeException re) {
             throw new ServiceUnavailableException(re);
+          } finally {
+            calledGet = true;
           }
         }
       }
     }
-    if (null == instance) {
+    // cache locally then check
+    final Object svc = instance;
+    if (null == svc) {
       throw NO_SERVICE;
     }
-    return instance;
+    return svc;
   }
 
   public Map<String, ?> attributes() {
-    return instance == null ? null : getAttributes();
+    return calledGet && instance != null ? attributes : null;
   }
 
   public void unget() {
@@ -114,15 +118,22 @@ final class OSGiServiceImport
 
   public void flush(final boolean serviceUnregistered) {
     if (serviceUnregistered) {
-      instance = null; // no need to unget
+      // no need to unget, as service is gone
+      instance = null;
+      calledGet = true; // flush
       return;
     }
 
+    // check no-one is using the service
     if (calledGet && 0 == count.get()) {
+
       synchronized (this) {
         if (calledGet) {
+          // attempt to block other threads calling get()
           calledGet = false;
+
           if (count.get() > 0) {
+            // another thread snuck in, so roll back...
             calledGet = true;
           } else {
             instance = null;
