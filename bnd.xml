@@ -8,9 +8,30 @@
     <bnd files="aopalliance.bnd" classpath="${lib}/aopalliance.jar"/>
   </target>
 
+  <taskdef resource="proguard/ant/task.properties" classpath="${antlib}/proguard.jar"/>
+
   <target name="peaberry" depends="compile,aopalliance">
     <copy file="${guice.jar}" todir="${build}/dist"/>
-    <bnd files="peaberry.bnd" classpath="${build}/classes"/>
+    <mkdir dir="${build}/trim"/>
+    <proguard>
+      -libraryjars ${java.home}/lib/rt.jar
+      -libraryjars ${ant.home}/lib/ant.jar
+      -libraryjars ${guice.jar}
+      -libraryjars ${aop.jar}
+      -libraryjars ${felix.jar}(!**/ldap/**)
+      -injars ${build}/classes
+      -injars ${asm.jar}(!**/MANIFEST.MF)
+      -injars ${collect.jar}(!**/MANIFEST.MF)
+      -injars ${felix.jar}(**/ldap/**)
+      -outjars ${build}/trim/peaberry.jar
+      -keep class org.ops4j.** { *; }
+      -repackageclasses ${module}.internal
+      -dontusemixedcaseclassnames
+      -keepattributes
+      -dontoptimize
+      -dontnote
+    </proguard>
+    <bnd files="peaberry.bnd" classpath="${build}/trim/peaberry.jar"/>
   </target>
 
   <target name="director" depends="test.compile">
