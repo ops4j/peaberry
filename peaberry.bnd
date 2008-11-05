@@ -15,7 +15,6 @@ Include-Resource:\
  META-INF/NOTICE=NOTICE,\
  META-INF/LICENSE=LICENSE,\
  META-INF/LICENSE.asm=LICENSE.asm,\
- OSGI-OPT/src=src,\
  @${asm.jar}!/org/objectweb/asm/*,\
  @${collect.jar}!/com/google/common/base/*Reference*,\
  @${collect.jar}!/com/google/common/base/Preconditions*,\
