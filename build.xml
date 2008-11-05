@@ -30,6 +30,8 @@
 
   <target name="wipe" depends="clean"/>
 
+  <target name="jar" depends="peaberry"/>
+
   <target name="dist" depends="peaberry,doc">
     <jar destfile="${build}/dist/peaberry-${version}-javadoc.jar" basedir="${doc}/javadoc"/>
     <jar destfile="${build}/dist/peaberry-${version}-sources.jar" basedir="${src}">
