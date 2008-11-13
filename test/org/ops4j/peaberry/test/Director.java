@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.felix.framework.Felix;
-import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.main.AutoActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

@@ -158,7 +158,7 @@ final class OSGiServiceImport
 
   @Override
   public int hashCode() {
-    return (int) (id ^ id >>> 32);
+    return (int) (id ^ (id >>> 32));
   }
 
   public int compareTo(final OSGiServiceImport rhs) {

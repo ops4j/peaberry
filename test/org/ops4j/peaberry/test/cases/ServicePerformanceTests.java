@@ -106,7 +106,7 @@ public final class ServicePerformanceTests
     benchmark("DIRECT SERVICE", baseline, time(holder.direct));
   }
 
-  private static void benchmark(final String message, double baseline, double time) {
+  private static void benchmark(final String message, final double baseline, final double time) {
     System.out.format("%s %8.2f ns/call\n", message, time - baseline);
   }
 
