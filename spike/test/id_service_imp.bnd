@@ -1,0 +1,8 @@
+-include: ../common.bnd
+
+Bundle-Activator:\
+ examples.ids.internal.IdServiceActivator
+
+Private-Package:\
+ examples.ids.internal
+

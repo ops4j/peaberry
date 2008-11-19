@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<project name="bnd">
+
+  <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${antlib}/bnd.jar"/>
+
+  <target name="aopalliance">
+    <mkdir dir="${build}/dist"/>
+    <bnd files="aopalliance.bnd" classpath="${lib}/aopalliance.jar"/>
+  </target>
+
+  <taskdef resource="proguard/ant/task.properties" classpath="${antlib}/proguard.jar"/>
+
+  <target name="peaberry" depends="compile,aopalliance">
+    <copy file="${guice.jar}" todir="${build}/dist"/>
+    <mkdir dir="${build}/trim"/>
+    <proguard>
+      -libraryjars ${java.home}/lib/rt.jar
+      -libraryjars ${ant.home}/lib/ant.jar
+      -libraryjars ${guice.jar}
+      -libraryjars ${aop.jar}
+      -libraryjars ${felix.jar}(!**/ldap/**)
+      -injars ${build}/classes
+      -injars ${asm.jar}(!**/MANIFEST.MF)
+      -injars ${collect.jar}(!**/MANIFEST.MF)
+      -injars ${felix.jar}(**/ldap/**)
+      -outjars ${build}/trim/peaberry.jar
+      -keep class org.ops4j.** { *; }
+      -repackageclasses ${module}.internal
+      -printmapping ${build}/proguard.txt
+      -dontusemixedcaseclassnames
+      -keepattributes
+      -dontoptimize
+      -dontnote
+    </proguard>
+    <bnd files="peaberry.bnd" classpath="${build}/trim/peaberry.jar"/>
+  </target>
+
+  <target name="director" depends="test.compile">
+    <mkdir dir="${build}/test"/>
+    <bnd files="director.bnd" classpath="${build}/test-classes"/>
+  </target>
+
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${antlib}/contrib.jar"/>
+
+  <target name="testcases" depends="director">
+    <mkdir dir="${build}/test/bundles"/>
+    <foreach target="test.bundle" param="test.bnd">
+      <path>
+        <fileset dir="${test}" includes="*.bnd"/>
+      </path>
+    </foreach>
+  </target>
+
+  <target name="test.bundle">
+    <bnd files="${test.bnd}" output="${build}/test/bundles" classpath="${build}/test-classes"/>
+  </target>
+
+</project>
