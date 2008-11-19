@@ -122,21 +122,28 @@ public final class OSGiServiceRegistry
     if (objectClass instanceof String[]) {
       interfaces = (String[]) objectClass;
     } else {
-      // use simple algorithm - don't search the hierarchy
       final Collection<String> api = new HashSet<String>();
-      final Class<?> clazz = service.getClass();
 
-      if (clazz.isInterface()) {
-        api.add(clazz.getName());
-      } else {
-        // use direct interfaces declared by this class
-        for (final Class<?> i : clazz.getInterfaces()) {
-          api.add(i.getName());
+      Class<?> clazz = service.getClass();
+      while (clazz != null) {
+        if (clazz.isInterface()) {
+          api.add(clazz.getName());
+        } else {
+          // use direct interfaces declared by this class
+          for (final Class<?> i : clazz.getInterfaces()) {
+            api.add(i.getName());
+          }
         }
+        clazz = clazz.getSuperclass();
       }
 
       interfaces = api.toArray(new String[api.size()]);
     }
+
+    if (interfaces.length == 0) {
+      return new String[] {Object.class.getName()};
+    }
+
     return interfaces;
   }
 
