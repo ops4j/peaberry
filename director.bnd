@@ -1,0 +1,8 @@
+-include: common.bnd
+
+Private-Package:\
+ ${module}.test
+
+-output:\
+ ${director.jar}
+

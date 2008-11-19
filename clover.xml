@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="clover">
+
+  <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
+
+  <target name="with.clover">
+    <clover-setup initstring="${build}/instrument/coverage.db">
+      <files>
+        <exclude name="**/*Exception.java"/>
+      </files>
+      <methodContext name="toString" regexp="(.* )?public String toString\(\).*"/>
+      <methodContext name="privateCtor" regexp="(.* )?private \w+\(\).*"/>
+      <statementContext name="testFail" regexp="(.* )?fail\(.*"/>
+      <testsources dir="${test}">
+        <testclass annotation="Test"/>
+      </testsources>
+    </clover-setup>
+  </target>
+
+  <target name="clover.report">
+    <clover-report>
+      <current outfile="${doc}/coverage" title="peaberry">
+        <format type="html" filter="toString,privateCtor,testFail"/>
+        <testsources dir="${test}"/>
+      </current>
+    </clover-report>
+  </target>
+
+</project>

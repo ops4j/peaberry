@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="test">
+
+  <taskdef resource="testngtasks" classpath="${testng.jar}"/>
+
+  <target name="test.peaberry" depends="testcases">
+    <delete dir="${build}/test/felix"/>
+
+    <testng outputDir="${doc}/testNG" suiteRunnerClass="${module}.test.Director">
+
+      <xmlfileset dir="${test}"/>
+
+      <classpath>
+        <pathelement location="${felix.jar}"/>
+        <pathelement location="${director.jar}"/>
+        <pathelement location="${clover.jar}"/>
+      </classpath>
+
+      <jvmarg value="-server"/>
+
+      <sysproperty key="felix.config.properties" value="file:test/felix.properties"/>
+
+      <sysproperty key="build" value="${build}"/>
+
+      <sysproperty key="aop.jar" value="${aop.jar}"/>
+      <sysproperty key="guice.jar" value="${guice.jar}"/>
+      <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>
+
+    </testng>
+  </target>
+
+</project>
