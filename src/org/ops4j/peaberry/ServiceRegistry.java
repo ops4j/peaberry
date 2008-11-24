@@ -22,7 +22,7 @@ package org.ops4j.peaberry;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceRegistry
-    extends ServiceScope {
+    extends ServiceScope<Object> {
 
   /**
    * Lookup services from the registry, constrained by the given filter.
@@ -32,5 +32,15 @@ public interface ServiceRegistry
    * 
    * @return ordered sequence of imported services, most recommended first
    */
-  <T> Iterable<Import<T>> lookup(Class<? extends T> clazz, AttributeFilter filter);
+  <T> Iterable<Import<T>> lookup(Class<T> clazz, AttributeFilter filter);
+
+  /**
+   * Watch for services in the registry, constrained by the given filter.
+   * 
+   * @param clazz expected service interface
+   * @param filter service attribute filter
+   * 
+   * @param scope the watching scope which receives any matching services
+   */
+  <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<T> scope);
 }

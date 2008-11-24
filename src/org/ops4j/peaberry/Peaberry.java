@@ -29,51 +29,50 @@ import com.google.inject.TypeLiteral;
 /**
  * Guice extension that supports injection and outjection of dynamic services.
  * <p>
- * For example, injecting a dictionary service:
+ * For example, injecting a stock quote service:
  * 
  * <pre> {@literal @}Inject
- * DictionaryService dictionaryService;
+ * StockQuote quote;
  * ...
- * bind(DictionaryService.class).to(service(DictionaryService.class).single());</pre>
+ * bind(StockQuote.class).to(service(StockQuote.class).single());</pre>
  * 
- * Injecting many dictionary services:
+ * Injecting many stock quote services:
  * 
  * <pre> {@literal @}Inject
- * Iterable&lt;DictionaryService&gt; dictionaryServices;
+ * Iterable&lt;StockQuote&gt; quotes;
  * ...
- * bind(iterable(DictionaryService.class)).to(service(DictionaryService.class).multiple());</pre>
+ * bind(iterable(StockQuote.class)).to(service(StockQuote.class).multiple());</pre>
  * 
- * Exporting an implementation as a dictionary service:
+ * Exporting an implementation as a stock quote service:
  * 
  * <pre> {@literal @}Inject
  * // the service can be controlled by the Export handle
- * Export&lt;DictionaryService&gt; exportedDictionaryService;
+ * Export&lt;StockQuote&gt; exportedQuote;
  * ...
  * // the service is exported at injection time
- * bind(export(DictionaryService.class)).to(service(myDictionary).export());</pre>
+ * bind(export(StockQuote.class)).to(service(myQuoteImpl).export());</pre>
  * 
  * Applying a custom filter to find a specific service:
  * 
- * <pre> service(DictionaryService.class).filter(ldap(&quot;(Language=French)&quot;)).single()</pre>
+ * <pre> service(StockQuote.class).filter(ldap(&quot;(Currency=GBP)&quot;)).single()</pre>
  * 
  * Applying custom attributes to an exported service:
  * 
- * <pre> service(myDictionary).attributes(names(&quot;Language=French&quot;)).export()</pre>
+ * <pre> service(myQuoteImpl).attributes(names(&quot;Currency=GBP&quot;)).export()</pre>
  * 
- * NOTE: helper methods for dealing with filters and attributes are in the
- * {@code org.ops4j.peaberry.util} package.
+ * (the ldap and names utility methods are from {@code org.ops4j.peaberry.util})
  * <p>
  * You can also decorate services with additional behaviour:
  * 
- * <pre> service(DictionaryService.class).decoratedWith(myDecorator).single()</pre>
+ * <pre> service(StockQuote.class).decoratedWith(someDecoratorImpl).single()</pre>
  * 
- * or ask for the service to be injected directly, instead of using a dynamic proxy:
+ * or ask for them to be injected directly, instead of using a dynamic proxy:
  * 
- * <pre> service(DictionaryService.class).single().direct())</pre>
+ * <pre> service(StockQuote.class).single().direct())</pre>
  * 
  * similarly, if you don't want to bother with an Export handle when exporting:
  * 
- * <pre> service(myDictionary).export().direct()</pre>
+ * <pre> service(myQuoteImpl).export().direct()</pre>
  * 
  * See the <a href="http://code.google.com/p/peaberry/wiki/UserGuide"
  * target="_blank">User Guide</a> for more examples.
@@ -91,7 +90,7 @@ public final class Peaberry {
    * @param key binding key
    * @return dynamic service builder
    */
-  public static <T> DecoratedServiceBuilder<T> service(final Key<? extends T> key) {
+  public static <T> DecoratedServiceBuilder<T> service(final Key<T> key) {
     return new ServiceBuilderImpl<T>(key);
   }
 
@@ -101,7 +100,7 @@ public final class Peaberry {
    * @param type binding type
    * @return dynamic service builder
    */
-  public static <T> DecoratedServiceBuilder<T> service(final TypeLiteral<? extends T> type) {
+  public static <T> DecoratedServiceBuilder<T> service(final TypeLiteral<T> type) {
     return new ServiceBuilderImpl<T>(Key.get(type));
   }
 
@@ -111,7 +110,7 @@ public final class Peaberry {
    * @param clazz binding class
    * @return dynamic service builder
    */
-  public static <T> DecoratedServiceBuilder<T> service(final Class<? extends T> clazz) {
+  public static <T> DecoratedServiceBuilder<T> service(final Class<T> clazz) {
     return new ServiceBuilderImpl<T>(Key.get(clazz));
   }
 
@@ -121,8 +120,8 @@ public final class Peaberry {
    * @param instance service instance
    * @return dynamic service builder
    */
-  public static <S, T extends S> DecoratedServiceBuilder<S> service(final T instance) {
-    return new ServiceBuilderImpl<S>(instance);
+  public static <T> DecoratedServiceBuilder<T> service(final T instance) {
+    return new ServiceBuilderImpl<T>(instance);
   }
 
   /**
