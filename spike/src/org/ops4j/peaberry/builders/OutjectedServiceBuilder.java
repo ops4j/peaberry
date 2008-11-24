@@ -17,7 +17,7 @@
 package org.ops4j.peaberry.builders;
 
 import org.ops4j.peaberry.Peaberry;
-import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceScope;
 
 import com.google.inject.Key;
 
@@ -26,22 +26,22 @@ import com.google.inject.Key;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ScopedServiceBuilder<T>
+public interface OutjectedServiceBuilder<T>
     extends ServiceBuilder<T> {
 
   /**
-   * Scope the dynamic service to a specific registry.
+   * Outject the dynamic service to the given scope.
    * 
-   * @param key service registry key
+   * @param key service scope key
    * @return dynamic service builder
    */
-  ServiceBuilder<T> in(Key<? extends ServiceRegistry> key);
+  ServiceBuilder<T> out(Key<? extends ServiceScope<? super T>> key);
 
   /**
-   * Scope the dynamic service to a specific registry.
+   * Outject the dynamic service to the given scope.
    * 
-   * @param instance service registry
+   * @param instance service scope
    * @return dynamic service builder
    */
-  ServiceBuilder<T> in(ServiceRegistry instance);
+  ServiceBuilder<T> out(ServiceScope<? super T> instance);
 }

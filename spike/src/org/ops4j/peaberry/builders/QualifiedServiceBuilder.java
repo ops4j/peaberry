@@ -29,7 +29,7 @@ import com.google.inject.Key;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface QualifiedServiceBuilder<T>
-    extends ScopedServiceBuilder<T> {
+    extends InjectedServiceBuilder<T> {
 
   /**
    * Apply the given attributes to the dynamic service.
@@ -37,7 +37,7 @@ public interface QualifiedServiceBuilder<T>
    * @param key service attributes key
    * @return dynamic service builder
    */
-  ScopedServiceBuilder<T> attributes(Key<? extends Map<String, ?>> key);
+  InjectedServiceBuilder<T> attributes(Key<? extends Map<String, ?>> key);
 
   /**
    * Apply the given attributes to the dynamic service.
@@ -45,7 +45,7 @@ public interface QualifiedServiceBuilder<T>
    * @param instance service attributes
    * @return dynamic service builder
    */
-  ScopedServiceBuilder<T> attributes(Map<String, ?> instance);
+  InjectedServiceBuilder<T> attributes(Map<String, ?> instance);
 
   /**
    * Apply the given filter to the dynamic service.
@@ -53,7 +53,7 @@ public interface QualifiedServiceBuilder<T>
    * @param key attribute filter key
    * @return dynamic service builder
    */
-  ScopedServiceBuilder<T> filter(Key<? extends AttributeFilter> key);
+  InjectedServiceBuilder<T> filter(Key<? extends AttributeFilter> key);
 
   /**
    * Apply the given filter to the dynamic service.
@@ -61,5 +61,5 @@ public interface QualifiedServiceBuilder<T>
    * @param instance attribute filter
    * @return dynamic service builder
    */
-  ScopedServiceBuilder<T> filter(AttributeFilter instance);
+  InjectedServiceBuilder<T> filter(AttributeFilter instance);
 }

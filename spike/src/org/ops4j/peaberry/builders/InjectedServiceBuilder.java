@@ -16,20 +16,32 @@
 
 package org.ops4j.peaberry.builders;
 
-import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.Peaberry;
+import org.ops4j.peaberry.ServiceRegistry;
+
+import com.google.inject.Key;
 
 /**
- * Provide runtime decoration/intercepting of imported services.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ImportDecorator<S> {
+public interface InjectedServiceBuilder<T>
+    extends OutjectedServiceBuilder<T> {
 
   /**
-   * Decorate the given imported service.
+   * Inject the dynamic service from a specific registry.
    * 
-   * @param service imported service handle
-   * @return decorated service handle
+   * @param key service registry key
+   * @return dynamic service builder
    */
-  <T extends S> Import<T> decorate(Import<T> service);
+  OutjectedServiceBuilder<T> in(Key<? extends ServiceRegistry> key);
+
+  /**
+   * Inject the dynamic service from a specific registry.
+   * 
+   * @param instance service registry
+   * @return dynamic service builder
+   */
+  OutjectedServiceBuilder<T> in(ServiceRegistry instance);
 }

@@ -28,7 +28,7 @@ import com.google.inject.Provider;
 public interface DirectProvider<T> {
 
   /**
-   * @return direct (non-proxy) service provider
+   * @return direct (non-proxied) service provider
    */
   Provider<T> direct();
 }
