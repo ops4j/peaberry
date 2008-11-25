@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceScope;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -57,9 +58,11 @@ public final class OSGiServiceRegistry
     bundleContext.registerService(CachingServiceRegistry.class.getName(), this, null);
   }
 
-  public <T> Iterable<Import<T>> lookup(final Class<? extends T> type, final AttributeFilter filter) {
+  public <T> Iterable<Import<T>> lookup(final Class<T> type, final AttributeFilter filter) {
     final String clazzName = type.getName();
     OSGiServiceListener listener;
+
+    /*** !!! DEFER UNTIL ACTUALLY NEEDED ??? ***/
 
     listener = listenerMap.get(clazzName);
     if (null == listener) {
@@ -75,29 +78,35 @@ public final class OSGiServiceRegistry
     return new IterableOSGiService<T>(listener, filter);
   }
 
-  public <T, S extends T> Export<T> export(final S service, final Map<String, ?> attributes) {
+  public <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<T> scope) {
+  // TODO Auto-generated method stub
+  }
+
+  public <T> Export<T> add(final Import<T> service) {
 
     // map generic service attributes to OSGi expected types
-    final Dictionary<String, ?> props = dictionary(attributes);
-    final String[] interfaces = getInterfaceNames(service, props);
+    final Dictionary<String, ?> props = dictionary(service.attributes());
+    final String[] interfaces = getInterfaceNames(service.get(), props);
 
     final ServiceRegistration registration =
-        bundleContext.registerService(interfaces, service, props);
+        bundleContext.registerService(interfaces, service.get(), props);
 
     // wrap registration as export
     return new Export<T>() {
 
       public T get() {
-        return service;
+        return service.get();
       }
 
       public Map<String, ?> attributes() {
-        return new OSGiServiceAttributes(registration.getReference());
+        return service.attributes();
       }
 
-      public void unget() {/* nothing to do */}
+      public void unget() {
+        service.unget();
+      }
 
-      public void put(@SuppressWarnings("unused") final T newService) {
+      public void put(final T newService) {
         throw new UnsupportedOperationException();
       }
 

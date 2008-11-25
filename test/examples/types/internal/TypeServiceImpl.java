@@ -113,17 +113,16 @@ final class TypeServiceImpl
     return ts.toString();
   }
 
-  @SuppressWarnings( {"unchecked", "unused"})
+  @SuppressWarnings( {"unchecked"})
   public String toString(final Class c, final int... is) {
     return Arrays.toString(is);
   }
 
-  @SuppressWarnings( {"unchecked", "unused"})
+  @SuppressWarnings( {"unchecked"})
   public String toString(final Class c, final Object... os) {
     return Arrays.toString(os);
   }
 
-  @SuppressWarnings("unused")
   public void parse(final String s) {}
 
   public boolean parseBoolean(final String s) {

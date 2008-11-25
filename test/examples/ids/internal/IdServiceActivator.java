@@ -33,5 +33,5 @@ public final class IdServiceActivator
     ctx.registerService(IdService.class.getName(), new IdServiceImpl(ctx), null);
   }
 
-  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {}
+  public void stop(final BundleContext ctx) {}
 }

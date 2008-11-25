@@ -64,13 +64,11 @@ final class AttributeDictionary
   }
 
   @Override
-  @SuppressWarnings("unused")
   public Object put(final String key, final Object value) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  @SuppressWarnings("unused")
   public Object remove(final Object key) {
     throw new UnsupportedOperationException();
   }

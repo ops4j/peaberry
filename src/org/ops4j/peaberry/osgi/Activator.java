@@ -115,7 +115,7 @@ public final class Activator
     }
   }
 
-  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {
+  public void stop(final BundleContext ctx) {
 
     if (null != cleanupThread) {
       cleanupThread.interrupt();
