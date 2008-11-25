@@ -3,5 +3,8 @@
 -classpath: ../${peaberry.jar}
 
 Private-Package:\
- ${module}(|.builders|.internal|.osgi);-split-package:=merge-first
+ ${module},\
+ ${module}.builders,\
+ ${module}(.internal|.osgi);-split-package:=merge-first,\
+ ${module}.internal.*
 
