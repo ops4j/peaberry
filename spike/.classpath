@@ -4,8 +4,8 @@
 	<classpathentry kind="src" output="build/test-classes" path="test"/>
 	<classpathentry kind="lib" path="lib/build/aopalliance.jar"/>
 	<classpathentry kind="lib" path="lib/build/asm-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/build/google-collect-snapshot-20080820.jar"/>
-	<classpathentry kind="lib" path="lib/build/google-guice-snapshot-20081114.jar"/>
+	<classpathentry kind="lib" path="lib/build/google-collect-snapshot-20081125.jar"/>
+	<classpathentry kind="lib" path="lib/build/google-guice-snapshot-20081125.jar"/>
 	<classpathentry kind="lib" path="lib/build/felix.jar"/>
 	<classpathentry kind="lib" path="lib/ant/testng.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

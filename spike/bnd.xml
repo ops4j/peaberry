@@ -10,6 +10,8 @@
 
   <taskdef resource="proguard/ant/task.properties" classpath="${antlib}/proguard.jar"/>
 
+  <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${antlib}/jarjar.jar"/>
+
   <target name="peaberry" depends="compile,aopalliance">
     <copy file="${guice.jar}" todir="${build}/dist"/>
     <mkdir dir="${build}/trim"/>
@@ -23,16 +25,21 @@
       -injars ${asm.jar}(!**/MANIFEST.MF)
       -injars ${collect.jar}(!**/MANIFEST.MF)
       -injars ${felix.jar}(**/ldap/**)
-      -outjars ${build}/trim/peaberry.jar
+      -outjars ${build}/trim/peaberry-shrink.jar
+      -keep class com.google.common.base.internal.Finalizer { *; }
       -keep class org.ops4j.** { *; }
-      -repackageclasses ${module}.internal
-      -printmapping ${build}/proguard.txt
-      -dontusemixedcaseclassnames
       -keepattributes
+      -dontobfuscate
       -dontoptimize
       -dontnote
     </proguard>
-    <bnd files="peaberry.bnd" classpath="${build}/trim/peaberry.jar"/>
+    <jarjar jarfile="${build}/trim/peaberry-remap.jar">
+      <zipfileset src="${build}/trim/peaberry-shrink.jar"/>
+      <rule pattern="org.objectweb.**" result="org.ops4j.peaberry.internal.@1"/>
+      <rule pattern="com.google.common.**" result="org.ops4j.peaberry.internal.@1"/>
+      <rule pattern="org.apache.felix.framework.util.**" result="org.ops4j.peaberry.internal.@1"/>
+    </jarjar>
+    <bnd files="peaberry.bnd" classpath="${build}/trim/peaberry-remap.jar"/>
   </target>
 
   <target name="director" depends="test.compile">
