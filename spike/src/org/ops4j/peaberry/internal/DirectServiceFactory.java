@@ -43,7 +43,7 @@ final class DirectServiceFactory {
     final Iterator<Import<T>> i = handles.iterator();
 
     while (i.hasNext()) {
-      // collect direct instances into a fixed list
+      // collect all valid services into fixed list
       final T instance = nextService(i, decorator);
       if (null != instance) {
         services.add(instance);
@@ -56,18 +56,25 @@ final class DirectServiceFactory {
   public static <S, T extends S> T directService(final Iterable<Import<T>> handles,
       final ImportDecorator<S> decorator) {
 
-    // just return the first service from the sequence
-    return nextService(handles.iterator(), decorator);
+    final Iterator<Import<T>> i = handles.iterator();
+
+    while (i.hasNext()) {
+      // return the first valid service found
+      final T instance = nextService(i, decorator);
+      if (null != instance) {
+        return instance;
+      }
+    }
+
+    return null;
   }
 
   private static <S, T extends S> T nextService(final Iterator<Import<T>> i,
       final ImportDecorator<S> decorator) {
 
-    if (i.hasNext()) {
-      try {
-        return null == decorator ? i.next().get() : decorator.decorate(i.next()).get();
-      } catch (final ServiceUnavailableException e) {/* default to null */} // NOPMD
-    }
+    try {
+      return (null == decorator ? i.next() : decorator.decorate(i.next())).get();
+    } catch (final ServiceUnavailableException e) {/* default to null */} // NOPMD
 
     return null;
   }

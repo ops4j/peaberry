@@ -64,16 +64,15 @@ final class ConcurrentImport<T>
   }
 
   public synchronized Map<String, ?> attributes() {
-    return instance == null ? null : handle.attributes();
+    return null == instance ? null : handle.attributes();
   }
 
   public synchronized void unget() {
     // last thread to exit does the unget...
     if (0 == --count && null != handle) {
-      final Import<T> oldHandle = handle;
       instance = null;
+      handle.unget();
       handle = null;
-      oldHandle.unget();
     }
   }
 }

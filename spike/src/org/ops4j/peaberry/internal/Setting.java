@@ -19,53 +19,75 @@ package org.ops4j.peaberry.internal;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
 /**
+ * Immutable setting that accepts either a binding key or explicit instance.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class Setting<T> {
+abstract class Setting<T> {
 
-  private final Key<? extends T> key;
-  private final T instance;
+  public abstract T get(final Injector injector);
 
-  public Setting(final Key<? extends T> key) {
-    this.key = key;
-    instance = null;
-  }
+  public abstract Type getRawType();
 
-  public Setting(final T instance) {
-    key = null;
-    this.instance = instance;
-  }
+  public static <T> Setting<T> newSetting(final T instance) {
+    Preconditions.checkNotNull(instance);
+    return new Setting<T>() {
 
-  @SuppressWarnings("unchecked")
-  public Class<T> getRawType() {
-    if (key != null) {
-      Type t = key.getTypeLiteral().getType();
-      if (t instanceof ParameterizedType) {
-        t = ((ParameterizedType) t).getRawType();
+      @Override
+      public T get(final Injector injector) {
+        return instance;
       }
-      if (t instanceof Class) {
-        return (Class) t;
+
+      @Override
+      public Type getRawType() {
+        return instance.getClass();
       }
-      return (Class) Object.class;
-    }
-    return (Class) instance.getClass();
+    };
   }
 
-  public T get(final Injector injector) {
-    if (key != null && injector != null) {
-      return injector.getInstance(key);
-    }
-    return instance;
-  }
+  public static <T> Setting<T> newSetting(final Key<? extends T> key) {
+    Preconditions.checkNotNull(key);
+    return new Setting<T>() {
 
-  private static final Setting<?> NULL_SETTING = new Setting<Object>(null);
+      @Override
+      public T get(final Injector injector) {
+        return injector.getInstance(key);
+      }
+
+      @Override
+      public Type getRawType() {
+        Type type = key.getTypeLiteral().getType();
+        if (type instanceof ParameterizedType) {
+          type = ((ParameterizedType) type).getRawType();
+        }
+        if (type instanceof Class) {
+          return type;
+        }
+        return Object.class;
+      }
+    };
+  }
 
   @SuppressWarnings("unchecked")
   public static <S> Setting<S> nullSetting() {
     return (Setting<S>) NULL_SETTING;
   }
+
+  private static final Setting<Object> NULL_SETTING = new Setting<Object>() {
+
+    @Override
+    public Object get(final Injector injector) {
+      return null;
+    }
+
+    @Override
+    public Type getRawType() {
+      return Object.class;
+    }
+  };
 }
