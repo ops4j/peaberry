@@ -19,7 +19,6 @@ package org.ops4j.peaberry.internal;
 import static java.lang.reflect.Modifier.ABSTRACT;
 import static java.lang.reflect.Modifier.FINAL;
 import static java.lang.reflect.Modifier.NATIVE;
-import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.SYNCHRONIZED;
@@ -122,7 +121,7 @@ final class ImportGlue {
     final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
 
     cw.visit(V1_5, PUBLIC | FINAL, proxyName, null, superName, interfaceNames);
-    cw.visitField(PRIVATE | FINAL, "handle", IMPORT_DESC, null, null).visitEnd();
+    cw.visitField(FINAL, "handle", IMPORT_DESC, null, null).visitEnd();
 
     init(cw, superName, proxyName);
 
