@@ -1,6 +1,32 @@
+Index: guice.ipr
+===================================================================
+--- guice.ipr	(revision 702)
++++ guice.ipr	(working copy)
+@@ -577,7 +577,7 @@
+   <component name="libraryTable">
+     <library name="collect">
+       <CLASSES>
+-        <root url="jar://$PROJECT_DIR$/lib/build/google-collect-snapshot-20080530.jar!/" />
++        <root url="jar://$PROJECT_DIR$/lib/build/google-collect-snapshot-20081126.jar!/" />
+       </CLASSES>
+       <JAVADOC />
+       <SOURCES />
+Index: common.xml
+===================================================================
+--- common.xml	(revision 702)
++++ common.xml	(working copy)
+@@ -25,7 +25,7 @@
+   <target name="manifest" description="Generate OSGi manifest." depends="compile">
+     <dirname property="common.basedir" file="${ant.file.common}"/>
+     <taskdef resource="aQute/bnd/ant/taskdef.properties"
+-      classpath="${common.basedir}/lib/build/bnd-0.0.255.jar"/>
++      classpath="${common.basedir}/lib/build/bnd-0.0.295.jar"/>
+ 
+     <fail unless="module" message="Missing 'module' property (use the primary package name in this jar)"/>
+ 
 Index: build.properties
 ===================================================================
---- build.properties	(revision 649)
+--- build.properties	(revision 702)
 +++ build.properties	(working copy)
 @@ -1,3 +1,8 @@
 +
@@ -13,9 +39,19 @@ Index: build.properties
  test.dir=test
 Index: build.xml
 ===================================================================
---- build.xml	(revision 649)
+--- build.xml	(revision 702)
 +++ build.xml	(working copy)
-@@ -11,15 +11,30 @@
+@@ -2,6 +2,9 @@
+ 
+ <project name="guice" default="compile">
+ 
++  <property name="DynamicImport-Package" value="org.aopalliance.intercept"/>
++  <property name="exclude.imports" value="!com.google.common.*,!net.sf.*,!org.objectweb.*"/>
++
+   <import file="common.xml"/>
+ 
+   <path id="compile.classpath">
+@@ -11,15 +14,32 @@
  
    <target name="jar" depends="compile, manifest"
         description="Build jar.">
@@ -28,10 +64,12 @@ Index: build.xml
 +      -injars ${build.dir}/classes
 +      -injars lib/build/cglib-2.2.jar(!**/MANIFEST.MF)
 +      -injars lib/build/asm-3.1.jar(!**/MANIFEST.MF)
-+      -injars lib/build/google-collect-snapshot-20080530.jar(!**/MANIFEST.MF)
++      -injars lib/build/google-collect-snapshot-20081126.jar(!**/MANIFEST.MF)
 +      -outjars ${build.dir}/guice-stripped.jar
 +      -keep class com.google.inject.** { *; }
-+      -keepclassmembers class !com.google.common.** { *; }
++      -keep class com.google.common.base.internal.Finalizer { *; }
++      -keepclassmembers class com.google.common.base.Final* { *; }
++      -keepclassmembers class net.sf.cglib.** { *; }
 +      -keepattributes
 +      -dontobfuscate
 +      -dontoptimize
@@ -50,3 +88,50 @@ Index: build.xml
        <rule pattern="com.google.common.**" result="com.google.inject.internal.@1"/>
        <rule pattern="net.sf.cglib.**" result="com.google.inject.internal.cglib.@1"/>
        <rule pattern="org.objectweb.asm.**" result="com.google.inject.internal.asm.@1"/>
+@@ -91,7 +111,7 @@
+         <pathelement location="lib/build/junit.jar"/>
+         <pathelement location="lib/build/servlet-api-2.5.jar"/>
+         <pathelement location="lib/build/easymock.jar"/>
+-        <pathelement location="lib/build/google-collect-snapshot-20080530.jar"/>
++        <pathelement location="lib/build/google-collect-snapshot-20081126.jar"/>
+       </classpath>
+       <arg value="com.google.inject.AllTests"/>    
+       <syspropertyset>
+Index: lib/build/bnd-0.0.255.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: lib/build/google-collect-snapshot-20080530.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/java-archive
+Index: lib/build/bnd-0.0.295.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib/build/bnd-0.0.295.jar
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: lib/build/google-collect-snapshot-20081126.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib/build/google-collect-snapshot-20081126.jar
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: lib/build/proguard.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib/build/proguard.jar
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+

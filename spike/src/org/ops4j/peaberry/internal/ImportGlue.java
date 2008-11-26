@@ -79,6 +79,7 @@ final class ImportGlue {
   private static final Method[] OBJECT_METHODS = Object.class.getMethods();
 
   private static final String PROXY_SUFFIX = "$pbryglu";
+  private static final String PROXY_HANDLE = "__pbry__";
 
   public static String getProxyName(final String clazzName) {
     final StringBuilder tmpName = new StringBuilder();
@@ -121,7 +122,7 @@ final class ImportGlue {
     final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
 
     cw.visit(V1_5, PUBLIC | FINAL, proxyName, null, superName, interfaceNames);
-    cw.visitField(FINAL, "handle", IMPORT_DESC, null, null).visitEnd();
+    cw.visitField(FINAL, PROXY_HANDLE, IMPORT_DESC, null, null).visitEnd();
 
     init(cw, superName, proxyName);
 
@@ -158,9 +159,9 @@ final class ImportGlue {
 
     v.visitVarInsn(ALOAD, 0);
     v.visitInsn(DUP);
-    v.visitMethodInsn(INVOKESPECIAL, superName, "<init>", "()V");
     v.visitVarInsn(ALOAD, 1);
-    v.visitFieldInsn(PUTFIELD, proxyName, "handle", IMPORT_DESC);
+    v.visitFieldInsn(PUTFIELD, proxyName, PROXY_HANDLE, IMPORT_DESC);
+    v.visitMethodInsn(INVOKESPECIAL, superName, "<init>", "()V");
     v.visitInsn(RETURN);
 
     v.visitMaxs(0, 0);
@@ -193,7 +194,7 @@ final class ImportGlue {
     v.visitTryCatchBlock(ungetX, finalX, finalX, EXCEPTION_NAME);
 
     v.visitVarInsn(ALOAD, 0);
-    v.visitFieldInsn(GETFIELD, proxyName, "handle", IMPORT_DESC);
+    v.visitFieldInsn(GETFIELD, proxyName, PROXY_HANDLE, IMPORT_DESC);
     v.visitInsn(DUP);
     v.visitVarInsn(ASTORE, 0);
 
