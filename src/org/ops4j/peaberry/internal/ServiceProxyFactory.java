@@ -25,7 +25,6 @@ import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
-import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 import com.google.common.collect.ReferenceMap;
@@ -36,8 +35,6 @@ import com.google.common.collect.ReferenceMap;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ServiceProxyFactory {
-
-  static final ServiceException NO_SERVICE = new ServiceUnavailableException();
 
   static final ReferenceMap<Import<?>, Object> PROXY_CACHE =
       new ReferenceMap<Import<?>, Object>(WEAK, STRONG);

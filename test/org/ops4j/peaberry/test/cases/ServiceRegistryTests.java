@@ -67,10 +67,10 @@ public final class ServiceRegistryTests {
       }
     });
 
-    injector.injectMembers(this);
-
     final Export<? extends ClassLoader> exportedLoader =
         injector.getInstance(Key.get(export(ClassLoader.class)));
+
+    injector.injectMembers(this);
 
     try {
       assertEquals(importedLoader.loadClass(getClass().getName()), getClass());

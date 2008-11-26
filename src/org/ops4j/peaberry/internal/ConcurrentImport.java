@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceException;
+import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
  * Provide an import handle that dynamically delegates to the first service, but
@@ -35,6 +37,8 @@ import org.ops4j.peaberry.Import;
  */
 final class ConcurrentImport<T>
     implements Import<T> {
+
+  static final ServiceException NO_SERVICE = new ServiceUnavailableException();
 
   private final Iterable<Import<T>> handles;
 
@@ -58,7 +62,7 @@ final class ConcurrentImport<T>
       }
     }
     if (null == instance) {
-      throw ServiceProxyFactory.NO_SERVICE;
+      throw NO_SERVICE;
     }
     return instance;
   }

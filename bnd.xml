@@ -26,9 +26,9 @@
       -injars ${collect.jar}(!**/MANIFEST.MF)
       -injars ${felix.jar}(**/ldap/**)
       -outjars ${build}/trim/peaberry-shrink.jar
+      -keep class org.ops4j.** { *; }
       -keep class com.google.common.base.internal.Finalizer { *; }
       -keepclassmembers class com.google.common.base.Final* { *; }
-      -keep class org.ops4j.** { *; }
       -keepattributes
       -dontobfuscate
       -dontoptimize
