@@ -1811,3 +1811,50 @@ Index: common.xml
        <classpath refid="compile.classpath"/>
      </javac>
      <copy toDir="${build.dir}/test">
+Index: src/com/google/inject/InjectorImpl.java
+===================================================================
+--- src/com/google/inject/InjectorImpl.java	(revision 705)
++++ src/com/google/inject/InjectorImpl.java	(working copy)
+@@ -72,9 +72,9 @@
+     if (parent != null) {
+       localContext = parent.localContext;
+     } else {
+-      localContext = new ThreadLocal<InternalContext[]>() {
+-        protected InternalContext[] initialValue() {
+-          return new InternalContext[1];
++      localContext = new ThreadLocal<Object[]>() {
++        protected Object[] initialValue() {
++          return new Object[1];
+         }
+       };
+     }
+@@ -818,23 +818,23 @@
+     return getProvider(type).get();
+   }
+ 
+-  final ThreadLocal<InternalContext[]> localContext;
++  final ThreadLocal<Object[]> localContext;
+ 
+   /** Looks up thread local context. Creates (and removes) a new context if necessary. */
+   <T> T callInContext(ContextualCallable<T> callable) throws ErrorsException {
+-    InternalContext[] reference = localContext.get();
++    Object[] reference = localContext.get();
+     if (reference[0] == null) {
+       reference[0] = new InternalContext();
+       try {
+-        return callable.call(reference[0]);
++        return callable.call((InternalContext)reference[0]);
+       } finally {
+-        // Only remove the context if this call created it.
+-        localContext.remove();
++        // Only clear the context if this call created it.
++        reference[0] = null;
+       }
+     }
+     else {
+       // Someone else will clean up this context.
+-      return callable.call(reference[0]);
++      return callable.call((InternalContext)reference[0]);
+     }
+   }
+ 
