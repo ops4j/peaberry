@@ -1,0 +1,105 @@
+Index: src/com/google/common/base/FinalizableReferenceQueue.java
+===================================================================
+--- src/com/google/common/base/FinalizableReferenceQueue.java	(revision 69)
++++ src/com/google/common/base/FinalizableReferenceQueue.java	(working copy)
+@@ -17,6 +17,7 @@
+ package com.google.common.base;
+ 
+ import java.lang.ref.ReferenceQueue;
++import java.lang.reflect.Field;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.InvocationTargetException;
+ import java.util.logging.Level;
+@@ -26,6 +27,8 @@
+ import java.net.URISyntaxException;
+ import java.io.IOException;
+ import java.io.FileNotFoundException;
++import java.security.AccessController;
++import java.security.PrivilegedAction;
+ 
+ /**
+  * A reference queue with an associated background thread that dequeues
+@@ -241,8 +244,22 @@
+     }
+ 
+     /** Creates a class loader with the given base URL as its classpath. */
+-    URLClassLoader newLoader(URL base) {
+-      return new URLClassLoader(new URL[] { base });
++    URLClassLoader newLoader(final URL base) {
++      return AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
++        public URLClassLoader run() {
++          URLClassLoader urlLoader = new URLClassLoader(new URL[] { base });
++          try {
++            // try to null reference to the current access control context
++            Field accField = URLClassLoader.class.getDeclaredField("acc");
++            accField.setAccessible(true);
++            accField.set(urlLoader, null);
++          } catch (Exception e) {
++            throw new RuntimeException(e); // should we surface it or ignore?
++          } finally {
++            return urlLoader;
++          }
++        }
++      });
+     }
+   }
+ 
+Index: src/com/google/common/base/internal/Finalizer.java
+===================================================================
+--- src/com/google/common/base/internal/Finalizer.java	(revision 69)
++++ src/com/google/common/base/internal/Finalizer.java	(working copy)
+@@ -22,7 +22,10 @@
+ import java.lang.ref.Reference;
+ import java.lang.ref.WeakReference;
+ import java.lang.ref.PhantomReference;
++import java.lang.reflect.Field;
+ import java.lang.reflect.Method;
++import java.security.AccessController;
++import java.security.PrivilegedAction;
+ 
+ /**
+  * Thread that finalizes referents. All references should implement
+@@ -64,7 +67,7 @@
+    * @return ReferenceQueue which Finalizer will poll
+    */
+   public static ReferenceQueue<Object> startFinalizer(
+-      Class<?> finalizableReferenceClass, Object frq) {
++      final Class<?> finalizableReferenceClass, final Object frq) {
+     /*
+      * We use FinalizableReference.class for two things:
+      *
+@@ -78,9 +81,22 @@
+           "Expected " + FINALIZABLE_REFERENCE + ".");
+     }
+ 
+-    Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
+-    finalizer.start();
+-    return finalizer.queue;
++    return AccessController.doPrivileged(new PrivilegedAction<Finalizer>() {
++      public Finalizer run() {
++        Finalizer finalizer = new Finalizer(finalizableReferenceClass, frq);
++        try {
++          // try to null reference to the inherited thread local map
++          Field tlsField = Thread.class.getDeclaredField("inheritableThreadLocals");
++          tlsField.setAccessible(true);
++          tlsField.set(finalizer, null);
++        } catch (Exception e) {
++          throw new RuntimeException(e); // should we surface it or ignore?
++        } finally {
++          finalizer.start();
++          return finalizer;
++        }
++      }
++    }).queue;
+   }
+ 
+   private final WeakReference<Class<?>> finalizableReferenceClassReference;
+@@ -97,6 +113,8 @@
+     // Keep track of the FRQ that started us so we know when to stop.
+     this.frqReference = new PhantomReference<Object>(frq, queue);
+ 
++    // avoid reference to other classloaders
++    setContextClassLoader(null);
+     setDaemon(true);
+ 
+     // TODO: Priority?
