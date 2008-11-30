@@ -127,9 +127,9 @@ Index: src/com/google/inject/internal/BytecodeGen.java
  
 -import static com.google.inject.internal.ReferenceType.WEAK;
 +import static com.google.common.base.ReferenceType.WEAK;
+ import java.lang.reflect.Constructor;
  import java.lang.reflect.Member;
- import java.lang.reflect.Modifier;
- import java.security.AccessController;
+ import java.lang.reflect.Method;
 Index: src/com/google/inject/internal/FinalizableSoftReference.java
 ===================================================================
 --- src/com/google/inject/internal/FinalizableSoftReference.java	(revision 702)
