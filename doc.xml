@@ -2,7 +2,7 @@
 <project name="doc">
 
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
-      classpath="${antlib}/jaxen.jar;${antlib}/pmd.jar;${asm.jar}"/>
+      classpath="${jaxen.jar};${pmd.jar};${asm.jar}"/>
 
   <target name="pmd">
     <mkdir dir="${doc}/coverage"/>

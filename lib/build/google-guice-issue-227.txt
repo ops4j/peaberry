@@ -1,0 +1,1860 @@
+Index: src/com/google/inject/internal/FinalizableReferenceQueue.java
+===================================================================
+--- src/com/google/inject/internal/FinalizableReferenceQueue.java	(revision 702)
++++ src/com/google/inject/internal/FinalizableReferenceQueue.java	(working copy)
+@@ -1,76 +0,0 @@
+-/**
+- * Copyright (C) 2006 Google Inc.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.google.inject.internal;
+-
+-import java.lang.ref.Reference;
+-import java.lang.ref.ReferenceQueue;
+-import java.util.logging.Level;
+-import java.util.logging.Logger;
+-
+-/**
+- * Starts a background thread that cleans up after reclaimed referents.
+- *
+- * @author Bob Lee (crazybob@google.com)
+- */
+-class FinalizableReferenceQueue extends ReferenceQueue<Object> {
+-
+-  private static final Logger logger =
+-      Logger.getLogger(FinalizableReferenceQueue.class.getName());
+-
+-  private FinalizableReferenceQueue() {}
+-
+-  void cleanUp(Reference reference) {
+-    try {
+-      ((FinalizableReference) reference).finalizeReferent();
+-    } catch (Throwable t) {
+-      deliverBadNews(t);
+-    }
+-  }
+-
+-  void deliverBadNews(Throwable t) {
+-    logger.log(Level.SEVERE, "Error cleaning up after reference.", t);
+-  }
+-
+-  void start() {
+-    Thread thread = new Thread("FinalizableReferenceQueue") {
+-      public void run() {
+-        while (true) {
+-          try {
+-            cleanUp(remove());
+-          } catch (InterruptedException e) { /* ignore */ }
+-        }
+-      }
+-    };
+-    thread.setDaemon(true);
+-    thread.start();
+-  }
+-
+-  static final ReferenceQueue<Object> instance = createAndStart();
+-
+-  static FinalizableReferenceQueue createAndStart() {
+-    FinalizableReferenceQueue queue = new FinalizableReferenceQueue();
+-    queue.start();
+-    return queue;
+-  }
+-
+-  /**
+-   * Gets instance.
+-   */
+-  public static ReferenceQueue<Object> getInstance() {
+-    return instance;
+-  }
+-}
+Index: src/com/google/inject/internal/StackTraceElements.java
+===================================================================
+--- src/com/google/inject/internal/StackTraceElements.java	(revision 702)
++++ src/com/google/inject/internal/StackTraceElements.java	(working copy)
+@@ -16,8 +16,8 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.internal.ReferenceType.SOFT;
+-import static com.google.inject.internal.ReferenceType.WEAK;
++import static com.google.common.base.ReferenceType.SOFT;
++import static com.google.common.base.ReferenceType.WEAK;
+ import java.io.IOException;
+ import java.lang.reflect.Constructor;
+ import java.lang.reflect.Member;
+Index: src/com/google/inject/internal/ReferenceCache.java
+===================================================================
+--- src/com/google/inject/internal/ReferenceCache.java	(revision 702)
++++ src/com/google/inject/internal/ReferenceCache.java	(working copy)
+@@ -16,8 +16,10 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.internal.ReferenceType.STRONG;
+ import static com.google.common.base.Preconditions.checkNotNull;
++import static com.google.common.base.ReferenceType.STRONG;
++import com.google.common.base.Function;
++import com.google.common.base.ReferenceType;
+ 
+ /**
+  * Extends {@link ReferenceMap} to support lazy loading values by overriding
+@@ -70,4 +72,4 @@
+       private static final long serialVersionUID = 0;
+     };
+   }
+-}
+\ No newline at end of file
++}
+Index: src/com/google/inject/internal/BytecodeGen.java
+===================================================================
+--- src/com/google/inject/internal/BytecodeGen.java	(revision 702)
++++ src/com/google/inject/internal/BytecodeGen.java	(working copy)
+@@ -16,7 +16,7 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.internal.ReferenceType.WEAK;
++import static com.google.common.base.ReferenceType.WEAK;
+ import java.lang.reflect.Constructor;
+ import java.lang.reflect.Member;
+ import java.lang.reflect.Method;
+Index: src/com/google/inject/internal/FinalizableSoftReference.java
+===================================================================
+--- src/com/google/inject/internal/FinalizableSoftReference.java	(revision 702)
++++ src/com/google/inject/internal/FinalizableSoftReference.java	(working copy)
+@@ -1,35 +0,0 @@
+-/**
+- * Copyright (C) 2006 Google Inc.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.google.inject.internal;
+-
+-import java.lang.ref.SoftReference;
+-
+-/**
+- * Soft reference with a {@link FinalizableReference#finalizeReferent()} method
+- * which a background thread invokes after the garbage collector reclaims the
+- * referent. This is a simpler alternative to using a
+- * {@link java.lang.ref.ReferenceQueue}.
+- *
+- * @author crazybob@google.com (Bob Lee)
+- */
+-public abstract class FinalizableSoftReference<T> extends SoftReference<T>
+-    implements FinalizableReference {
+-
+-  protected FinalizableSoftReference(T referent) {
+-    super(referent, FinalizableReferenceQueue.getInstance());
+-  }
+-}
+Index: src/com/google/inject/internal/ReferenceMap.java
+===================================================================
+--- src/com/google/inject/internal/ReferenceMap.java	(revision 702)
++++ src/com/google/inject/internal/ReferenceMap.java	(working copy)
+@@ -16,108 +16,159 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.internal.ReferenceType.STRONG;
++import static com.google.common.base.Preconditions.checkArgument;
+ import static com.google.common.base.Preconditions.checkNotNull;
+ 
++import com.google.common.base.FinalizableSoftReference;
++import com.google.common.base.FinalizableWeakReference;
++import com.google.common.base.Nullable;
++import com.google.common.base.ReferenceType;
++import com.google.common.base.FinalizableReferenceQueue;
++
++import com.google.common.collect.*;
++
+ import java.io.IOException;
+ import java.io.ObjectInputStream;
+ import java.io.ObjectOutputStream;
+ import java.io.Serializable;
+ import java.lang.ref.Reference;
+-import java.util.*;
++import java.util.AbstractSet;
++import java.util.IdentityHashMap;
++import java.util.Iterator;
++import java.util.List;
++import java.util.Map;
++import java.util.Set;
++import java.util.WeakHashMap;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.concurrent.ConcurrentMap;
+ 
+ /**
+- * Concurrent hash map that wraps keys and/or values in soft or weak references.
+- * Does not support null keys or values. Uses identity equality for weak and
+- * soft keys.
++ * A {@code ConcurrentMap} implementation that internally utilizes your choice
++ * of strong, soft or weak references for its keys and for its values. As soon
++ * as any key or value is reclaimed by the garbage collector, the corresponding
++ * entry automatically disappears from the map.
+  *
+- * <p>The concurrent semantics of {@link ConcurrentHashMap} combined with the
+- * fact that the garbage collector can asynchronously reclaim and clean up
+- * keys and values at any time can lead to some racy semantics. For example,
+- * {@link #size()} returns an upper bound on the size; that is, the actual size
+- * may be smaller in cases where the key or value has been reclaimed but the map
+- * entry has not been cleaned up yet.
++ * <p>All nine possible combinations of reference types are supported, although
++ * using strong keys with strong values provides no benefit over using a {@code
++ * Map} or {@code ConcurrentMap} directly. This implementation does not permit
++ * null keys or values. 
+  *
+- * @author crazybob@google.com (Bob Lee)
+- * @author fry@google.com (Charles Fry)
++ * <p><b>Note:</b> because garbage collection happens concurrently to your
++ * program, it follows that this map is always subject to concurrent
++ * modifications, whether or not the caller exposes it to multiple application
++ * threads. The usual caveats about the reliability of methods such as {@link
++ * #size} and {@link Map#equals} apply; for example, {@link #size} may be
++ * observed to remain unchanged for a short time after an entry was reclaimed.
++ *
++ * <p>To determine equality to a key, this implementation uses
++ * {@link Object#equals} for strong references, and identity-based equality for
++ * soft and weak references. In other words, for a map with weak or soft key
++ * references, {@link #get} returns {@code null} when passed an object that
++ * equals a map key, but isn't the same instance. This behavior is similar to
++ * the way {@link IdentityHashMap} handles key lookups. However, to determine
++ * value equality, as occurs when {@link #containsValue} is called, the
++ * {@code ReferenceMap} always uses {@code equals}, regardless of the value
++ * reference type.
++ *
++ * <p><b>Note:</b> {@code new ReferenceMap(WEAK, STRONG)} is very nearly a
++ * drop-in replacement for {@link WeakHashMap}, but improves upon this by using
++ * only identity-based equality for keys. When possible, {@code ReferenceMap}
++ * should be preferred over the JDK collection, for its concurrency and greater
++ * flexibility.
++ * 
++ * <p>Though this class implements {@link Serializable}, serializing reference
++ * maps with weak or soft references leads to unpredictable results.
++ *
++ * @author Bob Lee
++ * @author Kevin Bourrillion
++ * @author Charles Fry
+  */
+-@SuppressWarnings("unchecked")
+-public class ReferenceMap<K, V> extends AbstractMap<K, V>
++// TODO: make final
++public class ReferenceMap<K, V> extends NpeThrowingAbstractMap<K, V>
+     implements ConcurrentMap<K, V>, Serializable {
++  private final ReferenceStrategy keyStrategy;
++  private final ReferenceStrategy valueStrategy;
+ 
++  /**
++   * The keys in this map are either of type K, SoftReference<K>, or
++   * WeakReference<K>, depending on the chosen keyReferenceType; and likewise
++   * for the values.
++   */
++  // TODO: make private
+   transient ConcurrentMap<Object, Object> delegate;
+-
+-  private final ReferenceType keyReferenceType;
+-  private final ReferenceType valueReferenceType;
+-
++  private transient final boolean customBackingMap;
++  
+   /**
+-   * Concurrent hash map that wraps keys and/or values based on specified
+-   * reference types.
+-   *
+-   * @param keyReferenceType key reference type
+-   * @param valueReferenceType value reference type
++   * Constructs an empty instance, using the given reference types for keys and
++   * values. It stores the underlying data in a threadsafe map. The returned
++   * instance is serializable.
+    */
+   public ReferenceMap(
+       ReferenceType keyReferenceType, ReferenceType valueReferenceType) {
+-    ensureNotNull(keyReferenceType, valueReferenceType);
+-
+-    if (keyReferenceType == ReferenceType.PHANTOM
+-        || valueReferenceType == ReferenceType.PHANTOM) {
+-      throw new IllegalArgumentException("Phantom references not supported.");
+-    }
+-
+-    this.delegate = new ConcurrentHashMap<Object, Object>();
+-    this.keyReferenceType = keyReferenceType;
+-    this.valueReferenceType = valueReferenceType;
++    this(keyReferenceType, valueReferenceType,
++        new ConcurrentHashMap<Object, Object>(), false);
+   }
+ 
+-  V internalGet(K key) {
+-    Object valueReference = delegate.get(makeKeyReferenceAware(key));
+-    return dereferenceValue(valueReference);
++  /**
++   * Constructs an empty instance, using the given backing map and the given
++   * reference types for keys and values. The returned instance is not
++   * serializable.
++   */
++  public ReferenceMap(ReferenceType keyReferenceType, ReferenceType
++      valueReferenceType, ConcurrentMap<Object, Object> backingMap) {
++    this(keyReferenceType, valueReferenceType, backingMap, true);    
+   }
+-
+-  public V get(final Object key) {
+-    checkNotNull(key, "key");
+-    return internalGet((K) key);
++  
++  private ReferenceMap(ReferenceType keyReferenceType, ReferenceType
++      valueReferenceType, ConcurrentMap<Object, Object> backingMap,
++      boolean customDelegate) {
++    checkArgument(keyReferenceType != ReferenceType.PHANTOM,
++        "Phantom references are not supported.");
++    checkArgument(valueReferenceType != ReferenceType.PHANTOM,
++        "Phantom references are not supported.");
++    checkArgument(backingMap.isEmpty(), "The backing map must be empty.");
++    
++    keyStrategy = ReferenceStrategy.forType(keyReferenceType);
++    valueStrategy = ReferenceStrategy.forType(valueReferenceType);
++    delegate = backingMap;
++    this.customBackingMap = customDelegate;
+   }
++  
++  /*
++   * Specifying Javadoc for many classes so the AbstractMap Javadoc, which
++   * includes incorrect implementation details, is not displayed.
++   */
++  
++  // Query Operations
+ 
+-  private V execute(Strategy strategy, K key, V value) {
+-    ensureNotNull(key, value);
+-    Object keyReference = referenceKey(key);
+-    return (V) strategy.execute(
+-        this, keyReference, referenceValue(keyReference, value)
+-    );
+-  }
+-
+-  public V put(K key, V value) {
+-    return execute(putStrategy(), key, value);
+-  }
+-
+-  public V remove(Object key) {
+-    checkNotNull(key, "key");
+-    Object referenceAwareKey = makeKeyReferenceAware(key);
+-    Object valueReference = delegate.remove(referenceAwareKey);
+-    return dereferenceValue(valueReference);
+-  }
+-
+-  public int size() {
++  /**
++   * Returns the number of key-value mappings in this map.
++   */
++  @Override public int size() {
+     return delegate.size();
+   }
+ 
+-  public boolean isEmpty() {
++  /**
++   * Returns {@code true} if this map contains no key-value mappings.
++   */
++  @Override public boolean isEmpty() {
+     return delegate.isEmpty();
+   }
+ 
+-  public boolean containsKey(Object key) {
+-    checkNotNull(key, "key");
+-    Object referenceAwareKey = makeKeyReferenceAware(key);
+-    return delegate.containsKey(referenceAwareKey);
++  /**
++   * Returns {@code true} if this map contains a mapping for the specified key.
++   */
++  @Override public boolean containsKey(Object key) {
++    Object keyDummy = keyStrategy.getDummyFor(key);
++    return delegate.containsKey(keyDummy);
+   }
+ 
+-  public boolean containsValue(Object value) {
+-    checkNotNull(value, "value");
++  /**
++   * Returns {@code true} if this map maps one or more keys to the specified
++   * value. 
++   */
++  @Override public boolean containsValue(Object value) {
++    checkNotNull(value);
+     for (Object valueReference : delegate.values()) {
+       if (value.equals(dereferenceValue(valueReference))) {
+         return true;
+@@ -125,520 +176,603 @@
+     }
+     return false;
+   }
+-
+-  public void putAll(Map<? extends K, ? extends V> t) {
+-    for (Map.Entry<? extends K, ? extends V> entry : t.entrySet()) {
+-      put(entry.getKey(), entry.getValue());
+-    }
++  
++  /**
++   * Returns the value to which the specified key is mapped, or {@code null} if
++   * this map contains no mapping for the key.
++   */
++  @Override public V get(Object key) {
++    Object keyDummy = keyStrategy.getDummyFor(key);
++    Object valueReference = delegate.get(keyDummy);
++    return dereferenceValue(valueReference);
+   }
+ 
+-  public void clear() {
+-    delegate.clear();
++  // Modification Operations
++
++  /**
++   * Associates the specified value with the specified key in this map.
++   */
++  @Override public V put(K key, V value) {
++    return executeWrite(putStrategy(), key, value); // TODO: inline
+   }
+ 
+   public V putIfAbsent(K key, V value) {
+-    return execute(putIfAbsentStrategy(), key, value);
++    return executeWrite(putIfAbsentStrategy(), key, value); // TODO: inline
+   }
+ 
+-  public boolean remove(Object key, Object value) {
+-    ensureNotNull(key, value);
+-    Object referenceAwareKey = makeKeyReferenceAware(key);
+-    Object referenceAwareValue = makeValueReferenceAware(value);
+-    return delegate.remove(referenceAwareKey, referenceAwareValue);
++  public V replace(K key, V value) {
++    return executeWrite(replaceStrategy(), key, value); // TODO: inline
+   }
+ 
+   public boolean replace(K key, V oldValue, V newValue) {
+-    ensureNotNull(key, oldValue, newValue);
+     Object keyReference = referenceKey(key);
++    Object oldValueDummy = valueStrategy.getDummyFor(oldValue);
++    Object newValueReference = referenceValue(keyReference, newValue);
++    return delegate.replace(keyReference, oldValueDummy, newValueReference);
++  }
+ 
+-    Object referenceAwareOldValue = makeValueReferenceAware(oldValue);
+-    return delegate.replace(keyReference, referenceAwareOldValue,
+-        referenceValue(keyReference, newValue)
+-    );
++  private V executeWrite(Strategy strategy, K key, V value) {
++    Object keyReference = referenceKey(key);
++    Object valueReference = referenceValue(keyReference, value);
++    return strategy.execute(this, keyReference, valueReference);
+   }
+ 
+-  public V replace(K key, V value) {
+-    return execute(replaceStrategy(), key, value);
++  // TODO: make private and consider eliminating altogether
++  interface Strategy {
++    <V> V execute(
++        ReferenceMap<?, V> map, Object keyReference, Object valueReference);
+   }
+ 
+-  private transient volatile Set<Map.Entry<K, V>> entrySet = null;
++  private enum PutStrategy implements Strategy {
++    PUT {
++      public <V> V execute(
++          ReferenceMap<?, V> map, Object keyReference, Object valueReference) {
++        return map.dereferenceValue(
++            map.delegate.put(keyReference, valueReference));
++      }
++    },
+ 
+-  public Set<Map.Entry<K, V>> entrySet() {
+-    if (entrySet == null) {
+-      entrySet = new EntrySet();
+-    }
+-    return entrySet;
+-  }
++    REPLACE {
++      public <V> V execute(
++          ReferenceMap<?, V> map, Object keyReference, Object valueReference) {
++        // Ensure that the existing value is not collected.
++        do {
++          Object existingValueReference;
++          V existingValue;
++          do {
++            existingValueReference = map.delegate.get(keyReference);
+ 
+-  /** Dereferences an entry. Returns null if the key or value has been gc'ed. */
+-  private Entry dereferenceEntry(Map.Entry<Object, Object> entry) {
+-    K key = dereferenceKey(entry.getKey());
+-    V value = dereferenceValue(entry.getValue());
+-    return (key == null || value == null)
+-        ? null
+-        : new Entry(key, value);
+-  }
++            /*
++             * This method as a side-effect will proactively call
++             * finalizeReference() as necessary, which prevents this loop from
++             * spinning for a long time.
++             */
++            existingValue = map.dereferenceValue(existingValueReference);
++          } while (isPartiallyReclaimed(existingValueReference, existingValue));
+ 
+-  /** Creates a reference for a key. */
+-  Object referenceKey(K key) {
+-    switch (keyReferenceType) {
+-      case STRONG:
+-        return key;
+-      case SOFT:
+-        return new SoftKeyReference(key);
+-      case WEAK:
+-        return new WeakKeyReference(key);
+-      default:
+-        throw new AssertionError();
+-    }
+-  }
++          if (existingValueReference == null) {
++            // nothing to replace
++            return null;
++          }
+ 
+-  /** Converts a reference to a key. */
+-  private K dereferenceKey(Object o) {
+-    return (K) dereference(keyReferenceType, o);
+-  }
++          if (map.delegate.replace(
++              keyReference, existingValueReference, valueReference)) {
++            // existingValue didn't expire since we still have a reference to it
++            return existingValue;
++          }
++        } while (true);
++      }
++    },
+ 
+-  /** Converts a reference to a value. */
+-  V dereferenceValue(Object o) {
+-    if (o == null) {
+-      return null;
+-    }
+-    Object value = dereference(valueReferenceType, o);
+-    if (o instanceof InternalReference) {
+-      InternalReference ref = (InternalReference) o;
+-      if (value == null) {
+-        // old value was garbage collected
+-        ref.finalizeReferent();
++    PUT_IF_ABSENT {
++      public <V> V execute(
++          ReferenceMap<?, V> map, Object keyReference, Object valueReference) {
++        Object existingValueReference;
++        V existingValue;
++        do {
++          existingValueReference
++              = map.delegate.putIfAbsent(keyReference, valueReference);
++          existingValue = map.dereferenceValue(existingValueReference);
++        } while (isPartiallyReclaimed(existingValueReference, existingValue));
++        return existingValue;
+       }
++    };
++
++    /**
++     * Returns {@code true} if the specified value reference has been garbage
++     * collected. The value behind the reference is also passed in, rather than
++     * queried inside this method, to ensure that the return statement of this
++     * method will still hold true after it has returned (that is, a value
++     * reference exists outside of this method which will prevent that value from
++     * being garbage collected). A {@code false} result may indicate either that
++     * the value has been fully reclaimed, or that it has not been reclaimed at
++     * all.
++     *
++     * @param valueReference the value reference to be tested
++     * @param value the object referenced by {@code valueReference}
++     * @return {@code true} if {@code valueReference} is non-null and {@code
++     *     value} is null
++     */
++    private static boolean isPartiallyReclaimed(
++        Object valueReference, Object value) {
++      return (valueReference != null) && (value == null);
+     }
+-    return (V) value;
+   }
+ 
+-  /** Returns the refererent for reference given its reference type. */
+-  private Object dereference(ReferenceType referenceType, Object reference) {
+-    return referenceType == STRONG ? reference : ((Reference) reference).get();
+-  }
++  // TODO: inline these
+ 
+-  /** Creates a reference for a value. */
+-  Object referenceValue(Object keyReference, Object value) {
+-    switch (valueReferenceType) {
+-      case STRONG:
+-        return value;
+-      case SOFT:
+-        return new SoftValueReference(keyReference, value);
+-      case WEAK:
+-        return new WeakValueReference(keyReference, value);
+-      default:
+-        throw new AssertionError();
+-    }
++  Strategy putStrategy() {
++    return PutStrategy.PUT;
+   }
+ 
+-  /**
+-   * Wraps key so it can be compared to a referenced key for equality.
+-   */
+-  private Object makeKeyReferenceAware(Object o) {
+-    return keyReferenceType == STRONG ? o : new KeyReferenceAwareWrapper(o);
++  Strategy putIfAbsentStrategy() {
++    return PutStrategy.PUT_IF_ABSENT;
+   }
+ 
+-  /** Wraps value so it can be compared to a referenced value for equality. */
+-  private Object makeValueReferenceAware(Object o) {
+-    return valueReferenceType == STRONG ? o : new ReferenceAwareWrapper(o);
++  Strategy replaceStrategy() {
++    return PutStrategy.REPLACE;
+   }
+ 
+   /**
+-   * Marker interface to differentiate external and internal references. Also
+-   * duplicates FinalizableReference and Reference.get for internal use.
++   * Removes the mapping for a key from this map if it is present.
+    */
+-  interface InternalReference {
+-    void finalizeReferent();
+-
+-    Object get();
++  @Override public V remove(@Nullable Object key) {
++    if (key == null) {
++      return null;
++    }
++    Object keyDummy = keyStrategy.getDummyFor(key);
++    Object valueReference = delegate.remove(keyDummy);
++    return dereferenceValue(valueReference);
+   }
+ 
+-  private static int keyHashCode(Object key) {
+-    return System.identityHashCode(key);
++  public boolean remove(@Nullable Object key, @Nullable Object value) {
++    if (key == null || value == null) {
++      return false;
++    }
++    Object keyDummy = keyStrategy.getDummyFor(key);
++    Object valueDummy = valueStrategy.getDummyFor(value);
++    return delegate.remove(keyDummy, valueDummy);
+   }
+ 
+-  /*
+-   * Tests weak and soft references for identity equality. Compares references
+-   * to other references and wrappers. If o is a reference, this returns true if
+-   * r == o or if r and o reference the same non-null object. If o is a wrapper,
+-   * this returns true if r's referent is identical to the wrapped object.
+-   */
+-  private static boolean referenceEquals(Reference r, Object o) {
+-    // compare reference to reference.
+-    if (o instanceof InternalReference) {
+-      // are they the same reference? used in cleanup.
+-      if (o == r) {
+-        return true;
+-      }
++  // Bulk Operations
+ 
+-      // do they reference identical values? used in conditional puts.
+-      Object referent = ((Reference) o).get();
+-      return referent != null && referent == r.get();
+-    }
++  // Inherit putAll() from AbstractMap
+ 
+-    // is the wrapped object identical to the referent? used in lookups.
+-    return ((ReferenceAwareWrapper) o).unwrap() == r.get();
++  /**
++   * Removes all of the mappings from this map.
++   */
++  @Override public void clear() {
++    delegate.clear();
+   }
+ 
++  // Views
++
++  // Inherit keySet(), values(), and entrySet() from NpeThrowingAbstractMap
++
+   /**
+-   * Returns {@code true} if the specified value reference has been garbage
+-   * collected. The value behind the reference is also passed in, rather than
+-   * queried inside this method, to ensure that the return statement of this
+-   * method will still hold true after it has returned (that is, a value
+-   * reference exists outside of this method which will prevent that value from
+-   * being garbage collected).
++   * {@inheritDoc}
+    *
+-   * @param valueReference the value reference to be tested
+-   * @param value the object referenced by {@code valueReference}
+-   * @return {@code true} if {@code valueReference} is non-null and {@code
+-   *     value} is null
++   * <p><b>Note:</b> Regardless of the choice of key and value reference types,
++   * an entry in the entry set always has strong references to both key and
++   * value. You should avoid any lingering strong references to {@code Entry}
++   * objects.
+    */
+-  private static boolean isExpired(Object valueReference, Object value) {
+-    return (valueReference != null) && (value == null);
++  @Override protected Set<Map.Entry<K, V>> createEntrySet() {
++    return new EntrySet();
+   }
+ 
+-  /**
+-   * Big hack. Used to compare keys and values to referenced keys and values
+-   * without creating more references.
+-   */
+-  static class ReferenceAwareWrapper {
+-    final Object wrapped;
+-
+-    ReferenceAwareWrapper(Object wrapped) {
+-      this.wrapped = wrapped;
++  private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
++    @Override public int size() {
++      return ReferenceMap.this.size();
+     }
+ 
+-    Object unwrap() {
+-      return wrapped;
++    @Override public boolean isEmpty() {
++      return ReferenceMap.this.isEmpty();
+     }
+ 
+-    @Override public int hashCode() {
+-      return wrapped.hashCode();
++    @Override public boolean contains(Object object) {
++      checkNotNull(object);
++      if (!(object instanceof Map.Entry)) {
++        return false;
++      }
++      Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
++      Object key = entry.getKey();
++      Object value = entry.getValue();
++      return key != null && value != null && value.equals(get(key));
+     }
+ 
+-    @Override public boolean equals(Object obj) {
+-      // defer to reference's equals() logic.
+-      return obj.equals(this);
++    @Override public Iterator<Map.Entry<K, V>> iterator() {
++      return new EntryIterator();
+     }
+-  }
+ 
+-  /** Used for keys. Overrides hash code to use identity hash code. */
+-  static class KeyReferenceAwareWrapper extends ReferenceAwareWrapper {
+-    public KeyReferenceAwareWrapper(Object wrapped) {
+-      super(wrapped);
+-    }
++    /*
++     * Note: the superclass toArray() methods assume that size() gives a correct
++     * answer, which ours does not.
++     */
+ 
+-    public int hashCode() {
+-      return System.identityHashCode(wrapped);
++    @Override public Object[] toArray() {
++      return snapshot().toArray();
+     }
+-  }
+ 
+-  class SoftKeyReference extends FinalizableSoftReference<Object>
+-      implements InternalReference {
+-    final int hashCode;
+-
+-    public SoftKeyReference(Object key) {
+-      super(key);
+-      this.hashCode = keyHashCode(key);
++    @Override public <T> T[] toArray(T[] array) {
++      checkNotNull(array);
++      return snapshot().toArray(array);
+     }
+ 
+-    public void finalizeReferent() {
+-      delegate.remove(this);
++    /*
++     * We'd love to use 'new ArrayList(this)' or 'list.addAll(this)', but either
++     * of these would recurse back to us again!
++     */
++    private List<Map.Entry<K, V>> snapshot() {
++      List<Map.Entry<K, V>> list = Lists.newArrayListWithExpectedSize(size());
++      for (Map.Entry<K, V> entry : this) {
++        list.add(entry);
++      }
++      return list;
+     }
+ 
+-    @Override public int hashCode() {
+-      return this.hashCode;
++    @Override public boolean remove(Object object) {
++      checkNotNull(object);
++      if (object instanceof Map.Entry) {
++        Map.Entry<?, ?> entry = (Map.Entry<?, ?>) object;
++        return ReferenceMap.this.remove(entry.getKey(), entry.getValue());
++      }
++      return false;
+     }
+ 
+-    @Override public boolean equals(Object o) {
+-      return referenceEquals(this, o);
++    @Override public void clear() {
++      ReferenceMap.this.clear();
+     }
+   }
+ 
+-  class WeakKeyReference extends FinalizableWeakReference<Object>
+-      implements InternalReference {
+-    final int hashCode;
++  private class EntryIterator extends AbstractRemovableIterator<Map.Entry<K, V>>
++  {
++    Iterator<Map.Entry<Object, Object>> delegateEntries
++        = delegate.entrySet().iterator();
+ 
+-    public WeakKeyReference(Object key) {
+-      super(key);
+-      this.hashCode = keyHashCode(key);
+-    }
++    @Override protected Map.Entry<K, V> computeNext() {
++      while (delegateEntries.hasNext()) {
++        Map.Entry<Object, Object> entry = delegateEntries.next();
++        Object reference = entry.getKey();
+ 
+-    public void finalizeReferent() {
+-      delegate.remove(this);
+-    }
++        @SuppressWarnings("unchecked")
++        final K key = (K) keyStrategy.dereferenceKey(reference);
+ 
+-    @Override public int hashCode() {
+-      return this.hashCode;
++        if (key != null) {
++          final V value = dereferenceValue(entry.getValue());
++          if (value != null) {
++            return new AbstractMapEntry<K, V>() {
++              V currentValue = value;
++              @Override public K getKey() {
++                return key;
++              }
++              @Override public V getValue() {
++                return currentValue;
++              }
++              @Override public V setValue(V newValue) {
++                put(key, newValue);
++                try {
++                  return currentValue;
++                } finally {
++                  currentValue = newValue;
++                }
++              }
++            };
++          }
++        }
++        // Otherwise, skip over this partially-GC'ed entry.
++      }
++      return endOfData();
+     }
+ 
+-    @Override public boolean equals(Object o) {
+-      return referenceEquals(this, o);
++    /*
++     * On a typical Map this would produce a ConcurrentModificationException,
++     * but we're using a ConcurrentMap, which of course has no problem.
++     */
++    @Override public void remove(Map.Entry<K, V> entry) {
++      ReferenceMap.this.remove(entry.getKey(), entry.getValue());
+     }
+   }
+ 
+-  class SoftValueReference extends FinalizableSoftReference<Object>
+-      implements InternalReference {
+-    final Object keyReference;
++  // Serialization
+ 
+-    public SoftValueReference(Object keyReference, Object value) {
+-      super(value);
+-      this.keyReference = keyReference;
+-    }
++  /*
++   * "Override" default serialization so that we serialize the wrapped values
++   * themselves (of type K and V), since serializing references would be absurd.
++   */
+ 
+-    public void finalizeReferent() {
+-      delegate.remove(keyReference, this);
++  private void writeObject(ObjectOutputStream out) throws IOException {
++    // Fail noisily, to avoid creating a reserialized version with a different
++    // backing map
++    if (customBackingMap) {
++      throw new UnsupportedOperationException(
++          "Cannot serialize ReferenceMap created from a given backing map");
+     }
+-
+-    @Override public boolean equals(Object obj) {
+-      return referenceEquals(this, obj);
++    out.defaultWriteObject(); // referenceType fields
++    out.writeInt(size());
++    for (Map.Entry<K, V> entry : entrySet()) {
++      out.writeObject(entry.getKey());
++      out.writeObject(entry.getValue());
+     }
++    out.writeObject(null);
+   }
+ 
+-  class WeakValueReference extends FinalizableWeakReference<Object>
+-      implements InternalReference {
+-    final Object keyReference;
+-
+-    public WeakValueReference(Object keyReference, Object value) {
+-      super(value);
+-      this.keyReference = keyReference;
++  private void readObject(ObjectInputStream in)
++      throws IOException, ClassNotFoundException {
++    in.defaultReadObject(); // sets the referenceType fields
++    int approximateSize = in.readInt();
++    checkArgument(approximateSize >= 0);
++    delegate = new ConcurrentHashMap<Object, Object>(
++        Math.max(approximateSize * 2, 16));
++    while (true) {
++      @SuppressWarnings("unchecked") // see writeObject()
++      K key = (K) in.readObject();
++      if (key == null) {
++        break;
++      }
++      @SuppressWarnings("unchecked") // see writeObject()
++      V value = (V) in.readObject();
++      put(key, value);
+     }
+-
+-    public void finalizeReferent() {
+-      delegate.remove(keyReference, this);
+-    }
+-
+-    @Override public boolean equals(Object obj) {
+-      return referenceEquals(this, obj);
+-    }
+   }
+ 
+-  protected interface Strategy {
+-    public Object execute(
+-        ReferenceMap map, Object keyReference, Object valueReference);
+-  }
++  // The rest of the file is all private machinery
+ 
+-  // TODO(crazybob): a getter called put() is probably a bad idea
+-  protected Strategy putStrategy() {
+-    return PutStrategy.PUT;
+-  }
+-
+-  protected Strategy putIfAbsentStrategy() {
+-    return PutStrategy.PUT_IF_ABSENT;
+-  }
+-
+-  protected Strategy replaceStrategy() {
+-    return PutStrategy.REPLACE;
+-  }
+-
+-  private enum PutStrategy implements Strategy {
+-    PUT {
+-      public Object execute(
+-          ReferenceMap map, Object keyReference, Object valueReference) {
+-        return map.dereferenceValue(
+-            map.delegate.put(keyReference, valueReference));
++  private enum ReferenceStrategy {
++    DIRECT {
++      @Override Object referenceKey(ReferenceMap<?, ?> map, Object key) {
++        return key;
+       }
++      @Override Object referenceValue(
++          ReferenceMap<?, ?> map, Object keyReference, Object value) {
++        return value;
++      }
++      @Override Object dereferenceKey(Object reference) {
++        return reference;
++      }
++      @Override Object dereferenceValue(Object object) {
++        return object;
++      }
++      @Override Object getDummyFor(Object object) {
++        return checkNotNull(object);
++      }
+     },
+ 
+-    REPLACE {
+-      public Object execute(
+-          ReferenceMap map, Object keyReference, Object valueReference) {
+-        // ensure that the existing value is not collected
+-        do {
+-          Object existingValueReference;
+-          Object existingValue;
+-          do {
+-            existingValueReference = map.delegate.get(keyReference);
+-            existingValue = map.dereferenceValue(existingValueReference);
+-          } while (isExpired(existingValueReference, existingValue));
+-
+-          if (existingValueReference == null) {
+-            // nothing to replace
+-            return false;
+-          }
+-
+-          if (map.delegate.replace(
+-              keyReference, existingValueReference, valueReference)) {
+-            // existingValue didn't expire since we still have a reference to it
+-            return existingValue;
+-          }
+-        } while (true);
++    WRAP_IN_SOFT {
++      @Override Object referenceKey(ReferenceMap<?, ?> map, Object key) {
++        return map.new SoftKeyReference(key);
+       }
++      @Override Object referenceValue(
++          ReferenceMap<?, ?> map, Object keyReference, Object value) {
++        return map.new SoftValueReference(keyReference, value);
++      }
+     },
+ 
+-    PUT_IF_ABSENT {
+-      public Object execute(
+-          ReferenceMap map, Object keyReference, Object valueReference) {
+-        Object existingValueReference;
+-        Object existingValue;
+-        do {
+-          existingValueReference
+-              = map.delegate.putIfAbsent(keyReference, valueReference);
+-          existingValue = map.dereferenceValue(existingValueReference);
+-        } while (isExpired(existingValueReference, existingValue));
+-        return existingValue;
++    WRAP_IN_WEAK {
++      @Override Object referenceKey(ReferenceMap<?, ?> map, Object key) {
++        return map.new WeakKeyReference(key);
+       }
+-    },
+-  }
++      @Override Object referenceValue(
++          ReferenceMap<?, ?> map, Object keyReference, Object value) {
++        return map.new WeakValueReference(keyReference, value);
++      }
++    };
+ 
+-  private static PutStrategy defaultPutStrategy;
++    abstract Object referenceKey(ReferenceMap<?, ?> map, Object key);
+ 
+-  protected PutStrategy getPutStrategy() {
+-    return defaultPutStrategy;
+-  }
++    abstract Object referenceValue(
++        ReferenceMap<?, ?> map, Object keyReference, Object value);
+ 
+-  class Entry implements Map.Entry<K, V> {
+-    final K key;
+-    V value;
+-
+-    public Entry(K key, V value) {
+-      this.key = key;
+-      this.value = value;
++    Object dereferenceKey(Object reference) {
++      return ((Reference<?>) reference).get();
+     }
+ 
+-    public K getKey() {
+-      return this.key;
+-    }
++    Object dereferenceValue(Object object) {
++      InternalReference reference = (InternalReference) object;
++      Object value = reference.get();
+ 
+-    public V getValue() {
+-      return this.value;
++      /*
++       * It's important that we proactively try to finalize the referent, rather
++       * rather than waiting on the queue, in particular because of the
++       * do/while loop in PutStrategy.REPLACE.
++       */
++      if (value == null) {
++        reference.finalizeReferent(); // The old value was garbage collected.
++      }
++      return value;
+     }
+ 
+-    public V setValue(V newValue) {
+-      value = newValue;
+-      return put(key, newValue);
++    Object getDummyFor(Object object) {
++      return new DummyReference(object);
+     }
+ 
+-    public int hashCode() {
+-      return key.hashCode() * 31 + value.hashCode();
++    static ReferenceStrategy forType(ReferenceType type) {
++      switch (type) {
++        case STRONG:
++          return ReferenceStrategy.DIRECT;
++        case SOFT:
++          return ReferenceStrategy.WRAP_IN_SOFT;
++        case WEAK:
++          return ReferenceStrategy.WRAP_IN_WEAK;
++        default:
++          throw new AssertionError();
++      }
+     }
++  }
+ 
+-    public boolean equals(Object o) {
+-      if (!(o instanceof ReferenceMap.Entry)) {
+-        return false;
+-      }
++  /**
++   * Lazy initialization holder for finalizable reference queue.
++   */
++  private static class ReferenceQueue {
++    private static final FinalizableReferenceQueue instance
++        = new FinalizableReferenceQueue();
++  }
+ 
+-      Entry entry = (Entry) o;
+-      return key.equals(entry.key) && value.equals(entry.value);
+-    }
++  /*
++   * Marker interface to differentiate external and internal references. Also
++   * duplicates finalizeReferent() and Reference.get() for internal use.
++   */
++  private interface InternalReference {
++    void finalizeReferent();
++    Object get();
++  }
+ 
+-    public String toString() {
+-      return key + "=" + value;
++  private class SoftKeyReference extends FinalizableSoftReference<Object>
++      implements InternalReference {
++    final int hashCode;
++
++    SoftKeyReference(Object key) {
++      super(key, ReferenceQueue.instance);
++      hashCode = System.identityHashCode(key);
+     }
++    public void finalizeReferent() {
++      delegate.remove(this);
++    }
++    @Override public int hashCode() {
++      return hashCode;
++    }
++    @Override public boolean equals(Object object) {
++      return referenceEquals(this, object);
++    }
+   }
+ 
+-  private class ReferenceIterator implements Iterator<Map.Entry<K, V>> {
+-    private Iterator<Map.Entry<Object, Object>> i =
+-        delegate.entrySet().iterator();
+-    private Map.Entry<K, V> nextEntry;
+-    private Map.Entry<K, V> lastReturned;
++  private class SoftValueReference extends FinalizableSoftReference<Object>
++      implements InternalReference {
++    final Object keyReference;
+ 
+-    public ReferenceIterator() {
+-      advance();
++    SoftValueReference(Object keyReference, Object value) {
++      super(value, ReferenceQueue.instance);
++      this.keyReference = keyReference;
+     }
++    public void finalizeReferent() {
++      delegate.remove(keyReference, this);
++    }
++    @Override public int hashCode() {
++      // It's hard to define a useful hash code, so we're careful not to use it.
++      throw new AssertionError("don't hash me");
++    }
++    @Override public boolean equals(Object obj) {
++      return referenceEquals(this, obj);
++    }
++  }
+ 
+-    private void advance() {
+-      while (i.hasNext()) {
+-        Map.Entry<K, V> entry = dereferenceEntry(i.next());
+-        if (entry != null) {
+-          nextEntry = entry;
+-          return;
+-        }
+-      }
++  /*
++   * WeakKeyReference/WeakValueReference are absolutely identical to
++   * SoftKeyReference/SoftValueReference except for which classes they extend.
++   */
+ 
+-      // nothing left
+-      nextEntry = null;
+-    }
++  private class WeakKeyReference extends FinalizableWeakReference<Object>
++      implements InternalReference {
++    final int hashCode;
+ 
+-    public boolean hasNext() {
+-      return nextEntry != null;
++    WeakKeyReference(Object key) {
++      super(key, ReferenceQueue.instance);
++      hashCode = System.identityHashCode(key);
+     }
+-
+-    public Map.Entry<K, V> next() {
+-      if (nextEntry == null) {
+-        throw new NoSuchElementException();
+-      }
+-      lastReturned = nextEntry;
+-      advance();
+-      return lastReturned;
++    public void finalizeReferent() {
++      delegate.remove(this);
+     }
+-
+-    public void remove() {
+-      ReferenceMap.this.remove(lastReturned.getKey());
++    @Override public int hashCode() {
++      return hashCode;
+     }
++    @Override public boolean equals(Object object) {
++      return referenceEquals(this, object);
++    }
+   }
+ 
+-  private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
+-    public Iterator<Map.Entry<K, V>> iterator() {
+-      return new ReferenceIterator();
+-    }
++  private class WeakValueReference extends FinalizableWeakReference<Object>
++      implements InternalReference {
++    final Object keyReference;
+ 
+-    public int size() {
+-      return delegate.size();
++    WeakValueReference(Object keyReference, Object value) {
++      super(value, ReferenceQueue.instance);
++      this.keyReference = keyReference;
+     }
+-
+-    public boolean contains(Object o) {
+-      if (!(o instanceof Map.Entry)) {
+-        return false;
+-      }
+-      Map.Entry<K, V> e = (Map.Entry<K, V>) o;
+-      V v = ReferenceMap.this.get(e.getKey());
+-      return v != null && v.equals(e.getValue());
++    public void finalizeReferent() {
++      delegate.remove(keyReference, this);
+     }
+-
+-    public boolean remove(Object o) {
+-      if (!(o instanceof Map.Entry)) {
+-        return false;
+-      }
+-      Map.Entry<K, V> e = (Map.Entry<K, V>) o;
+-      return ReferenceMap.this.remove(e.getKey(), e.getValue());
++    @Override public int hashCode() {
++      // It's hard to define a useful hash code, so we're careful not to use it.
++      throw new AssertionError("don't hash me");
+     }
++    @Override public boolean equals(Object obj) {
++      return referenceEquals(this, obj);
++    }
++  }
+ 
+-    public void clear() {
+-      delegate.clear();
++  /*
++   * A short-lived object that is contrived for the purpose of passing to
++   * methods of the backing map such as get(), remove(), containsKey(), and
++   * replace() (all parameters but the last). That is, it's an object suitable
++   * only for use with the backing map, and only for _comparison_ purposes. This
++   * is a hack that lets us compare keys and values to referenced keys and
++   * values without creating more references.
++   */
++  private static class DummyReference {
++    final Object wrapped;
++    DummyReference(Object wrapped) {
++      this.wrapped = checkNotNull(wrapped);
+     }
++    Object unwrap() {
++      return wrapped;
++    }
++    @Override public int hashCode() {
++      return System.identityHashCode(wrapped);
++    }
++    @Override public boolean equals(Object object) {
++      return object.equals(this); // Defer to the reference's equals() logic.
++    }
+   }
+ 
+-  static void ensureNotNull(Object... array) {
+-    for (int i = 0; i < array.length; i++) {
+-      if (array[i] == null) {
+-        throw new NullPointerException("Argument #" + i + " is null.");
+-      }
++  /*
++   * Tests weak and soft references for identity equality. Compares references
++   * to other references and wrappers. If o is a reference, this returns true if
++   * r == o or if r and o reference the same non-null object. If o is a wrapper,
++   * this returns true if r's referent is identical to the wrapped object.
++   */
++  private static boolean referenceEquals(Reference<?> reference, Object object)
++  {
++    // Are they the same reference? Used in cleanup.
++    if (object == reference) {
++      return true;
+     }
++    if (object instanceof InternalReference) {
++      /*
++       * Do they reference identical values? Used in conditional puts. We can
++       * assume it's of type InternalReference now, as no one outside
++       * ReferenceMap can be invoking equals().
++       */
++      Object referent = ((InternalReference) object).get();
++      return referent != null && referent == reference.get();
++    }
++
++    // Is the wrapped object identical to the referent? Used in lookups.
++    return ((DummyReference) object).unwrap() == reference.get();
+   }
+ 
+-  private void writeObject(ObjectOutputStream out) throws IOException {
+-    out.defaultWriteObject();
+-    out.writeInt(size());
+-    for (Map.Entry<Object, Object> entry : delegate.entrySet()) {
+-      Object key = dereferenceKey(entry.getKey());
+-      Object value = dereferenceValue(entry.getValue());
++  // TODO: make private
++  Object referenceKey(K key) {
++    return keyStrategy.referenceKey(this, checkNotNull(key));
++  }
+ 
+-      // don't persist gc'ed entries.
+-      if (key != null && value != null) {
+-        out.writeObject(key);
+-        out.writeObject(value);
+-      }
+-    }
+-    out.writeObject(null);
++  // TODO: make private
++  Object referenceValue(Object keyReference, V value) {
++    return valueStrategy.referenceValue(
++        this, keyReference, checkNotNull(value));
+   }
+ 
+-  private void readObject(ObjectInputStream in)
+-      throws IOException, ClassNotFoundException {
+-    in.defaultReadObject();
+-    int size = in.readInt();
+-    this.delegate = new ConcurrentHashMap<Object, Object>(size);
+-    while (true) {
+-      K key = (K) in.readObject();
+-      if (key == null) {
+-        break;
+-      }
+-      V value = (V) in.readObject();
+-      put(key, value);
++  /*
++   * Converts a reference to a value. Do not call this method without being
++   * certain that the object is a reference to a value type (V).
++   */
++  @SuppressWarnings("unchecked")
++  // TODO: make private, or inline
++  V dereferenceValue(Object object) {
++    if (object == null) {
++      return null;
+     }
++    return (V) valueStrategy.dereferenceValue(object);
+   }
+ 
+-  private static final long serialVersionUID = 0;
++  private static final long serialVersionUID = 0L;
+ }
+Index: src/com/google/inject/internal/FinalizableReference.java
+===================================================================
+--- src/com/google/inject/internal/FinalizableReference.java	(revision 702)
++++ src/com/google/inject/internal/FinalizableReference.java	(working copy)
+@@ -1,32 +0,0 @@
+-/**
+- * Copyright (C) 2006 Google Inc.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.google.inject.internal;
+-
+-/**
+- * Package-private interface implemented by references that have code to run
+- * after garbage collection of their referents.
+- *
+- * @author crazybob@google.com (Bob Lee)
+- */
+-interface FinalizableReference {
+-
+-  /**
+-   * Invoked on a background thread after the referent has been garbage
+-   * collected.
+-   */
+-  void finalizeReferent();
+-}
+Index: src/com/google/inject/internal/ReferenceType.java
+===================================================================
+--- src/com/google/inject/internal/ReferenceType.java	(revision 702)
++++ src/com/google/inject/internal/ReferenceType.java	(working copy)
+@@ -1,55 +0,0 @@
+-/**
+- * Copyright (C) 2006 Google Inc.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.google.inject.internal;
+-
+-/**
+- * Reference type. Used to specify what type of reference to keep to a
+- * referent.
+- *
+- * @see java.lang.ref.Reference
+- * @author crazybob@google.com (Bob Lee)
+- */
+-public enum ReferenceType {
+-
+-  /**
+-   * Prevents referent from being reclaimed by the garbage collector.
+-   */
+-  STRONG,
+-
+-  /**
+-   * Referent reclaimed in an LRU fashion when the VM runs low on memory and
+-   * no strong references exist.
+-   *
+-   * @see java.lang.ref.SoftReference
+-   */
+-  SOFT,
+-
+-  /**
+-   * Referent reclaimed when no strong or soft references exist.
+-   *
+-   * @see java.lang.ref.WeakReference
+-   */
+-  WEAK,
+-
+-  /**
+-   * Similar to weak references except the garbage collector doesn't actually
+-   * reclaim the referent. More flexible alternative to finalization.
+-   *
+-   * @see java.lang.ref.PhantomReference
+-   */
+-  PHANTOM
+-}
+Index: src/com/google/inject/internal/AbstractReferenceCache.java
+===================================================================
+--- src/com/google/inject/internal/AbstractReferenceCache.java	(revision 702)
++++ src/com/google/inject/internal/AbstractReferenceCache.java	(working copy)
+@@ -16,6 +16,7 @@
+ 
+ package com.google.inject.internal;
+ 
++import com.google.common.base.ReferenceType;
+ import java.io.IOException;
+ import java.io.ObjectInputStream;
+ import java.util.concurrent.ConcurrentHashMap;
+@@ -49,7 +50,7 @@
+       // winning thread.
+       try {
+         // check one more time (a previous future could have come and gone.)
+-        V value = internalGet(key);
++        V value = super.get(key);
+         if (value != null) {
+           futureValue.setValue(value);
+           return value;
+Index: src/com/google/inject/internal/FinalizableWeakReference.java
+===================================================================
+--- src/com/google/inject/internal/FinalizableWeakReference.java	(revision 702)
++++ src/com/google/inject/internal/FinalizableWeakReference.java	(working copy)
+@@ -1,35 +0,0 @@
+-/**
+- * Copyright (C) 2006 Google Inc.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.google.inject.internal;
+-
+-import java.lang.ref.WeakReference;
+-
+-/**
+- * Weak reference with a {@link FinalizableReference#finalizeReferent()} method
+- * which a background thread invokes after the garbage collector reclaims the
+- * referent. This is a simpler alternative to using a
+- * {@link java.lang.ref.ReferenceQueue}.
+- *
+- * @author crazybob@google.com (Bob Lee)
+- */
+-public abstract class FinalizableWeakReference<T> extends WeakReference<T>
+-    implements FinalizableReference {
+-
+-  protected FinalizableWeakReference(T referent) {
+-    super(referent, FinalizableReferenceQueue.getInstance());
+-  }
+-}
+Index: src/com/google/inject/internal/Function.java
+===================================================================
+--- src/com/google/inject/internal/Function.java	(revision 702)
++++ src/com/google/inject/internal/Function.java	(working copy)
+@@ -1,44 +0,0 @@
+-/**
+- * Copyright (C) 2006 Google Inc.
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- * http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package com.google.inject.internal;
+-
+-/**
+- * A Function provides a transformation on an object and returns the resulting
+- * object.  For example, a {@code StringToIntegerFunction} may implement
+- * <code>Function&lt;String,Integer&gt;</code> and transform integers in String
+- * format to Integer format.
+- *
+- * <p>The transformation on the from object does not necessarily result in
+- * an object of a different type.  For example, a
+- * {@code FarenheitToCelciusFunction} may implement
+- * <code>Function&lt;Float,Float&gt;</code>.
+- *
+- * <p>Implementors of Function which may cause side effects upon evaluation are
+- * strongly encouraged to state this fact clearly in their API documentation.
+- */
+-public interface Function<F,T> {
+-
+-  /**
+-   * Applies the function to an object of type {@code F}, resulting in an object
+-   * of type {@code T}.  Note that types {@code F} and {@code T} may or may not
+-   * be the same.
+-   *
+-   * @param from The from object.
+-   * @return The resulting object.
+-   */
+-  T apply(F from);
+-}
+Index: src/com/google/inject/internal/NpeThrowingAbstractMap.java
+===================================================================
+--- src/com/google/inject/internal/NpeThrowingAbstractMap.java	(revision 0)
++++ src/com/google/inject/internal/NpeThrowingAbstractMap.java	(revision 0)
+@@ -0,0 +1,88 @@
++/*
++ * Copyright (C) 2008 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.google.inject.internal;
++
++import com.google.common.collect.*;
++
++import java.util.AbstractMap;
++import java.util.Collection;
++import java.util.Map;
++import java.util.Set;
++
++/**
++ * {@code AbstractMap} extension whose views have {@code removeAll} and
++ * {@code retainAll} methods that always throw an exception when given a null
++ * collection. It provides a workaround for <a
++ * href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4802647">Sun bug
++ * 4802647</a>.
++ * 
++ * @author Jared Levy
++ */
++abstract class NpeThrowingAbstractMap<K, V> extends AbstractMap<K, V> {
++  
++  /**
++   * Supplies an entry set, a wrapped version of which is returned by
++   * {@code entrySet()}. That way, {@link #entrySet} retrieves an entry set
++   * whose {@link Set#retainAll} method always throws an exception.
++   * 
++   * <p>This method is invoked at most once on a given map, at the time when
++   * {@code entrySet()} is first called.
++   */
++  protected abstract Set<Map.Entry<K, V>> createEntrySet();
++  
++  private transient Set<Map.Entry<K, V>> entrySet;
++  
++  @Override public synchronized Set<Map.Entry<K, V>> entrySet() {
++    if (entrySet == null) {
++      final Set<Map.Entry<K, V>> delegate = createEntrySet();
++      entrySet = new ForwardingSet<Map.Entry<K, V>>() {
++        @Override protected Set<Map.Entry<K, V>> delegate() {
++          return delegate;
++        }
++      };
++    }
++    return entrySet;
++  }
++  
++  private transient Set<K> keySet;
++  
++  @Override public synchronized Set<K> keySet() {
++    if (keySet == null) {
++      final Set<K> delegate = super.keySet();
++      keySet = new ForwardingSet<K>() {
++        @Override protected Set<K> delegate() {
++          return delegate;
++        }
++      };
++    }
++    return keySet;
++  }
++
++  private transient Collection<V> values;
++
++  @Override public synchronized Collection<V> values() {
++    if (values == null) {
++      final Collection<V> delegate = super.values();
++      values = new ForwardingCollection<V>() {
++        @Override protected Collection<V> delegate() {
++          return delegate;
++        }        
++      };
++    }
++    return values;
++  }
++}
+
+Property changes on: src/com/google/inject/internal/NpeThrowingAbstractMap.java
+___________________________________________________________________
+Added: svn:eol-style
+   + native
+
+Index: test/com/google/inject/internal/ReferenceCacheTest.java
+===================================================================
+--- test/com/google/inject/internal/ReferenceCacheTest.java	(revision 702)
++++ test/com/google/inject/internal/ReferenceCacheTest.java	(working copy)
+@@ -16,9 +16,10 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.internal.ReferenceType.SOFT;
+-import static com.google.inject.internal.ReferenceType.STRONG;
+-import static com.google.inject.internal.ReferenceType.WEAK;
++import static com.google.inject.internal.base.ReferenceType.SOFT;
++import static com.google.inject.internal.base.ReferenceType.STRONG;
++import static com.google.inject.internal.base.ReferenceType.WEAK;
++import com.google.inject.internal.base.Function;
+ import java.util.concurrent.CountDownLatch;
+ import junit.framework.TestCase;
+ 
+Index: test/com/google/inject/internal/FinalizableReferenceQueueTest.java
+===================================================================
+--- test/com/google/inject/internal/FinalizableReferenceQueueTest.java	(revision 702)
++++ test/com/google/inject/internal/FinalizableReferenceQueueTest.java	(working copy)
+@@ -16,6 +16,8 @@
+ 
+ package com.google.inject.internal;
+ 
++import com.google.common.base.FinalizableReferenceQueue;
++import com.google.common.base.FinalizableWeakReference;
+ import junit.framework.TestCase;
+ 
+ /**
+@@ -23,6 +25,11 @@
+  */
+ public class FinalizableReferenceQueueTest extends TestCase {
+ 
++  private static class ReferenceQueue {
++    private static final FinalizableReferenceQueue instance
++        = new FinalizableReferenceQueue();
++  }
++
+   public void testFinalizeReferentCalled() {
+     MockReference reference = new MockReference();
+     reference.enqueue();
+@@ -43,7 +50,7 @@
+     boolean finalizeReferentCalled;
+ 
+     MockReference() {
+-      super(new Object());
++      super(new Object(), ReferenceQueue.instance);
+     }
+ 
+     public void finalizeReferent() {
+Index: test/com/google/inject/internal/ReferenceMapTestSuite.java
+===================================================================
+--- test/com/google/inject/internal/ReferenceMapTestSuite.java	(revision 702)
++++ test/com/google/inject/internal/ReferenceMapTestSuite.java	(working copy)
+@@ -16,6 +16,7 @@
+ 
+ package com.google.inject.internal;
+ 
++import com.google.inject.internal.base.ReferenceType;
+ import java.io.ByteArrayInputStream;
+ import java.io.ByteArrayOutputStream;
+ import java.io.IOException;
+@@ -142,17 +143,6 @@
+       assertTrue(map.containsValue(v));
+     }
+ 
+-    public void testEntrySet() {
+-      final ReferenceMap map = newInstance();
+-      map.put("a", "1");
+-      map.put("b", "2");
+-      Set expected = new HashSet(Arrays.asList(
+-        map.new Entry("a", "1"),
+-        map.new Entry("b", "2")
+-      ));
+-      assertEquals(expected, map.entrySet());
+-    }
+-
+     public void testPutAll() {
+       ReferenceMap map = newInstance();
+       Object k = "key";
+@@ -260,4 +250,4 @@
+   enum Value {
+     FOO, BAR, TEE;
+   }
+-}
+\ No newline at end of file
++}
+Index: test/com/google/inject/internal/ReferenceMapTest.java
+===================================================================
+--- test/com/google/inject/internal/ReferenceMapTest.java	(revision 702)
++++ test/com/google/inject/internal/ReferenceMapTest.java	(working copy)
+@@ -16,9 +16,9 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.internal.ReferenceType.SOFT;
+-import static com.google.inject.internal.ReferenceType.STRONG;
+-import static com.google.inject.internal.ReferenceType.WEAK;
++import static com.google.inject.internal.base.ReferenceType.SOFT;
++import static com.google.inject.internal.base.ReferenceType.STRONG;
++import static com.google.inject.internal.base.ReferenceType.WEAK;
+ import java.lang.ref.Reference;
+ import java.util.Iterator;
+ import java.util.concurrent.ConcurrentMap;
+Index: common.xml
+===================================================================
+--- common.xml	(revision 702)
++++ common.xml	(working copy)
+@@ -63,7 +63,7 @@
+          debug="on"
+          destdir="${build.dir}/test"
+          source="1.5" target="1.5">
+-      <classpath path="${build.dir}/classes"/>
++      <classpath path="${build.dir}/dist/guice-${version}.jar"/>
+       <classpath refid="compile.classpath"/>
+     </javac>
+     <copy toDir="${build.dir}/test">
+Index: src/com/google/inject/InjectorImpl.java
+===================================================================
+--- src/com/google/inject/InjectorImpl.java	(revision 705)
++++ src/com/google/inject/InjectorImpl.java	(working copy)
+@@ -72,9 +72,9 @@
+     if (parent != null) {
+       localContext = parent.localContext;
+     } else {
+-      localContext = new ThreadLocal<InternalContext[]>() {
+-        protected InternalContext[] initialValue() {
+-          return new InternalContext[1];
++      localContext = new ThreadLocal<Object[]>() {
++        protected Object[] initialValue() {
++          return new Object[1];
+         }
+       };
+     }
+@@ -818,23 +818,23 @@
+     return getProvider(type).get();
+   }
+ 
+-  final ThreadLocal<InternalContext[]> localContext;
++  final ThreadLocal<Object[]> localContext;
+ 
+   /** Looks up thread local context. Creates (and removes) a new context if necessary. */
+   <T> T callInContext(ContextualCallable<T> callable) throws ErrorsException {
+-    InternalContext[] reference = localContext.get();
++    Object[] reference = localContext.get();
+     if (reference[0] == null) {
+       reference[0] = new InternalContext();
+       try {
+-        return callable.call(reference[0]);
++        return callable.call((InternalContext)reference[0]);
+       } finally {
+-        // Only remove the context if this call created it.
+-        localContext.remove();
++        // Only clear the context if this call created it.
++        reference[0] = null;
+       }
+     }
+     else {
+       // Someone else will clean up this context.
+-      return callable.call(reference[0]);
++      return callable.call((InternalContext)reference[0]);
+     }
+   }
+ 

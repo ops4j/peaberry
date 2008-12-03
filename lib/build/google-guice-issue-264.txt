@@ -1,0 +1,112 @@
+Index: guice.ipr
+===================================================================
+--- guice.ipr	(revision 717)
++++ guice.ipr	(working copy)
+@@ -577,7 +577,7 @@
+   <component name="libraryTable">
+     <library name="collect">
+       <CLASSES>
+-        <root url="jar://$PROJECT_DIR$/lib/build/google-collect-snapshot-20081129.jar!/" />
++        <root url="jar://$PROJECT_DIR$/lib/build/google-collect-peaberry-20081203.jar!/" />
+       </CLASSES>
+       <JAVADOC />
+       <SOURCES />
+Index: common.xml
+===================================================================
+--- common.xml	(revision 717)
++++ common.xml	(working copy)
+@@ -25,7 +25,7 @@
+   <target name="manifest" description="Generate OSGi manifest." depends="compile">
+     <dirname property="common.basedir" file="${ant.file.common}"/>
+     <taskdef resource="aQute/bnd/ant/taskdef.properties"
+-      classpath="${common.basedir}/lib/build/bnd-0.0.255.jar"/>
++      classpath="${common.basedir}/lib/build/bnd-0.0.295.jar"/>
+ 
+     <fail unless="module" message="Missing 'module' property (use the primary package name in this jar)"/>
+ 
+@@ -109,15 +109,18 @@
+     <mkdir dir="${build.dir}/dist"/>
+     <dirname property="common.basedir" file="${ant.file.common}"/>
+     <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+-        classpath="${common.basedir}/lib/build/jarjar-1.0rc8.jar"/>
++        classpath="${common.basedir}/lib/build/jarjar-peaberry-20081203.jar"/>
+     <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
+       <fileset dir="${build.dir}/classes"/>
+       <zipfileset src="${common.basedir}/lib/build/cglib-2.2.jar"/>
+       <zipfileset src="${common.basedir}/lib/build/asm-3.1.jar"/>
+-      <zipfileset src="${common.basedir}/lib/build/google-collect-snapshot-20081129.jar"/>
++      <zipfileset src="${common.basedir}/lib/build/google-collect-peaberry-20081203.jar"/>
+       <rule pattern="com.google.common.**" result="com.google.inject.internal.@1"/>
+       <rule pattern="net.sf.cglib.**" result="com.google.inject.internal.cglib.@1"/>
+       <rule pattern="org.objectweb.asm.**" result="com.google.inject.internal.asm.@1"/>
++      <keep pattern="net.sf.cglib.core.ReflectUtils.findMethods"/>
++      <keep pattern="net.sf.cglib.proxy.MethodProxy.create"/>
++      <keep pattern="com.google.common.base.internal.Finalizer.startFinalizer"/>
+       <keep pattern="com.google.inject.**"/>
+       <keep pattern="com.google.common.collect.ImmutableMultimap"/>
+     </jarjar>
+Index: build.xml
+===================================================================
+--- build.xml	(revision 717)
++++ build.xml	(working copy)
+@@ -2,6 +2,9 @@
+ 
+ <project name="guice" default="compile">
+ 
++  <property name="DynamicImport-Package" value="org.aopalliance.intercept"/>
++  <property name="exclude.imports" value="!com.google.common.*,!net.sf.*,!org.objectweb.*"/>
++
+   <import file="common.xml"/>
+ 
+   <path id="compile.classpath">
+@@ -81,7 +84,7 @@
+         <pathelement location="lib/build/junit.jar"/>
+         <pathelement location="lib/build/servlet-api-2.5.jar"/>
+         <pathelement location="lib/build/easymock.jar"/>
+-        <pathelement location="lib/build/google-collect-snapshot-20081129.jar"/>
++        <pathelement location="lib/build/google-collect-peaberry-20081203.jar"/>
+       </classpath>
+       <arg value="com.google.inject.AllTests"/>    
+       <syspropertyset>
+Index: lib/build/bnd-0.0.255.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: lib/build/bnd-0.0.295.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib/build/bnd-0.0.295.jar
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: lib/build/jarjar-peaberry-20081203.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib/build/jarjar-peaberry-20081203.jar
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+
+Index: lib/build/google-collect-snapshot-20081129.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: lib/build/jarjar-1.0rc8.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: lib/build/google-collect-peaberry-20081203.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib/build/google-collect-peaberry-20081203.jar
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+

@@ -1,0 +1,242 @@
+Index: src/main/com/tonicsystems/jarjar/KeepProcessor.java
+===================================================================
+--- src/main/com/tonicsystems/jarjar/KeepProcessor.java	(revision 126)
++++ src/main/com/tonicsystems/jarjar/KeepProcessor.java	(working copy)
+@@ -20,13 +20,12 @@
+ import java.io.*;
+ import java.util.*;
+ import org.objectweb.asm.*;
+-import org.objectweb.asm.Type;
+ import org.objectweb.asm.commons.*;
+ 
+ // TODO: this can probably be refactored into JarClassVisitor, etc.
+ class KeepProcessor extends Remapper implements JarProcessor
+ {
+-    private final ClassVisitor cv = new RemappingClassAdapter(new EmptyVisitor(), this);
++    private final ClassVisitor cv = new KeepClassAdapter();
+     private final List<Wildcard> wildcards;
+     private final List<String> roots = new ArrayList<String>();
+     private final Map<String, Set<String>> depend = new HashMap<String, Set<String>>();
+@@ -47,12 +46,17 @@
+         return removable;
+     }
+ 
++    public Set<String> getUnusedMethods() {
++        return staticMethodDepends.keySet();
++    }
++
+     private void closureHelper(Set<String> closure, Collection<String> process) {
+         if (process == null)
+             return;
+         for (String name : process) {
+-            if (closure.add(name))
+-                closureHelper(closure, depend.get(name));
++            if (closure.add(name)) {
++                closureHelper(closure, addStaticMethodDependencies(name, depend.get(name)));
++            }
+         }
+     }
+ 
+@@ -106,4 +110,69 @@
+         }
+         return true;
+     }
++
++    private Set<String> addStaticMethodDependencies(String name, Set<String> depends) {
++        Set<String> merged = depends, refs;
++        if ((refs = staticMethodDepends.remove(name)) != null) {
++            if (null == merged) {
++                merged = refs;
++            } else {
++                merged.addAll(refs);
++            }
++        }
++        return merged;
++    }
++
++    Map<String, Set<String>> staticMethodDepends = new HashMap<String, Set<String>>();
++
++    class KeepClassAdapter extends RemappingClassAdapter {
++        public KeepClassAdapter() {
++            super(new StaticMethodAnalyzer(), KeepProcessor.this);
++        }
++
++        @Override
++        public void visitInnerClass(String name, String outerName, String innerName, int access) {}
++    }
++
++    boolean keepMethod(String className, String methodName) {
++        for (Wildcard wildcard : wildcards)
++          if (wildcard.matches(className) || wildcard.matches(className + '/' + methodName))
++            return true;
++
++        return "<clinit>".equals(methodName);
++    }
++
++    class StaticMethodAnalyzer extends EmptyVisitor {
++        String className;
++
++        @Override
++        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
++            className = name;
++        }
++
++        @Override
++        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
++            final Set<String> tmpSet = curSet;
++
++            if ((access & Opcodes.ACC_STATIC) != 0 && !keepMethod(className, name)) {
++                // use ~ to delimit the various sections so we can easily remap it later on
++                staticMethodDepends.put(className + "~" + name + "~" + desc, curSet = new HashSet<String>());
++            }
++
++            return new EmptyVisitor() {
++                @Override
++                public void visitEnd() {
++                    curSet = tmpSet;
++                }
++
++                @Override
++                public void visitMethodInsn(int opcode, String owner, String name, String desc) {
++                    if (opcode == Opcodes.INVOKESTATIC) {
++                        // use ~ to delimit the various sections
++                        curSet.add(owner + "~" + name + "~" + desc);
++                    }
++                }
++            };
++        }
++    }
+ }
+Index: src/main/com/tonicsystems/jarjar/MainProcessor.java
+===================================================================
+--- src/main/com/tonicsystems/jarjar/MainProcessor.java	(revision 126)
++++ src/main/com/tonicsystems/jarjar/MainProcessor.java	(working copy)
+@@ -26,6 +26,7 @@
+     private final boolean verbose;
+     private final JarProcessor chain;
+     private final KeepProcessor kp;
++    private final PackageRemapper pr;
+     private final Map<String, String> renames = new HashMap<String, String>();
+     
+     public MainProcessor(List<PatternElement> patterns, boolean verbose, boolean skipManifest) {
+@@ -43,7 +44,7 @@
+             }
+         }
+ 
+-        PackageRemapper pr = new PackageRemapper(ruleList, verbose);
++        pr = new PackageRemapper(ruleList, verbose);
+         kp = keepList.isEmpty() ? null : new KeepProcessor(keepList);
+ 
+         List<JarProcessor> processors = new ArrayList<JarProcessor>();
+@@ -60,9 +61,36 @@
+     public void strip(File file) throws IOException {
+         if (kp == null)
+             return;
++
++        List<JarProcessor> processors = new ArrayList<JarProcessor>();
++
+         Set<String> excludes = getExcludes();
+         if (!excludes.isEmpty())
+-            StandaloneJarProcessor.run(file, file, new ExcludeProcessor(excludes, verbose));
++            processors.add(new ExcludeProcessor(excludes, verbose));
++
++        Set<String> unusedMethods = kp.getUnusedMethods();
++        if (!unusedMethods.isEmpty()) {
++            Set<String> methods = new HashSet<String>();
++
++            for (String m : unusedMethods) {
++                // split our encoded string into parts
++                String[] typeNameDesc = m.split("~");
++                StringBuilder buf = new StringBuilder();
++
++                buf.append(pr.mapType(typeNameDesc[0]));
++                buf.append('.').append(typeNameDesc[1]);
++                buf.append(pr.mapMethodDesc(typeNameDesc[2]));
++
++                methods.add(buf.toString());
++            }
++
++            processors.add(new JarTransformerChain(
++                new ClassTransformer[]{ new RemoveMethodClassTransformer(methods, verbose) }));
++        }
++
++        if (processors.size() > 0)
++            StandaloneJarProcessor.run(file, file,
++                new JarProcessorChain((JarProcessor[])processors.toArray(new JarProcessor[processors.size()])));
+     }
+     
+     private Set<String> getExcludes() {
+Index: src/main/com/tonicsystems/jarjar/util/RemoveMethodClassTransformer.java
+===================================================================
+--- src/main/com/tonicsystems/jarjar/util/RemoveMethodClassTransformer.java	(revision 0)
++++ src/main/com/tonicsystems/jarjar/util/RemoveMethodClassTransformer.java	(revision 0)
+@@ -0,0 +1,63 @@
++/**
++ * Copyright 2007 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.tonicsystems.jarjar.util;
++
++import java.util.Set;
++import org.objectweb.asm.ClassAdapter;
++import org.objectweb.asm.ClassVisitor;
++import org.objectweb.asm.MethodVisitor;
++import org.objectweb.asm.commons.EmptyVisitor;
++
++public class RemoveMethodClassTransformer extends ClassAdapter implements ClassTransformer
++{
++    private final Set<String> unusedMethods;
++    private final boolean verbose;
++
++    private String className;
++
++    public RemoveMethodClassTransformer(Set<String> unusedMethods, boolean verbose) {
++        super(null);
++
++        this.unusedMethods = unusedMethods;
++        this.verbose = verbose;
++    }
++
++    public void setTarget(ClassVisitor target) {
++        cv = target;
++    }
++
++    @Override
++    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
++        className = name;
++
++        super.visit(version, access, name, signature, superName, interfaces);
++    }
++
++    @Override
++    public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
++        String method = className + "." + name + desc;
++
++        if (unusedMethods.contains(method)) {
++            if (verbose)
++                System.err.println("Excluding method " + method);
++
++            return new EmptyVisitor();
++        }
++
++        return super.visitMethod(access, name, desc, signature, exceptions);
++    }
++}
+
+Property changes on: src/main/com/tonicsystems/jarjar/util/RemoveMethodClassTransformer.java
+___________________________________________________________________
+Added: svn:eol-style
+   + native
+
