@@ -16,22 +16,19 @@
 
 package org.ops4j.peaberry;
 
-import java.util.Map;
-
 /**
- * A service scope can receive exported services with associated attributes.
+ * A service scope can receive services provided by other registries.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ServiceScope {
+public interface ServiceScope<S> {
 
   /**
-   * Export the given service to this scope.
+   * Add the given service to this scope.
    * 
-   * @param service service instance
-   * @param attributes service attributes
+   * @param service imported service handle
    * 
-   * @return exported service handle, null if this scope is not interested
+   * @return exported service handle
    */
-  <S, T extends S> Export<S> export(T service, Map<String, ?> attributes);
+  <T extends S> Export<T> add(Import<T> service);
 }

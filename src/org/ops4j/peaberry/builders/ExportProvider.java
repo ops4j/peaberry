@@ -22,14 +22,9 @@ import org.ops4j.peaberry.Peaberry;
 import com.google.inject.Provider;
 
 /**
- * See {@link Peaberry} for examples of the service registration builder API.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface RegistrationProxyBuilder<T> {
-
-  /**
-   * @return exported service provider
-   */
-  Provider<Export<T>> export();
-}
+public interface ExportProvider<T>
+    extends Provider<Export<T>>, DirectProvider<T> {}

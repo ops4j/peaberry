@@ -78,33 +78,29 @@ final class ImportGlue {
 
   private static final Method[] OBJECT_METHODS = Object.class.getMethods();
 
-  public static String getProxyName(final String clazzName) {
-    final String safeName;
+  private static final String PROXY_SUFFIX = "$pbryglu";
+  private static final String PROXY_HANDLE = "__pbry__";
 
-    // support proxy of java.* interfaces by changing the package
-    if (clazzName.startsWith("java.")) {
-      safeName = clazzName.replace(".", "$$");
-    } else if (clazzName.startsWith("java/")) {
-      safeName = clazzName.replace("/", "$$");
-    } else {
-      safeName = clazzName;
+  public static String getProxyName(final String clazzName) {
+    final StringBuilder tmpName = new StringBuilder();
+
+    // support proxy of java.* interfaces by changing the package space
+    if (clazzName.startsWith("java.") || clazzName.startsWith("java/")) {
+      tmpName.append('$');
     }
 
-    return safeName + "$PeaberryGlue";
+    return tmpName.append(clazzName).append(PROXY_SUFFIX).toString();
   }
 
   public static String getClazzName(final String proxyName) {
-    final String safeName = proxyName.replaceFirst("\\$PeaberryGlue$", "");
-    final String clazzName;
+    final int head = '$' == proxyName.charAt(0) ? 1 : 0;
+    final int tail = proxyName.lastIndexOf(PROXY_SUFFIX);
 
-    // support proxy of java.* interfaces by changing the package
-    if (safeName.startsWith("java$$")) {
-      clazzName = safeName.replace("$$", ".");
-    } else {
-      clazzName = safeName;
+    if (tail > 0) {
+      return proxyName.substring(head, tail);
     }
 
-    return clazzName;
+    return proxyName;
   }
 
   public static byte[] generateProxy(final Class<?> clazz) {
@@ -126,7 +122,7 @@ final class ImportGlue {
     final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
 
     cw.visit(V1_5, PUBLIC | FINAL, proxyName, null, superName, interfaceNames);
-    cw.visitField(FINAL, "handle", IMPORT_DESC, null, null).visitEnd();
+    cw.visitField(FINAL, PROXY_HANDLE, IMPORT_DESC, null, null).visitEnd();
 
     init(cw, superName, proxyName);
 
@@ -163,9 +159,9 @@ final class ImportGlue {
 
     v.visitVarInsn(ALOAD, 0);
     v.visitInsn(DUP);
-    v.visitMethodInsn(INVOKESPECIAL, superName, "<init>", "()V");
     v.visitVarInsn(ALOAD, 1);
-    v.visitFieldInsn(PUTFIELD, proxyName, "handle", IMPORT_DESC);
+    v.visitFieldInsn(PUTFIELD, proxyName, PROXY_HANDLE, IMPORT_DESC);
+    v.visitMethodInsn(INVOKESPECIAL, superName, "<init>", "()V");
     v.visitInsn(RETURN);
 
     v.visitMaxs(0, 0);
@@ -198,7 +194,7 @@ final class ImportGlue {
     v.visitTryCatchBlock(ungetX, finalX, finalX, EXCEPTION_NAME);
 
     v.visitVarInsn(ALOAD, 0);
-    v.visitFieldInsn(GETFIELD, proxyName, "handle", IMPORT_DESC);
+    v.visitFieldInsn(GETFIELD, proxyName, PROXY_HANDLE, IMPORT_DESC);
     v.visitInsn(DUP);
     v.visitVarInsn(ASTORE, 0);
 
@@ -277,7 +273,7 @@ final class ImportGlue {
     final String name = method.getName();
 
     for (final Method m : methods) {
-      // only filter on name and signature, ignore the actual declaring class...
+      // just filter on method name and signature, ignore the declaring class...
       if (name.equals(m.getName()) && sig.equals(Arrays.toString(m.getParameterTypes()))) {
         return false;
       }

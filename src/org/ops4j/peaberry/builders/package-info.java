@@ -24,9 +24,6 @@
  * <dt>{@link org.ops4j.peaberry.builders.DecoratedServiceBuilder}
  * <dd>The interface that describes how to build dynamic service providers.
  *
- * <dt>{@link org.ops4j.peaberry.builders.QualifiedRegistrationBuilder}
- * <dd>The interface that describes how to build service registration providers.
- *
  * <dt>{@link org.ops4j.peaberry.builders.ImportDecorator}
  * <dd>The interface you can implement in order to decorate dynamic services.
  *

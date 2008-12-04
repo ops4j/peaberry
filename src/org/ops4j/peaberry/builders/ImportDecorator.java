@@ -28,8 +28,8 @@ public interface ImportDecorator<S> {
   /**
    * Decorate the given imported service.
    * 
-   * @param handle service handle
+   * @param service imported service handle
    * @return decorated service handle
    */
-  <T extends S> Import<T> decorate(Import<T> handle);
+  <T extends S> Import<T> decorate(Import<T> service);
 }

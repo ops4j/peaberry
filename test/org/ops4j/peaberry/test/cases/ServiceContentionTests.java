@@ -16,7 +16,6 @@
 
 package org.ops4j.peaberry.test.cases;
 
-import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
@@ -46,7 +45,7 @@ public final class ServiceContentionTests
   protected void configure() {
 
     bind(export(DummyService.class)).toProvider(
-        registration(Key.get(DummyServiceImpl.class)).export());
+        service(Key.get(DummyServiceImpl.class)).export());
 
     bind(DummyService.class).toProvider(service(DummyService.class).single());
 
@@ -99,7 +98,7 @@ public final class ServiceContentionTests
 
     assert "DONE".equals(importedService.test());
 
-    exportedService.remove();
+    exportedService.unput();
 
     try {
       importedService.test();

@@ -27,6 +27,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceScope;
 
 import com.google.inject.Singleton;
 
@@ -42,7 +43,7 @@ final class MockServiceRegistry
 
   final Map<Object, Map> registry = new HashMap<Object, Map>();
 
-  public <T> Iterable<Import<T>> lookup(final Class<? extends T> clazz, final AttributeFilter filter) {
+  public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
     return new Iterable() {
       public Iterator iterator() {
 
@@ -72,30 +73,34 @@ final class MockServiceRegistry
     };
   }
 
-  // /CLOVER:OFF
-  public <S, T extends S> Export<S> export(final T service, final Map<String, ?> attributes) {
-    registry.put(service, attributes);
+  public <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<T> scope) {
+  // TODO Auto-generated method stub
+  }
+
+  public <T> Export<T> add(final Import<T> service) {
+    registry.put(service.get(), service.attributes());
 
     return new Export() {
 
       public Object get() {
-        return service;
+        return service.get();
       }
 
       public Map attributes() {
-        return registry.get(service);
+        return service.attributes();
       }
 
       public void unget() {}
 
-      public void modify(final Map newAttributes) {
-        registry.put(service, newAttributes);
+      public void put(final Object newService) {}
+
+      public void attributes(final Map newAttributes) {
+        registry.put(service.get(), newAttributes);
       }
 
-      public void remove() {
-        registry.remove(service);
+      public void unput() {
+        registry.remove(service.get());
       }
     };
   }
-  // /CLOVER:ON
 }

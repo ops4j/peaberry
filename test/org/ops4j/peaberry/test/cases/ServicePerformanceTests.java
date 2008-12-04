@@ -17,7 +17,6 @@
 package org.ops4j.peaberry.test.cases;
 
 import static com.google.inject.name.Names.named;
-import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Decorators.sticky;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
@@ -41,7 +40,7 @@ public final class ServicePerformanceTests
   protected void configure() {
 
     // service uses same implementation
-    bind(export(Example.class)).toProvider(registration(Key.get(ExampleImpl.class)).export());
+    bind(export(Example.class)).toProvider(service(Key.get(ExampleImpl.class)).export());
 
     // standard injection: raw method invocation
     bind(Example.class).annotatedWith(named("Raw")).to(ExampleImpl.class);
@@ -51,7 +50,7 @@ public final class ServicePerformanceTests
 
     // service registry lookup: raw method invocation
     bind(Example.class).annotatedWith(named("Direct")).toProvider(
-        service(Example.class).direct().single());
+        service(Example.class).single().direct());
 
     // service registry lookup: indirect method invocation via sticky proxy
     bind(Example.class).annotatedWith(named("Sticky")).toProvider(

@@ -17,7 +17,6 @@
 package org.ops4j.peaberry.test.cases;
 
 import static com.google.inject.name.Names.named;
-import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.testng.Assert.assertEquals;
@@ -25,7 +24,7 @@ import static org.testng.Assert.fail;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.builders.DynamicServiceBuilder;
+import org.ops4j.peaberry.builders.ServiceBuilder;
 import org.testng.annotations.Test;
 
 import com.google.inject.AbstractModule;
@@ -54,7 +53,7 @@ public final class ServiceRegistryTests {
       protected void configure() {
         final Key<? extends ServiceRegistry> registryKey = Key.get(MockServiceRegistry.class);
 
-        final DynamicServiceBuilder<ClassLoader> builder =
+        final ServiceBuilder<ClassLoader> builder =
             service(ClassLoader.class).in(registryKey);
 
         bind(ClassLoader.class).annotatedWith(named("service")).toProvider(builder.single());
@@ -64,14 +63,14 @@ public final class ServiceRegistryTests {
         bind(loaderImplKey).toInstance(getClass().getClassLoader());
 
         bind(export(ClassLoader.class)).toProvider(
-            registration(loaderImplKey).in(registryKey).export());
+            service(loaderImplKey).in(registryKey).export());
       }
     });
 
-    injector.injectMembers(this);
-
     final Export<? extends ClassLoader> exportedLoader =
         injector.getInstance(Key.get(export(ClassLoader.class)));
+
+    injector.injectMembers(this);
 
     try {
       assertEquals(importedLoader.loadClass(getClass().getName()), getClass());
@@ -81,6 +80,6 @@ public final class ServiceRegistryTests {
 
     assertEquals(importedLoader.hashCode(), getClass().getClassLoader().hashCode());
 
-    exportedLoader.remove();
+    exportedLoader.unput();
   }
 }

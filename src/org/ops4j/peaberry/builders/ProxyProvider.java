@@ -16,33 +16,14 @@
 
 package org.ops4j.peaberry.builders;
 
-import java.util.Map;
-
 import org.ops4j.peaberry.Peaberry;
 
-import com.google.inject.Key;
+import com.google.inject.Provider;
 
 /**
- * See {@link Peaberry} for examples of the service registration builder API.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface QualifiedRegistrationBuilder<T>
-    extends ScopedRegistrationBuilder<T> {
-
-  /**
-   * Apply the given attributes to the service registration.
-   * 
-   * @param key service attributes key
-   * @return service registration builder
-   */
-  ScopedRegistrationBuilder<T> attributes(Key<? extends Map<String, ?>> key);
-
-  /**
-   * Apply the given attributes to the service registration.
-   * 
-   * @param instance service attributes
-   * @return service registration builder
-   */
-  ScopedRegistrationBuilder<T> attributes(Map<String, ?> instance);
-}
+public interface ProxyProvider<T>
+    extends Provider<T>, DirectProvider<T> {}

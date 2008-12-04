@@ -22,26 +22,26 @@ import org.ops4j.peaberry.ServiceScope;
 import com.google.inject.Key;
 
 /**
- * See {@link Peaberry} for examples of the service registration builder API.
+ * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ScopedRegistrationBuilder<T>
-    extends RegistrationProxyBuilder<T> {
+public interface OutjectedServiceBuilder<T>
+    extends ServiceBuilder<T> {
 
   /**
-   * Scope the service registration to a specific scope.
+   * Outject the dynamic service to the given scope.
    * 
    * @param key service scope key
-   * @return service registration builder
+   * @return dynamic service builder
    */
-  RegistrationProxyBuilder<T> in(Key<? extends ServiceScope> key);
+  ServiceBuilder<T> out(Key<? extends ServiceScope<? super T>> key);
 
   /**
-   * Scope the service registration to a specific scope.
+   * Outject the dynamic service to the given scope.
    * 
    * @param instance service scope
-   * @return service registration builder
+   * @return dynamic service builder
    */
-  RegistrationProxyBuilder<T> in(ServiceScope instance);
+  ServiceBuilder<T> out(ServiceScope<? super T> instance);
 }

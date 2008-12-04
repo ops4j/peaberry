@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import java.util.Map;
 
 /**
- * Basic matching filter for service attributes.
+ * Simple matching filter for service attributes.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -30,7 +30,7 @@ public interface AttributeFilter {
    * 
    * @param attributes service attributes
    * 
-   * @return true if the attributes were matched by the filter, otherwise false
+   * @return true if the given attributes match this filter, otherwise false
    */
   boolean matches(Map<String, ?> attributes);
 }

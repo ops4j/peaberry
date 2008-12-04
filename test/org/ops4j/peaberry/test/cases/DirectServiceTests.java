@@ -17,7 +17,6 @@
 package org.ops4j.peaberry.test.cases;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static org.ops4j.peaberry.Peaberry.registration;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
@@ -66,10 +65,10 @@ public final class DirectServiceTests
 
   @Override
   protected void configure() {
-    bind(Id.class).toProvider(service(Id.class).direct().single());
-    bind(iterable(Id.class)).toProvider(service(Id.class).direct().multiple());
+    bind(Id.class).toProvider(service(Id.class).single().direct());
+    bind(iterable(Id.class)).toProvider(service(Id.class).multiple().direct());
 
-    bind(export(Id.class)).toProvider(registration(Key.get(DirectIdImpl.class)).export());
+    bind(export(Id.class)).toProvider(service(Key.get(DirectIdImpl.class)).export());
   }
 
   public void testDirectServiceInjection() {
@@ -86,7 +85,7 @@ public final class DirectServiceTests
     assertTrue(hasService.id instanceof DirectIdImpl);
     assertTrue(hasService.ids.iterator().next() instanceof DirectIdImpl);
 
-    exportedId.remove();
+    exportedId.unput();
 
     // direct binding to non-existent service
     final Holder noService = getInstance(Key.get(Holder.class));

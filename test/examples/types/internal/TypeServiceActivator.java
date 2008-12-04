@@ -33,5 +33,5 @@ public final class TypeServiceActivator
     ctx.registerService(TypeService.class.getName(), new TypeServiceImpl(), null);
   }
 
-  public void stop(@SuppressWarnings("unused") final BundleContext ctx) {}
+  public void stop(final BundleContext ctx) {}
 }

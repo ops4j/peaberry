@@ -18,22 +18,25 @@ package org.ops4j.peaberry.builders;
 
 import org.ops4j.peaberry.Peaberry;
 
-import com.google.inject.Provider;
-
 /**
  * See {@link Peaberry} for examples of the dynamic service builder API.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ServiceProxyBuilder<T> {
+public interface ServiceBuilder<T> {
 
   /**
    * @return single service provider
    */
-  Provider<T> single();
+  ProxyProvider<T> single();
 
   /**
    * @return multiple service provider
    */
-  Provider<Iterable<T>> multiple();
+  ProxyProvider<Iterable<T>> multiple();
+
+  /**
+   * @return exported service provider
+   */
+  ExportProvider<T> export();
 }

@@ -40,7 +40,7 @@ final class ImmutableAttribute
     return v;
   }
 
-  public Object setValue(@SuppressWarnings("unused") final Object value) {
+  public Object setValue(final Object value) {
     throw new UnsupportedOperationException();
   }
 

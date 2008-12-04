@@ -25,7 +25,6 @@ import java.util.Iterator;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
-import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 import com.google.common.collect.ReferenceMap;
@@ -37,15 +36,13 @@ import com.google.common.collect.ReferenceMap;
  */
 final class ServiceProxyFactory {
 
-  static final ServiceUnavailableException NO_SERVICE = new ServiceUnavailableException();
-
   static final ReferenceMap<Import<?>, Object> PROXY_CACHE =
       new ReferenceMap<Import<?>, Object>(WEAK, STRONG);
 
   // instances not allowed
   private ServiceProxyFactory() {}
 
-  public static <S, T extends S> Iterable<T> serviceProxies(final Class<? extends T> clazz,
+  public static <S, T extends S> Iterable<T> serviceProxies(final Class<T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
     final Constructor<T> ctor = getProxyConstructor(clazz);
@@ -98,7 +95,7 @@ final class ServiceProxyFactory {
     };
   }
 
-  public static <S, T extends S> T serviceProxy(final Class<? extends T> clazz,
+  public static <S, T extends S> T serviceProxy(final Class<T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
     // provide concurrent access to the head of the import list

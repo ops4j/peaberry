@@ -30,14 +30,14 @@ public interface Import<T> {
    * 
    * @return service instance
    * 
-   * @throws ServiceUnavailableException
+   * @throws ServiceUnavailableException if the service is unavailable
    */
   T get();
 
   /**
-   * Get the attributes associated with the used service.
+   * Get the attributes associated with the service.
    * 
-   * @return attribute map, null if the service is not being used or is invalid
+   * @return current attribute map, null if the service is unavailable
    */
   Map<String, ?> attributes();
 

@@ -22,7 +22,7 @@ import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import java.util.Map;
 
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.builders.FilteredServiceBuilder;
+import org.ops4j.peaberry.builders.QualifiedServiceBuilder;
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.testng.annotations.Test;
 
@@ -82,11 +82,11 @@ public final class DecoratedServiceTests
 
   @Override
   protected void configure() {
-    final FilteredServiceBuilder<Id> builder =
+    final QualifiedServiceBuilder<Id> builder =
         service(Id.class).decoratedWith(Key.get(IdDecorator.class));
 
     bind(iterable(Id.class)).toProvider(builder.multiple());
-    bind(Id.class).toProvider(builder.direct().single());
+    bind(Id.class).toProvider(builder.single().direct());
   }
 
   public void testDecoratedServiceInjection() {

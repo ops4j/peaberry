@@ -16,8 +16,10 @@
 
 package org.ops4j.peaberry.builders;
 
+import java.util.Map;
+
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Peaberry;
-import org.ops4j.peaberry.ServiceRegistry;
 
 import com.google.inject.Key;
 
@@ -26,22 +28,38 @@ import com.google.inject.Key;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ScopedServiceBuilder<T>
-    extends DynamicServiceBuilder<T> {
+public interface QualifiedServiceBuilder<T>
+    extends InjectedServiceBuilder<T> {
 
   /**
-   * Scope the dynamic service lookup to a specific registry.
+   * Apply the given attributes to the dynamic service.
    * 
-   * @param key service registry key
+   * @param key service attributes key
    * @return dynamic service builder
    */
-  DynamicServiceBuilder<T> in(Key<? extends ServiceRegistry> key);
+  InjectedServiceBuilder<T> attributes(Key<? extends Map<String, ?>> key);
 
   /**
-   * Scope the dynamic service lookup to a specific registry.
+   * Apply the given attributes to the dynamic service.
    * 
-   * @param instance service registry
+   * @param instance service attributes
    * @return dynamic service builder
    */
-  DynamicServiceBuilder<T> in(ServiceRegistry instance);
+  InjectedServiceBuilder<T> attributes(Map<String, ?> instance);
+
+  /**
+   * Apply the given filter to the dynamic service.
+   * 
+   * @param key attribute filter key
+   * @return dynamic service builder
+   */
+  InjectedServiceBuilder<T> filter(Key<? extends AttributeFilter> key);
+
+  /**
+   * Apply the given filter to the dynamic service.
+   * 
+   * @param instance attribute filter
+   * @return dynamic service builder
+   */
+  InjectedServiceBuilder<T> filter(AttributeFilter instance);
 }
