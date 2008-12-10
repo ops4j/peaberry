@@ -1,6 +1,4 @@
 
--nouses: true
-
 -removeheaders:\
  Bnd-LastModified,\
  Include-Resource,\
