@@ -14,21 +14,8 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry;
-
 /**
- * A service scope can receive services provided by other registries.
- * 
- * @author mcculls@gmail.com (Stuart McCulloch)
+ * General purpose {@link ImportDecorator}s.
  */
-public interface ServiceScope<S> {
+package org.ops4j.peaberry.util.decorators;
 
-  /**
-   * Add the given service to this scope.
-   * 
-   * @param service imported service handle
-   * 
-   * @return exported service handle, null if the scope is not interested
-   */
-  <T extends S> Export<T> add(Import<T> service);
-}

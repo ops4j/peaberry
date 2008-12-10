@@ -68,7 +68,7 @@ import com.google.inject.TypeLiteral;
  * 
  * or ask for them to be injected directly, instead of using a dynamic proxy:
  * 
- * <pre> service(StockQuote.class).single().direct())</pre>
+ * <pre> service(StockQuote.class).single().direct()</pre>
  * 
  * similarly, if you don't want to bother with an Export handle when exporting:
  * 
