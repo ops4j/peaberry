@@ -27,7 +27,6 @@ public interface ServiceScope<S> {
    * Add the given service to this scope.
    * 
    * @param service imported service handle
-   * 
    * @return exported service handle, null if the scope is not interested
    */
   <T extends S> Export<T> add(Import<T> service);

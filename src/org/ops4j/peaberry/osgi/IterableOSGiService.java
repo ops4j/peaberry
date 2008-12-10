@@ -23,7 +23,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Import;
 
 /**
- * Filtered iterable view over a collection of @{code OSGiServiceImport}s.
+ * Filtered iterable view over a collection of {@code OSGiServiceImport}s.
  * <p>
  * The iterator provided by this view is valid even if the underlying collection
  * of services changes, because it keeps track of where it would be in the list,

@@ -19,7 +19,7 @@ package org.ops4j.peaberry.osgi;
 import org.ops4j.peaberry.ServiceRegistry;
 
 /**
- * @{code ServiceRegistry} that caches service instances for faster lookup.
+ * {@code ServiceRegistry} that caches service instances for faster lookup.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

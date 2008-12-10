@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import java.util.Map;
 
 /**
- * Handle to a service instance exported to a {@code ServiceScope}.
+ * Handle to a service instance exported to a {@link ServiceScope}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -41,7 +41,7 @@ public interface Export<T>
   void attributes(Map<String, ?> attributes);
 
   /**
-   * Remove the exported service from the {@code ServiceScope}.
+   * Remove the exported service from the {@link ServiceScope}.
    */
   void unput();
 }

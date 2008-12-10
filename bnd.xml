@@ -13,7 +13,6 @@
   <target name="peaberry" depends="compile,aopalliance">
     <proguard>
       -libraryjars ${java.home}/lib/rt.jar
-      -libraryjars ${ant.home}/lib/ant.jar
       -libraryjars ${aop.jar}
       -injars ${guice.jar}
       -outjars ${build}/dist

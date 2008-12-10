@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Service attributes adapter backed by an OSGi @{code ServiceReference}.
+ * Service attributes adapter backed by an OSGi {@code ServiceReference}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

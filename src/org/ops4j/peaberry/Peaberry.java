@@ -60,7 +60,7 @@ import com.google.inject.TypeLiteral;
  * 
  * <pre> service(myQuoteImpl).attributes(names(&quot;Currency=GBP&quot;)).export()</pre>
  * 
- * (the ldap and names utility methods are from {@code org.ops4j.peaberry.util})
+ * (the ldap and names utility methods are from {@link org.ops4j.peaberry.util})
  * <p>
  * You can also decorate services with additional behaviour:
  * 
@@ -125,7 +125,7 @@ public final class Peaberry {
   }
 
   /**
-   * Create a new OSGi {@code ServiceRegistry} for the given bundle context.
+   * Create a new OSGi {@link ServiceRegistry} for the given bundle context.
    * 
    * @param bundleContext current bundle context
    * @return OSGi specific {@code ServiceRegistry}
@@ -136,7 +136,7 @@ public final class Peaberry {
 
   /**
    * Create a new Guice module with bindings to the given bundle context and
-   * OSGi {@code ServiceRegistry}.
+   * OSGi {@link ServiceRegistry}.
    * 
    * @param bundleContext current bundle context
    * @return OSGi specific Guice bindings

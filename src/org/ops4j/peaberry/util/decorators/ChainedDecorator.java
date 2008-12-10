@@ -20,6 +20,8 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
+ * An {@link ImportDecorator} that combines several decorators in a chain.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class ChainedDecorator<S>

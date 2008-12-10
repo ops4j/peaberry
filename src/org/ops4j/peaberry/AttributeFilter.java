@@ -29,7 +29,6 @@ public interface AttributeFilter {
    * Tests whether or not this filter matches the given service attributes.
    * 
    * @param attributes service attributes
-   * 
    * @return true if the given attributes match this filter, otherwise false
    */
   boolean matches(Map<String, ?> attributes);

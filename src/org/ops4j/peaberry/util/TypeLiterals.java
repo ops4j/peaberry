@@ -23,7 +23,7 @@ import org.ops4j.peaberry.Export;
 import com.google.inject.TypeLiteral;
 
 /**
- * Methods for creating {@code TypeLiteral}s used in peaberry.
+ * Methods for creating various {@link TypeLiteral}s used in peaberry.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -33,7 +33,7 @@ public final class TypeLiterals {
   private TypeLiterals() {}
 
   /**
-   * Create {@code TypeLiteral} matching an iterable sequence of the given type.
+   * Create {@link TypeLiteral} matching an iterable sequence of the given type.
    * 
    * @param clazz service interface
    * @return literal type matching {@code Iterable<? extends T>}
@@ -44,7 +44,7 @@ public final class TypeLiterals {
   }
 
   /**
-   * Create {@code TypeLiteral} matching an exported handle of the given type.
+   * Create {@link TypeLiteral} matching an exported handle of the given type.
    * 
    * @param clazz service interface
    * @return literal type matching {@code Export<? extends T>}

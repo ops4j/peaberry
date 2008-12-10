@@ -19,7 +19,7 @@ package org.ops4j.peaberry;
 import java.util.Map;
 
 /**
- * Handle to a service instance imported from a {@code ServiceRegistry}.
+ * Handle to a service instance imported from a {@link ServiceRegistry}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

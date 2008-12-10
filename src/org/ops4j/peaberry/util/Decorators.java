@@ -24,7 +24,7 @@ import org.ops4j.peaberry.util.decorators.ChainedDecorator;
 import org.ops4j.peaberry.util.decorators.StickyDecorator;
 
 /**
- * Provide keys to various useful generic {@code ImportDecorator}s.
+ * Methods for creating various general purpose {@link ImportDecorator}s.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -34,7 +34,7 @@ public final class Decorators {
   private Decorators() {}
 
   /**
-   * An {@code ImportDecorator} that caches the first valid service instance and
+   * An {@link ImportDecorator} that caches the first valid service instance and
    * uses that until it becomes invalid. The decorator then calls the reset task
    * to see if it should reset, or throw {@link ServiceUnavailableException}.
    * <p>
@@ -48,7 +48,7 @@ public final class Decorators {
   }
 
   /**
-   * An {@code ImportDecorator} that combines several decorators in a chain.
+   * An {@link ImportDecorator} that combines several decorators in a chain.
    * 
    * @param decorators sequence of decorators
    * @return decorator that combines given decorators
