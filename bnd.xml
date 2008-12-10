@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <project name="bnd">
 
+  <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
+  <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
   <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${bnd.jar}"/>
 
   <target name="aopalliance">
@@ -8,39 +10,30 @@
     <bnd files="aopalliance.bnd" classpath="${lib}/aopalliance-1.0.jar"/>
   </target>
 
-  <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
-
-  <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
-
   <target name="peaberry" depends="compile,aopalliance">
-    <copy file="${guice.jar}" todir="${build}/dist"/>
-    <mkdir dir="${build}/trim"/>
     <proguard>
       -libraryjars ${java.home}/lib/rt.jar
       -libraryjars ${ant.home}/lib/ant.jar
-      -libraryjars ${guice.jar}
       -libraryjars ${aop.jar}
-      -libraryjars ${felix.jar}(!**/ldap/**)
-      -injars ${build}/classes
-      -injars ${asm.jar}(!**/MANIFEST.MF)
-      -injars ${collect.jar}(!**/MANIFEST.MF)
-      -injars ${felix.jar}(**/ldap/**)
-      -outjars ${build}/trim/peaberry-shrink.jar
-      -keep class org.ops4j.** { *; }
-      -keep class com.google.common.base.internal.Finalizer { *; }
-      -keepclassmembers class com.google.common.base.Final* { *; }
+      -injars ${guice.jar}
+      -outjars ${build}/dist
+      -keep class !com.google.inject.internal.collect.** { *; }
       -keepattributes
       -dontobfuscate
       -dontoptimize
       -dontnote
     </proguard>
-    <jarjar jarfile="${build}/trim/peaberry-remap.jar">
-      <zipfileset src="${build}/trim/peaberry-shrink.jar"/>
-      <rule pattern="org.objectweb.**" result="org.ops4j.peaberry.internal.@1"/>
-      <rule pattern="com.google.common.**" result="org.ops4j.peaberry.internal.@1"/>
-      <rule pattern="org.apache.felix.framework.util.**" result="org.ops4j.peaberry.internal.@1"/>
+    <mkdir dir="${build}/trim"/>
+    <jarjar jarfile="${build}/trim/peaberry.jar">
+      <fileset dir="${build}/classes"/>
+      <zipfileset src="${asm.jar}"/>
+      <zipfileset src="${felix.jar}"/>
+      <rule pattern="jsr166y.*" result="org.ops4j.peaberry.internal.@1"/>
+      <rule pattern="org.objectweb.asm.*" result="org.ops4j.peaberry.internal.@1"/>
+      <rule pattern="org.apache.felix.framework.util.ldap.*" result="org.ops4j.peaberry.internal.@1"/>
+      <keep pattern="org.ops4j.**"/>
     </jarjar>
-    <bnd files="peaberry.bnd" classpath="${build}/trim/peaberry-remap.jar"/>
+    <bnd files="peaberry.bnd" classpath="${build}/trim/peaberry.jar"/>
   </target>
 
   <target name="director" depends="test.compile">

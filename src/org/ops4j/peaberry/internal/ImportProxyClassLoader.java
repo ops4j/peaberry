@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
-import static com.google.common.base.ReferenceType.WEAK;
+import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.WEAK;
 import static java.security.AccessController.doPrivileged;
 import static org.ops4j.peaberry.internal.ImportGlue.generateProxy;
 import static org.ops4j.peaberry.internal.ImportGlue.getClazzName;
@@ -28,7 +28,7 @@ import java.security.PrivilegedAction;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 
-import com.google.common.collect.ReferenceMap;
+import jsr166y.ConcurrentReferenceHashMap;
 
 /**
  * Custom classloader that provides optimized proxies for imported services.
@@ -57,8 +57,8 @@ final class ImportProxyClassLoader
   }
 
   // weak reference map, to allow eager collection of proxy-generated classes
-  private static final ReferenceMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
-      new ReferenceMap<ClassLoader, ClassLoader>(WEAK, WEAK);
+  private static final ConcurrentReferenceHashMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
+      new ConcurrentReferenceHashMap<ClassLoader, ClassLoader>(8, WEAK, WEAK);
 
   private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
     final ClassLoader parent = null == typeLoader ? getSystemClassLoader() : typeLoader;

@@ -19,7 +19,6 @@ package org.ops4j.peaberry.internal;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import com.google.common.base.Preconditions;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
@@ -35,7 +34,10 @@ abstract class Setting<T> {
   public abstract Type getRawType();
 
   public static <T> Setting<T> newSetting(final T instance) {
-    Preconditions.checkNotNull(instance);
+    if (null == instance) {
+      throw new IllegalArgumentException();
+    }
+
     return new Setting<T>() {
 
       @Override
@@ -51,7 +53,10 @@ abstract class Setting<T> {
   }
 
   public static <T> Setting<T> newSetting(final Key<? extends T> key) {
-    Preconditions.checkNotNull(key);
+    if (null == key) {
+      throw new IllegalArgumentException();
+    }
+
     return new Setting<T>() {
 
       @Override

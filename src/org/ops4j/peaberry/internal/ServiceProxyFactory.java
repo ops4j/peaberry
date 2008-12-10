@@ -16,8 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import static com.google.common.base.ReferenceType.STRONG;
-import static com.google.common.base.ReferenceType.WEAK;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 
 import java.lang.reflect.Constructor;
@@ -27,7 +25,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
-import com.google.common.collect.ReferenceMap;
+import jsr166y.ConcurrentReferenceHashMap;
 
 /**
  * Factory methods for dynamic service proxies.
@@ -36,8 +34,8 @@ import com.google.common.collect.ReferenceMap;
  */
 final class ServiceProxyFactory {
 
-  static final ReferenceMap<Import<?>, Object> PROXY_CACHE =
-      new ReferenceMap<Import<?>, Object>(WEAK, STRONG);
+  static final ConcurrentReferenceHashMap<Import<?>, Object> PROXY_CACHE =
+      new ConcurrentReferenceHashMap<Import<?>, Object>();
 
   // instances not allowed
   private ServiceProxyFactory() {}

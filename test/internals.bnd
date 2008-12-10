@@ -5,6 +5,5 @@
 Private-Package:\
  ${module},\
  ${module}.builders,\
- ${module}(.internal|.osgi);-split-package:=merge-first,\
- ${module}.internal.*
+ ${module}(.internal|.osgi);-split-package:=merge-first
 

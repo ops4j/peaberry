@@ -18,10 +18,10 @@
   --------------
 
   To use peaberry in an OSGi application, install the following
-  group of bundles onto your chosen OSGi framework:
+  bundles from the distribution onto your chosen OSGi framework:
 
     aopalliance-1.0.jar
-    google-guice-peaberry-20081203.jar
+    guice-snapshot-20081210.jar
     peaberry-@VERSION@.jar
 
   To use peaberry in a non-OSGi application, add the above group
