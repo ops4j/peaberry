@@ -16,19 +16,18 @@
 
 package org.ops4j.peaberry.internal;
 
-import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.WEAK;
 import static java.security.AccessController.doPrivileged;
+import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newWeakValueCache;
 import static org.ops4j.peaberry.internal.ImportGlue.generateProxy;
 import static org.ops4j.peaberry.internal.ImportGlue.getClazzName;
 import static org.ops4j.peaberry.internal.ImportGlue.getProxyName;
 
 import java.lang.reflect.Constructor;
 import java.security.PrivilegedAction;
+import java.util.concurrent.ConcurrentMap;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
-
-import jsr166y.ConcurrentReferenceHashMap;
 
 /**
  * Custom classloader that provides optimized proxies for imported services.
@@ -57,21 +56,20 @@ final class ImportProxyClassLoader
   }
 
   // weak reference map, to allow eager collection of proxy-generated classes
-  private static final ConcurrentReferenceHashMap<ClassLoader, ClassLoader> PROXY_LOADER_MAP =
-      new ConcurrentReferenceHashMap<ClassLoader, ClassLoader>(8, WEAK, WEAK);
+  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP = newWeakValueCache();
 
   private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
     final ClassLoader parent = null == typeLoader ? getSystemClassLoader() : typeLoader;
     ClassLoader proxyLoader;
 
-    proxyLoader = PROXY_LOADER_MAP.get(parent);
+    proxyLoader = LOADER_MAP.get(parent);
     if (null == proxyLoader) {
       final ClassLoader newProxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
         public ClassLoader run() {
           return new ImportProxyClassLoader(parent);
         }
       });
-      proxyLoader = PROXY_LOADER_MAP.putIfAbsent(parent, newProxyLoader);
+      proxyLoader = LOADER_MAP.putIfAbsent(parent, newProxyLoader);
       if (null == proxyLoader) {
         return newProxyLoader;
       }

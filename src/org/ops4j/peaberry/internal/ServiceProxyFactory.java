@@ -16,16 +16,16 @@
 
 package org.ops4j.peaberry.internal;
 
+import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newStrongValueCache;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 
 import java.lang.reflect.Constructor;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentMap;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.builders.ImportDecorator;
-
-import jsr166y.ConcurrentReferenceHashMap;
 
 /**
  * Factory methods for dynamic service proxies.
@@ -34,8 +34,7 @@ import jsr166y.ConcurrentReferenceHashMap;
  */
 final class ServiceProxyFactory {
 
-  static final ConcurrentReferenceHashMap<Import<?>, Object> PROXY_CACHE =
-      new ConcurrentReferenceHashMap<Import<?>, Object>();
+  static final ConcurrentMap<Import<?>, Object> PROXY_CACHE = newStrongValueCache();
 
   // instances not allowed
   private ServiceProxyFactory() {}
