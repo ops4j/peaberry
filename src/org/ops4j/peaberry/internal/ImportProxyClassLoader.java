@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
+import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
  * Custom classloader that provides optimized proxies for imported services.
@@ -39,6 +40,7 @@ final class ImportProxyClassLoader
 
   private static final ClassNotFoundException NO_SUCH_CLASS = new ClassNotFoundException();
 
+  private static final String UNAVAILABLE_CLAZZ_NAME = ServiceUnavailableException.class.getName();
   private static final String IMPORT_CLAZZ_NAME = Import.class.getName();
 
   @SuppressWarnings("unchecked")
@@ -86,7 +88,10 @@ final class ImportProxyClassLoader
   protected Class<?> findClass(final String clazzOrProxyName)
       throws ClassNotFoundException {
 
-    // generated proxy will need to access Import class
+    // generated proxy will need access to these classes
+    if (UNAVAILABLE_CLAZZ_NAME.equals(clazzOrProxyName)) {
+      return ServiceUnavailableException.class;
+    }
     if (IMPORT_CLAZZ_NAME.equals(clazzOrProxyName)) {
       return Import.class;
     }

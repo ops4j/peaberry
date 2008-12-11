@@ -18,7 +18,6 @@ package org.ops4j.peaberry.util;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
@@ -80,11 +79,9 @@ public final class Filters {
    * @return service attribute filter
    */
   public static AttributeFilter attributes(final Map<String, ?> attributes) {
-    final Map<String, ?> cachedAttributes = new HashMap<String, Object>(attributes);
-
     return new AttributeFilter() {
       public boolean matches(Map<String, ?> targetAttributes) {
-        return targetAttributes.entrySet().contains(cachedAttributes.entrySet());
+        return targetAttributes.entrySet().contains(attributes.entrySet());
       }
     };
   }

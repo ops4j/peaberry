@@ -30,7 +30,7 @@ public interface Import<T> {
    * 
    * @return service instance
    * 
-   * @throws ServiceUnavailableException if the service is unavailable
+   * @throws ServiceUnavailableException
    */
   T get();
 

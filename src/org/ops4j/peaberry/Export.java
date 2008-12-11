@@ -29,9 +29,9 @@ public interface Export<T>
   /**
    * Replace the exported service with the given instance.
    * 
-   * @param service service instance
+   * @param instance service instance
    */
-  void put(T service);
+  void put(T instance);
 
   /**
    * Update the attributes associated with the exported service.

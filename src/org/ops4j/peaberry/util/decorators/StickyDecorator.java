@@ -21,13 +21,14 @@ import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
-import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * An {@code ImportDecorator} that caches the first valid service instance and
+ * An {@link ImportDecorator} that caches the first valid service instance and
  * uses that until it becomes invalid. The decorator then calls the reset task
- * to see if it should reset, or throw {@link ServiceUnavailableException}.
+ * to see if it should reset the cache and get a new service instance.
+ * <p>
+ * If no reset task is provided then the service instance cache is never reset.
  * <p>
  * NOTE: a sticky decorator only makes sense for "single" injected services.
  * 
@@ -46,6 +47,7 @@ public final class StickyDecorator<S>
       implements Import<T> {
 
     private final Import<T> handle;
+    private boolean reset = true;
     private T instance;
 
     StickyImport(final Import<T> handle) {
@@ -54,23 +56,34 @@ public final class StickyDecorator<S>
 
     public synchronized T get() {
 
+      // use attributes() to detect when the current service instance is invalid
       if (null != resetTask && null != instance && null == handle.attributes()) {
+
+        // always clear the current service once it's invalid
+        instance = null;
+
         try {
-          if (resetTask.call()) {
-            instance = null;
-            handle.unget();
-          }
+          // should we reset and take the next valid service?
+          reset = resetTask.call();
         } catch (final Exception e) {
           throw new ServiceException("Exception in resetTask", e);
         }
+
+        if (reset) {
+          handle.unget(); // balance previous successful get
+        }
       }
 
-      if (null == instance) {
+      if (reset) {
         try {
           instance = handle.get();
+          reset = (null == instance);
         } catch (final RuntimeException re) {
-          handle.unget();
           throw re;
+        } finally {
+          if (reset) {
+            handle.unget(); // balance previous unsuccessful get
+          }
         }
       }
 
@@ -78,7 +91,7 @@ public final class StickyDecorator<S>
     }
 
     public synchronized Map<String, ?> attributes() {
-      return instance == null ? null : handle.attributes();
+      return null == instance ? null : handle.attributes();
     }
 
     public void unget() {/* nothing to do */}

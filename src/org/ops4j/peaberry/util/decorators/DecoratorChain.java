@@ -20,16 +20,16 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * An {@link ImportDecorator} that combines several decorators in a chain.
+ * {@link ImportDecorator} that applies several decorators in right-left order.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class ChainedDecorator<S>
+public final class DecoratorChain<S>
     implements ImportDecorator<S> {
 
   final ImportDecorator<S>[] decorators;
 
-  public ChainedDecorator(final ImportDecorator<S>... decorators) {
+  public DecoratorChain(final ImportDecorator<S>... decorators) {
     this.decorators = decorators.clone();
   }
 

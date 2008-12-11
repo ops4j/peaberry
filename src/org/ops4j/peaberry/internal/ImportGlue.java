@@ -19,6 +19,7 @@ package org.ops4j.peaberry.internal;
 import static java.lang.reflect.Modifier.ABSTRACT;
 import static java.lang.reflect.Modifier.FINAL;
 import static java.lang.reflect.Modifier.NATIVE;
+import static java.lang.reflect.Modifier.PRIVATE;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static java.lang.reflect.Modifier.SYNCHRONIZED;
@@ -31,13 +32,17 @@ import static org.objectweb.asm.Opcodes.ATHROW;
 import static org.objectweb.asm.Opcodes.CHECKCAST;
 import static org.objectweb.asm.Opcodes.DUP;
 import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.IFNONNULL;
 import static org.objectweb.asm.Opcodes.ILOAD;
 import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
 import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
 import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.ISTORE;
+import static org.objectweb.asm.Opcodes.NEW;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
+import static org.objectweb.asm.Opcodes.PUTSTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Opcodes.V1_5;
 import static org.objectweb.asm.Type.VOID;
@@ -57,6 +62,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
  * Around-advice glue code, specifically optimized for imported services.
@@ -68,11 +74,13 @@ final class ImportGlue {
   // instances not allowed
   private ImportGlue() {}
 
-  private static final String EXCEPTION_NAME = getInternalName(Exception.class);
+  private static final String UNAVAILABLE_NAME = getInternalName(ServiceUnavailableException.class);
 
+  private static final String EXCEPTION_NAME = getInternalName(Exception.class);
   private static final String IMPORT_NAME = getInternalName(Import.class);
   private static final String OBJECT_NAME = getInternalName(Object.class);
 
+  private static final String EXCEPTION_DESC = getDescriptor(Exception.class);
   private static final String IMPORT_DESC = getDescriptor(Import.class);
   private static final String OBJECT_DESC = getDescriptor(Object.class);
 
@@ -80,6 +88,8 @@ final class ImportGlue {
 
   private static final String PROXY_SUFFIX = "$pbryglu";
   private static final String PROXY_HANDLE = "__pbry__";
+
+  private static final String NO_SERVICE = "NO_SERVICE";
 
   public static String getProxyName(final String clazzName) {
     final StringBuilder tmpName = new StringBuilder();
@@ -122,8 +132,11 @@ final class ImportGlue {
     final ClassWriter cw = new ClassWriter(COMPUTE_MAXS);
 
     cw.visit(V1_5, PUBLIC | FINAL, proxyName, null, superName, interfaceNames);
-    cw.visitField(FINAL, PROXY_HANDLE, IMPORT_DESC, null, null).visitEnd();
 
+    cw.visitField(PRIVATE | FINAL | STATIC, "NO_SERVICE", EXCEPTION_DESC, null, null).visitEnd();
+    clinit(cw, clazz, proxyName);
+
+    cw.visitField(PRIVATE | FINAL, PROXY_HANDLE, IMPORT_DESC, null, null).visitEnd();
     init(cw, superName, proxyName);
 
     // for the moment only proxy the public API...
@@ -149,6 +162,23 @@ final class ImportGlue {
     cw.visitEnd();
 
     return cw.toByteArray();
+  }
+
+  private static void clinit(final ClassWriter cw, final Class<?> clazz, final String proxyName) {
+
+    final MethodVisitor v = cw.visitMethod(STATIC, "<clinit>", "()V", null, null);
+
+    v.visitCode();
+
+    v.visitTypeInsn(NEW, UNAVAILABLE_NAME);
+    v.visitInsn(DUP);
+    v.visitLdcInsn("Import<" + clazz.getName() + ">.get() returned null");
+    v.visitMethodInsn(INVOKESPECIAL, UNAVAILABLE_NAME, "<init>", "(Ljava/lang/String;)V");
+    v.visitFieldInsn(PUTSTATIC, proxyName, NO_SERVICE, EXCEPTION_DESC);
+    v.visitInsn(RETURN);
+
+    v.visitMaxs(0, 0);
+    v.visitEnd();
   }
 
   private static void init(final ClassWriter cw, final String superName, final String proxyName) {
@@ -179,6 +209,7 @@ final class ImportGlue {
     final MethodVisitor v = cw.visitMethod(modifiers, methodName, descriptor, null, exceptions);
 
     final Label start = new Label();
+    final Label invoke = new Label();
     final Label end = new Label();
 
     final Label ungetR = new Label();
@@ -201,6 +232,14 @@ final class ImportGlue {
     v.visitLabel(start);
 
     v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "get", "()" + OBJECT_DESC);
+    v.visitInsn(DUP);
+
+    // null => ServiceUnavailableException
+    v.visitJumpInsn(IFNONNULL, invoke);
+    v.visitFieldInsn(GETSTATIC, proxyName, NO_SERVICE, EXCEPTION_DESC);
+    v.visitInsn(ATHROW);
+
+    v.visitLabel(invoke);
 
     final Class<?> clazz = method.getDeclaringClass();
     final String subjectName = getInternalName(clazz);

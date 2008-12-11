@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
-import org.ops4j.peaberry.util.decorators.ChainedDecorator;
+import org.ops4j.peaberry.util.decorators.DecoratorChain;
 import org.ops4j.peaberry.util.decorators.StickyDecorator;
 
 /**
@@ -54,6 +54,6 @@ public final class Decorators {
    * @return decorator that combines given decorators
    */
   public static <S> ImportDecorator<S> chained(final ImportDecorator<S>... decorators) {
-    return new ChainedDecorator<S>(decorators);
+    return new DecoratorChain<S>(decorators);
   }
 }

@@ -28,7 +28,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.ServiceException;
 
 /**
- * Implementation of LDAP attribute filter, uses utility code from Apache Felix.
+ * Implementation of LDAP {@link AttributeFilter}, uses code from Apache Felix.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -48,6 +48,7 @@ public final class LdapAttributeFilter
     }
 
     program = parser.getProgram();
+    // filter is assigned lazily
 
     if (null == program || program.length == 0) {
       throw new IllegalArgumentException("Bad LDAP filter: " + filter);
@@ -72,8 +73,14 @@ public final class LdapAttributeFilter
 
   @Override
   public String toString() {
+    // double-checked locking is safe in Java5
     if (null == filter) {
-      filter = new Evaluator(program).toStringInfix();
+      synchronized (this) {
+        if (null == filter) {
+          // calculate normalized version of filter string
+          filter = new Evaluator(program).toStringInfix();
+        }
+      }
     }
     return filter;
   }
