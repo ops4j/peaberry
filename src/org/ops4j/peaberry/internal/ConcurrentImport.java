@@ -22,14 +22,14 @@ import java.util.Map;
 import org.ops4j.peaberry.Import;
 
 /**
- * Provide an import handle that dynamically delegates to the first service, but
+ * Provide an import handle that dynamically delegates to the best service, but
  * also tracks its use (even across multiple threads) so that unget() is always
  * called on the same handle as get() was originally.
  * 
- * The solution below will use the same handle until no threads are actively
- * using the injected instance. This might keep a service in use for longer than
- * expected when there is heavy contention, but it doesn't require any use of
- * thread locals or additional context stacks.
+ * The solution below uses the same handle until no threads are actively using
+ * the injected instance. This might keep a service in use for a little longer
+ * than expected when there is heavy contention, but it doesn't require use of
+ * any thread locals or additional context stacks.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

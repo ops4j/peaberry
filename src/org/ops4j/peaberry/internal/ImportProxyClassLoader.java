@@ -46,7 +46,7 @@ final class ImportProxyClassLoader
   @SuppressWarnings("unchecked")
   public static <T> Constructor<T> getProxyConstructor(final Class<T> clazz) {
     try {
-      // use a different custom classloader for each class space, to avoid leaks
+      // use a different custom classloader for each class-space, to avoid leaks
       final ClassLoader proxyLoader = getProxyClassLoader(clazz.getClassLoader());
       final Class<?> proxyClazz = proxyLoader.loadClass(getProxyName(clazz.getName()));
       return (Constructor<T>) proxyClazz.getConstructor(Import.class);
@@ -57,7 +57,7 @@ final class ImportProxyClassLoader
     }
   }
 
-  // weak reference map, to allow eager collection of proxy-generated classes
+  // weak concurrent map, to allow eager collection of proxy-generated classes
   private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP = newWeakValueCache();
 
   private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
@@ -80,6 +80,7 @@ final class ImportProxyClassLoader
     return proxyLoader;
   }
 
+  // delegate to the original type's classloader
   ImportProxyClassLoader(final ClassLoader parent) {
     super(parent);
   }

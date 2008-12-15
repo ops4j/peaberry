@@ -65,7 +65,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
- * Around-advice glue code, specifically optimized for imported services.
+ * Around-advice glue, specifically optimized for {@code Import<T>} abstraction.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -133,10 +133,10 @@ final class ImportGlue {
 
     cw.visit(V1_5, PUBLIC | FINAL, proxyName, null, superName, interfaceNames);
 
-    cw.visitField(PRIVATE | FINAL | STATIC, "NO_SERVICE", EXCEPTION_DESC, null, null).visitEnd();
+    // static initialization
     clinit(cw, clazz, proxyName);
 
-    cw.visitField(PRIVATE | FINAL, PROXY_HANDLE, IMPORT_DESC, null, null).visitEnd();
+    // single Import<T> constructor
     init(cw, superName, proxyName);
 
     // for the moment only proxy the public API...
@@ -165,11 +165,13 @@ final class ImportGlue {
   }
 
   private static void clinit(final ClassWriter cw, final Class<?> clazz, final String proxyName) {
+    cw.visitField(PRIVATE | STATIC | FINAL, NO_SERVICE, EXCEPTION_DESC, null, null).visitEnd();
 
     final MethodVisitor v = cw.visitMethod(STATIC, "<clinit>", "()V", null, null);
 
     v.visitCode();
 
+    // initialize cached NO_SERVICE exception
     v.visitTypeInsn(NEW, UNAVAILABLE_NAME);
     v.visitInsn(DUP);
     v.visitLdcInsn("Import<" + clazz.getName() + ">.get() returned null");
@@ -182,11 +184,13 @@ final class ImportGlue {
   }
 
   private static void init(final ClassWriter cw, final String superName, final String proxyName) {
+    cw.visitField(PRIVATE | FINAL, PROXY_HANDLE, IMPORT_DESC, null, null).visitEnd();
 
     final MethodVisitor v = cw.visitMethod(PUBLIC, "<init>", '(' + IMPORT_DESC + ")V", null, null);
 
     v.visitCode();
 
+    // store Import<T> handle
     v.visitVarInsn(ALOAD, 0);
     v.visitInsn(DUP);
     v.visitVarInsn(ALOAD, 1);
@@ -204,6 +208,8 @@ final class ImportGlue {
 
     final String descriptor = getMethodDescriptor(method);
     final String[] exceptions = getInternalNames(method.getExceptionTypes());
+
+    // simple delegating proxy, so don't need synchronization on wrapper method
     final int modifiers = method.getModifiers() & ~(ABSTRACT | NATIVE | SYNCHRONIZED);
 
     final MethodVisitor v = cw.visitMethod(modifiers, methodName, descriptor, null, exceptions);
@@ -220,10 +226,12 @@ final class ImportGlue {
 
     v.visitCode();
 
+    // support try{ get(); } finally { unget(); } model
     v.visitTryCatchBlock(start, ungetR, catchX, null);
     v.visitTryCatchBlock(ungetR, finalR, finalR, EXCEPTION_NAME);
     v.visitTryCatchBlock(ungetX, finalX, finalX, EXCEPTION_NAME);
 
+    // store handle as "this"
     v.visitVarInsn(ALOAD, 0);
     v.visitFieldInsn(GETFIELD, proxyName, PROXY_HANDLE, IMPORT_DESC);
     v.visitInsn(DUP);
@@ -231,6 +239,7 @@ final class ImportGlue {
 
     v.visitLabel(start);
 
+    // dereference handle to get actual service instance
     v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "get", "()" + OBJECT_DESC);
     v.visitInsn(DUP);
 
@@ -254,6 +263,7 @@ final class ImportGlue {
       i = i + t.getSize();
     }
 
+    // delegate to real method
     if (clazz.isInterface()) {
       v.visitMethodInsn(INVOKEINTERFACE, subjectName, methodName, descriptor);
     } else {
@@ -268,6 +278,7 @@ final class ImportGlue {
 
     v.visitLabel(ungetR);
 
+    // unget on return
     v.visitVarInsn(ALOAD, 0);
     v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", "()V");
     v.visitInsn(ACONST_NULL);
@@ -280,17 +291,20 @@ final class ImportGlue {
 
     v.visitInsn(returnType.getOpcode(IRETURN));
 
+    // cache initial exception
     v.visitLabel(catchX);
     v.visitVarInsn(ASTORE, 1);
 
     v.visitLabel(ungetX);
 
+    // unget on exception
     v.visitVarInsn(ALOAD, 0);
     v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", "()V");
     v.visitInsn(ACONST_NULL);
 
     v.visitLabel(finalX);
 
+    // restore initial exception
     v.visitVarInsn(ALOAD, 1);
     v.visitInsn(ATHROW);
 

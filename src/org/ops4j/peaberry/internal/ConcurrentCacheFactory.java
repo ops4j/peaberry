@@ -21,11 +21,18 @@ import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.STRONG;
 import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.WEAK;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import jsr166y.ConcurrentReferenceHashMap;
+import jsr166y.ConcurrentReferenceHashMap.Option;
 
 /**
+ * Provide instances of the proposed JSR166 ConcurrentReferenceHashMap.
+ * 
+ * @see http://anonsvn.jboss.org/repos/jbosscache/experimental/jsr166/src/jsr166y
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ConcurrentCacheFactory {
@@ -33,16 +40,22 @@ final class ConcurrentCacheFactory {
   // instances not allowed
   private ConcurrentCacheFactory() {}
 
-  private static final float LOAD_FACTOR = 0.75f;
+  private static final EnumSet<Option> IDENTITY = EnumSet.of(IDENTITY_COMPARISONS);
+
+  private static final float LOAD = 0.75f;
   private static final int CONCURRENCY = 8;
 
-  public static <K, V> ConcurrentMap<K, V> newWeakValueCache() {
-    return new ConcurrentReferenceHashMap<K, V>(CONCURRENCY, LOAD_FACTOR, CONCURRENCY, WEAK, WEAK, EnumSet
-        .of(IDENTITY_COMPARISONS));
+  /**
+   * @return {@link WeakHashMap} replacement with referential-equality semantics
+   */
+  public static <K, V> ConcurrentMap<K, V> newStrongValueCache() {
+    return new ConcurrentReferenceHashMap<K, V>(CONCURRENCY, LOAD, CONCURRENCY, WEAK, STRONG, IDENTITY);
   }
 
-  public static <K, V> ConcurrentMap<K, V> newStrongValueCache() {
-    return new ConcurrentReferenceHashMap<K, V>(CONCURRENCY, LOAD_FACTOR, CONCURRENCY, WEAK, STRONG, EnumSet
-        .of(IDENTITY_COMPARISONS));
+  /**
+   * @return completely weak {@link HashMap} with referential-equality semantics
+   */
+  public static <K, V> ConcurrentMap<K, V> newWeakValueCache() {
+    return new ConcurrentReferenceHashMap<K, V>(CONCURRENCY, LOAD, CONCURRENCY, WEAK, WEAK, IDENTITY);
   }
 }
