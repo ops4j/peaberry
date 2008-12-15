@@ -36,8 +36,6 @@ import org.osgi.framework.ServiceReference;
 final class OSGiServiceImport
     implements Import<Object>, Comparable<OSGiServiceImport> {
 
-  static final ServiceUnavailableException NO_SERVICE = new ServiceUnavailableException();
-
   private final BundleContext bundleContext;
   private final ServiceReference ref;
 
@@ -66,14 +64,6 @@ final class OSGiServiceImport
     count = new AtomicInteger();
   }
 
-  public long getId() {
-    return id;
-  }
-
-  public int getRanking() {
-    return rank;
-  }
-
   public boolean updateRanking() {
     // ranking is mutable...
     final int oldRank = rank;
@@ -100,12 +90,7 @@ final class OSGiServiceImport
         }
       }
     }
-    // cache locally then check
-    final Object svc = instance;
-    if (null == svc) {
-      throw NO_SERVICE;
-    }
-    return svc;
+    return instance;
   }
 
   public Map<String, ?> attributes() {

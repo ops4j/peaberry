@@ -26,7 +26,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 /**
- * Single dynamic service provider, also provides direct single services.
+ * Single dynamic proxy and direct service {@link Provider}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

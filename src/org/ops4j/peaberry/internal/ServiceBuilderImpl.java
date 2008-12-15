@@ -29,7 +29,7 @@ import org.ops4j.peaberry.builders.ProxyProvider;
 import com.google.inject.Key;
 
 /**
- * Default {@code DecoratedServiceBuilder} implementation.
+ * Default {@link DecoratedServiceBuilder} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

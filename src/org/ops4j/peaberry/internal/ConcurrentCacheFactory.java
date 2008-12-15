@@ -29,7 +29,7 @@ import jsr166y.ConcurrentReferenceHashMap;
 import jsr166y.ConcurrentReferenceHashMap.Option;
 
 /**
- * Provide instances of the proposed JSR166 ConcurrentReferenceHashMap.
+ * Provide instances of the proposed JSR166 {@link ConcurrentReferenceHashMap}.
  * 
  * @see http://anonsvn.jboss.org/repos/jbosscache/experimental/jsr166/src/jsr166y
  * 

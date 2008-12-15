@@ -33,7 +33,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 
 /**
- * Maintain state of {@code ServiceBuilderImpl} while fluent API is used.
+ * Maintain state of {@link ServiceBuilderImpl} while fluent API is used.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

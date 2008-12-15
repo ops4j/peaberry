@@ -22,7 +22,7 @@ import java.util.Map;
 import org.ops4j.peaberry.Import;
 
 /**
- * Provide an import handle that dynamically delegates to the best service, but
+ * Provide an {@link Import} that dynamically delegates to the best service but
  * also tracks its use (even across multiple threads) so that unget() is always
  * called on the same handle as get() was originally.
  * 

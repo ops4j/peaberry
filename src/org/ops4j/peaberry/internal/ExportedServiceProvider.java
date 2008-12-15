@@ -28,7 +28,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 /**
- * Exported service provider, also provides direct exported services.
+ * Exported handle and direct service {@link Provider}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

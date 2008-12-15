@@ -65,7 +65,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
- * Around-advice glue, specifically optimized for {@code Import<T>} abstraction.
+ * Around-advice glue, specifically optimized for {@link Import} abstraction.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

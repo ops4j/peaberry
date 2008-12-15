@@ -20,21 +20,21 @@ import static java.util.Collections.enumeration;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Lazy read-only dictionary, backed by a service attribute map.
+ * Lazy read-only {@link Dictionary} backed by a service attribute map.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class AttributeDictionary
     extends Dictionary<String, Object> {
 
-  private final Map<String, ?> attributes;
+  private final Map<String, Object> attributes;
 
+  @SuppressWarnings("unchecked")
   public AttributeDictionary(final Map<String, ?> attributes) {
-    this.attributes = new HashMap<String, Object>(attributes);
+    this.attributes = (Map<String, Object>) attributes;
   }
 
   @Override
@@ -58,9 +58,8 @@ final class AttributeDictionary
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public Enumeration<Object> elements() {
-    return (Enumeration<Object>) enumeration(attributes.values());
+    return enumeration(attributes.values());
   }
 
   @Override

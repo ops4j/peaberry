@@ -16,15 +16,10 @@
 
 package org.ops4j.peaberry.osgi;
 
-import static java.util.Collections.addAll;
-import static java.util.Collections.unmodifiableSet;
-
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.osgi.framework.ServiceReference;
 
@@ -36,14 +31,7 @@ import org.osgi.framework.ServiceReference;
 final class OSGiServiceAttributes
     extends AbstractMap<String, Object> {
 
-  // OSGi service attributes use case-less keys, so we need to honour this...
-  private static final Comparator<String> IGNORE_CASE = new Comparator<String>() {
-    public int compare(final String lhs, final String rhs) {
-      return lhs.compareToIgnoreCase(rhs);
-    }
-  };
-
-  private final ServiceReference ref;
+  final ServiceReference ref;
 
   public OSGiServiceAttributes(final ServiceReference ref) {
     this.ref = ref;
@@ -52,19 +40,6 @@ final class OSGiServiceAttributes
   @Override
   public Object get(final Object key) {
     return ref.getProperty((String) key);
-  }
-
-  @Override
-  public boolean containsKey(final Object key) {
-    return keySet().contains(key);
-  }
-
-  @Override
-  public Set<String> keySet() {
-    // service reference is mutable, so build new set each time
-    final Set<String> ks = new TreeSet<String>(IGNORE_CASE);
-    addAll(ks, ref.getPropertyKeys());
-    return unmodifiableSet(ks);
   }
 
   // can safely cache entry set, as it has no state
@@ -77,16 +52,16 @@ final class OSGiServiceAttributes
 
         @Override
         public Iterator<Entry<String, Object>> iterator() {
+          final String[] keys = ref.getPropertyKeys();
           return new Iterator<Entry<String, Object>>() {
-            private final Iterator<String> i = keySet().iterator();
+            private int i = 0;
 
             public boolean hasNext() {
-              return i.hasNext();
+              return i < keys.length;
             }
 
             public Entry<String, Object> next() {
-              final String key = i.next();
-              return new ImmutableAttribute(key, get(key));
+              return new ServiceAttribute(keys[i]);
             }
 
             public void remove() {
@@ -97,10 +72,46 @@ final class OSGiServiceAttributes
 
         @Override
         public int size() {
-          return keySet().size();
+          return ref.getPropertyKeys().length;
         }
       };
     }
     return entrySet;
+  }
+
+  final class ServiceAttribute
+      implements Entry<String, Object> {
+
+    private final String key;
+
+    public ServiceAttribute(final String key) {
+      this.key = key;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Object getValue() {
+      return ref.getProperty(key);
+    }
+
+    public Object setValue(final Object value) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(final Object rhs) {
+      if (rhs instanceof Entry) {
+        final Object rhsKey = ((Entry<?, ?>) rhs).getKey();
+        return null == key ? null == rhsKey : key.equals(rhsKey);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return (null == key ? 0 : key.hashCode());
+    }
   }
 }
