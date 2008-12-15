@@ -53,8 +53,7 @@ public final class ServiceRegistryTests {
       protected void configure() {
         final Key<? extends ServiceRegistry> registryKey = Key.get(MockServiceRegistry.class);
 
-        final ServiceBuilder<ClassLoader> builder =
-            service(ClassLoader.class).in(registryKey);
+        final ServiceBuilder<ClassLoader> builder = service(ClassLoader.class).in(registryKey);
 
         bind(ClassLoader.class).annotatedWith(named("service")).toProvider(builder.single());
 
@@ -62,8 +61,7 @@ public final class ServiceRegistryTests {
 
         bind(loaderImplKey).toInstance(getClass().getClassLoader());
 
-        bind(export(ClassLoader.class)).toProvider(
-            service(loaderImplKey).in(registryKey).export());
+        bind(export(ClassLoader.class)).toProvider(service(loaderImplKey).in(registryKey).export());
       }
     });
 

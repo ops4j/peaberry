@@ -44,8 +44,7 @@ public final class ServiceContentionTests
   @Override
   protected void configure() {
 
-    bind(export(DummyService.class)).toProvider(
-        service(Key.get(DummyServiceImpl.class)).export());
+    bind(export(DummyService.class)).toProvider(service(Key.get(DummyServiceImpl.class)).export());
 
     bind(DummyService.class).toProvider(service(DummyService.class).single());
 

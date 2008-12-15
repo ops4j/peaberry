@@ -20,6 +20,7 @@ import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newStrongValueC
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentMap;
 
@@ -34,6 +35,7 @@ import org.ops4j.peaberry.builders.ImportDecorator;
  */
 final class ServiceProxyFactory {
 
+  // keep a cache of provided proxy instances, in case they are needed again
   static final ConcurrentMap<Import<?>, Object> PROXY_CACHE = newStrongValueCache();
 
   // instances not allowed
@@ -59,16 +61,18 @@ final class ServiceProxyFactory {
           public T next() {
             final Import<T> handle = i.next();
 
+            // check in case we have already provided a proxy for this import
             T proxy = (T) PROXY_CACHE.get(handle);
             if (null == proxy) {
-              // wrap each element as a decorated dynamic proxy
-              final T newProxy = buildProxy(ctor, apply(decorator, handle));
+
+              // wrap each element as a decorated dynamic proxy and cache it
+              final T newProxy = buildProxy(ctor, decorator, handle);
               proxy = (T) PROXY_CACHE.putIfAbsent(handle, newProxy);
+
               if (null == proxy) {
                 return newProxy;
               }
             }
-
             return proxy;
           }
 
@@ -99,18 +103,21 @@ final class ServiceProxyFactory {
     final Import<T> lookup = new ConcurrentImport<T>(handles);
 
     // we can now wrap our delegating import as a decorated dynamic proxy
-    return buildProxy(getProxyConstructor(clazz), apply(decorator, lookup));
+    return buildProxy(getProxyConstructor(clazz), decorator, lookup);
   }
 
-  static <T> T buildProxy(final Constructor<T> constructor, final Import<T> handle) {
+  static <S, T extends S> T buildProxy(final Constructor<T> constructor,
+      final ImportDecorator<S> decorator, final Import<T> handle) {
+
     try {
-      return constructor.newInstance(handle);
-    } catch (final Exception e) {
+      // minimize wrapping of exceptions to help with problem determination
+      return constructor.newInstance(null == decorator ? handle : decorator.decorate(handle));
+    } catch (final InstantiationException e) {
+      throw new ServiceException(e);
+    } catch (final IllegalAccessException e) {
+      throw new ServiceException(e);
+    } catch (final InvocationTargetException e) {
       throw new ServiceException(e);
     }
-  }
-
-  static <S, T extends S> Import<T> apply(final ImportDecorator<S> decorator, final Import<T> handle) {
-    return null == decorator ? handle : decorator.decorate(handle);
   }
 }

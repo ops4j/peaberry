@@ -35,12 +35,6 @@ public final class ImportProxyClassLoaderTests {
   public void testGetProxyConstructor() {
 
     try {
-      // cannot proxy a null class
-      getProxyConstructor(null);
-      fail("Expected ServiceException");
-    } catch (final ServiceException e) {}
-
-    try {
       // cannot proxy a final class
       getProxyConstructor(String.class);
       fail("Expected ServiceException");

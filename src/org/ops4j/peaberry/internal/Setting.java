@@ -16,9 +16,6 @@
 
 package org.ops4j.peaberry.internal;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
@@ -29,51 +26,47 @@ import com.google.inject.Key;
  */
 abstract class Setting<T> {
 
+  /**
+   * @param injector optional injector
+   * @return injected setting value
+   */
   public abstract T get(final Injector injector);
 
-  public abstract Type getRawType();
-
+  /**
+   * @return setting based on explicit instance
+   */
   public static <T> Setting<T> newSetting(final T instance) {
     if (null == instance) {
+      // null instances are not tolerated
       throw new IllegalArgumentException();
     }
 
     return new Setting<T>() {
-
       @Override
       public T get(final Injector injector) {
+        if (null != injector) {
+          // given value may need injecting
+          injector.injectMembers(instance);
+        }
         return instance;
-      }
-
-      @Override
-      public Type getRawType() {
-        return instance.getClass();
       }
     };
   }
 
+  /**
+   * @return setting based on binding key
+   */
   public static <T> Setting<T> newSetting(final Key<? extends T> key) {
     if (null == key) {
+      // null binding keys are not tolerated
       throw new IllegalArgumentException();
     }
 
     return new Setting<T>() {
-
       @Override
       public T get(final Injector injector) {
+        // query the injector for the value
         return injector.getInstance(key);
-      }
-
-      @Override
-      public Type getRawType() {
-        Type type = key.getTypeLiteral().getType();
-        if (type instanceof ParameterizedType) {
-          type = ((ParameterizedType) type).getRawType();
-        }
-        if (type instanceof Class) {
-          return type;
-        }
-        return Object.class;
       }
     };
   }
@@ -83,16 +76,11 @@ abstract class Setting<T> {
     return (Setting<S>) NULL_SETTING;
   }
 
+  // default null setting, shared between service builders
   private static final Setting<Object> NULL_SETTING = new Setting<Object>() {
-
     @Override
     public Object get(final Injector injector) {
       return null;
-    }
-
-    @Override
-    public Type getRawType() {
-      return Object.class;
     }
   };
 }

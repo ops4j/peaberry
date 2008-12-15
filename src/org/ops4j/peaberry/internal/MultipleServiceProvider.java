@@ -26,6 +26,8 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 /**
+ * Multiple dynamic service provider, also provides direct multiple services.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class MultipleServiceProvider<T>
@@ -38,6 +40,7 @@ final class MultipleServiceProvider<T>
   private final Class<T> clazz;
 
   public MultipleServiceProvider(final ServiceSettings<T> settings) {
+    // clone current state of settings
     this.settings = settings.clone();
     this.clazz = settings.clazz();
   }
@@ -55,6 +58,7 @@ final class MultipleServiceProvider<T>
     private final ServiceSettings<T> settings;
 
     public DirectProvider(final ServiceSettings<T> settings) {
+      // settings already cloned
       this.settings = settings;
     }
 

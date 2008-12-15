@@ -73,7 +73,8 @@ final class MockServiceRegistry
     };
   }
 
-  public <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<T> scope) {
+  public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
+      final ServiceScope<T> scope) {
   // TODO Auto-generated method stub
   }
 

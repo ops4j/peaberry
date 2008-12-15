@@ -27,7 +27,7 @@ import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * Factory methods for direct (static) services.
+ * Factory methods for direct (also known as static) services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -43,7 +43,7 @@ final class DirectServiceFactory {
     final Iterator<Import<T>> i = handles.iterator();
 
     while (i.hasNext()) {
-      // collect all valid services into fixed list
+      // collect all valid services into snapshot list
       final T instance = nextService(i, decorator);
       if (null != instance) {
         services.add(instance);
@@ -65,7 +65,6 @@ final class DirectServiceFactory {
         return instance;
       }
     }
-
     return null;
   }
 

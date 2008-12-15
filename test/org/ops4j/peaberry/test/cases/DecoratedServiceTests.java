@@ -22,8 +22,8 @@ import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import java.util.Map;
 
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.builders.QualifiedServiceBuilder;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.builders.QualifiedServiceBuilder;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;

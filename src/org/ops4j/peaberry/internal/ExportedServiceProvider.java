@@ -28,6 +28,8 @@ import com.google.inject.Injector;
 import com.google.inject.Provider;
 
 /**
+ * Exported service provider, also provides direct exported services.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ExportedServiceProvider<T>
@@ -39,13 +41,16 @@ final class ExportedServiceProvider<T>
   private final ServiceSettings<T> settings;
 
   public ExportedServiceProvider(final ServiceSettings<T> settings) {
+    // clone current state of settings
     this.settings = settings.clone();
   }
 
   public Export<T> get() {
+
     final T instance = settings.instance(injector);
     final Map<String, ?> attributes = settings.attributes(injector);
 
+    // create pseudo-import for this service instance
     Import<T> service = new Import<T>() {
 
       public T get() {
@@ -59,6 +64,7 @@ final class ExportedServiceProvider<T>
       public void unget() {}
     };
 
+    // apply decoration to the service instance to be exported
     final ImportDecorator<? super T> decorator = settings.decorator(injector);
     if (null != decorator) {
       service = decorator.decorate(service);
@@ -67,24 +73,13 @@ final class ExportedServiceProvider<T>
     return settings.watcher(injector).add(service);
   }
 
-  private static final class DirectProvider<T>
-      implements Provider<T> {
-
-    @Inject
-    Injector injector;
-
-    private final ServiceSettings<T> settings;
-
-    public DirectProvider(final ServiceSettings<T> settings) {
-      this.settings = settings;
-    }
-
-    public T get() {
-      return settings.instance(injector);
-    }
-  }
-
   public Provider<T> direct() {
-    return new DirectProvider<T>(settings);
+    final ExportProvider<T> exportProvider = this;
+    return new Provider<T>() {
+      public T get() {
+        // export and get service instance
+        return exportProvider.get().get();
+      }
+    };
   }
 }

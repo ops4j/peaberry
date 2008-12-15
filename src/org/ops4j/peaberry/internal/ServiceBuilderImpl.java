@@ -36,6 +36,7 @@ import com.google.inject.Key;
 public final class ServiceBuilderImpl<T>
     implements DecoratedServiceBuilder<T> {
 
+  // current builder state (can be cloned)
   private final ServiceSettings<T> settings;
 
   public ServiceBuilderImpl(final Key<T> key) {

@@ -52,7 +52,9 @@ final class ImportProxyClassLoader
       return (Constructor<T>) proxyClazz.getConstructor(Import.class);
     } catch (final LinkageError e) {
       throw new ServiceException(e);
-    } catch (final Exception e) {
+    } catch (final NoSuchMethodException e) {
+      throw new ServiceException(e);
+    } catch (final ClassNotFoundException e) {
       throw new ServiceException(e);
     }
   }
