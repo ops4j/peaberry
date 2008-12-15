@@ -21,7 +21,7 @@
   bundles from the distribution onto your chosen OSGi framework:
 
     aopalliance-1.0.jar
-    guice-snapshot-20081210.jar
+    guice-snapshot-20081215.jar
     peaberry-@VERSION@.jar
 
   To use peaberry in a non-OSGi application, add the above group
