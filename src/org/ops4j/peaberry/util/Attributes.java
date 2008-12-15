@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
@@ -47,6 +46,8 @@ public final class Attributes {
    * 
    * @param properties service properties
    * @return service attributes
+   * 
+   * @throws IllegalArgumentException if there are any non-String keys
    */
   public static Map<String, ?> properties(final Properties properties) {
 
@@ -64,8 +65,7 @@ public final class Attributes {
         attributes.put(key, properties.getProperty(key));
       }
     } catch (final ClassCastException e) {
-      Logger.getLogger(Attributes.class.getName()).warning(
-          "Property map contains non-String key: " + e);
+      throw new IllegalArgumentException("Property map contains non-String key", e);
     }
 
     // now add non-String values that have String keys
@@ -84,6 +84,8 @@ public final class Attributes {
    * 
    * @param names distinguished names
    * @return service attributes
+   * 
+   * @throws IllegalArgumentException if there are any invalid names
    * 
    * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */

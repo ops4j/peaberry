@@ -18,7 +18,6 @@ package org.ops4j.peaberry.util;
 
 import java.util.concurrent.Callable;
 
-import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.util.decorators.DecoratorChain;
 import org.ops4j.peaberry.util.decorators.StickyDecorator;
@@ -36,7 +35,9 @@ public final class Decorators {
   /**
    * An {@link ImportDecorator} that caches the first valid service instance and
    * uses that until it becomes invalid. The decorator then calls the reset task
-   * to see if it should reset, or throw {@link ServiceUnavailableException}.
+   * to see if it should reset the cache and get a new service instance.
+   * <p>
+   * If no reset task is provided, the service instance cache is never reset.
    * <p>
    * NOTE: a sticky decorator only makes sense for "single" injected services.
    * 
@@ -48,12 +49,12 @@ public final class Decorators {
   }
 
   /**
-   * An {@link ImportDecorator} that combines several decorators in a chain.
+   * An {@link ImportDecorator} that applies decorators in a chain, right-left.
    * 
    * @param decorators sequence of decorators
-   * @return decorator that combines given decorators
+   * @return decorator combining the given decorators
    */
-  public static <S> ImportDecorator<S> chained(final ImportDecorator<S>... decorators) {
+  public static <S> ImportDecorator<S> chain(final ImportDecorator<S>... decorators) {
     return new DecoratorChain<S>(decorators);
   }
 }

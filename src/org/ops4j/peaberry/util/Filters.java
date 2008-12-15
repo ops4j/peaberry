@@ -80,7 +80,7 @@ public final class Filters {
    */
   public static AttributeFilter attributes(final Map<String, ?> attributes) {
     return new AttributeFilter() {
-      public boolean matches(Map<String, ?> targetAttributes) {
+      public boolean matches(final Map<String, ?> targetAttributes) {
         return targetAttributes.entrySet().contains(attributes.entrySet());
       }
     };

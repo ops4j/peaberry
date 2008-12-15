@@ -56,7 +56,7 @@ public abstract class AbstractDecorator<S>
   protected abstract <T extends S> T decorate(T instance);
 
   /**
-   * Decorate the current service attributes.
+   * Decorate the current service attributes, defaults to no decoration.
    * 
    * @param attributes service attributes
    * @return decorated service attributes

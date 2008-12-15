@@ -20,7 +20,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * {@link ImportDecorator} that applies several decorators in right-left order.
+ * An {@link ImportDecorator} that applies decorators in a chain, right-left.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

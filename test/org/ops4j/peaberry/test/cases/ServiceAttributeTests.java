@@ -46,6 +46,13 @@ public final class ServiceAttributeTests {
 
     sysProp.put(1, "badKey");
 
+    try {
+      properties(sysProp);
+      fail("Expected IllegalArgumentException");
+    } catch (final IllegalArgumentException e) {}
+
+    sysProp.remove(1);
+
     final Map<String, ?> fixedAttributes = properties(sysProp);
 
     assertNull(fixedAttributes.get(1));

@@ -28,7 +28,7 @@ import org.ops4j.peaberry.builders.ImportDecorator;
  * uses that until it becomes invalid. The decorator then calls the reset task
  * to see if it should reset the cache and get a new service instance.
  * <p>
- * If no reset task is provided then the service instance cache is never reset.
+ * If no reset task is provided, the service instance cache is never reset.
  * <p>
  * NOTE: a sticky decorator only makes sense for "single" injected services.
  * 

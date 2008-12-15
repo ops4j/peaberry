@@ -97,7 +97,7 @@ public final class ServicePerformanceTests
     // warm-up...
     time(holder.raw);
 
-    System.out.println("\nProxy overhead\n");
+    System.out.println("Proxy overhead\n");
     final double baseline = time(holder.raw);
 
     benchmark("SERVICE PROXY ", baseline, time(holder.service));
