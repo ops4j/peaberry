@@ -8,7 +8,30 @@
   <import file="test.xml"/>
   <import file="doc.xml"/>
 
-  <target name="compile">
+  <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
+
+  <target name="guice" depends="check.guice,trim.guice"/>
+
+  <target name="check.guice">
+    <available file="${guice.jar}" property="have.guice"/>
+  </target>
+
+  <target name="trim.guice" unless="have.guice">
+    <mkdir dir="${build}/dist"/>
+    <proguard>
+      -libraryjars ${java.home}/lib/rt.jar
+      -libraryjars ${lib}/aopalliance-${aop.version}.jar
+      -injars ${lib}/guice-${guice.version}.jar
+      -outjars ${guice.jar}
+      -keep class !com.google.inject.internal.collect.** { *; }
+      -keepattributes
+      -dontobfuscate
+      -dontoptimize
+      -dontnote
+    </proguard>
+  </target>
+
+  <target name="compile" depends="guice">
     <mkdir dir="${build}/classes"/>
     <javac debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}">
       <compilerarg value="-Xlint"/>
@@ -23,12 +46,16 @@
   </target>
 
   <target name="clean">
+    <delete dir="${build}/classes"/>
+    <delete dir="${build}/test-classes"/>
+    <delete dir="${build}/test"/>
+  </target>
+
+  <target name="clean.all">
     <delete dir="${build}"/>
   </target>
 
-  <target name="clean.all" depends="clean"/>
-
-  <target name="wipe" depends="clean"/>
+  <target name="wipe" depends="clean.all"/>
 
   <target name="jar" depends="peaberry"/>
 
@@ -43,6 +70,8 @@
         <replacestring from="pom.xml" to="peaberry-${version}.pom"/>
       </filtermapper>
       <filterset>
+        <filter token="AOP_VERSION" value="${aop.version}"/>
+        <filter token="GUICE_VERSION" value="${guice.version}"/>
         <filter token="VERSION" value="${version}"/>
       </filterset>
     </copy>

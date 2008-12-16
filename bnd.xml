@@ -2,28 +2,15 @@
 <project name="bnd">
 
   <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
-  <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
   <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${bnd.jar}"/>
 
   <target name="aopalliance">
     <mkdir dir="${build}/dist"/>
-    <bnd files="aopalliance.bnd" classpath="${lib}/aopalliance-1.0.jar"/>
+    <bnd files="aopalliance.bnd" classpath="${lib}/aopalliance-${aop.version}.jar"/>
   </target>
 
   <target name="peaberry" depends="compile,aopalliance">
-    <proguard>
-      -libraryjars ${java.home}/lib/rt.jar
-      -libraryjars ${aop.jar}
-      -injars ${guice.jar}
-      -outjars ${build}/dist
-      -keep class !com.google.inject.internal.collect.** { *; }
-      -keepattributes
-      -dontobfuscate
-      -dontoptimize
-      -dontnote
-    </proguard>
-    <mkdir dir="${build}/trim"/>
-    <jarjar jarfile="${build}/trim/peaberry.jar">
+    <jarjar jarfile="${build}/classes.jar">
       <fileset dir="${build}/classes"/>
       <zipfileset src="${asm.jar}"/>
       <zipfileset src="${felix.jar}"/>
@@ -32,7 +19,8 @@
       <rule pattern="org.apache.felix.framework.util.ldap.*" result="org.ops4j.peaberry.util.ldap.@1"/>
       <keep pattern="org.ops4j.**"/>
     </jarjar>
-    <bnd files="peaberry.bnd" classpath="${build}/trim/peaberry.jar"/>
+    <bnd files="peaberry.bnd" classpath="${build}/classes.jar"/>
+    <delete file="${build}/classes.jar"/>
   </target>
 
   <target name="director" depends="test.compile">
