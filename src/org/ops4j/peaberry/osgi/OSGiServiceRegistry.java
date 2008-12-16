@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceScope;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -36,7 +37,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * OSGi specific {@code ServiceRegistry} adapter.
+ * OSGi specific {@link ServiceRegistry} adapter.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -79,7 +80,7 @@ public final class OSGiServiceRegistry
   }
 
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
-      final ServiceScope<T> scope) {
+      final ServiceScope<? super T> scope) {
   // TODO Auto-generated method stub
   }
 

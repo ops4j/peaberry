@@ -40,5 +40,5 @@ public interface ServiceRegistry
    * @param filter service attribute filter
    * @param scope the watching scope which receives any matching services
    */
-  <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<T> scope);
+  <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<? super T> scope);
 }

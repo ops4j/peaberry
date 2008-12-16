@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceScope;
@@ -112,26 +113,20 @@ final class ServiceSettings<T>
     }
   }
 
+  // query methods...
+
   @SuppressWarnings("unchecked")
-  public Class<T> clazz() {
+  public Class<T> getClazz() {
     return (Class<T>) clazz;
   }
 
-  public T instance(final Injector injector) {
-    return service.get(injector);
-  }
-
-  public ImportDecorator<? super T> decorator(final Injector injector) {
+  public ImportDecorator<? super T> getDecorator(final Injector injector) {
     return decorator.get(injector);
   }
 
-  public Map<String, ?> attributes(final Injector injector) {
-    return attributes.get(injector);
-  }
-
-  private AttributeFilter filter(final Injector injector) {
-    final AttributeFilter serviceFilter = filter.get(injector);
-    if (null == serviceFilter) {
+  private AttributeFilter getFilter(final Injector injector) {
+    final AttributeFilter attributeFilter = filter.get(injector);
+    if (null == attributeFilter) {
       final Map<String, ?> serviceAttributes = attributes.get(injector);
       if (null != serviceAttributes) {
 
@@ -143,10 +138,22 @@ final class ServiceSettings<T>
         };
       }
     }
-    return serviceFilter;
+    return attributeFilter;
   }
 
-  public ServiceScope<? super T> watcher(final Injector injector) {
+  public Iterable<Import<T>> getImports(final Injector injector) {
+    final ServiceRegistry serviceRegistry = registry.get(injector);
+    final AttributeFilter attributeFilter = getFilter(injector);
+
+    final ServiceScope<? super T> serviceScope = watcher.get(injector);
+    if (null != serviceScope && serviceRegistry != serviceScope) {
+      serviceRegistry.watch(getClazz(), attributeFilter, serviceScope);
+    }
+
+    return serviceRegistry.lookup(getClazz(), attributeFilter);
+  }
+
+  private ServiceScope<? super T> getExportingScope(final Injector injector) {
     final ServiceScope<? super T> serviceScope = watcher.get(injector);
     if (null == serviceScope) {
       // use the registry as a scope
@@ -155,7 +162,15 @@ final class ServiceSettings<T>
     return serviceScope;
   }
 
-  public Iterable<Import<T>> imports(final Injector injector) {
-    return registry.get(injector).lookup(clazz(), filter(injector));
+  public Export<T> export(final Injector injector) {
+    final Import<T> _import = new StaticImport<T>(service.get(injector), attributes.get(injector));
+    final Export<T> _export = getExportingScope(injector).add(_import);
+
+    final ImportDecorator<? super T> importDecorator = decorator.get(injector);
+    if (null != importDecorator) {
+      return new DecoratedExport<T>(_export, importDecorator);
+    }
+
+    return _export;
   }
 }

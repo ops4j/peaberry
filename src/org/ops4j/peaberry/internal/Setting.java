@@ -76,7 +76,7 @@ abstract class Setting<T> {
     return (Setting<S>) NULL_SETTING;
   }
 
-  // default null setting, shared between service builders
+  // constant null setting, safe to share between builders
   private static final Setting<Object> NULL_SETTING = new Setting<Object>() {
     @Override
     public Object get(final Injector injector) {

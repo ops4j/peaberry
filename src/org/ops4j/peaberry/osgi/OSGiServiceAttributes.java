@@ -24,7 +24,7 @@ import java.util.Set;
 import org.osgi.framework.ServiceReference;
 
 /**
- * Service attributes adapter backed by an OSGi {@code ServiceReference}.
+ * Service attributes adapter backed by an OSGi {@link ServiceReference}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -61,7 +61,8 @@ final class OSGiServiceAttributes
             }
 
             public Entry<String, Object> next() {
-              return new ServiceAttribute(keys[i]);
+              final String k = keys[i++];
+              return new ImmutableAttribute(k, ref.getProperty(k));
             }
 
             public void remove() {
@@ -77,41 +78,5 @@ final class OSGiServiceAttributes
       };
     }
     return entrySet;
-  }
-
-  final class ServiceAttribute
-      implements Entry<String, Object> {
-
-    private final String key;
-
-    public ServiceAttribute(final String key) {
-      this.key = key;
-    }
-
-    public String getKey() {
-      return key;
-    }
-
-    public Object getValue() {
-      return ref.getProperty(key);
-    }
-
-    public Object setValue(final Object value) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean equals(final Object rhs) {
-      if (rhs instanceof Entry) {
-        final Object rhsKey = ((Entry<?, ?>) rhs).getKey();
-        return null == key ? null == rhsKey : key.equals(rhsKey);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return (null == key ? 0 : key.hashCode());
-    }
   }
 }

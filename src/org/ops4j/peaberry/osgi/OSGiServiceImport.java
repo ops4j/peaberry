@@ -29,7 +29,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
- * {@code Import} implementation backed by an OSGi {@code ServiceReference}.
+ * {@link Import} implementation backed by an OSGi {@code ServiceReference}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

@@ -16,12 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
-import java.util.Map;
-
 import org.ops4j.peaberry.Export;
-import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ExportProvider;
-import org.ops4j.peaberry.builders.ImportDecorator;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -46,40 +42,28 @@ final class ExportedServiceProvider<T>
   }
 
   public Export<T> get() {
+    return settings.export(injector);
+  }
 
-    final T instance = settings.instance(injector);
-    final Map<String, ?> attributes = settings.attributes(injector);
+  private static final class DirectProvider<T>
+      implements Provider<T> {
 
-    // create pseudo-import for this service instance
-    Import<T> service = new Import<T>() {
+    @Inject
+    Injector injector;
 
-      public T get() {
-        return instance;
-      }
+    private final ServiceSettings<T> settings;
 
-      public Map<String, ?> attributes() {
-        return attributes;
-      }
-
-      public void unget() {}
-    };
-
-    // apply decoration to the service instance to be exported
-    final ImportDecorator<? super T> decorator = settings.decorator(injector);
-    if (null != decorator) {
-      service = decorator.decorate(service);
+    public DirectProvider(final ServiceSettings<T> settings) {
+      // settings already cloned
+      this.settings = settings;
     }
 
-    return settings.watcher(injector).add(service);
+    public T get() {
+      return settings.export(injector).get();
+    }
   }
 
   public Provider<T> direct() {
-    final ExportProvider<T> exportProvider = this;
-    return new Provider<T>() {
-      public T get() {
-        // export and get service instance
-        return exportProvider.get().get();
-      }
-    };
+    return new DirectProvider<T>(settings);
   }
 }

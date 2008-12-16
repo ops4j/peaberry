@@ -42,11 +42,11 @@ final class MultipleServiceProvider<T>
   public MultipleServiceProvider(final ServiceSettings<T> settings) {
     // clone current state of settings
     this.settings = settings.clone();
-    this.clazz = settings.clazz();
+    this.clazz = settings.getClazz();
   }
 
   public Iterable<T> get() {
-    return serviceProxies(clazz, settings.imports(injector), settings.decorator(injector));
+    return serviceProxies(clazz, settings.getImports(injector), settings.getDecorator(injector));
   }
 
   private static final class DirectProvider<T>
@@ -63,7 +63,7 @@ final class MultipleServiceProvider<T>
     }
 
     public Iterable<T> get() {
-      return directServices(settings.imports(injector), settings.decorator(injector));
+      return directServices(settings.getImports(injector), settings.getDecorator(injector));
     }
   }
 

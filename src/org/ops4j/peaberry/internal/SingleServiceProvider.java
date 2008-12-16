@@ -42,11 +42,11 @@ final class SingleServiceProvider<T>
   public SingleServiceProvider(final ServiceSettings<T> settings) {
     // clone current state of settings
     this.settings = settings.clone();
-    this.clazz = settings.clazz();
+    this.clazz = settings.getClazz();
   }
 
   public T get() {
-    return serviceProxy(clazz, settings.imports(injector), settings.decorator(injector));
+    return serviceProxy(clazz, settings.getImports(injector), settings.getDecorator(injector));
   }
 
   private static final class DirectProvider<T>
@@ -63,7 +63,7 @@ final class SingleServiceProvider<T>
     }
 
     public T get() {
-      return directService(settings.imports(injector), settings.decorator(injector));
+      return directService(settings.getImports(injector), settings.getDecorator(injector));
     }
   }
 
