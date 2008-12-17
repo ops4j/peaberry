@@ -23,7 +23,7 @@ import org.ops4j.peaberry.Export;
 import com.google.inject.TypeLiteral;
 
 /**
- * Methods for creating various {@link TypeLiteral}s used in peaberry.
+ * Methods for creating {@link TypeLiteral}s that can be used with peaberry.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

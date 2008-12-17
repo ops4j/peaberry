@@ -42,7 +42,6 @@ public final class Attributes {
 
   /**
    * Convert the given service properties into a service attribute map.
-   * Properties with non-String keys will not appear in the final map.
    * 
    * @param properties service properties
    * @return service attributes

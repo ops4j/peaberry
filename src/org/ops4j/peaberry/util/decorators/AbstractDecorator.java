@@ -23,7 +23,10 @@ import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
  * Skeletal implementation to simplify development of {@link ImportDecorator}s.
- * Programmers only need to implement the {@code decorate(T instance)} method.
+ * <p>
+ * Developers only have to extend this class and provide an implementation of
+ * the {@code decorate} method, which takes a service instance and associated
+ * attribute map, and returns the decorated instance.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -34,11 +37,11 @@ public abstract class AbstractDecorator<S>
     return new Import<T>() {
 
       public T get() {
-        return decorate(service.get());
+        return decorate(service.get(), service.attributes());
       }
 
       public Map<String, ?> attributes() {
-        return decorate(service.attributes());
+        return service.attributes();
       }
 
       public void unget() {
@@ -51,17 +54,8 @@ public abstract class AbstractDecorator<S>
    * Decorate the current service instance.
    * 
    * @param instance service instance
+   * @param attributes service attributes
    * @return decorated service instance
    */
-  protected abstract <T extends S> T decorate(T instance);
-
-  /**
-   * Decorate the current service attributes, defaults to no decoration.
-   * 
-   * @param attributes service attributes
-   * @return decorated service attributes
-   */
-  protected Map<String, ?> decorate(final Map<String, ?> attributes) {
-    return attributes;
-  }
+  protected abstract <T extends S> T decorate(T instance, Map<String, ?> attributes);
 }
