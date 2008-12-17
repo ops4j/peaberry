@@ -53,31 +53,19 @@ public final class OSGiServiceRegistry
     bundleContext.registerService(CachingServiceRegistry.class.getName(), this, null);
   }
 
-  public <T> Iterable<Import<T>> lookup(final Class<T> type, final AttributeFilter filter) {
-    final String clazzName = type.getName();
-    OSGiServiceListener listener;
-
-    listener = listenerMap.get(clazzName);
-    if (null == listener) {
-      final OSGiServiceListener newListener = new OSGiServiceListener(bundleContext, clazzName);
-      listener = listenerMap.putIfAbsent(clazzName, newListener);
-      if (null == listener) {
-        listener = newListener;
-        newListener.start();
-      }
-    }
-
-    // wrap filtered iterable around unfiltered list
-    return new IterableOSGiService<T>(listener, filter);
-  }
-
-  public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
-      final ServiceScope<? super T> scope) {
-  // TODO add support for watching services!
+  public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
+    return new IterableOSGiService<T>(registerListener(clazz), filter);
   }
 
   public <T> Export<T> add(final Import<T> service) {
     return new OSGiServiceExport<T>(bundleContext, service);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
+      final ServiceScope<? super T> scope) {
+
+    registerListener(clazz).addWatcher(new FilteredServiceScope(filter, scope));
   }
 
   public void flush() {
@@ -90,5 +78,22 @@ public final class OSGiServiceRegistry
   @Override
   public String toString() {
     return String.format("OSGiServiceRegistry(%s)", bundleContext.getBundle());
+  }
+
+  private <T> OSGiServiceListener registerListener(final Class<T> clazz) {
+    final String clazzName = clazz.getName();
+    OSGiServiceListener listener;
+
+    listener = listenerMap.get(clazzName);
+    if (null == listener) {
+      final OSGiServiceListener newListener = new OSGiServiceListener(bundleContext, clazzName);
+      listener = listenerMap.putIfAbsent(clazzName, newListener);
+      if (null == listener) {
+        newListener.start();
+        return newListener;
+      }
+    }
+
+    return listener;
   }
 }

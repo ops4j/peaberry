@@ -18,11 +18,17 @@ package org.ops4j.peaberry.osgi;
 
 import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
+import static org.osgi.framework.ServiceEvent.MODIFIED;
+import static org.osgi.framework.ServiceEvent.REGISTERED;
+import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.BundleContext;
@@ -49,6 +55,7 @@ final class OSGiServiceImport
   private Object instance;
 
   private final Map<String, ?> attributes;
+  private final List<Export<Object>> watchers;
 
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
 
@@ -63,9 +70,12 @@ final class OSGiServiceImport
     count = new AtomicInteger();
 
     attributes = new OSGiServiceAttributes(ref);
+    watchers = new ArrayList<Export<Object>>();
   }
 
   public boolean updateRanking() {
+    notifyWatchers(MODIFIED);
+
     // ranking is mutable...
     final int oldRank = rank;
     rank = getNumberProperty(SERVICE_RANKING).intValue();
@@ -83,6 +93,7 @@ final class OSGiServiceImport
         if (!calledGet) {
           try {
             instance = bundleContext.getService(ref);
+            notifyWatchers(REGISTERED);
           } catch (final RuntimeException re) {
             throw new ServiceUnavailableException(re);
           } finally {
@@ -102,12 +113,21 @@ final class OSGiServiceImport
     count.decrementAndGet();
   }
 
+  public void addWatcher(final Export<Object> export) {
+    watchers.add(export);
+    if (null != instance) {
+      export.put(instance);
+    }
+  }
+
   public void flush(final boolean serviceUnregistered) {
     if (serviceUnregistered) {
-      // no need to unget, as service is gone
+      notifyWatchers(UNREGISTERING);
+
       instance = null;
       calledGet = true; // force memory flush
-      return;
+
+      return; // no need to unget, as service is gone
     }
 
     // check no-one is using the service
@@ -165,5 +185,25 @@ final class OSGiServiceImport
   private Number getNumberProperty(final String key) {
     final Object num = ref.getProperty(key);
     return num instanceof Number ? (Number) num : 0;
+  }
+
+  private void notifyWatchers(final int eventType) {
+    if (null != instance) {
+      for (final Export<Object> export : watchers) {
+        try {
+          switch (eventType) {
+          case REGISTERED:
+            export.put(instance);
+            break;
+          case MODIFIED:
+            export.attributes(attributes);
+            break;
+          case UNREGISTERING:
+            export.unput();
+            break;
+          }
+        } catch (final RuntimeException re) {/* ignore */} // NOPMD
+      }
+    }
   }
 }

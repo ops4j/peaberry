@@ -18,10 +18,10 @@ package org.ops4j.peaberry.osgi;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -123,7 +123,7 @@ final class OSGiServiceExport<T>
       return (String[]) objectClass;
     }
 
-    final Collection<String> names = new HashSet<String>();
+    final Set<String> names = new HashSet<String>();
 
     Class<?> clazz = instance.getClass();
     while (clazz != null) {

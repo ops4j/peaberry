@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.util.decorators;
+package org.ops4j.peaberry.util;
 
 import java.util.Map;
 

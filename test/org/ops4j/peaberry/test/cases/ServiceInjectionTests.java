@@ -23,7 +23,11 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.fail;
 
 import java.util.Iterator;
+import java.util.Map;
 
+import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceScope;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -47,7 +51,36 @@ public final class ServiceInjectionTests
 
   @Override
   protected void configure() {
-    bind(Id.class).toProvider(service(Id.class).single());
+    bind(Id.class).toProvider(service(Id.class).out(new ServiceScope<Id>() {
+      public <T extends Id> Export<T> add(Import<T> service) {
+        return new Export<T>() {
+          T instance;
+
+          public void put(T newInstance) {
+            instance = newInstance;
+            System.out.println("PUBLISH:" + instance);
+          }
+
+          public void attributes(Map<String, ?> attributes) {
+            System.out.println("UPDATE:" + instance);
+          }
+
+          public void unput() {
+            System.out.println("REMOVE:" + instance);
+          }
+
+          public T get() {
+            throw new UnsupportedOperationException();
+          }
+
+          public Map<String, ?> attributes() {
+            throw new UnsupportedOperationException();
+          }
+
+          public void unget() {}
+        };
+      }
+    }).single());
     bind(iterable(Id.class)).toProvider(service(Id.class).multiple());
   }
 

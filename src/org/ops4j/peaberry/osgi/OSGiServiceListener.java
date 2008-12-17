@@ -19,14 +19,18 @@ package org.ops4j.peaberry.osgi;
 import static java.util.Collections.binarySearch;
 import static java.util.Collections.sort;
 import static org.osgi.framework.Constants.OBJECTCLASS;
+import static org.osgi.framework.ServiceEvent.MODIFIED;
 import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceException;
+import org.ops4j.peaberry.ServiceScope;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -46,8 +50,8 @@ final class OSGiServiceListener
   private final BundleContext bundleContext;
   private final String clazzFilter;
 
-  // maintain cached list of imported services
-  private final List<OSGiServiceImport> imports;
+  private final ArrayList<OSGiServiceImport> imports;
+  private final Set<ServiceScope<Object>> watchers;
 
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     this.bundleContext = bundleContext;
@@ -58,8 +62,8 @@ final class OSGiServiceListener
       clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
     }
 
-    // need random access to indexed positions
     imports = new ArrayList<OSGiServiceImport>();
+    watchers = new HashSet<ServiceScope<Object>>();
   }
 
   public synchronized void start() {
@@ -95,12 +99,26 @@ final class OSGiServiceListener
     case REGISTERED:
       insertService(i);
       break;
+    case MODIFIED:
+      updateService(i);
+      break;
     case UNREGISTERING:
       removeService(i);
       break;
-    default:
-      updateService(i);
-      break;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public synchronized void addWatcher(final ServiceScope scope) {
+
+    if (watchers.add(scope)) {
+      // report existing imports to the new scope
+      for (final OSGiServiceImport i : imports) {
+        final Export export = scope.add(i);
+        if (null != export) {
+          i.addWatcher(export);
+        }
+      }
     }
   }
 
@@ -118,6 +136,14 @@ final class OSGiServiceListener
     if (insertIndex < 0) {
       // new object, must flip index
       imports.add(~insertIndex, i);
+
+      // report new import to any watching scopes
+      for (final ServiceScope<Object> scope : watchers) {
+        final Export<Object> export = scope.add(i);
+        if (null != export) {
+          i.addWatcher(export);
+        }
+      }
     }
   }
 
@@ -132,7 +158,7 @@ final class OSGiServiceListener
       // need to re-order list?
       if (orig.updateRanking()) {
         imports.remove(index);
-        insertService(orig);
+        imports.add(~binarySearch(imports, orig), orig);
       }
     } else {
       // not seen before
