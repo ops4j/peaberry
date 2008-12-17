@@ -4,14 +4,11 @@
   <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
       classpath="${jaxen.jar};${pmd.jar};${asm.jar}"/>
 
-  <target name="pmd">
+  <target name="pmd" depends="peaberry">
     <mkdir dir="${doc}/coverage"/>
     <pmd rulesetfiles="pmd.xml" shortFilenames="true">
       <formatter type="html" toFile="${doc}/coverage/pmd.html" linkPrefix="" linePrefix="src-"/>
-      <fileset dir="${src}" includes="**/*.java"/>
-      <auxclasspath>
-        <pathelement location="${build}/classes"/>
-      </auxclasspath>
+      <fileset dir="${src}" includes="org/**/*.java"/>
     </pmd>
   </target>
 

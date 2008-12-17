@@ -42,7 +42,7 @@ final class ExportedServiceProvider<T>
   }
 
   public Export<T> get() {
-    return settings.export(injector);
+    return settings.getExport(injector);
   }
 
   private static final class DirectProvider<T>
@@ -59,7 +59,7 @@ final class ExportedServiceProvider<T>
     }
 
     public T get() {
-      return settings.export(injector).get();
+      return settings.getExport(injector).get();
     }
   }
 

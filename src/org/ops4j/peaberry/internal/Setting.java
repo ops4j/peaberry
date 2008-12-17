@@ -24,6 +24,7 @@ import com.google.inject.Key;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
+@SuppressWarnings("PMD.AbstractNaming")
 abstract class Setting<T> {
 
   /**

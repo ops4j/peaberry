@@ -65,7 +65,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
- * Around-advice glue, specifically optimized for {@link Import} abstraction.
+ * Around-advice glue, specifically optimized for the {@link Import} concept.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -79,6 +79,8 @@ final class ImportGlue {
   private static final String EXCEPTION_NAME = getInternalName(Exception.class);
   private static final String IMPORT_NAME = getInternalName(Import.class);
   private static final String OBJECT_NAME = getInternalName(Object.class);
+
+  private static final String VOID_DESC = "()V";
 
   private static final String EXCEPTION_DESC = getDescriptor(Exception.class);
   private static final String IMPORT_DESC = getDescriptor(Import.class);
@@ -167,7 +169,7 @@ final class ImportGlue {
   private static void clinit(final ClassWriter cw, final Class<?> clazz, final String proxyName) {
     cw.visitField(PRIVATE | STATIC | FINAL, NO_SERVICE, EXCEPTION_DESC, null, null).visitEnd();
 
-    final MethodVisitor v = cw.visitMethod(STATIC, "<clinit>", "()V", null, null);
+    final MethodVisitor v = cw.visitMethod(STATIC, "<clinit>", VOID_DESC, null, null);
 
     v.visitCode();
 
@@ -195,13 +197,14 @@ final class ImportGlue {
     v.visitInsn(DUP);
     v.visitVarInsn(ALOAD, 1);
     v.visitFieldInsn(PUTFIELD, proxyName, PROXY_HANDLE, IMPORT_DESC);
-    v.visitMethodInsn(INVOKESPECIAL, superName, "<init>", "()V");
+    v.visitMethodInsn(INVOKESPECIAL, superName, "<init>", VOID_DESC);
     v.visitInsn(RETURN);
 
     v.visitMaxs(0, 0);
     v.visitEnd();
   }
 
+  @SuppressWarnings("PMD.ExcessiveMethodLength")
   private static void wrap(final ClassWriter cw, final String proxyName, final Method method) {
 
     final String methodName = method.getName();
@@ -280,7 +283,7 @@ final class ImportGlue {
 
     // unget on return
     v.visitVarInsn(ALOAD, 0);
-    v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", "()V");
+    v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", VOID_DESC);
     v.visitInsn(ACONST_NULL);
 
     v.visitLabel(finalR);
@@ -299,7 +302,7 @@ final class ImportGlue {
 
     // unget on exception
     v.visitVarInsn(ALOAD, 0);
-    v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", "()V");
+    v.visitMethodInsn(INVOKEINTERFACE, IMPORT_NAME, "unget", VOID_DESC);
     v.visitInsn(ACONST_NULL);
 
     v.visitLabel(finalX);

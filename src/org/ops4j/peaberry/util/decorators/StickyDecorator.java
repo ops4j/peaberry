@@ -78,8 +78,6 @@ public final class StickyDecorator<S>
         try {
           instance = handle.get();
           reset = (null == instance);
-        } catch (final RuntimeException re) {
-          throw re;
         } finally {
           if (reset) {
             handle.unget(); // balance previous unsuccessful get

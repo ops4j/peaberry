@@ -21,7 +21,7 @@ import java.util.Map;
 import org.ops4j.peaberry.Import;
 
 /**
- * A static {@link Import} based on a fixed instance and attribute map.
+ * A static {@link Import} based on a local instance and attribute map.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -44,5 +44,5 @@ final class StaticImport<T>
     return attributes;
   }
 
-  public void unget() {}
+  public void unget() {/* nothing to do */}
 }

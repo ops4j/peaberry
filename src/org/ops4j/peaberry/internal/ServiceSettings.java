@@ -34,7 +34,8 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 
 /**
- * Maintain state of {@link ServiceBuilderImpl} while fluent API is used.
+ * Maintain state of {@link ServiceBuilderImpl} while the fluent API is used.
+ * Also includes a few helpers to simplify the import and export of services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -45,13 +46,12 @@ final class ServiceSettings<T>
   private final Setting<T> service;
   private final Class<?> clazz;
 
+  // current builder state...
+  private Setting<ServiceRegistry> registry = newSetting(Key.get(ServiceRegistry.class));
   private Setting<ImportDecorator<? super T>> decorator = nullSetting();
   private Setting<ServiceScope<? super T>> watcher = nullSetting();
   private Setting<Map<String, ?>> attributes = nullSetting();
   private Setting<AttributeFilter> filter = nullSetting();
-
-  // default to current binding, which in most cases will be the OSGi registry
-  private Setting<ServiceRegistry> registry = newSetting(Key.get(ServiceRegistry.class));
 
   /**
    * Configure service based on binding key.
@@ -130,7 +130,7 @@ final class ServiceSettings<T>
       final Map<String, ?> serviceAttributes = attributes.get(injector);
       if (null != serviceAttributes) {
 
-        // use attributes as a filter
+        // no filter configured, so attempt to use attributes as a basic filter
         return new AttributeFilter() {
           public boolean matches(final Map<String, ?> targetAttributes) {
             return targetAttributes.entrySet().contains(serviceAttributes.entrySet());
@@ -145,27 +145,30 @@ final class ServiceSettings<T>
     final ServiceRegistry serviceRegistry = registry.get(injector);
     final AttributeFilter attributeFilter = getFilter(injector);
 
+    // enable outjection, but only if it's going to a different scope
     final ServiceScope<? super T> serviceScope = watcher.get(injector);
-    if (null != serviceScope && serviceRegistry != serviceScope) {
+    if (null != serviceScope && !serviceScope.equals(serviceRegistry)) {
       serviceRegistry.watch(getClazz(), attributeFilter, serviceScope);
     }
 
     return serviceRegistry.lookup(getClazz(), attributeFilter);
   }
 
-  private ServiceScope<? super T> getExportingScope(final Injector injector) {
+  private ServiceScope<? super T> getReceivingScope(final Injector injector) {
     final ServiceScope<? super T> serviceScope = watcher.get(injector);
     if (null == serviceScope) {
-      // use the registry as a scope
       return registry.get(injector);
     }
     return serviceScope;
   }
 
-  public Export<T> export(final Injector injector) {
-    final Import<T> _import = new StaticImport<T>(service.get(injector), attributes.get(injector));
-    final Export<T> _export = getExportingScope(injector).add(_import);
+  public Export<T> getExport(final Injector injector) {
 
+    // wrap local instance up as an import and push it out to the relevant scope
+    final Import<T> _import = new StaticImport<T>(service.get(injector), attributes.get(injector));
+    final Export<T> _export = getReceivingScope(injector).add(_import);
+
+    // apply decoration to the incoming aspect, just like with normal imports
     final ImportDecorator<? super T> importDecorator = decorator.get(injector);
     if (null != importDecorator) {
       return new DecoratedExport<T>(_export, importDecorator);

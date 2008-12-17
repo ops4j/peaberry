@@ -23,7 +23,8 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * An {@link Export} whose import is decorated by a {@link ImportDecorator}.
+ * An {@link Export} whose <i>import</i> aspect is decorated by the given
+ * {@link ImportDecorator}. No decoration is applied when <i>exporting</i>.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -38,6 +39,8 @@ final class DecoratedExport<T>
     this.decoratedImport = decorator.decorate(originalExport);
   }
 
+  // Export aspect...
+
   public void put(final T instance) {
     originalExport.put(instance);
   }
@@ -49,6 +52,8 @@ final class DecoratedExport<T>
   public void unput() {
     originalExport.unput();
   }
+
+  // Import aspect...
 
   public T get() {
     return decoratedImport.get();

@@ -33,6 +33,7 @@ import com.google.inject.Key;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class ServiceBuilderImpl<T>
     implements DecoratedServiceBuilder<T> {
 
