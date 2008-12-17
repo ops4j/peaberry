@@ -201,6 +201,8 @@ final class OSGiServiceImport
           case UNREGISTERING:
             export.unput();
             break;
+          default:
+            break;
           }
         } catch (final RuntimeException re) {/* ignore */} // NOPMD
       }

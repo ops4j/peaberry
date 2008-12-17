@@ -101,7 +101,7 @@ final class OSGiServiceExport<T>
     if (null != originalService) {
       try {
         originalService.unget();
-      } catch (final RuntimeException re) {/* ignore */}
+      } catch (final RuntimeException re) {/* ignore */} // NOPMD
       originalService = null;
     }
 
@@ -109,7 +109,7 @@ final class OSGiServiceExport<T>
     if (null != reg) {
       try {
         reg.unregister();
-      } catch (final RuntimeException re) {/* ignore */}
+      } catch (final RuntimeException re) {/* ignore */} // NOPMD
       reg = null;
     }
   }

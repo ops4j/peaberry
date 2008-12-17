@@ -25,6 +25,7 @@ import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.ops4j.peaberry.AttributeFilter;
@@ -50,7 +51,7 @@ final class OSGiServiceListener
   private final BundleContext bundleContext;
   private final String clazzFilter;
 
-  private final ArrayList<OSGiServiceImport> imports;
+  private final List<OSGiServiceImport> imports;
   private final Set<ServiceScope<Object>> watchers;
 
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
@@ -104,6 +105,8 @@ final class OSGiServiceListener
       break;
     case UNREGISTERING:
       removeService(i);
+      break;
+    default:
       break;
     }
   }
