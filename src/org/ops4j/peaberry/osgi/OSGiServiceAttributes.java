@@ -52,7 +52,10 @@ final class OSGiServiceAttributes
 
         @Override
         public Iterator<Entry<String, Object>> iterator() {
+
+          // take snapshot of current property names
           final String[] keys = ref.getPropertyKeys();
+
           return new Iterator<Entry<String, Object>>() {
             private int i = 0;
 
@@ -62,6 +65,8 @@ final class OSGiServiceAttributes
 
             public Entry<String, Object> next() {
               final String k = keys[i++];
+
+              // return a snapshot of the current property entry
               return new ImmutableAttribute(k, ref.getProperty(k));
             }
 
@@ -77,6 +82,7 @@ final class OSGiServiceAttributes
         }
       };
     }
+
     return entrySet;
   }
 }

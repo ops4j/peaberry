@@ -36,7 +36,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 
 /**
- * OSGi {@code BundleActivator} that manages a cleanup thread for peaberry.
+ * OSGi {@link BundleActivator} that manages a cleanup thread for peaberry.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  * @author rinsvind@gmail.com (Todor Boev)
@@ -50,12 +50,14 @@ public final class Activator
   private static final String FLUSH_INTERVAL_KEY = "org.ops4j.peaberry.osgi.flushInterval";
 
   /**
-   * Cleans up registered {@code CachingServiceRegistry}s at a fixed interval.
+   * Cleans up registered {@link CachingServiceRegistry}s at a fixed interval.
    */
   protected static final class ImportManager
       implements Runnable {
 
+    // dynamic list of currently active caching registries
     private final Iterable<CachingServiceRegistry> registries;
+
     private final int flushInterval;
     private final Bundle bundle;
 
@@ -93,7 +95,6 @@ public final class Activator
       @Override
       protected void configure() {
 
-        // retrieve current flush setting from the OSGi framework
         bindConstant().annotatedWith(named(FLUSH_INTERVAL_KEY)).to(
             osgiProperty(FLUSH_INTERVAL_KEY, "8000"));
 
@@ -108,6 +109,7 @@ public final class Activator
       }
     });
 
+    // negative flush interval means no timeout, so no need to create a thread
     if (injector.getInstance(Key.get(int.class, named(FLUSH_INTERVAL_KEY))) >= 0) {
       cleanupThread = new Thread(injector.getInstance(ImportManager.class));
       cleanupThread.setDaemon(true);
@@ -116,7 +118,6 @@ public final class Activator
   }
 
   public void stop(final BundleContext ctx) {
-
     if (null != cleanupThread) {
       cleanupThread.interrupt();
       cleanupThread = null;

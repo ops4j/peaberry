@@ -29,7 +29,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 /**
- * {@link Import} implementation backed by an OSGi {@code ServiceReference}.
+ * {@link Import} implementation backed by an OSGi {@link ServiceReference}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -43,12 +43,12 @@ final class OSGiServiceImport
   private final long id;
   private int rank;
 
-  private final Map<String, ?> attributes;
-
+  // optimized service cache
+  private final AtomicInteger count;
+  private volatile boolean calledGet;
   private Object instance;
 
-  private volatile boolean calledGet;
-  private final AtomicInteger count;
+  private final Map<String, ?> attributes;
 
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
 
@@ -59,9 +59,10 @@ final class OSGiServiceImport
     id = getNumberProperty(SERVICE_ID).longValue();
     rank = getNumberProperty(SERVICE_RANKING).intValue();
 
-    attributes = new OSGiServiceAttributes(ref);
-
+    // need accurate usage count
     count = new AtomicInteger();
+
+    attributes = new OSGiServiceAttributes(ref);
   }
 
   public boolean updateRanking() {
@@ -94,7 +95,7 @@ final class OSGiServiceImport
   }
 
   public Map<String, ?> attributes() {
-    return calledGet && instance != null ? attributes : null;
+    return calledGet && null != instance ? attributes : null;
   }
 
   public void unget() {
@@ -105,15 +106,15 @@ final class OSGiServiceImport
     if (serviceUnregistered) {
       // no need to unget, as service is gone
       instance = null;
-      calledGet = true; // flush
+      calledGet = true; // force memory flush
       return;
     }
 
     // check no-one is using the service
     if (calledGet && 0 == count.get()) {
-
       synchronized (this) {
-        if (calledGet) {
+        if (calledGet) { // check again, just in case
+
           // attempt to block other threads calling get()
           calledGet = false;
 
@@ -125,7 +126,7 @@ final class OSGiServiceImport
             try {
               // cached result not being used
               bundleContext.ungetService(ref);
-            } catch (final IllegalStateException e) {/* already gone */} // NOPMD
+            } catch (final RuntimeException re) {/* already gone */} // NOPMD
           }
         }
       }
@@ -158,14 +159,11 @@ final class OSGiServiceImport
     }
 
     // but higher ranking beats all
-    return rank < rhs.rank ? 1 : -1;
+    return rank > rhs.rank ? -1 : 1;
   }
 
   private Number getNumberProperty(final String key) {
     final Object num = ref.getProperty(key);
-    if (num instanceof Number) {
-      return (Number) num;
-    }
-    return 0;
+    return num instanceof Number ? (Number) num : 0;
   }
 }

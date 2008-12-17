@@ -19,6 +19,8 @@ package org.ops4j.peaberry.osgi;
 import java.util.Map.Entry;
 
 /**
+ * Snapshot of an entry from a service attribute map.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ImmutableAttribute

@@ -68,13 +68,13 @@ final class OSGiServiceListener
       // register listener first to avoid race condition
       bundleContext.addServiceListener(this, clazzFilter);
 
-      // now retrieve snapshot of services that have already been registered
-      final ServiceReference[] initialRefs = bundleContext.getServiceReferences(null, clazzFilter);
-      if (null != initialRefs) {
+      // retrieve snapshot of any matching services that are already registered
+      final ServiceReference[] refs = bundleContext.getServiceReferences(null, clazzFilter);
+      if (null != refs) {
 
         // wrap service references to optimize sorting
-        for (final ServiceReference ref : initialRefs) {
-          imports.add(new OSGiServiceImport(bundleContext, ref)); // NOPMD
+        for (final ServiceReference r : refs) {
+          imports.add(new OSGiServiceImport(bundleContext, r)); // NOPMD
         }
 
         // no point sorting singleton
@@ -84,7 +84,7 @@ final class OSGiServiceListener
       }
 
     } catch (final InvalidSyntaxException e) {
-      throw new ServiceException(e); // this should never happen
+      throw new ServiceException(e); // this should never happen!
     }
   }
 

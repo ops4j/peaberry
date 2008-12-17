@@ -26,7 +26,7 @@ import org.ops4j.peaberry.Import;
  * Filtered iterable view over dynamic collection of {@link OSGiServiceImport}s.
  * <p>
  * The iterator provided by this view is valid even if the underlying collection
- * of services changes, because it keeps track of where it would be in the list,
+ * of services changes - because it keeps track of where it would be in the list
  * based on the service id and ranking.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
