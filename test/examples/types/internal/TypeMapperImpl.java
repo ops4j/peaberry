@@ -22,15 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-import examples.types.TypeService;
+import examples.types.TypeMapper;
 
 /**
- * {@code TypeService} implementation, uses standard type-to-string conversions.
+ * {@link TypeMapper} implementation, uses standard type-to-string conversions.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class TypeServiceImpl
-    implements TypeService {
+final class TypeMapperImpl
+    implements TypeMapper {
 
   @Override
   public String toString() {
@@ -113,13 +113,11 @@ final class TypeServiceImpl
     return ts.toString();
   }
 
-  @SuppressWarnings( {"unchecked"})
-  public String toString(final Class c, final int... is) {
+  public String toString(final Class<?> c, final int... is) {
     return Arrays.toString(is);
   }
 
-  @SuppressWarnings( {"unchecked"})
-  public String toString(final Class c, final Object... os) {
+  public String toString(final Class<?> c, final Object... os) {
     return Arrays.toString(os);
   }
 

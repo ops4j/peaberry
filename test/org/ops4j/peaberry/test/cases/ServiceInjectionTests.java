@@ -25,9 +25,8 @@ import static org.testng.Assert.fail;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.util.AbstractScope;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -51,34 +50,22 @@ public final class ServiceInjectionTests
 
   @Override
   protected void configure() {
-    bind(Id.class).toProvider(service(Id.class).out(new ServiceScope<Id>() {
-      public <T extends Id> Export<T> add(Import<T> service) {
-        return new Export<T>() {
-          T instance;
+    bind(Id.class).toProvider(service(Id.class).out(new AbstractScope<Id>() {
 
-          public void put(T newInstance) {
-            instance = newInstance;
-            System.out.println("PUBLISH:" + instance);
-          }
+      @Override
+      protected <T extends Id> T adding(Import<T> service) {
+        System.out.println("ADDING:" + service.get());
+        return service.get();
+      }
 
-          public void attributes(Map<String, ?> attributes) {
-            System.out.println("UPDATE:" + instance);
-          }
+      @Override
+      protected <T extends Id> void modified(T instance, Map<String, ?> attributes) {
+        System.out.println("MODIFIED:" + instance);
+      }
 
-          public void unput() {
-            System.out.println("REMOVE:" + instance);
-          }
-
-          public T get() {
-            throw new UnsupportedOperationException();
-          }
-
-          public Map<String, ?> attributes() {
-            throw new UnsupportedOperationException();
-          }
-
-          public void unget() {}
-        };
+      @Override
+      protected <T extends Id> void removed(T instance) {
+        System.out.println("REMOVED:" + instance);
       }
     }).single());
     bind(iterable(Id.class)).toProvider(service(Id.class).multiple());

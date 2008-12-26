@@ -16,9 +16,12 @@
 
 package org.ops4j.peaberry.test.cases;
 
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.test.Director.findContext;
+import static org.osgi.framework.Constants.SERVICE_RANKING;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -30,7 +33,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
-import examples.ids.IdService;
+import examples.ids.IdManager;
 
 /**
  * Base class for service testcases, instances are injected during construction.
@@ -44,14 +47,14 @@ public abstract class InjectableTestCase
   final Injector injector;
 
   @Inject
-  IdService idService;
+  IdManager idService;
 
   public InjectableTestCase() {
     injector =
         Guice.createInjector(this, osgiModule(findContext(getClass())), new AbstractModule() {
           @Override
           public void configure() {
-            bind(IdService.class).toProvider(service(IdService.class).single());
+            bind(IdManager.class).toProvider(service(IdManager.class).single());
           }
         });
 
@@ -62,12 +65,13 @@ public abstract class InjectableTestCase
     return injector.getInstance(key);
   }
 
+  @SuppressWarnings("unchecked")
   protected void register(final String... ids) {
-    idService.register(0, ids);
+    idService.add(EMPTY_MAP, ids);
   }
 
   protected void register(final int ranking, final String... ids) {
-    idService.register(ranking, ids);
+    idService.add(singletonMap(SERVICE_RANKING, ranking), ids);
   }
 
   protected void missing(final Object obj) {
@@ -82,10 +86,10 @@ public abstract class InjectableTestCase
   }
 
   protected void unregister(final String... ids) {
-    idService.unregister(ids);
+    idService.remove(ids);
   }
 
   protected void reset() {
-    idService.reset();
+    idService.clear();
   }
 }

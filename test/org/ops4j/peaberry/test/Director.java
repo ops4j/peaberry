@@ -29,11 +29,12 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.main.AutoActivator;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
@@ -41,13 +42,13 @@ import org.osgi.service.packageadmin.PackageAdmin;
 import org.testng.IObjectFactory;
 import org.testng.TestNG;
 import org.testng.TestNGException;
+import org.testng.xml.XmlSuite;
 
 /**
  * TestNG launcher that runs tests as OSGi bundles on the Felix framework.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@SuppressWarnings("unchecked")
 public final class Director
     extends TestNG {
 
@@ -59,9 +60,7 @@ public final class Director
     try {
       testNG.run();
     } catch (final TestNGException e) {
-      // /CLOVER:OFF
       e.printStackTrace();
-      // /CLOVER:ON
     }
   }
 
@@ -69,9 +68,9 @@ public final class Director
   private static final Felix FELIX;
 
   static {
-    final Map config = loadConfigProperties();
+    final Properties config = loadConfigProperties();
 
-    final List autoActivatorList = new ArrayList();
+    final List<BundleActivator> autoActivatorList = new ArrayList<BundleActivator>();
     autoActivatorList.add(new AutoActivator(config));
 
     config.put(SYSTEMBUNDLE_ACTIVATORS_PROP, autoActivatorList);
@@ -84,9 +83,8 @@ public final class Director
 
     private static final long serialVersionUID = 1L;
 
-    // improve reporting by unwrapping certain wrapped exceptions, like ITE
+    @SuppressWarnings("unchecked")
     public Object newInstance(final Constructor ctor, final Object... args) {
-      // /CLOVER:OFF
       try {
         return ctor.newInstance(args);
       } catch (final InvocationTargetException e) {
@@ -94,7 +92,6 @@ public final class Director
       } catch (final Exception e) {
         throw new TestNGException(e);
       }
-      // /CLOVER:ON
     }
   }
 
@@ -108,9 +105,7 @@ public final class Director
     try {
       FELIX.start();
     } catch (final BundleException e) {
-      // /CLOVER:OFF
       throw new RuntimeException(e);
-      // /CLOVER:ON
     }
 
     setDefaultSuiteName("Peaberry");
@@ -118,7 +113,7 @@ public final class Director
 
     // clear out dummy command-line tests
     setObjectFactory(ObjectFactory.class);
-    setXmlSuites(new ArrayList());
+    setXmlSuites(new ArrayList<XmlSuite>());
 
     // load testcase classes from the appropriate bundles
     setTestClasses(installTestCases(installTestBundles()));
@@ -128,9 +123,7 @@ public final class Director
       super.run(); // run tests!
 
     } catch (final Exception e) {
-      // /CLOVER:OFF
       throw new RuntimeException(e);
-      // /CLOVER:ON
     } finally {
 
       System.out.println("=====================");
@@ -140,9 +133,7 @@ public final class Director
       try {
         FELIX.stop();
       } catch (final BundleException e) {
-        // /CLOVER:OFF
         throw new RuntimeException(e);
-        // /CLOVER:ON
       }
     }
   }
@@ -150,21 +141,17 @@ public final class Director
   private Bundle[] installTestBundles() {
 
     final BundleContext ctx = FELIX.getBundleContext();
-    final Collection<Bundle> bundles = new HashSet();
+    final Collection<Bundle> bundles = new HashSet<Bundle>();
 
     final File testBundleDir = new File(ctx.getProperty("test.bundle.dir"));
 
     for (final File f : testBundleDir.listFiles()) {
-      // /CLOVER:OFF
       if (f.getName().endsWith(".jar")) {
-        // /CLOVER:ON
         try {
           final String location = f.toURI().toASCIIString();
           bundles.add(ctx.installBundle(location));
         } catch (final BundleException e) {
-          // /CLOVER:OFF
           System.err.println("Error installing test bundle: " + f + " message: " + e.getMessage());
-          // /CLOVER:ON
         }
       }
     }
@@ -172,8 +159,8 @@ public final class Director
     return bundles.toArray(new Bundle[bundles.size()]);
   }
 
-  private Class[] installTestCases(final Bundle[] bundles) {
-    final Collection<Class> clazzes = new HashSet();
+  private Class<?>[] installTestCases(final Bundle[] bundles) {
+    final Collection<Class<?>> clazzes = new HashSet<Class<?>>();
 
     System.out.println();
 
@@ -183,9 +170,7 @@ public final class Director
         clazzes.addAll(installTestCases(b));
         b.start();
       } catch (final BundleException e) {
-        // /CLOVER:OFF
         System.err.println("Error starting test bundle: " + b + " message: " + e.getMessage());
-        // /CLOVER:ON
       }
       System.out.println();
     }
@@ -193,10 +178,10 @@ public final class Director
     return clazzes.toArray(new Class[clazzes.size()]);
   }
 
-  private Collection installTestCases(final Bundle bundle) {
-    final Collection clazzes = new HashSet();
+  private Collection<Class<?>> installTestCases(final Bundle bundle) {
+    final Collection<Class<?>> clazzes = new HashSet<Class<?>>();
 
-    final Enumeration i = bundle.findEntries("/", "*Tests.class", true);
+    final Enumeration<?> i = bundle.findEntries("/", "*Tests.class", true);
     while (i != null && i.hasMoreElements()) {
 
       // convert jar entry path into dotted class name...
@@ -208,9 +193,7 @@ public final class Director
       try {
         clazzes.add(bundle.loadClass(name));
       } catch (final ClassNotFoundException e) {
-        // /CLOVER:OFF
         System.err.println("Error loading test class: " + name + " message: " + e.getMessage());
-        // /CLOVER:ON
       }
     }
 
@@ -219,7 +202,7 @@ public final class Director
 
   private static volatile PackageAdmin PACKAGE_ADMIN;
 
-  public static BundleContext findContext(final Class clazz) {
+  public static BundleContext findContext(final Class<?> clazz) {
 
     if (null == PACKAGE_ADMIN) {
       // lazy-load the framework package-admin service

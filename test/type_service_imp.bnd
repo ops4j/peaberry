@@ -1,7 +1,7 @@
 -include: ../common.bnd
 
 Bundle-Activator:\
- examples.types.internal.TypeServiceActivator
+ examples.types.internal.Activator
 
 Private-Package:\
  examples.types.internal

@@ -57,7 +57,7 @@ final class ServiceSettings<T>
    * Configure service based on binding key.
    */
   public ServiceSettings(final Key<? extends T> key) {
-    this.service = newSetting(key);
+    service = newSetting(key);
 
     // extract non-generic type information
     Type type = key.getTypeLiteral().getType();
@@ -73,9 +73,13 @@ final class ServiceSettings<T>
    * Configure service based on explicit instance.
    */
   public ServiceSettings(final T instance) {
-    this.service = newSetting(instance);
-
-    clazz = instance.getClass();
+    if (null == instance) {
+      service = nullSetting();
+      clazz = Object.class;
+    } else {
+      service = newSetting(instance);
+      clazz = instance.getClass();
+    }
   }
 
   // setters...

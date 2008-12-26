@@ -24,7 +24,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.util.ldap.LdapAttributeFilter;
 
 /**
- * Methods for dealing with service attribute filters.
+ * Methods for dealing with {@link AttributeFilter}s.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -34,7 +34,7 @@ public final class Filters {
   private Filters() {}
 
   /**
-   * Create a custom attribute filter based on the given LDAP filter string.
+   * Create an {@link AttributeFilter} based on the given LDAP filter string.
    * 
    * @param filter RFC-1960 LDAP filter
    * @return service attribute filter
@@ -46,7 +46,7 @@ public final class Filters {
   }
 
   /**
-   * Create an <i>objectClass</i> attribute filter from the given service API.
+   * Create an <i>objectClass</i> {@link AttributeFilter} from the given API.
    * 
    * @param interfaces service API
    * @return service attribute filter
@@ -73,7 +73,7 @@ public final class Filters {
   }
 
   /**
-   * Create a custom attribute filter based on the given service attributes.
+   * Create an {@link AttributeFilter} based on the given service attributes.
    * 
    * @param attributes service attributes
    * @return service attribute filter

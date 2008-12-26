@@ -38,7 +38,7 @@ final class FilteredServiceScope<S>
   }
 
   public <T extends S> Export<T> add(final Import<T> service) {
-    if (null == filter || OSGiServiceImport.class.cast(service).matches(filter)) {
+    if (null == filter || ((OSGiServiceImport) (Import<?>) service).matches(filter)) {
       return scope.add(service);
     }
     return null;

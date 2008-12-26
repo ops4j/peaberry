@@ -19,7 +19,7 @@ package examples.ids.internal;
 import examples.ids.Id;
 
 /**
- * Trivial {@code Id} implementation.
+ * Trivial {@link Id} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -37,8 +37,6 @@ final class IdImpl
     return id;
   }
 
-  // /CLOVER:OFF
-
   @Override
   public int hashCode() {
     return id.hashCode();
@@ -51,6 +49,4 @@ final class IdImpl
     }
     return false;
   }
-
-  // /CLOVER:ON
 }

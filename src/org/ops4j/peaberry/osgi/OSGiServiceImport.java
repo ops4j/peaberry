@@ -19,7 +19,6 @@ package org.ops4j.peaberry.osgi;
 import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 import static org.osgi.framework.ServiceEvent.MODIFIED;
-import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
@@ -93,7 +92,6 @@ final class OSGiServiceImport
         if (!calledGet) {
           try {
             instance = bundleContext.getService(ref);
-            notifyWatchers(REGISTERED);
           } catch (final RuntimeException re) {
             throw new ServiceUnavailableException(re);
           } finally {
@@ -106,7 +104,8 @@ final class OSGiServiceImport
   }
 
   public Map<String, ?> attributes() {
-    return calledGet && null != instance ? attributes : null;
+    // only null attributes when service is unregistered...
+    return calledGet && null == instance ? null : attributes;
   }
 
   public void unget() {
@@ -115,14 +114,12 @@ final class OSGiServiceImport
 
   public void addWatcher(final Export<Object> export) {
     watchers.add(export);
-    if (null != instance) {
-      export.put(instance);
-    }
   }
 
   public void flush(final boolean serviceUnregistered) {
     if (serviceUnregistered) {
       notifyWatchers(UNREGISTERING);
+      watchers.clear();
 
       instance = null;
       calledGet = true; // force memory flush
@@ -188,24 +185,19 @@ final class OSGiServiceImport
   }
 
   private void notifyWatchers(final int eventType) {
-    if (null != instance) {
-      for (final Export<Object> export : watchers) {
-        try {
-          switch (eventType) {
-          case REGISTERED:
-            export.put(instance);
-            break;
-          case MODIFIED:
-            export.attributes(attributes);
-            break;
-          case UNREGISTERING:
-            export.unput();
-            break;
-          default:
-            break;
-          }
-        } catch (final RuntimeException re) {/* ignore */} // NOPMD
-      }
+    for (final Export<Object> export : watchers) {
+      try {
+        switch (eventType) {
+        case MODIFIED:
+          export.attributes(attributes);
+          break;
+        case UNREGISTERING:
+          export.unput();
+          break;
+        default:
+          break;
+        }
+      } catch (final RuntimeException re) {/* ignore */} // NOPMD
     }
   }
 }

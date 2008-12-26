@@ -18,10 +18,10 @@ package org.ops4j.peaberry;
 
 import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 import org.ops4j.peaberry.internal.ServiceBuilderImpl;
+import org.ops4j.peaberry.osgi.OSGiModule;
 import org.ops4j.peaberry.osgi.OSGiServiceRegistry;
 import org.osgi.framework.BundleContext;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
@@ -135,25 +135,12 @@ public final class Peaberry {
   }
 
   /**
-   * Create a new Guice module with bindings to the given bundle context and
-   * OSGi {@link ServiceRegistry}.
+   * Create a new Guice binding {@link Module} for the given bundle context.
    * 
    * @param bundleContext current bundle context
    * @return OSGi specific Guice bindings
    */
   public static Module osgiModule(final BundleContext bundleContext) {
-    return new AbstractModule() {
-
-      @Override
-      protected void configure() {
-        bind(ServiceRegistry.class).to(OSGiServiceRegistry.class);
-        bind(BundleContext.class).toInstance(bundleContext);
-      }
-
-      @Override
-      public String toString() {
-        return String.format("OSGiModule(%s)", bundleContext.getBundle());
-      }
-    };
+    return new OSGiModule(bundleContext);
   }
 }

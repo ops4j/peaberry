@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
 
-import examples.types.TypeService;
+import examples.types.TypeMapper;
 
 /**
  * Run various type signature tests to exercise service proxy creation.
@@ -38,11 +38,11 @@ public final class ServiceTypeTests
     extends InjectableTestCase {
 
   @Inject
-  TypeService typeService;
+  TypeMapper typeService;
 
   @Override
   protected void configure() {
-    bind(TypeService.class).toProvider(service(TypeService.class).single());
+    bind(TypeMapper.class).toProvider(service(TypeMapper.class).single());
   }
 
   public void testServiceTypesAndSignatures()

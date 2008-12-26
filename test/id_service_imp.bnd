@@ -1,7 +1,7 @@
 -include: ../common.bnd
 
 Bundle-Activator:\
- examples.ids.internal.IdServiceActivator
+ examples.ids.internal.Activator
 
 Private-Package:\
  examples.ids.internal

@@ -20,11 +20,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
- * Exercise service proxy creation by supplying various type signatures.
+ * Exercise dynamic service proxies by supplying various type signatures.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface TypeService {
+public interface TypeMapper {
 
   String toString();
 
@@ -66,11 +66,9 @@ public interface TypeService {
 
   <T> String toString(List<T> ts);
 
-  @SuppressWarnings("unchecked")
-  String toString(Class c, int... js);
+  String toString(Class<?> c, int... js);
 
-  @SuppressWarnings("unchecked")
-  String toString(Class c, Object... os);
+  String toString(Class<?> c, Object... os);
 
   void parse(String s);
 

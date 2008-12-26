@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2008 Stuart McCulloch
  *
- * Licensed under the Apache License, Version 2.0 (the "License"){}
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package examples.types.internal;
+package examples.ids;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
-import examples.types.TypeService;
+import java.util.Map;
 
 /**
- * Register {@code TypeService} implementation with {@code ServiceRegistry}.
+ * Manage {@link Id}s registered with the OSGi service registry.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class TypeServiceActivator
-    implements BundleActivator {
+public interface IdManager {
 
-  public void start(final BundleContext ctx) {
-    ctx.registerService(TypeService.class.getName(), new TypeServiceImpl(), null);
-  }
+  void add(Map<String, ?> attributes, String... ids);
 
-  public void stop(final BundleContext ctx) {}
+  void remove(String... ids);
+
+  void clear();
 }

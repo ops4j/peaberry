@@ -77,11 +77,9 @@ final class OSGiServiceExport<T>
   }
 
   public synchronized void attributes(final Map<String, ?> newAttributes) {
-    if (newAttributes != attributes) { // NOPMD
-      attributes = newAttributes;
-      if (null != reg) {
-        reg.setProperties(getProperties());
-      }
+    attributes = newAttributes;
+    if (null != reg) {
+      reg.setProperties(getProperties());
     }
   }
 
@@ -97,6 +95,14 @@ final class OSGiServiceExport<T>
 
   private void removeOSGiService() {
 
+    // first remove the registered service
+    if (null != reg) {
+      try {
+        reg.unregister();
+      } catch (final RuntimeException re) {/* ignore */} // NOPMD
+      reg = null;
+    }
+
     // can now release the original service
     if (null != originalService) {
       try {
@@ -104,19 +110,11 @@ final class OSGiServiceExport<T>
       } catch (final RuntimeException re) {/* ignore */} // NOPMD
       originalService = null;
     }
-
-    // next remove the registered service
-    if (null != reg) {
-      try {
-        reg.unregister();
-      } catch (final RuntimeException re) {/* ignore */} // NOPMD
-      reg = null;
-    }
   }
 
   private String[] getInterfaceNames() {
 
-    final Object objectClass = null == attributes ? null : attributes.get(OBJECTCLASS);
+    final Object objectClass = (null == attributes ? null : attributes.get(OBJECTCLASS));
 
     // check service attributes setting
     if (objectClass instanceof String[]) {

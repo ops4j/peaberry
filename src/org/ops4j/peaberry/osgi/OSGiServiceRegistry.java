@@ -80,6 +80,19 @@ public final class OSGiServiceRegistry
     return String.format("OSGiServiceRegistry(%s)", bundleContext.getBundle());
   }
 
+  @Override
+  public int hashCode() {
+    return bundleContext.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof OSGiServiceRegistry) {
+      return bundleContext.equals(((OSGiServiceRegistry) rhs).bundleContext);
+    }
+    return false;
+  }
+
   private <T> OSGiServiceListener registerListener(final Class<T> clazz) {
     final String clazzName = clazz.getName();
     OSGiServiceListener listener;

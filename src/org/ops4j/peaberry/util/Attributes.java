@@ -106,7 +106,7 @@ public final class Attributes {
   }
 
   /**
-   * Create an <i>objectClass</i> service attribute from the given service API.
+   * Create an <i>objectClass</i> service attribute from the given API.
    * 
    * @param interfaces service API
    * @return service attributes

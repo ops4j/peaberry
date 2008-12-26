@@ -16,21 +16,24 @@
 
 package examples.ids.internal;
 
+import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import examples.ids.IdService;
+import examples.ids.IdManager;
 
 /**
- * Register {@code IdService} implementation with {@code ServiceRegistry}.
+ * Register {@link IdManager} implementation with OSGi service registry.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class IdServiceActivator
+public final class Activator
     implements BundleActivator {
 
   public void start(final BundleContext ctx) {
-    ctx.registerService(IdService.class.getName(), new IdServiceImpl(ctx), null);
+    ctx.registerService(IdManager.class.getName(), new IdManagerImpl(osgiServiceRegistry(ctx)),
+        null);
   }
 
   public void stop(final BundleContext ctx) {}

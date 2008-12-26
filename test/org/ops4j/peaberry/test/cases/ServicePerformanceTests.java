@@ -32,9 +32,20 @@ import com.google.inject.name.Named;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Test
+@Test(sequential = true)
 public final class ServicePerformanceTests
     extends InjectableTestCase {
+
+  protected interface Example {
+    double action(String name, double id);
+  }
+
+  static class ExampleImpl
+      implements Example {
+    public double action(final String name, final double id) {
+      return Math.exp(id * name.hashCode() * Math.cosh(id));
+    }
+  }
 
   @Override
   protected void configure() {
@@ -57,17 +68,6 @@ public final class ServicePerformanceTests
         service(Example.class).decoratedWith(sticky(null)).single());
 
     bind(Holder.class);
-  }
-
-  protected interface Example {
-    double action(String name, double id);
-  }
-
-  static class ExampleImpl
-      implements Example {
-    public double action(final String name, final double id) {
-      return id * name.hashCode() * Math.cosh(id);
-    }
   }
 
   static class Holder {
@@ -96,13 +96,17 @@ public final class ServicePerformanceTests
 
     // warm-up...
     time(holder.raw);
+    time(holder.raw);
+    time(holder.raw);
 
-    System.out.println("Proxy overhead\n");
+    System.out.println("Service overhead\n");
     final double baseline = time(holder.raw);
 
     benchmark("SERVICE PROXY ", baseline, time(holder.service));
     benchmark("STICKY SERVICE", baseline, time(holder.sticky));
     benchmark("DIRECT SERVICE", baseline, time(holder.direct));
+
+    System.out.println();
   }
 
   private static void benchmark(final String message, final double baseline, final double time) {
@@ -110,10 +114,10 @@ public final class ServicePerformanceTests
   }
 
   private static double time(final Example example) {
-    final long now = System.currentTimeMillis();
+    final long now = System.nanoTime();
     for (double i = 0; i < 1; i += 0.000001) {
       example.action("This is a test", i);
     }
-    return System.currentTimeMillis() - now;
+    return (System.nanoTime() - now) / 1000000;
   }
 }

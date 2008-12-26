@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2008 Stuart McCulloch
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License"){}
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package examples.ids;
+package examples.types.internal;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+
+import examples.types.TypeMapper;
 
 /**
- * Service API to register and unregister identities.
+ * Register {@link TypeMapper} implementation with OSGi service registry.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface IdService {
+public final class Activator
+    implements BundleActivator {
 
-  void register(int ranking, String... ids);
+  public void start(final BundleContext ctx) {
+    ctx.registerService(TypeMapper.class.getName(), new TypeMapperImpl(), null);
+  }
 
-  void unregister(String... ids);
-
-  void reset();
+  public void stop(final BundleContext ctx) {}
 }
