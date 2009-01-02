@@ -16,11 +16,11 @@
 
 package org.ops4j.peaberry.internal;
 
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -39,7 +39,7 @@ final class DirectServiceFactory {
   public static <S, T extends S> Iterable<T> directServices(final Iterable<Import<T>> handles,
       final ImportDecorator<S> decorator) {
 
-    final Collection<T> services = new ArrayList<T>();
+    final List<T> services = new ArrayList<T>();
     final Iterator<Import<T>> i = handles.iterator();
 
     while (i.hasNext()) {
@@ -50,7 +50,7 @@ final class DirectServiceFactory {
       }
     }
 
-    return unmodifiableCollection(services);
+    return unmodifiableList(services);
   }
 
   public static <S, T extends S> T directService(final Iterable<Import<T>> handles,

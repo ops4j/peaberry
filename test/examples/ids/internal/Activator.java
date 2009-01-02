@@ -16,8 +16,10 @@
 
 package examples.ids.internal;
 
-import static org.ops4j.peaberry.Peaberry.osgiServiceRegistry;
+import static com.google.inject.Guice.createInjector;
+import static org.ops4j.peaberry.Peaberry.osgiModule;
 
+import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -31,10 +33,10 @@ import examples.ids.IdManager;
 public final class Activator
     implements BundleActivator {
 
-  public void start(final BundleContext ctx) {
-    ctx.registerService(IdManager.class.getName(), new IdManagerImpl(osgiServiceRegistry(ctx)),
-        null);
+  public void start(final BundleContext bundleContext) {
+    bundleContext.registerService(IdManager.class.getName(), new IdManagerImpl(createInjector(
+        osgiModule(bundleContext)).getInstance(ServiceRegistry.class)), null);
   }
 
-  public void stop(final BundleContext ctx) {}
+  public void stop(final BundleContext bundleContext) {}
 }

@@ -90,6 +90,7 @@ public final class ProxyPerformanceTests {
   }
 
   private static double time(final Example example) {
+    System.gc();
     final long now = System.nanoTime();
     for (double i = 0; i < 1; i += 0.000001) {
       example.action("This is a test", i);

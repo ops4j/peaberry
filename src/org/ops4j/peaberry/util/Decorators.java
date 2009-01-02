@@ -39,7 +39,7 @@ public final class Decorators {
    * <p>
    * If no reset task is provided, the service instance cache is never reset.
    * <p>
-   * NOTE: a sticky decorator only makes sense for "single" injected services.
+   * Note: sticky decorators only really make sense for <i>single</i> services.
    * 
    * @param resetTask called when cached service becomes invalid, may be null
    * @return decorator that caches service instances

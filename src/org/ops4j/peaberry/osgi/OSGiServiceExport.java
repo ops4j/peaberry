@@ -45,7 +45,7 @@ final class OSGiServiceExport<T>
 
   public OSGiServiceExport(final BundleContext bundleContext, final Import<T> service) {
     this.bundleContext = bundleContext;
-    originalService = service;
+    this.originalService = service;
 
     // grab service so it can be exported
     instance = service.get();
@@ -114,7 +114,7 @@ final class OSGiServiceExport<T>
 
   private String[] getInterfaceNames() {
 
-    final Object objectClass = (null == attributes ? null : attributes.get(OBJECTCLASS));
+    final Object objectClass = null == attributes ? null : attributes.get(OBJECTCLASS);
 
     // check service attributes setting
     if (objectClass instanceof String[]) {

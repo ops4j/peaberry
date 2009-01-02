@@ -73,8 +73,8 @@ abstract class Setting<T> {
   }
 
   @SuppressWarnings("unchecked")
-  public static <S> Setting<S> nullSetting() {
-    return (Setting<S>) NULL_SETTING;
+  public static <T> Setting<T> nullSetting() {
+    return (Setting<T>) NULL_SETTING;
   }
 
   // constant null setting, safe to share between builders

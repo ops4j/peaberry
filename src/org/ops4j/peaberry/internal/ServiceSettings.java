@@ -19,8 +19,6 @@ package org.ops4j.peaberry.internal;
 import static org.ops4j.peaberry.internal.Setting.newSetting;
 import static org.ops4j.peaberry.internal.Setting.nullSetting;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
@@ -44,7 +42,7 @@ final class ServiceSettings<T>
 
   // initial constant settings
   private final Setting<T> service;
-  private final Class<?> clazz;
+  private final Class<T> clazz;
 
   // current builder state...
   private Setting<ServiceRegistry> registry = newSetting(Key.get(ServiceRegistry.class));
@@ -56,29 +54,23 @@ final class ServiceSettings<T>
   /**
    * Configure service based on binding key.
    */
+  @SuppressWarnings("unchecked")
   public ServiceSettings(final Key<? extends T> key) {
     service = newSetting(key);
-
-    // extract non-generic type information
-    Type type = key.getTypeLiteral().getType();
-    if (type instanceof ParameterizedType) {
-      type = ((ParameterizedType) type).getRawType();
-    }
-
-    // fail-safe in case we still can't find the raw type
-    clazz = type instanceof Class ? (Class<?>) type : Object.class;
+    clazz = (Class) key.getTypeLiteral().getRawType();
   }
 
   /**
    * Configure service based on explicit instance.
    */
+  @SuppressWarnings("unchecked")
   public ServiceSettings(final T instance) {
     if (null == instance) {
       service = nullSetting();
-      clazz = Object.class;
+      clazz = (Class) Object.class;
     } else {
       service = newSetting(instance);
-      clazz = instance.getClass();
+      clazz = (Class) instance.getClass();
     }
   }
 
@@ -119,9 +111,8 @@ final class ServiceSettings<T>
 
   // query methods...
 
-  @SuppressWarnings("unchecked")
   public Class<T> getClazz() {
-    return (Class<T>) clazz;
+    return clazz;
   }
 
   public ImportDecorator<? super T> getDecorator(final Injector injector) {
@@ -152,10 +143,10 @@ final class ServiceSettings<T>
     // enable outjection, but only if it's going to a different scope
     final ServiceScope<? super T> serviceScope = watcher.get(injector);
     if (null != serviceScope && !serviceScope.equals(serviceRegistry)) {
-      serviceRegistry.watch(getClazz(), attributeFilter, serviceScope);
+      serviceRegistry.watch(clazz, attributeFilter, serviceScope);
     }
 
-    return serviceRegistry.lookup(getClazz(), attributeFilter);
+    return serviceRegistry.lookup(clazz, attributeFilter);
   }
 
   private ServiceScope<? super T> getReceivingScope(final Injector injector) {

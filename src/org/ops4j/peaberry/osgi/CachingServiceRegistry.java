@@ -18,11 +18,14 @@ package org.ops4j.peaberry.osgi;
 
 import org.ops4j.peaberry.ServiceRegistry;
 
+import com.google.inject.ImplementedBy;
+
 /**
  * {@link ServiceRegistry} that caches service instances for faster lookup.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
+@ImplementedBy(OSGiServiceRegistry.class)
 public interface CachingServiceRegistry
     extends ServiceRegistry {
 

@@ -17,7 +17,6 @@
 package org.ops4j.peaberry.osgi;
 
 import static java.util.Collections.binarySearch;
-import static java.util.Collections.sort;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.ServiceEvent.MODIFIED;
 import static org.osgi.framework.ServiceEvent.REGISTERED;
@@ -79,12 +78,7 @@ final class OSGiServiceListener
 
         // wrap service references to optimize sorting
         for (final ServiceReference r : refs) {
-          imports.add(new OSGiServiceImport(bundleContext, r)); // NOPMD
-        }
-
-        // no point sorting singleton
-        if (imports.size() > 1) {
-          sort(imports);
+          insertService(new OSGiServiceImport(bundleContext, r)); // NOPMD
         }
       }
 
@@ -113,8 +107,8 @@ final class OSGiServiceListener
 
   @SuppressWarnings("unchecked")
   public synchronized void addWatcher(final ServiceScope scope) {
-
     if (watchers.add(scope)) {
+
       // report existing imports to the new scope
       for (final OSGiServiceImport i : imports) {
         final Export export = scope.add(i);
@@ -151,7 +145,7 @@ final class OSGiServiceListener
   }
 
   private void updateService(final OSGiServiceImport i) {
-    // use linear search as ranking may have changed
+    // use linear search in case ranking has changed
     final int index = imports.indexOf(i);
 
     if (index >= 0) {
@@ -170,7 +164,7 @@ final class OSGiServiceListener
   }
 
   private void removeService(final OSGiServiceImport i) {
-    // use linear search as we need existing import
+    // use linear search in case ranking has changed
     final int index = imports.indexOf(i);
     if (index >= 0) {
       // flush cache even if being used

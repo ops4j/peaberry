@@ -34,7 +34,7 @@ final class AttributeDictionary
 
   @SuppressWarnings("unchecked")
   public AttributeDictionary(final Map<String, ?> attributes) {
-    this.attributes = (Map<String, Object>) attributes;
+    this.attributes = (Map) attributes;
   }
 
   @Override

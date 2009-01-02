@@ -16,8 +16,6 @@
         <pathelement location="${clover.jar}"/>
       </classpath>
 
-      <jvmarg value="-server"/>
-
       <sysproperty key="felix.config.properties" value="file:test/felix.properties"/>
 
       <sysproperty key="build" value="${build}"/>

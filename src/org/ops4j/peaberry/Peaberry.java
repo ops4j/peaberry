@@ -19,7 +19,6 @@ package org.ops4j.peaberry;
 import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 import org.ops4j.peaberry.internal.ServiceBuilderImpl;
 import org.ops4j.peaberry.osgi.OSGiModule;
-import org.ops4j.peaberry.osgi.OSGiServiceRegistry;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Key;
@@ -122,16 +121,6 @@ public final class Peaberry {
    */
   public static <T> DecoratedServiceBuilder<T> service(final T instance) {
     return new ServiceBuilderImpl<T>(instance);
-  }
-
-  /**
-   * Create a new OSGi {@link ServiceRegistry} for the given bundle context.
-   * 
-   * @param bundleContext current bundle context
-   * @return OSGi specific {@code ServiceRegistry}
-   */
-  public static ServiceRegistry osgiServiceRegistry(final BundleContext bundleContext) {
-    return new OSGiServiceRegistry(bundleContext);
   }
 
   /**

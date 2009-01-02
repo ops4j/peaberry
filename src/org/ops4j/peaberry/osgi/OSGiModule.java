@@ -19,8 +19,9 @@ package org.ops4j.peaberry.osgi;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 
-import com.google.inject.Binder;
+import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.Scope;
 
 /**
  * OSGi specific Guice binding {@link Module}.
@@ -28,7 +29,7 @@ import com.google.inject.Module;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class OSGiModule
-    implements Module {
+    extends AbstractModule {
 
   private final BundleContext bundleContext;
 
@@ -36,14 +37,19 @@ public final class OSGiModule
     this.bundleContext = bundleContext;
   }
 
-  public void configure(final Binder binder) {
-    binder.bind(ServiceRegistry.class).to(OSGiServiceRegistry.class);
-    binder.bind(BundleContext.class).toInstance(bundleContext);
+  @Override
+  protected void configure() {
+    bind(BundleContext.class).toInstance(bundleContext);
+    final Scope bundleScope = new BundleScope(bundleContext);
+
+    // need indirect binding so registry is registered as caching
+    bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
+    bind(CachingServiceRegistry.class).in(bundleScope);
   }
 
   @Override
   public String toString() {
-    return String.format("OSGiModule(%s)", bundleContext.getBundle());
+    return String.format("OSGiModule[%s]", bundleContext.getBundle());
   }
 
   @Override

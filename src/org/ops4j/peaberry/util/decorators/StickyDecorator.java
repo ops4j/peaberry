@@ -30,7 +30,7 @@ import org.ops4j.peaberry.builders.ImportDecorator;
  * <p>
  * If no reset task is provided, the service instance cache is never reset.
  * <p>
- * NOTE: a sticky decorator only makes sense for "single" injected services.
+ * Note: sticky decorators only really make sense for <i>single</i> services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -77,7 +77,7 @@ public final class StickyDecorator<S>
       if (reset) {
         try {
           instance = handle.get();
-          reset = (null == instance);
+          reset = null == instance;
         } finally {
           if (reset) {
             handle.unget(); // balance previous unsuccessful get

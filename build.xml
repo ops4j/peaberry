@@ -19,7 +19,7 @@
   <target name="trim.guice" unless="have.guice">
     <mkdir dir="${build}/dist"/>
     <proguard>
-      -libraryjars ${java.home}/lib/rt.jar
+      -libraryjars "${java.home}/lib/rt.jar"
       -libraryjars ${lib}/aopalliance-${aop.version}.jar
       -injars ${lib}/guice-${guice.version}.jar
       -outjars ${guice.jar}

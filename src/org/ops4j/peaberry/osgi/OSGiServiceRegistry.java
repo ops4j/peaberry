@@ -27,30 +27,24 @@ import org.ops4j.peaberry.ServiceScope;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 /**
  * OSGi specific {@link ServiceRegistry} adapter.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Singleton
 public final class OSGiServiceRegistry
     implements CachingServiceRegistry {
 
   private final BundleContext bundleContext;
 
   // per-class map of service listeners (much faster than polling)
-  private final ConcurrentMap<String, OSGiServiceListener> listenerMap;
+  private final ConcurrentMap<String, OSGiServiceListener> listenerMap =
+      new ConcurrentHashMap<String, OSGiServiceListener>();
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
-
-    listenerMap = new ConcurrentHashMap<String, OSGiServiceListener>();
-
-    // register this as a caching registry, so it can be regularly flushed...
-    bundleContext.registerService(CachingServiceRegistry.class.getName(), this, null);
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
@@ -77,7 +71,7 @@ public final class OSGiServiceRegistry
 
   @Override
   public String toString() {
-    return String.format("OSGiServiceRegistry(%s)", bundleContext.getBundle());
+    return String.format("OSGiServiceRegistry[%s]", bundleContext.getBundle());
   }
 
   @Override

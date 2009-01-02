@@ -96,7 +96,7 @@ public abstract class AbstractScope<S>
    * Notification that a service has been added to this scope.
    * 
    * @param service new service handle
-   * @return customized instance
+   * @return customized instance, null if the service shouldn't be tracked
    */
   protected abstract <T extends S> T adding(Import<T> service);
 
@@ -106,7 +106,7 @@ public abstract class AbstractScope<S>
    * @param instance customized instance
    * @param attributes service attributes
    */
-  protected abstract <T extends S> void modified(T instance, Map<String, ?> attributes);
+  protected <T extends S> void modified(final T instance, final Map<String, ?> attributes) {} // NOPMD
 
   /**
    * Notification that a service has been removed from this scope.

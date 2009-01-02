@@ -60,16 +60,14 @@ public final class Filters {
     }
 
     for (final Class<?> i : interfaces) {
-      filter.append('(' + OBJECTCLASS + '=');
-      filter.append(i.getName());
-      filter.append(')');
+      filter.append('(' + OBJECTCLASS + '=').append(i.getName()).append(')');
     }
 
     if (interfaces.length > 1) {
       filter.append(')');
     }
 
-    return ldap(filter.toString());
+    return new LdapAttributeFilter(filter.toString());
   }
 
   /**

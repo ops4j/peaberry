@@ -43,19 +43,19 @@ final class ConcurrentCacheFactory {
   private static final EnumSet<Option> IDENTITY = EnumSet.of(IDENTITY_COMPARISONS);
 
   private static final float LOAD = 0.75f;
-  private static final int CONCURRENCY = 8;
+  private static final int CONCURRENCY = 3;
 
   /**
    * @return {@link WeakHashMap} replacement with referential-equality semantics
    */
-  public static <K, V> ConcurrentMap<K, V> newStrongValueCache() {
-    return new ConcurrentReferenceHashMap<K, V>(CONCURRENCY, LOAD, CONCURRENCY, WEAK, STRONG, IDENTITY);
+  public static <K, V> ConcurrentMap<K, V> newStrongValueCache(final int capacity) {
+    return new ConcurrentReferenceHashMap<K, V>(capacity, LOAD, CONCURRENCY, WEAK, STRONG, IDENTITY);
   }
 
   /**
    * @return completely weak {@link HashMap} with referential-equality semantics
    */
-  public static <K, V> ConcurrentMap<K, V> newWeakValueCache() {
-    return new ConcurrentReferenceHashMap<K, V>(CONCURRENCY, LOAD, CONCURRENCY, WEAK, WEAK, IDENTITY);
+  public static <K, V> ConcurrentMap<K, V> newWeakValueCache(final int capacity) {
+    return new ConcurrentReferenceHashMap<K, V>(capacity, LOAD, CONCURRENCY, WEAK, WEAK, IDENTITY);
   }
 }

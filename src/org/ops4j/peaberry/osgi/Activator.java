@@ -90,7 +90,6 @@ public final class Activator
   private Thread cleanupThread;
 
   public void start(final BundleContext ctx) {
-
     final Injector injector = Guice.createInjector(osgiModule(ctx), new AbstractModule() {
       @Override
       protected void configure() {

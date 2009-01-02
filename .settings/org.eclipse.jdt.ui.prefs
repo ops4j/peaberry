@@ -1,4 +1,4 @@
-#Thu Sep 11 04:32:50 MYT 2008
+#Thu Jan 01 23:52:38 GMT 2009
 cleanup.add_default_serial_version_id=true
 cleanup.add_generated_serial_version_id=false
 cleanup.add_missing_annotations=true
@@ -49,9 +49,9 @@ cleanup.use_this_for_non_static_field_access=true
 cleanup.use_this_for_non_static_field_access_only_if_necessary=true
 cleanup.use_this_for_non_static_method_access=true
 cleanup.use_this_for_non_static_method_access_only_if_necessary=true
-cleanup_profile=_Guice
-cleanup_settings_version=2
+cleanup_profile=_peaberry
+cleanup_settings_version=1
 eclipse.preferences.version=1
-formatter_profile=_Guice
-formatter_settings_version=11
+formatter_profile=_peaberry
+formatter_settings_version=1
 org.eclipse.jdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates/>

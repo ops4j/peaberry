@@ -54,10 +54,9 @@ final class OSGiServiceImport
   private Object instance;
 
   private final Map<String, ?> attributes;
-  private final List<Export<Object>> watchers;
+  private final List<Export<?>> watchers;
 
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
-
     this.bundleContext = bundleContext;
     this.ref = ref;
 
@@ -69,7 +68,7 @@ final class OSGiServiceImport
     count = new AtomicInteger();
 
     attributes = new OSGiServiceAttributes(ref);
-    watchers = new ArrayList<Export<Object>>();
+    watchers = new ArrayList<Export<?>>();
   }
 
   public boolean updateRanking() {
@@ -112,7 +111,7 @@ final class OSGiServiceImport
     count.decrementAndGet();
   }
 
-  public void addWatcher(final Export<Object> export) {
+  public void addWatcher(final Export<?> export) {
     watchers.add(export);
   }
 
@@ -161,7 +160,7 @@ final class OSGiServiceImport
 
   @Override
   public int hashCode() {
-    return (int) (id ^ (id >>> 32));
+    return (int) (id ^ id >>> 32);
   }
 
   public int compareTo(final OSGiServiceImport rhs) {
@@ -185,7 +184,7 @@ final class OSGiServiceImport
   }
 
   private void notifyWatchers(final int eventType) {
-    for (final Export<Object> export : watchers) {
+    for (final Export<?> export : watchers) {
       try {
         switch (eventType) {
         case MODIFIED:

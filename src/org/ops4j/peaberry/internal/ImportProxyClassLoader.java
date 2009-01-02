@@ -59,8 +59,8 @@ final class ImportProxyClassLoader
     }
   }
 
-  // weak concurrent map, to allow eager collection of proxy-generated classes
-  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP = newWeakValueCache();
+  // weak map of classloaders, to allow eager collection of proxied classes
+  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP = newWeakValueCache(16);
 
   private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
     final ClassLoader parent = null == typeLoader ? getSystemClassLoader() : typeLoader;

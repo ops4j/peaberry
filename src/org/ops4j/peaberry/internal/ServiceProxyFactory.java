@@ -35,9 +35,6 @@ import org.ops4j.peaberry.builders.ImportDecorator;
  */
 final class ServiceProxyFactory {
 
-  // keep a cache of provided proxy instances, in case they are needed again
-  static final ConcurrentMap<Import<?>, Object> PROXY_CACHE = newStrongValueCache();
-
   // instances not allowed
   private ServiceProxyFactory() {}
 
@@ -47,6 +44,10 @@ final class ServiceProxyFactory {
     final Constructor<T> ctor = getProxyConstructor(clazz);
 
     return new Iterable<T>() {
+
+      // local cache of provided proxy instances, so they can be re-used
+      final ConcurrentMap<Import<?>, T> PROXY_CACHE = newStrongValueCache(8);
+
       public Iterator<T> iterator() {
         return new Iterator<T>() {
 
@@ -57,18 +58,12 @@ final class ServiceProxyFactory {
             return i.hasNext();
           }
 
-          @SuppressWarnings("unchecked")
           public T next() {
             final Import<T> handle = i.next();
-
-            // check in case we have already provided a proxy for this import
-            T proxy = (T) PROXY_CACHE.get(handle);
+            T proxy = PROXY_CACHE.get(handle);
             if (null == proxy) {
-
-              // wrap each element as a decorated dynamic proxy and cache it
               final T newProxy = buildProxy(ctor, decorator, handle);
-              proxy = (T) PROXY_CACHE.putIfAbsent(handle, newProxy);
-
+              proxy = PROXY_CACHE.putIfAbsent(handle, newProxy);
               if (null == proxy) {
                 return newProxy;
               }
@@ -84,8 +79,7 @@ final class ServiceProxyFactory {
 
       @Override
       public String toString() {
-        final StringBuilder buf = new StringBuilder();
-        buf.append('[');
+        final StringBuilder buf = new StringBuilder().append('[');
         String delim = "";
         for (final T t : this) {
           buf.append(delim).append(t);
@@ -102,7 +96,7 @@ final class ServiceProxyFactory {
     // provide concurrent access to the head of the import list
     final Import<T> lookup = new ConcurrentImport<T>(handles);
 
-    // we can now wrap our delegating import as a decorated dynamic proxy
+    // can now wrap our delegating import as a decorated dynamic proxy
     return buildProxy(getProxyConstructor(clazz), decorator, lookup);
   }
 

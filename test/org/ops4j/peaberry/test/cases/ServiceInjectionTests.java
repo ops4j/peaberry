@@ -53,18 +53,18 @@ public final class ServiceInjectionTests
     bind(Id.class).toProvider(service(Id.class).out(new AbstractScope<Id>() {
 
       @Override
-      protected <T extends Id> T adding(Import<T> service) {
+      protected <T extends Id> T adding(final Import<T> service) {
         System.out.println("ADDING:" + service.get());
         return service.get();
       }
 
       @Override
-      protected <T extends Id> void modified(T instance, Map<String, ?> attributes) {
+      protected <T extends Id> void modified(final T instance, final Map<String, ?> attributes) {
         System.out.println("MODIFIED:" + instance);
       }
 
       @Override
-      protected <T extends Id> void removed(T instance) {
+      protected <T extends Id> void removed(final T instance) {
         System.out.println("REMOVED:" + instance);
       }
     }).single());
