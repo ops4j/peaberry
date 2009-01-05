@@ -31,14 +31,14 @@ import com.google.inject.Provider;
 import com.google.inject.Scope;
 
 /**
- * Custom {@link Scope} that registers one instance per {@link BundleContext}.
+ * Custom {@link Scope} that provides singletons per {@link BundleContext}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class BundleScope
+final class BundleScope
     implements Scope {
 
-  // attribute key used to identify bundles
+  // service attribute used to identify bundles
   static final String BUNDLE_ID = "bundle.id";
 
   final BundleContext bundleContext;
@@ -49,7 +49,7 @@ public final class BundleScope
   public BundleScope(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
 
-    // filter services to ones registered by this context
+    // filter services to those registered by this context
     bundleId = bundleContext.getBundle().getBundleId();
     filter = '(' + BUNDLE_ID + '=' + bundleId + ')';
   }
@@ -58,27 +58,39 @@ public final class BundleScope
     final String clazzName = key.getTypeLiteral().getRawType().getName();
 
     return new Provider<T>() {
+
+      private volatile T instance; // cache for repeated requests
+
       @SuppressWarnings("unchecked")
       public T get() {
-        synchronized (bundleContext) {
 
-          try {
-            // see if we've already registered an instance for this binding key
-            final ServiceReference[] refs = bundleContext.getServiceReferences(clazzName, filter);
-            if (refs != null && refs.length > 0) {
-              return (T) bundleContext.getService(refs[0]);
+        if (null == instance) {
+          synchronized (bundleContext) {
+            if (null == instance) {
+              final ServiceReference[] refs;
+
+              try {
+                // see if the context has an instance for this binding class
+                refs = bundleContext.getServiceReferences(clazzName, filter);
+              } catch (final InvalidSyntaxException e) {
+                throw new ServiceException(e); // this should never happen!
+              }
+
+              if (refs != null && refs.length > 0) {
+                // retrieve the existing instance from the registry
+                instance = (T) bundleContext.getService(refs[0]);
+              } else {
+                instance = creator.get();
+
+                // register the brand-new instance with the registry
+                final Dictionary props = new Hashtable(singletonMap(BUNDLE_ID, bundleId));
+                bundleContext.registerService(clazzName, instance, props);
+              }
             }
-          } catch (final InvalidSyntaxException e) {
-            throw new ServiceException(e); // this should never happen!
           }
-
-          // nothing found, so register new instance
-          final T instance = creator.get();
-          final Dictionary props = new Hashtable(singletonMap(BUNDLE_ID, bundleId));
-          bundleContext.registerService(clazzName, instance, props);
-
-          return instance;
         }
+
+        return instance;
       }
 
       @Override

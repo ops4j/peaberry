@@ -27,6 +27,7 @@
       -keepattributes
       -dontobfuscate
       -dontoptimize
+      -dontwarn
       -dontnote
     </proguard>
   </target>
