@@ -46,7 +46,7 @@ final class ServiceProxyFactory {
     return new Iterable<T>() {
 
       // local cache of provided proxy instances, so they can be re-used
-      final ConcurrentMap<Import<?>, T> PROXY_CACHE = newStrongValueCache(8);
+      final ConcurrentMap<Import<?>, T> PROXY_CACHE = newStrongValueCache();
 
       public Iterator<T> iterator() {
         return new Iterator<T>() {

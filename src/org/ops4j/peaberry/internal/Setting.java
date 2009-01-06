@@ -39,7 +39,7 @@ abstract class Setting<T> {
   public static <T> Setting<T> newSetting(final T instance) {
     if (null == instance) {
       // null instances are not tolerated
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("null instance");
     }
 
     return new Setting<T>() {
@@ -60,7 +60,7 @@ abstract class Setting<T> {
   public static <T> Setting<T> newSetting(final Key<? extends T> key) {
     if (null == key) {
       // null binding keys are not tolerated
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException("null binding key");
     }
 
     return new Setting<T>() {

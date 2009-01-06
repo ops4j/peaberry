@@ -23,9 +23,7 @@ import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
@@ -51,7 +49,7 @@ final class OSGiServiceListener
   private final String clazzFilter;
 
   private final List<OSGiServiceImport> imports;
-  private final Set<ServiceScope<Object>> watchers;
+  private final List<ServiceScope<Object>> watchers;
 
   public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     this.bundleContext = bundleContext;
@@ -62,8 +60,8 @@ final class OSGiServiceListener
       clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
     }
 
-    imports = new ArrayList<OSGiServiceImport>();
-    watchers = new HashSet<ServiceScope<Object>>();
+    imports = new ArrayList<OSGiServiceImport>(4);
+    watchers = new ArrayList<ServiceScope<Object>>(2);
   }
 
   public synchronized void start() {
@@ -107,7 +105,7 @@ final class OSGiServiceListener
 
   @SuppressWarnings("unchecked")
   public synchronized void addWatcher(final ServiceScope scope) {
-    if (watchers.add(scope)) {
+    if (!watchers.contains(scope) && watchers.add(scope)) {
 
       // report existing imports to the new scope
       for (final OSGiServiceImport i : imports) {

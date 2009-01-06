@@ -50,6 +50,11 @@ public final class Activator
   private static final String FLUSH_INTERVAL_KEY = "org.ops4j.peaberry.osgi.flushInterval";
 
   /**
+   * Default {@code org.ops4j.peaberry.osgi.flushInterval} to every 10 minutes.
+   */
+  private static final String FLUSH_INTERVAL_DEFAULT = "600000";
+
+  /**
    * Cleans up registered {@link CachingServiceRegistry}s at a fixed interval.
    */
   protected static final class ImportManager
@@ -95,7 +100,7 @@ public final class Activator
       protected void configure() {
 
         bindConstant().annotatedWith(named(FLUSH_INTERVAL_KEY)).to(
-            osgiProperty(FLUSH_INTERVAL_KEY, "8000"));
+            osgiProperty(FLUSH_INTERVAL_KEY, FLUSH_INTERVAL_DEFAULT));
 
         // eat our own cat-food: lookup registered caching registries from OSGi
         bind(new TypeLiteral<Iterable<CachingServiceRegistry>>() {}).toProvider(
@@ -110,7 +115,7 @@ public final class Activator
 
     // negative flush interval means no timeout, so no need to create a thread
     if (injector.getInstance(Key.get(int.class, named(FLUSH_INTERVAL_KEY))) >= 0) {
-      cleanupThread = new Thread(injector.getInstance(ImportManager.class));
+      cleanupThread = new Thread(injector.getInstance(ImportManager.class), "Peaberry [cleanup]");
       cleanupThread.setDaemon(true);
       cleanupThread.start();
     }

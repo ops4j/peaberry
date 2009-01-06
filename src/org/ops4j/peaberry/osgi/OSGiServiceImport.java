@@ -68,7 +68,7 @@ final class OSGiServiceImport
     count = new AtomicInteger();
 
     attributes = new OSGiServiceAttributes(ref);
-    watchers = new ArrayList<Export<?>>();
+    watchers = new ArrayList<Export<?>>(2);
   }
 
   public boolean updateRanking() {

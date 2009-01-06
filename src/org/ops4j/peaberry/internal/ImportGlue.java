@@ -142,13 +142,14 @@ final class ImportGlue {
     init(cw, superName, proxyName);
 
     // for the moment only proxy the public API...
-    final List<Method> methods = new ArrayList<Method>();
-    addAll(methods, clazz.getMethods());
+    final Method[] publicAPI = clazz.getMethods();
+    final List<Method> methods = new ArrayList<Method>(publicAPI.length + OBJECT_METHODS.length);
+    addAll(methods, publicAPI);
 
     if (clazz.isInterface()) {
       // patch in any missing Object methods...
       for (final Method m : OBJECT_METHODS) {
-        if (missingMethod(methods, m)) {
+        if (missingMethod(publicAPI, m)) {
           methods.add(m);
         }
       }
@@ -324,7 +325,7 @@ final class ImportGlue {
     return names;
   }
 
-  private static boolean missingMethod(final List<Method> methods, final Method method) {
+  private static boolean missingMethod(final Method[] methods, final Method method) {
     final String sig = Arrays.toString(method.getParameterTypes());
     final String name = method.getName();
 

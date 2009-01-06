@@ -18,9 +18,6 @@ package org.ops4j.peaberry.osgi;
 
 import static java.util.Collections.singletonMap;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.ops4j.peaberry.ServiceException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -83,8 +80,8 @@ final class BundleScope
                 instance = creator.get();
 
                 // register the brand-new instance with the registry
-                final Dictionary props = new Hashtable(singletonMap(BUNDLE_ID, bundleId));
-                bundleContext.registerService(clazzName, instance, props);
+                bundleContext.registerService(clazzName, instance,
+                    new AttributeDictionary(singletonMap(BUNDLE_ID, bundleId)));
               }
             }
           }

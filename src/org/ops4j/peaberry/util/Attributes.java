@@ -50,7 +50,7 @@ public final class Attributes {
    */
   public static Map<String, ?> properties(final Properties properties) {
 
-    final Map<String, Object> attributes = new HashMap<String, Object>();
+    final Map<String, Object> attributes = new HashMap<String, Object>(2 * properties.size());
 
     /*
      * Sigh, Properties is a really messed-up class... in Java5 there is only
@@ -90,7 +90,7 @@ public final class Attributes {
    */
   public static Map<String, ?> names(final String... names) {
 
-    final Map<String, Object> attributes = new HashMap<String, Object>();
+    final Map<String, Object> attributes = new HashMap<String, Object>(2 * names.length);
 
     for (final String n : names) {
       try {
