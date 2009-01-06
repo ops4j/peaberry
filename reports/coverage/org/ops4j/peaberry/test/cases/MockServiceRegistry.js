@@ -1,7 +1,7 @@
 var clover = new Object();
 
 // JSON: {classes : [{name, id, sl, el,  methods : [{sl, el}, ...]}, ...]}
-clover.pageData = {"classes":[{"id":1614,"sl":41,"methods":[{"sl":46,"el":74,"sc":3},{"sl":48,"el":72,"sc":7},{"sl":58,"el":60,"sc":15},{"sl":62,"el":64,"sc":15},{"sl":66,"el":66,"sc":15},{"sl":76,"el":79,"sc":3},{"sl":81,"el":106,"sc":3},{"sl":86,"el":88,"sc":7},{"sl":90,"el":92,"sc":7},{"sl":94,"el":94,"sc":7},{"sl":96,"el":96,"sc":7},{"sl":98,"el":100,"sc":7},{"sl":102,"el":104,"sc":7}],"el":107,"name":"MockServiceRegistry"}]}
+clover.pageData = {"classes":[{"id":1313,"sl":41,"methods":[{"sl":46,"el":74,"sc":3},{"sl":48,"el":72,"sc":7},{"sl":58,"el":60,"sc":15},{"sl":62,"el":64,"sc":15},{"sl":66,"el":66,"sc":15},{"sl":76,"el":79,"sc":3},{"sl":81,"el":106,"sc":3},{"sl":86,"el":88,"sc":7},{"sl":90,"el":92,"sc":7},{"sl":94,"el":94,"sc":7},{"sl":96,"el":96,"sc":7},{"sl":98,"el":100,"sc":7},{"sl":102,"el":104,"sc":7}],"el":107,"name":"MockServiceRegistry"}]}
 
 // JSON: {test_ID : {"methods": [ID1, ID2, ID3...], "name" : "testXXX() void"}, ...};
 clover.testTargets = {}
