@@ -35,8 +35,9 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public abstract class AbstractScope<S>
     implements ServiceScope<S> {
 
+  @SuppressWarnings("unchecked")
   public <T extends S> Export<T> add(final Import<T> service) {
-    return new TrackingExport<T>(service);
+    return (Export) new TrackingExport((Import) service);
   }
 
   // simple instance + attributes holder
@@ -62,19 +63,19 @@ public abstract class AbstractScope<S>
     public void unget() {/* nothing to do */}
   }
 
-  private final class TrackingExport<T extends S>
-      extends SimpleImport<T>
-      implements Export<T> {
+  private final class TrackingExport
+      extends SimpleImport<S>
+      implements Export<S> {
 
-    public TrackingExport(final Import<T> service) {
+    public TrackingExport(final Import<S> service) {
       super(adding(service), service.attributes());
     }
 
-    public synchronized void put(final T newInstance) {
+    public synchronized void put(final S newInstance) {
       if (null != instance) {
         removed(instance);
       }
-      instance = adding(new SimpleImport<T>(newInstance, attributes));
+      instance = adding(new SimpleImport<S>(newInstance, attributes));
     }
 
     public synchronized void attributes(final Map<String, ?> newAttributes) {
@@ -96,22 +97,24 @@ public abstract class AbstractScope<S>
    * Notification that a service has been added to this scope.
    * 
    * @param service new service handle
-   * @return customized instance, null if the service shouldn't be tracked
+   * @return tracking instance, null if the service shouldn't be tracked
    */
-  protected abstract <T extends S> T adding(Import<T> service);
+  protected S adding(final Import<S> service) {
+    return service.get();
+  }
 
   /**
    * Notification that some service attributes have been modified.
    * 
-   * @param instance customized instance
+   * @param instance tracking instance
    * @param attributes service attributes
    */
-  protected <T extends S> void modified(final T instance, final Map<String, ?> attributes) {} // NOPMD
+  protected void modified(final S instance, final Map<String, ?> attributes) {} // NOPMD
 
   /**
    * Notification that a service has been removed from this scope.
    * 
-   * @param instance customized instance
+   * @param instance tracking instance
    */
-  protected abstract <T extends S> void removed(T instance);
+  protected void removed(final S instance) {} // NOPMD
 }
