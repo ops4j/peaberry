@@ -38,8 +38,13 @@ import org.osgi.framework.ServiceReference;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class OSGiServiceImport
     implements Import<Object>, Comparable<OSGiServiceImport> {
+
+  private static final int INVALID = -1;
+  private static final int DORMANT = 0;
+  private static final int ACTIVE = 1;
 
   private final BundleContext bundleContext;
   private final ServiceReference ref;
@@ -48,13 +53,17 @@ final class OSGiServiceImport
   private final long id;
   private int rank;
 
-  // optimized service cache
+  // generation-based service cache
   private final AtomicInteger count;
-  private volatile boolean calledGet;
+  private volatile int state;
   private Object instance;
+  private int generation;
 
   private final Map<String, ?> attributes;
   private final List<Export<?>> watchers;
+
+  // current cache generation (global member)
+  private static volatile int cacheGeneration;
 
   public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
     this.bundleContext = bundleContext;
@@ -71,6 +80,9 @@ final class OSGiServiceImport
     watchers = new ArrayList<Export<?>>(2);
   }
 
+  /**
+   * Protected from concurrent access by {@link OSGiServiceListener}.
+   */
   public boolean updateRanking() {
     notifyWatchers(MODIFIED);
 
@@ -86,15 +98,15 @@ final class OSGiServiceImport
 
   public Object get() {
     count.getAndIncrement();
-    if (!calledGet) {
+    if (DORMANT == state) {
       synchronized (this) {
-        if (!calledGet) {
+        if (DORMANT == state) {
           try {
             instance = bundleContext.getService(ref);
           } catch (final RuntimeException re) {
             throw new ServiceUnavailableException(re);
           } finally {
-            calledGet = true;
+            state = ACTIVE;
           }
         }
       }
@@ -103,47 +115,56 @@ final class OSGiServiceImport
   }
 
   public Map<String, ?> attributes() {
-    // only null attributes when service is unregistered...
-    return calledGet && null == instance ? null : attributes;
+    return INVALID == state ? null : attributes;
   }
 
   public void unget() {
+    generation = cacheGeneration;
     count.decrementAndGet();
   }
 
+  /**
+   * Protected from concurrent access by {@link OSGiServiceListener}.
+   */
   public void addWatcher(final Export<?> export) {
     watchers.add(export);
   }
 
-  public void flush(final boolean serviceUnregistered) {
-    if (serviceUnregistered) {
-      notifyWatchers(UNREGISTERING);
-      watchers.clear();
+  /**
+   * Protected from concurrent access by {@link OSGiServiceListener}.
+   */
+  public void invalidate() {
+    notifyWatchers(UNREGISTERING);
+    watchers.clear();
 
-      instance = null;
-      calledGet = true; // force memory flush
+    instance = null;
+    state = INVALID; // force memory flush
+  }
 
-      return; // no need to unget, as service is gone
-    }
+  public static void setCacheGeneration(final int newGeneration) {
+    cacheGeneration = newGeneration;
+  }
 
-    // check no-one is using the service
-    if (calledGet && 0 == count.get()) {
+  /**
+   * Protected from concurrent access by {@link OSGiServiceListener}.
+   */
+  public void flush(final int targetGeneration) {
+
+    // check no-one is using the service and it belongs to the target generation
+    if (targetGeneration == generation && ACTIVE == state && 0 == count.get()) {
       synchronized (this) {
-        if (calledGet) { // check again, just in case
 
-          // attempt to block other threads calling get()
-          calledGet = false;
+        // block other threads entering get()
+        state = DORMANT;
 
-          if (count.get() > 0) {
-            // another thread snuck in, so roll back...
-            calledGet = true;
-          } else {
-            instance = null;
-            try {
-              // cached result not being used
-              bundleContext.ungetService(ref);
-            } catch (final RuntimeException re) {/* already gone */} // NOPMD
-          }
+        if (count.get() > 0) {
+          state = ACTIVE; // another thread snuck in, so roll back...
+        } else {
+          instance = null;
+          try {
+            // cached result not being used
+            bundleContext.ungetService(ref);
+          } catch (final RuntimeException re) {/* already gone */} // NOPMD
         }
       }
     }

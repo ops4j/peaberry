@@ -31,6 +31,8 @@ public interface CachingServiceRegistry
 
   /**
    * Release any unused service instances from the cache.
+   * 
+   * @param targetGeneration the generation to flush
    */
-  void flush();
+  void flush(int targetGeneration);
 }

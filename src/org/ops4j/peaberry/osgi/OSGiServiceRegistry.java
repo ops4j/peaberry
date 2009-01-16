@@ -62,10 +62,10 @@ public final class OSGiServiceRegistry
     registerListener(clazz).addWatcher(new FilteredServiceScope(filter, scope));
   }
 
-  public void flush() {
+  public void flush(final int targetGeneration) {
     // look for unused cached service instances to flush...
     for (final OSGiServiceListener i : listenerMap.values()) {
-      i.flush();
+      i.flush(targetGeneration);
     }
   }
 

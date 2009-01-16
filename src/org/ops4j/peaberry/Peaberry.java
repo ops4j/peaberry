@@ -124,6 +124,16 @@ public final class Peaberry {
   }
 
   /**
+   * OSGi property, the time (in millis) between flushes of the service cache.
+   */
+  public static final String CACHE_INTERVAL_KEY = "org.ops4j.peaberry.osgi.cache.interval";
+
+  /**
+   * OSGi property, the number of flushes before an unused service is released.
+   */
+  public static final String CACHE_GENERATIONS_KEY = "org.ops4j.peaberry.osgi.cache.generations";
+
+  /**
    * Create a new Guice binding {@link Module} for the given bundle context.
    * 
    * @param bundleContext current bundle context

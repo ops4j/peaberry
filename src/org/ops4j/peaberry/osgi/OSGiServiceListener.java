@@ -117,10 +117,10 @@ final class OSGiServiceListener
     }
   }
 
-  public synchronized void flush() {
+  public synchronized void flush(final int targetGeneration) {
     // flush any unused cached service instances
     for (final OSGiServiceImport i : imports) {
-      i.flush(false);
+      i.flush(targetGeneration);
     }
   }
 
@@ -166,7 +166,7 @@ final class OSGiServiceListener
     final int index = imports.indexOf(i);
     if (index >= 0) {
       // flush cache even if being used
-      imports.remove(index).flush(true);
+      imports.remove(index).invalidate();
     }
   }
 

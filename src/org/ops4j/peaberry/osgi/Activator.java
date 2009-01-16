@@ -17,6 +17,8 @@
 package org.ops4j.peaberry.osgi;
 
 import static com.google.inject.name.Names.named;
+import static org.ops4j.peaberry.Peaberry.CACHE_GENERATIONS_KEY;
+import static org.ops4j.peaberry.Peaberry.CACHE_INTERVAL_KEY;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.osgi.framework.Bundle.ACTIVE;
@@ -45,14 +47,14 @@ public final class Activator
     implements BundleActivator {
 
   /**
-   * OSGi property controlling how quickly cached service instances are flushed.
+   * Default {@code org.ops4j.peaberry.osgi.cache.interval} to a minute.
    */
-  private static final String FLUSH_INTERVAL_KEY = "org.ops4j.peaberry.osgi.flushInterval";
+  private static final String CACHE_INTERVAL_DEFAULT = "60000";
 
   /**
-   * Default {@code org.ops4j.peaberry.osgi.flushInterval} to every 10 minutes.
+   * Default {@code org.ops4j.peaberry.osgi.cache.generations} to three.
    */
-  private static final String FLUSH_INTERVAL_DEFAULT = "600000";
+  private static final String CACHE_GENERATIONS_DEFAULT = "3";
 
   /**
    * Cleans up registered {@link CachingServiceRegistry}s at a fixed interval.
@@ -60,32 +62,44 @@ public final class Activator
   protected static final class ImportManager
       implements Runnable {
 
+    private final Bundle bundle;
+    private final int interval;
+    private final int generations;
+
     // dynamic list of currently active caching registries
     private final Iterable<CachingServiceRegistry> registries;
 
-    private final int flushInterval;
-    private final Bundle bundle;
-
     @Inject
-    public ImportManager(final Iterable<CachingServiceRegistry> registries,
-        @Named(FLUSH_INTERVAL_KEY) final int flushInterval, final BundleContext ctx) {
+    public ImportManager(final BundleContext context,
+        @Named(CACHE_INTERVAL_KEY) final int interval,
+        @Named(CACHE_GENERATIONS_KEY) final int generations,
+        final Iterable<CachingServiceRegistry> registries) {
 
+      bundle = context.getBundle();
+
+      this.interval = interval;
+      this.generations = generations;
       this.registries = registries;
-      this.flushInterval = flushInterval;
-
-      bundle = ctx.getBundle();
     }
 
     public void run() {
+      int gen = 0;
+
       do {
+        // generation was flushed, safe to re-use
+        OSGiServiceImport.setCacheGeneration(gen);
+
         try {
-          Thread.sleep(flushInterval);
+          Thread.sleep(interval);
         } catch (final InterruptedException e) {/* wake-up */} // NOPMD
 
-        // flush out any unused cached service instances...
+        // rotate to the next generation
+        gen = (gen + 1) % generations;
+
+        // flush out any unused services in this generation
         for (final CachingServiceRegistry i : registries) {
           try {
-            i.flush();
+            i.flush(gen);
           } catch (final ServiceUnavailableException e) {/* already gone */} // NOPMD
         }
       } while ((bundle.getState() & (STARTING | ACTIVE)) != 0);
@@ -94,13 +108,16 @@ public final class Activator
 
   private Thread cleanupThread;
 
-  public void start(final BundleContext ctx) {
-    final Injector injector = Guice.createInjector(osgiModule(ctx), new AbstractModule() {
+  public void start(final BundleContext context) {
+    final Injector injector = Guice.createInjector(osgiModule(context), new AbstractModule() {
       @Override
       protected void configure() {
 
-        bindConstant().annotatedWith(named(FLUSH_INTERVAL_KEY)).to(
-            osgiProperty(FLUSH_INTERVAL_KEY, FLUSH_INTERVAL_DEFAULT));
+        bindConstant().annotatedWith(named(CACHE_INTERVAL_KEY)).to(
+            osgiProperty(CACHE_INTERVAL_KEY, CACHE_INTERVAL_DEFAULT));
+
+        bindConstant().annotatedWith(named(CACHE_GENERATIONS_KEY)).to(
+            osgiProperty(CACHE_GENERATIONS_KEY, CACHE_GENERATIONS_DEFAULT));
 
         // eat our own cat-food: lookup registered caching registries from OSGi
         bind(new TypeLiteral<Iterable<CachingServiceRegistry>>() {}).toProvider(
@@ -108,13 +125,13 @@ public final class Activator
       }
 
       private String osgiProperty(final String name, final String defaultValue) {
-        final String value = ctx.getProperty(name);
+        final String value = context.getProperty(name);
         return null == value ? defaultValue : value;
       }
     });
 
     // negative flush interval means no timeout, so no need to create a thread
-    if (injector.getInstance(Key.get(int.class, named(FLUSH_INTERVAL_KEY))) >= 0) {
+    if (injector.getInstance(Key.get(int.class, named(CACHE_INTERVAL_KEY))) >= 0) {
       cleanupThread = new Thread(injector.getInstance(ImportManager.class), "Peaberry [cleanup]");
       cleanupThread.setDaemon(true);
       cleanupThread.start();

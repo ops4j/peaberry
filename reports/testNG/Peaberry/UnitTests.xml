@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="UnitTests" failures="0" tests="18" time="14.485" errors="0">
+<testsuite name="UnitTests" failures="0" tests="18" time="13.695" errors="0">
   <properties/>
-  <testcase name="testServiceLookupPerformance" time="6.518" classname="org.ops4j.peaberry.test.cases.ServicePerformanceTests"/>
-  <testcase name="testProxyPerformance" time="6.189" classname="org.ops4j.peaberry.internal.ProxyPerformanceTests"/>
-  <testcase name="testGetProxyConstructor" time="0.029" classname="org.ops4j.peaberry.internal.ImportProxyClassLoaderTests"/>
+  <testcase name="testServiceLookupPerformance" time="6.257" classname="org.ops4j.peaberry.test.cases.ServicePerformanceTests"/>
+  <testcase name="testProxyPerformance" time="5.999" classname="org.ops4j.peaberry.internal.ProxyPerformanceTests"/>
+  <testcase name="testGetProxyConstructor" time="0.024" classname="org.ops4j.peaberry.internal.ImportProxyClassLoaderTests"/>
   <testcase name="testAttributeDictionaryAdapter" time="0.018" classname="org.ops4j.peaberry.osgi.AttributeDictionaryTests"/>
-  <testcase name="testDecoratedServiceInjection" time="0.033" classname="org.ops4j.peaberry.test.cases.DecoratedServiceTests"/>
-  <testcase name="testDirectServiceInjection" time="0.031" classname="org.ops4j.peaberry.test.cases.DirectServiceTests"/>
-  <testcase name="testNameAttributes" time="0.023" classname="org.ops4j.peaberry.test.cases.ServiceAttributeTests"/>
-  <testcase name="testPropertyAttributes" time="0.015" classname="org.ops4j.peaberry.test.cases.ServiceAttributeTests"/>
-  <testcase name="testSingleServiceContention" time="0.68" classname="org.ops4j.peaberry.test.cases.ServiceContentionTests"/>
-  <testcase name="testServiceRankingIntegrity" time="0.736" classname="org.ops4j.peaberry.test.cases.ServiceContentionTests"/>
-  <testcase name="testServiceExports" time="0.039" classname="org.ops4j.peaberry.test.cases.ServiceExportTests"/>
-  <testcase name="testMultipleObjectClassFilter" time="0.017" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
-  <testcase name="testSingleObjectClassFilter" time="0.01" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
-  <testcase name="testBrokenLdapFilterStrings" time="0.012" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
-  <testcase name="testFilterHashCodeAndEquals" time="0.0090" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
-  <testcase name="testServiceInjection" time="0.03" classname="org.ops4j.peaberry.test.cases.ServiceInjectionTests"/>
-  <testcase name="testCustomServiceRegistry" time="0.053" classname="org.ops4j.peaberry.test.cases.ServiceRegistryTests"/>
-  <testcase name="testServiceTypesAndSignatures" time="0.014" classname="org.ops4j.peaberry.test.cases.ServiceTypeTests"/>
+  <testcase name="testDecoratedServiceInjection" time="0.022" classname="org.ops4j.peaberry.test.cases.DecoratedServiceTests"/>
+  <testcase name="testDirectServiceInjection" time="0.018" classname="org.ops4j.peaberry.test.cases.DirectServiceTests"/>
+  <testcase name="testNameAttributes" time="0.013" classname="org.ops4j.peaberry.test.cases.ServiceAttributeTests"/>
+  <testcase name="testPropertyAttributes" time="0.011" classname="org.ops4j.peaberry.test.cases.ServiceAttributeTests"/>
+  <testcase name="testSingleServiceContention" time="0.546" classname="org.ops4j.peaberry.test.cases.ServiceContentionTests"/>
+  <testcase name="testServiceRankingIntegrity" time="0.604" classname="org.ops4j.peaberry.test.cases.ServiceContentionTests"/>
+  <testcase name="testServiceExports" time="0.029" classname="org.ops4j.peaberry.test.cases.ServiceExportTests"/>
+  <testcase name="testMultipleObjectClassFilter" time="0.015" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testSingleObjectClassFilter" time="0.014" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testBrokenLdapFilterStrings" time="0.013" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testFilterHashCodeAndEquals" time="0.01" classname="org.ops4j.peaberry.test.cases.ServiceFilterTests"/>
+  <testcase name="testServiceInjection" time="0.013" classname="org.ops4j.peaberry.test.cases.ServiceInjectionTests"/>
+  <testcase name="testCustomServiceRegistry" time="0.044" classname="org.ops4j.peaberry.test.cases.ServiceRegistryTests"/>
+  <testcase name="testServiceTypesAndSignatures" time="0.013" classname="org.ops4j.peaberry.test.cases.ServiceTypeTests"/>
 </testsuite>
