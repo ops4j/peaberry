@@ -27,7 +27,7 @@ import org.ops4j.peaberry.builders.ImportDecorator;
 public final class DecoratorChain<S>
     implements ImportDecorator<S> {
 
-  final ImportDecorator<S>[] decorators;
+  private final ImportDecorator<S>[] decorators;
 
   public DecoratorChain(final ImportDecorator<S>... decorators) {
     this.decorators = decorators.clone();

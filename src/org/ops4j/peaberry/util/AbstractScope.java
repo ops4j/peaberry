@@ -44,8 +44,8 @@ public abstract class AbstractScope<S>
   private static class SimpleImport<T>
       implements Import<T> {
 
-    T instance;
-    Map<String, ?> attributes;
+    protected T instance;
+    protected Map<String, ?> attributes;
 
     public SimpleImport(final T instance, final Map<String, ?> attributes) {
       this.instance = instance;

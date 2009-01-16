@@ -29,8 +29,8 @@ import org.ops4j.peaberry.ServiceScope;
 final class FilteredServiceScope<S>
     implements ServiceScope<S> {
 
-  final AttributeFilter filter;
-  final ServiceScope<S> scope;
+  private final AttributeFilter filter;
+  private final ServiceScope<S> scope;
 
   public FilteredServiceScope(final AttributeFilter filter, final ServiceScope<S> scope) {
     this.filter = filter;
