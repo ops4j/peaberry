@@ -73,8 +73,17 @@ import com.google.inject.TypeLiteral;
  * 
  * <pre> service(myQuoteImpl).export().direct()</pre>
  * 
- * See the <a href="http://code.google.com/p/peaberry/wiki/UserGuide"
- * target="_blank">User Guide</a> for more examples.
+ * Outjection is a way of actively monitoring for services instead of polling:
+ * 
+ * <pre> service(StockQuote.class).out(myScopeImpl).multiple()</pre>
+ * 
+ * the given scope will be notified when matching services appear and disappear.
+ * <br>
+ * ({@link org.ops4j.peaberry.util} offers abstract scope and decorator classes)
+ * <p>
+ * See the online <a href="http://code.google.com/p/peaberry/wiki/UserGuide"
+ * target="_blank">User Guide</a> for the latest examples and suggested best
+ * practice.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
