@@ -134,6 +134,7 @@ public final class Activator
     // negative flush interval means no timeout, so no need to create a thread
     if (injector.getInstance(Key.get(int.class, named(CACHE_INTERVAL_PROPERTY))) >= 0) {
       cleanupThread = new Thread(injector.getInstance(ImportManager.class), "Peaberry [cleanup]");
+      cleanupThread.setPriority(Thread.MIN_PRIORITY);
       cleanupThread.setDaemon(true);
       cleanupThread.start();
     }
