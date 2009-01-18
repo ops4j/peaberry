@@ -15,7 +15,7 @@
  */
 
 /**
- * OSGi implementation of the {@link ServiceRegistry} API.
+ * OSGi implementation of the {@link org.ops4j.peaberry.ServiceRegistry} API.
  */
 package org.ops4j.peaberry.osgi;
 

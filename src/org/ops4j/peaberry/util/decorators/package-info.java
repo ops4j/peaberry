@@ -15,7 +15,7 @@
  */
 
 /**
- * General purpose {@link ImportDecorator}s.
+ * General purpose {@link org.ops4j.peaberry.builders.ImportDecorator}s.
  */
 package org.ops4j.peaberry.util.decorators;
 
