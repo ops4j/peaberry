@@ -1,0 +1,755 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+        <link rel="SHORTCUT ICON" href="img/clover.ico" />
+
+    <style type="text/css" media="screen">
+        @import url('style.css');
+        @import url('roundedcorners.css');
+            </style>
+    
+    <script src="sorttable.js" type="text/javascript"></script>
+    <script src="overlibmws.js" type="text/javascript"><!-- overLIB (c) Erik Bosrup --></script>
+    <script src="overlibmws_shadow.js" type="text/javascript" ></script>
+    <script src="clover.js" type="text/javascript"></script>
+    <script src="cloud.js" type="text/javascript"></script>
+    <script src="help.js" type="text/javascript"></script>
+  <title>peaberry</title>
+</head>
+<body onload="setBrowserTitle('peaberry: Dashboard')">
+<table cellspacing="0" cellpadding="2" class="barGraph">
+
+  <tr>
+    <td colspan="2">
+
+    <div class="roundedLarge">
+      <b class="ctop"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+      <div class="roundedContent">
+    <table width="100%" class="" cellspacing="0"><tr class="reportHeader">
+    <td valign="top" class="titleText">Clover Coverage  Report -  peaberry <div class="timestamp"><b>Coverage timestamp:</b>&nbsp;Mon Jan 19 2009 21:27:22 SGT</div>
+
+        
+    
+            <div class="navBar"><span class="navBarCurrent">Overview</span>&nbsp;&nbsp;&nbsp;Package&nbsp;&nbsp;&nbsp;File</div>
+    
+    <div class="navBarLink">
+        &nbsp;&nbsp;&nbsp;
+        <a href="index.html" target="_top">FRAMES</a>&nbsp;&nbsp;
+        <a href="dashboard.html" target="_top">NO FRAMES</a>&nbsp;&nbsp;
+        <label onclick="toggleHelp(this);" class="nonHelpItem">SHOW HELP</label>&nbsp;&nbsp;
+    </div>
+
+    </td>
+
+    
+        
+
+     <td  id="td-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: ;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Mon Jan 19 2009 21:27:01 SGT:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
+           <td >      702
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
+           <td >      4,399
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
+           <td >      379
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      3.09
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'project';">Branches:</label></td>
+           <td >      232
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'project';">NCLOC:</label></td>
+           <td >      2,102
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'project';">Cmp density:</label></td>
+           <td >      0.54
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      3.91
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'project';">Methods:</label></td>
+           <td >      227
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td  class="totalText"><label onkeyup="return help_files + 'project';">Files:</label></td>
+           <td >      51
+  </td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'project';">Avg method cmp:</label></td>
+           <td >      1.67
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                     <td  class="totalText"><label onkeyup="return help_classes_per_package;">Classes/Pkg:</label></td>
+           <td >      8.29
+  </td>
+          
+         </tr>
+           <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'project';">Classes:</label></td>
+            <td >      58
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td  class="totalText"><label onkeyup="return help_packages + 'project';">Packages:</label></td>
+            <td >      7
+  </td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+                <tr>
+             <td colspan="11" class="subtle">
+                     <span class='bold'>4.3%</span> of code in this project is excluded from these metrics.
+                     <label class="sortable" onclick="toggleStats('td-header-stats', 'td-filtered-header-stats');"
+                            onkeyup="return help_filter_stats;">Remove Filter </label>
+
+             </td>
+         </tr>
+             </table>
+     </td>
+
+    
+    
+    
+
+     <td  id="td-filtered-header-stats" class="headerStats" valign="top" style="font-weight: normal;width:40%; text-align: right; display: none;">
+         <table style="text-align: right; white-space:nowrap;">
+         <tr>
+           <td colspan="11" class="totalText" style="text-align: left"><label>Statistics for project Clover database Mon Jan 19 2009 21:27:01 SGT:</label></td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_stmts + 'project';">Stmts:</label></td>
+           <td >      717
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_loc + 'project';">LOC:</label></td>
+           <td >      4,399
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp + 'project';">Total cmp:</label></td>
+           <td >      397
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_stmts_per_method;">Stmts/Method:</label></td>
+           <td >      2.96
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_branches + 'project';">Branches:</label></td>
+           <td >      236
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_ncloc + 'project';">NCLOC:</label></td>
+           <td >      2,102
+  </td>
+           <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_cmp_density + 'project';">Cmp density:</label></td>
+           <td >      0.55
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_methods_per_class;">Methods/Class:</label></td>
+           <td >      4.17
+  </td>
+         </tr>
+         <tr>
+           <td  class="totalText"><label onkeyup="return help_methods + 'project';">Methods:</label></td>
+           <td >      242
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                    <td  class="totalText"><label onkeyup="return help_files + 'project';">Files:</label></td>
+           <td >      51
+  </td>
+                    <td style="width: 10%">&nbsp;</td>
+           <td  class="totalText"><label onkeyup="return help_avg_method_cmp + 'project';">Avg method cmp:</label></td>
+           <td >      1.64
+  </td>
+           <td style="width: 5%">&nbsp;</td>
+                     <td  class="totalText"><label onkeyup="return help_classes_per_package;">Classes/Pkg:</label></td>
+           <td >      8.29
+  </td>
+          
+         </tr>
+           <tr>
+            <td  class="totalText"><label onkeyup="return help_classes + 'project';">Classes:</label></td>
+            <td >      58
+  </td>
+            <td style="width: 5%">&nbsp;</td>
+                      <td  class="totalText"><label onkeyup="return help_packages + 'project';">Packages:</label></td>
+            <td >      7
+  </td>
+                     <td style="width: 10%">&nbsp;</td>
+         </tr>
+                <tr>
+             <td colspan="11" class="subtle">
+                     These metrics include filtered code. (<span class='bold'>4.3%</span>)
+                     <label class="sortable" onclick="toggleStats('td-filtered-header-stats', 'td-header-stats');"
+                            onkeyup="return help_filter_stats;">Apply Filter </label>
+
+             </td>
+         </tr>
+             </table>
+     </td>
+</tr>
+
+    </table>
+  </div>
+  <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+  </div>
+
+   </td>
+  </tr>
+
+
+
+
+<tr><td class="hbreak" colspan="2" ></td></tr>
+
+        
+<tr valign="top">
+
+    <td class="hbreak" colspan="1">
+    <div class="left-third">
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                
+            <label class="titleText link" onkeyup="return help_dash_coverage;" onclick="self.location='pkg-summary.html'">Coverage</label><span> 58 classes, 892 / 1,161 elements</span>
+            <table><tr><td>76.8%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.7683032</span>
+<div>
+    <div style="width: 200px; font-size:0px;"></div>
+    <div title="23.2% Not Covered"  style="min-width: 200px;"  class="barNegative ">
+       <div title="76.8% Covered" class="barPositive " style="width: 76.8%"></div>
+    </div>
+</div></td></tr></table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+    
+                        <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <div><label class="titleText link" onkeyup="return help_dash_coverage;" onclick="self.location='pkg-summary.html'">Class Coverage Distribution</label></div>
+            <div class="center"><img src="img/classDistrubutionChart.png" alt="img/classDistrubutionChart.png" usemap="#classDistrubutionChart.png"/>
+            <map id="classDistrubutionChart.png" name="classDistrubutionChart.png">
+<area shape="rect" coords="245,12,263,148" title="14 classes have 91-100% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="225,71,243,149" title="8 classes have 81-90% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="204,91,222,149" title="6 classes have 71-80% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="183,120,201,149" title="3 classes have 61-70% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="162,130,180,149" title="2 classes have 51-60% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="141,130,159,149" title="2 classes have 41-50% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="121,139,139,148" title="1 class has 31-40% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="100,139,118,148" title="1 class has 21-30% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="79,139,97,148" title="1 class has 11-20% coverage" alt="" nohref="nohref"/>
+<area shape="rect" coords="38,100,56,148" title="5 classes have 0% coverage" alt="" nohref="nohref"/>
+</map></div>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+            
+                        <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <div><label class="titleText link" onkeyup="return help_dash_risks;" onclick="self.location='proj-risks.html'">Class Complexity</label></div>
+            <div class="center"><img src="img/classComplexityChart.png" alt="img/classComplexityChart.png" usemap="#classComplexityChart.png"/>
+            <map id="classComplexityChart.png" name="classComplexityChart.png">
+<area shape="poly" coords="260,140,257,142,255,140,257,137,260,140,260,140" title="Cmp: 3; Cov: 100%; MultipleServiceProvider" alt="" href="org/ops4j/peaberry/internal/MultipleServiceProvider.html#MultipleServiceProvider"/>
+<area shape="poly" coords="177,132,174,134,172,132,174,129,177,132,177,132" title="Cmp: 5; Cov: 60%; OSGiModule" alt="" href="org/ops4j/peaberry/osgi/OSGiModule.html#OSGiModule"/>
+<area shape="poly" coords="224,116,222,118,219,116,222,113,224,116,224,116" title="Cmp: 9; Cov: 83%; Setting" alt="" href="org/ops4j/peaberry/internal/Setting.html#Setting"/>
+<area shape="poly" coords="251,107,249,110,246,107,249,105,251,107,251,107" title="Cmp: 11; Cov: 96%; Attributes" alt="" href="org/ops4j/peaberry/util/Attributes.html#Attributes"/>
+<area shape="poly" coords="106,120,103,122,101,120,103,117,106,120,106,120" title="Cmp: 8; Cov: 26%; FilteredServiceScope" alt="" href="org/ops4j/peaberry/osgi/FilteredServiceScope.html#FilteredServiceScope"/>
+<area shape="poly" coords="222,128,220,130,217,128,220,125,222,128,222,128" title="Cmp: 6; Cov: 82%; Activator.ImportManager" alt="" href="org/ops4j/peaberry/osgi/Activator.html#Activator.ImportManager"/>
+<area shape="poly" coords="52,140,49,142,47,140,49,137,52,140,52,140" title="Cmp: 3; Cov: 0%; DecoratorChain" alt="" href="org/ops4j/peaberry/util/decorators/DecoratorChain.html#DecoratorChain"/>
+<area shape="poly" coords="156,107,153,110,151,107,153,105,156,107,156,107" title="Cmp: 11; Cov: 50%; StickyDecorator.StickyImport" alt="" href="org/ops4j/peaberry/util/decorators/StickyDecorator.html#StickyDecorator.StickyImport"/>
+<area shape="poly" coords="52,120,49,122,47,120,49,117,52,120,52,120" title="Cmp: 8; Cov: 0%; ImmutableAttribute" alt="" href="org/ops4j/peaberry/osgi/ImmutableAttribute.html#ImmutableAttribute"/>
+<area shape="poly" coords="212,31,209,33,207,31,209,28,212,31,212,31" title="Cmp: 30; Cov: 77%; OSGiServiceImport" alt="" href="org/ops4j/peaberry/osgi/OSGiServiceImport.html#OSGiServiceImport"/>
+<area shape="poly" coords="214,124,212,126,209,124,212,121,214,124,214,124" title="Cmp: 7; Cov: 78%; Filters" alt="" href="org/ops4j/peaberry/util/Filters.html#Filters"/>
+<area shape="poly" coords="260,120,257,122,255,120,257,117,260,120,260,120" title="Cmp: 8; Cov: 100%; AttributeDictionary" alt="" href="org/ops4j/peaberry/osgi/AttributeDictionary.html#AttributeDictionary"/>
+<area shape="poly" coords="156,144,153,146,151,144,153,141,156,144,156,144" title="Cmp: 2; Cov: 50%; Decorators" alt="" href="org/ops4j/peaberry/util/Decorators.html#Decorators"/>
+<area shape="poly" coords="212,91,209,94,207,91,209,89,212,91,212,91" title="Cmp: 15; Cov: 77%; ServiceBuilderImpl" alt="" href="org/ops4j/peaberry/internal/ServiceBuilderImpl.html#ServiceBuilderImpl"/>
+<area shape="poly" coords="260,144,257,146,255,144,257,141,260,144,260,144" title="Cmp: 2; Cov: 100%; TypeLiterals" alt="" href="org/ops4j/peaberry/util/TypeLiterals.html#TypeLiterals"/>
+<area shape="poly" coords="260,136,257,138,255,136,257,133,260,136,260,136" title="Cmp: 4; Cov: 100%; StaticImport" alt="" href="org/ops4j/peaberry/internal/StaticImport.html#StaticImport"/>
+<area shape="poly" coords="260,144,257,146,255,144,257,141,260,144,260,144" title="Cmp: 2; Cov: 100%; TypeLiterals" alt="" href="org/ops4j/peaberry/util/TypeLiterals.html#TypeLiterals"/>
+<area shape="poly" coords="233,128,230,130,228,128,230,125,233,128,233,128" title="Cmp: 6; Cov: 87%; Activator" alt="" href="org/ops4j/peaberry/osgi/Activator.html#Activator"/>
+<area shape="poly" coords="260,144,257,146,255,144,257,141,260,144,260,144" title="Cmp: 2; Cov: 100%; TypeLiterals" alt="" href="org/ops4j/peaberry/util/TypeLiterals.html#TypeLiterals"/>
+<area shape="poly" coords="185,103,182,106,180,103,182,101,185,103,185,103" title="Cmp: 12; Cov: 64%; OSGiServiceRegistry" alt="" href="org/ops4j/peaberry/osgi/OSGiServiceRegistry.html#OSGiServiceRegistry"/>
+<area shape="poly" coords="237,120,234,122,232,120,234,117,237,120,237,120" title="Cmp: 8; Cov: 89%; DirectServiceFactory" alt="" href="org/ops4j/peaberry/internal/DirectServiceFactory.html#DirectServiceFactory"/>
+<area shape="poly" coords="89,116,87,118,84,116,87,113,89,116,89,116" title="Cmp: 9; Cov: 18%; OSGiServiceAttributes" alt="" href="org/ops4j/peaberry/osgi/OSGiServiceAttributes.html#OSGiServiceAttributes"/>
+<area shape="poly" coords="177,124,174,126,172,124,174,121,177,124,177,124" title="Cmp: 7; Cov: 60%; AbstractScope.TrackingExport" alt="" href="org/ops4j/peaberry/util/AbstractScope.html#AbstractScope.TrackingExport"/>
+<area shape="poly" coords="229,116,226,118,224,116,226,113,229,116,229,116" title="Cmp: 9; Cov: 85%; IterableOSGiService" alt="" href="org/ops4j/peaberry/osgi/IterableOSGiService.html#IterableOSGiService"/>
+<area shape="poly" coords="189,136,187,138,184,136,187,133,189,136,189,136" title="Cmp: 4; Cov: 66%; AbstractScope" alt="" href="org/ops4j/peaberry/util/AbstractScope.html#AbstractScope"/>
+<area shape="poly" coords="260,140,257,142,255,140,257,137,260,140,260,140" title="Cmp: 3; Cov: 100%; MultipleServiceProvider" alt="" href="org/ops4j/peaberry/internal/MultipleServiceProvider.html#MultipleServiceProvider"/>
+<area shape="poly" coords="189,140,187,142,184,140,187,137,189,140,189,140" title="Cmp: 3; Cov: 66%; ExportedServiceProvider" alt="" href="org/ops4j/peaberry/internal/ExportedServiceProvider.html#ExportedServiceProvider"/>
+<area shape="poly" coords="222,59,220,62,217,59,220,57,222,59,222,59" title="Cmp: 23; Cov: 82%; ServiceSettings" alt="" href="org/ops4j/peaberry/internal/ServiceSettings.html#ServiceSettings"/>
+<area shape="poly" coords="218,15,216,17,213,15,216,12,218,15,218,15" title="Cmp: 34; Cov: 80%; OSGiServiceListener" alt="" href="org/ops4j/peaberry/osgi/OSGiServiceListener.html#OSGiServiceListener"/>
+<area shape="poly" coords="260,112,257,114,255,112,257,109,260,112,260,112" title="Cmp: 10; Cov: 100%; LdapAttributeFilter" alt="" href="org/ops4j/peaberry/util/ldap/LdapAttributeFilter.html#LdapAttributeFilter"/>
+<area shape="poly" coords="129,136,126,138,124,136,126,133,129,136,129,136" title="Cmp: 4; Cov: 37%; AbstractScope.SimpleImport" alt="" href="org/ops4j/peaberry/util/AbstractScope.html#AbstractScope.SimpleImport"/>
+<area shape="poly" coords="52,124,49,126,47,124,49,121,52,124,52,124" title="Cmp: 7; Cov: 0%; DecoratedExport" alt="" href="org/ops4j/peaberry/internal/DecoratedExport.html#DecoratedExport"/>
+<area shape="poly" coords="245,99,243,102,240,99,243,97,245,99,245,99" title="Cmp: 13; Cov: 93%; ImportProxyClassLoader" alt="" href="org/ops4j/peaberry/internal/ImportProxyClassLoader.html#ImportProxyClassLoader"/>
+<area shape="poly" coords="52,136,49,138,47,136,49,133,52,136,52,136" title="Cmp: 4; Cov: 0%; AbstractDecorator" alt="" href="org/ops4j/peaberry/util/AbstractDecorator.html#AbstractDecorator"/>
+<area shape="poly" coords="233,103,230,106,228,103,230,101,233,103,233,103" title="Cmp: 12; Cov: 87%; ServiceProxyFactory" alt="" href="org/ops4j/peaberry/internal/ServiceProxyFactory.html#ServiceProxyFactory"/>
+<area shape="poly" coords="260,144,257,146,255,144,257,141,260,144,260,144" title="Cmp: 2; Cov: 100%; TypeLiterals" alt="" href="org/ops4j/peaberry/util/TypeLiterals.html#TypeLiterals"/>
+<area shape="poly" coords="260,47,257,50,255,47,257,45,260,47,260,47" title="Cmp: 26; Cov: 100%; ImportGlue" alt="" href="org/ops4j/peaberry/internal/ImportGlue.html#ImportGlue"/>
+<area shape="poly" coords="226,120,224,122,221,120,224,117,226,120,226,120" title="Cmp: 8; Cov: 84%; ConcurrentImport" alt="" href="org/ops4j/peaberry/internal/ConcurrentImport.html#ConcurrentImport"/>
+<area shape="poly" coords="243,120,241,122,238,120,241,117,243,120,243,120" title="Cmp: 8; Cov: 92%; BundleScope" alt="" href="org/ops4j/peaberry/osgi/BundleScope.html#BundleScope"/>
+<area shape="poly" coords="218,132,216,134,213,132,216,129,218,132,218,132" title="Cmp: 5; Cov: 80%; Peaberry" alt="" href="org/ops4j/peaberry/Peaberry.html#Peaberry"/>
+<area shape="poly" coords="204,63,201,66,199,63,201,61,204,63,204,63" title="Cmp: 22; Cov: 73%; OSGiServiceExport" alt="" href="org/ops4j/peaberry/osgi/OSGiServiceExport.html#OSGiServiceExport"/>
+<area shape="poly" coords="52,144,49,146,47,144,49,141,52,144,52,144" title="Cmp: 2; Cov: 0%; ExportedServiceProvider.DirectProvider" alt="" href="org/ops4j/peaberry/internal/ExportedServiceProvider.html#ExportedServiceProvider.DirectProvider"/>
+<area shape="poly" coords="260,144,257,146,255,144,257,141,260,144,260,144" title="Cmp: 2; Cov: 100%; TypeLiterals" alt="" href="org/ops4j/peaberry/util/TypeLiterals.html#TypeLiterals"/>
+</map></div>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+            
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+            <label class="titleText link" onkeyup="return help_dash_packages;" onclick="self.location='pkg-summary.html'">Most Complex Packages</label>
+        
+        <table>
+                    
+                        <tr><td>1. </td><td>69.4%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.694</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="30.6% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="69.4% Covered" class="barPositive " style="width: 69.4%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/osgi/pkg-summary.html">org.ops4j.peaberry.osgi</a> (165)</td></tr>
+                    
+                        <tr><td>2. </td><td>87.6%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.8757764</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="12.4% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="87.6% Covered" class="barPositive " style="width: 87.6%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/internal/pkg-summary.html">org.ops4j.peaberry.internal</a> (142)</td></tr>
+                    
+                        <tr><td>3. </td><td>70%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.7</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="30% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="70% Covered" class="barPositive " style="width: 70%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/util/pkg-summary.html">org.ops4j.peaberry.util</a> (41)</td></tr>
+                    
+                        <tr><td>4. </td><td>44.2%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.44186047</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="55.8% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="44.2% Covered" class="barPositive " style="width: 44.2%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/util/decorators/pkg-summary.html">org.ops4j.peaberry.util.decorators</a> (16)</td></tr>
+                    
+                        <tr><td>5. </td><td>100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div></td><td><a class="tag" href="org/ops4j/peaberry/util/ldap/pkg-summary.html">org.ops4j.peaberry.util.ldap</a> (10)</td></tr>
+                </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+                    <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+            <label class="titleText link" onkeyup="return help_dash_classes;" onclick="self.location='pkg-summary.html'">Most Complex Classes</label>
+        <table>
+                    
+                        <tr><td>1. </td><td>80%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.8</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="20% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="80% Covered" class="barPositive " style="width: 80%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceListener.html#OSGiServiceListener"  title="org.ops4j.peaberry.osgi.OSGiServiceListener">OSGiServiceListener</a>
+                (34)
+            </td></tr>
+                    
+                        <tr><td>2. </td><td>77.3%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.77319586</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="22.7% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="77.3% Covered" class="barPositive " style="width: 77.3%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceImport.html#OSGiServiceImport"  title="org.ops4j.peaberry.osgi.OSGiServiceImport">OSGiServiceImport</a>
+                (30)
+            </td></tr>
+                    
+                        <tr><td>3. </td><td>100%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">1.0</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="0% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="100% Covered" class="barPositive " style="width: 100%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/internal/ImportGlue.html#ImportGlue"  title="org.ops4j.peaberry.internal.ImportGlue">ImportGlue</a>
+                (26)
+            </td></tr>
+                    
+                        <tr><td>4. </td><td>82.1%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.8208955</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="17.9% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="82.1% Covered" class="barPositive " style="width: 82.1%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/internal/ServiceSettings.html#ServiceSettings"  title="org.ops4j.peaberry.internal.ServiceSettings">ServiceSettings</a>
+                (23)
+            </td></tr>
+                    
+                        <tr><td>5. </td><td>73.9%
+</td>
+<td class="graphBar " align="center">
+<span class="sortValue">0.73913044</span>
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+    <div title="26.1% Not Covered"  style="min-width: 40px;"  class="barNegative ">
+       <div title="73.9% Covered" class="barPositive " style="width: 73.9%"></div>
+    </div>
+</div></td><td>
+                    <a  class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceExport.html#OSGiServiceExport"  title="org.ops4j.peaberry.osgi.OSGiServiceExport">OSGiServiceExport</a>
+                (22)
+            </td></tr>
+                </table>
+
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+    
+    </div>
+    <div class="right-twothirds">
+
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                            <label class="titleText link" onkeyup="return help_dash_test_results;" onclick="self.location='test-pkg-summary.html'">Test Results</label>
+                <span> <span class="">29 / 29</span> tests 12.93 secs</span>
+            <table>
+                                <tr>
+                    <td>100%</td>
+                    <td style="width:200px">
+                                                
+
+<div>
+    <div style="width: 40px; font-size:0px;"></div>
+
+    <div title="0% Errors" style="min-width: 40px;" class="testBarError">
+        <div title="0% of Tests Failed" class="testBarFail" style="width: 100%">
+            <div title="100% of Tests Passed" class="testBarPass" style="width: 100%"></div>
+        </div>
+    </div>
+</div>                    </td>
+                </tr>
+                            </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+    
+                <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <label class="titleText link" onkeyup="return help_dash_risks;" onclick="self.location='proj-risks.html'">Top 20 Project Risks</label>
+            <div>
+            
+                                           <a class="tag" href="org/ops4j/peaberry/util/decorators/StickyDecorator.html#StickyDecorator.StickyImport"
+               style="font-size: 21px;color:#660598"
+               title="Average Method Complexity - 2.75 , Coverage - 50% ">StickyDecorator.StickyImport</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/util/decorators/DecoratorChain.html#DecoratorChain"
+               style="font-size: 15px;color:#e4051a"
+               title="Average Method Complexity - 1.5 , Coverage - 0% ">DecoratorChain</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/FilteredServiceScope.html#FilteredServiceScope"
+               style="font-size: 15px;color:#990565"
+               title="Average Method Complexity - 1.6 , Coverage - 26.9% ">FilteredServiceScope</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/util/AbstractScope.html#AbstractScope.TrackingExport"
+               style="font-size: 16px;color:#4d05b1"
+               title="Average Method Complexity - 1.75 , Coverage - 60% ">AbstractScope.TrackingExport</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceListener.html#OSGiServiceListener"
+               style="font-size: 23px;color:#1b05e3"
+               title="Average Method Complexity - 3.4 , Coverage - 80% ">OSGiServiceListener</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/ImmutableAttribute.html#ImmutableAttribute"
+               style="font-size: 13px;color:#e4051a"
+               title="Average Method Complexity - 1.143 , Coverage - 0% ">ImmutableAttribute</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceExport.html#OSGiServiceExport"
+               style="font-size: 17px;color:#3405ca"
+               title="Average Method Complexity - 2 , Coverage - 73.9% ">OSGiServiceExport</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/Activator.html#Activator.ImportManager"
+               style="font-size: 22px;color:#1b05e3"
+               title="Average Method Complexity - 3 , Coverage - 82.4% ">Activator.ImportManager</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceImport.html#OSGiServiceImport"
+               style="font-size: 17px;color:#1b05e3"
+               title="Average Method Complexity - 2 , Coverage - 77.3% ">OSGiServiceImport</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/DecoratedExport.html#DecoratedExport"
+               style="font-size: 13px;color:#e4051a"
+               title="Average Method Complexity - 1 , Coverage - 0% ">DecoratedExport</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/util/AbstractDecorator.html#AbstractDecorator"
+               style="font-size: 13px;color:#e4051a"
+               title="Average Method Complexity - 1 , Coverage - 0% ">AbstractDecorator</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceAttributes.html#OSGiServiceAttributes"
+               style="font-size: 13px;color:#b2054c"
+               title="Average Method Complexity - 1.125 , Coverage - 18.2% ">OSGiServiceAttributes</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/OSGiServiceRegistry.html#OSGiServiceRegistry"
+               style="font-size: 15px;color:#4d05b1"
+               title="Average Method Complexity - 1.5 , Coverage - 64.7% ">OSGiServiceRegistry</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/ExportedServiceProvider.html#ExportedServiceProvider.DirectProvider"
+               style="font-size: 13px;color:#e4051a"
+               title="Average Method Complexity - 1 , Coverage - 0% ">ExportedServiceProvider.DirectProvider</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/util/Filters.html#Filters"
+               style="font-size: 16px;color:#1b05e3"
+               title="Average Method Complexity - 1.75 , Coverage - 78.9% ">Filters</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/osgi/OSGiModule.html#OSGiModule"
+               style="font-size: 14px;color:#4d05b1"
+               title="Average Method Complexity - 1.25 , Coverage - 60% ">OSGiModule</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/util/Attributes.html#Attributes"
+               style="font-size: 25px;color:#0205fc"
+               title="Average Method Complexity - 3.667 , Coverage - 96.8% ">Attributes</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/ConcurrentImport.html#ConcurrentImport"
+               style="font-size: 17px;color:#1b05e3"
+               title="Average Method Complexity - 2 , Coverage - 84% ">ConcurrentImport</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/internal/DirectServiceFactory.html#DirectServiceFactory"
+               style="font-size: 20px;color:#0205fc"
+               title="Average Method Complexity - 2.667 , Coverage - 89.7% ">DirectServiceFactory</a>
+                          
+                                           <a class="tag" href="org/ops4j/peaberry/util/AbstractScope.html#AbstractScope.SimpleImport"
+               style="font-size: 13px;color:#80057e"
+               title="Average Method Complexity - 1 , Coverage - 37.5% ">AbstractScope.SimpleImport</a>
+                                      </div>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+    
+                        <div class="tags roundedLarge" style="padding: 5px;">
+            <b class="ctop $cnrclass"><b class="cb1"></b><b class="cb2"></b><b class="cb3"></b><b class="cb4"></b></b>
+        <div class="roundedContent" style="padding: 5px;">
+                <label class="titleText link" onkeyup="return help_dash_untested_methods;" onclick="self.location='test-pkg-summary.html'">Least Tested Methods</label>
+            <table>
+                
+                <tr>
+                    <td align="right">1.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceImport.flush(int)&nbsp;:&nbsp;void" href="org/ops4j/peaberry/osgi/OSGiServiceImport.html?line=151#src-151">OSGiServiceImport.flush(int)&nbsp;:&nbsp;void</a> (6)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">2.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceExport.put(T)&nbsp;:&nbsp;void" href="org/ops4j/peaberry/osgi/OSGiServiceExport.html?line=71#src-71">OSGiServiceExport.put(T)&nbsp;:&nbsp;void</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">3.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ImmutableAttribute.equals(Object)&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/osgi/ImmutableAttribute.html?line=49#src-49">ImmutableAttribute.equals(Object)&nbsp;:&nbsp;boolean</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">4.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="DecoratorChain.decorate(Import&lt;T&gt;)&nbsp;:&nbsp;Import&lt;T&gt;" href="org/ops4j/peaberry/util/decorators/DecoratorChain.html?line=36#src-36">DecoratorChain.decorate(Import&lt;T&gt;)&nbsp;:&nbsp;Import&lt;T&gt;</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">5.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="FilteredServiceScope.equals(Object)&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/osgi/FilteredServiceScope.html?line=47#src-47">FilteredServiceScope.equals(Object)&nbsp;:&nbsp;boolean</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">6.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="AbstractScope.TrackingExport.put(S)&nbsp;:&nbsp;void" href="org/ops4j/peaberry/util/AbstractScope.html?line=74#src-74">AbstractScope.TrackingExport.put(S)&nbsp;:&nbsp;void</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">7.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceAttributes.entrySet()&nbsp;:&nbsp;Set&lt;Entry&lt;String,&nbsp;Object&gt;&gt;" href="org/ops4j/peaberry/osgi/OSGiServiceAttributes.html?line=48#src-48">OSGiServiceAttributes.entrySet()&nbsp;:&nbsp;Set&lt;Entry&lt;String,&nbsp;Object&gt;&gt;</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">8.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceRegistry.equals(Object)&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/osgi/OSGiServiceRegistry.html?line=82#src-82">OSGiServiceRegistry.equals(Object)&nbsp;:&nbsp;boolean</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">9.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiModule.equals(Object)&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/osgi/OSGiModule.html?line=60#src-60">OSGiModule.equals(Object)&nbsp;:&nbsp;boolean</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">10.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ImmutableAttribute.hashCode()&nbsp;:&nbsp;int" href="org/ops4j/peaberry/osgi/ImmutableAttribute.html?line=59#src-59">ImmutableAttribute.hashCode()&nbsp;:&nbsp;int</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">11.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="FilteredServiceScope.hashCode()&nbsp;:&nbsp;int" href="org/ops4j/peaberry/osgi/FilteredServiceScope.html?line=56#src-56">FilteredServiceScope.hashCode()&nbsp;:&nbsp;int</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">12.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ConcurrentImport.attributes()&nbsp;:&nbsp;Map&lt;String,&nbsp;?&gt;" href="org/ops4j/peaberry/internal/ConcurrentImport.html?line=63#src-63">ConcurrentImport.attributes()&nbsp;:&nbsp;Map&lt;String,&nbsp;?&gt;</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">13.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="ImmutableAttribute.equals(Object,Object)&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/osgi/ImmutableAttribute.html?line=64#src-64">ImmutableAttribute.equals(Object,Object)&nbsp;:&nbsp;boolean</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">14.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="StickyDecorator.StickyImport.attributes()&nbsp;:&nbsp;Map&lt;String,&nbsp;?&gt;" href="org/ops4j/peaberry/util/decorators/StickyDecorator.html?line=91#src-91">StickyDecorator.StickyImport.attributes()&nbsp;:&nbsp;Map&lt;String,&nbsp;?&gt;</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">15.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="FilteredServiceScope.equals(Object,Object)&nbsp;:&nbsp;boolean" href="org/ops4j/peaberry/osgi/FilteredServiceScope.html?line=61#src-61">FilteredServiceScope.equals(Object,Object)&nbsp;:&nbsp;boolean</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">16.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceListener.flush(int)&nbsp;:&nbsp;void" href="org/ops4j/peaberry/osgi/OSGiServiceListener.html?line=120#src-120">OSGiServiceListener.flush(int)&nbsp;:&nbsp;void</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">17.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceRegistry.flush(int)&nbsp;:&nbsp;void" href="org/ops4j/peaberry/osgi/OSGiServiceRegistry.html?line=65#src-65">OSGiServiceRegistry.flush(int)&nbsp;:&nbsp;void</a> (2)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">18.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="DecoratedExport.DecoratedExport(Export&lt;T&gt;,ImportDecorator&lt;?&nbsp;super&nbsp;T&gt;)" href="org/ops4j/peaberry/internal/DecoratedExport.html?line=37#src-37">DecoratedExport.DecoratedExport(Export&lt;T&gt;,ImportDecorator&lt;?&nbsp;super&nbsp;T&gt;)</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">19.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceAttributes.iterator()&nbsp;:&nbsp;Iterator&lt;Entry&lt;String,&nbsp;Object&gt;&gt;" href="org/ops4j/peaberry/osgi/OSGiServiceAttributes.html?line=53#src-53">OSGiServiceAttributes.iterator()&nbsp;:&nbsp;Iterator&lt;Entry&lt;String,&nbsp;Object&gt;&gt;</a> (1)
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td align="right">20.</td>
+                    <td align="right">0%</td>
+                    <td>                      <a class="tag" title="OSGiServiceAttributes.next()&nbsp;:&nbsp;Entry&lt;String,&nbsp;Object&gt;" href="org/ops4j/peaberry/osgi/OSGiServiceAttributes.html?line=66#src-66">OSGiServiceAttributes.next()&nbsp;:&nbsp;Entry&lt;String,&nbsp;Object&gt;</a> (1)
+                    </td>
+                </tr>
+                            </table>
+                </div>
+            <b class="cbottom"><b class="cb4"></b><b class="cb3"></b><b class="cb2"></b><b class="cb1"></b></b>
+        </div>
+            
+    </div>
+
+    </td>
+</tr>
+
+<tr><td class="hbreak" colspan="2">&nbsp;</td></tr>
+<tr><td class="hbreak" colspan="2">&nbsp;</td></tr>
+<tr><td class="footer" colspan="2">
+<table>
+<tr>
+ <td><a target="_new" href="http://www.atlassian.com/software/clover"><img alt="Clover" src="img/logo.gif" style="border:none"/></a></td><td style="white-space:nowrap;"><i>Report generated by </i>Clover <a target="_new" href="http://www.atlassian.com/software/clover">Code Coverage</a> v2.4.2<i><br/>Mon Jan 19 2009 21:27:23 SGT</i>.</td>
+<td>&nbsp;</td><td style="BORDER-LEFT: #9c9c9c 1px solid;">&nbsp;</td><td>Clover: Open Source License registered to peaberry 	. </td>
+</tr>
+</table>
+</td>
+</tr></table>
+</body>
+</html>
