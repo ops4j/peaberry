@@ -24,6 +24,10 @@
       <sysproperty key="guice.jar" value="${guice.jar}"/>
       <sysproperty key="peaberry.jar" value="${peaberry.jar}"/>
 
+      <sysproperty key="eqsup.jar" value="${eqsup.jar}"/>
+      <sysproperty key="eqcom.jar" value="${eqcom.jar}"/>
+      <sysproperty key="eqreg.jar" value="${eqreg.jar}"/>
+
     </testng>
   </target>
 

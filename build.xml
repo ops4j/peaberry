@@ -54,6 +54,7 @@
 
   <target name="clean.all">
     <delete dir="${build}"/>
+    <delete dir="${doc}"/>
   </target>
 
   <target name="wipe" depends="clean.all"/>
