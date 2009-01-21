@@ -33,14 +33,14 @@ import com.google.inject.TypeLiteral;
  * <pre> {@literal @}Inject
  * StockQuote quote;
  * ...
- * bind(StockQuote.class).to(service(StockQuote.class).single());</pre>
+ * bind(StockQuote.class).toProvider(service(StockQuote.class).single());</pre>
  * 
  * Injecting many stock quote services:
  * 
  * <pre> {@literal @}Inject
  * Iterable&lt;StockQuote&gt; quotes;
  * ...
- * bind(iterable(StockQuote.class)).to(service(StockQuote.class).multiple());</pre>
+ * bind(iterable(StockQuote.class)).toProvider(service(StockQuote.class).multiple());</pre>
  * 
  * Exporting an implementation as a stock quote service:
  * 
@@ -49,7 +49,7 @@ import com.google.inject.TypeLiteral;
  * Export&lt;StockQuote&gt; exportedQuote;
  * ...
  * // the service is exported at injection time
- * bind(export(StockQuote.class)).to(service(myQuoteImpl).export());</pre>
+ * bind(export(StockQuote.class)).toProvider(service(myQuoteImpl).export());</pre>
  * 
  * Applying a custom filter to find a specific service:
  * 
