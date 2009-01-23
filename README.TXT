@@ -54,16 +54,16 @@
   Injecting a dynamic service from OSGi:
 
     @Inject
-    LogService logService;
+    StockQuote quote;
     ...
-    bind(LogService.class).to(service(LogService.class).single());
+    bind(StockQuote.class).toProvider(service(StockQuote.class).single());
 
   Exporting an implementation as an OSGi service:
 
     @Inject
-    Export<LogService> exportedLogService;
+    Export<StockQuote> exportedQuote;
     ...
-    bind(export(LogService.class)).to(registration(logImplKey).export());
+    bind(export(StockQuote.class)).toProvider(service(myQuoteImpl).export());
 
   More examples can be found in the javadoc for the Peaberry class.
 
