@@ -85,6 +85,7 @@ final class OSGiServiceExport<T>
 
   public synchronized void unput() {
     removeOSGiService();
+    instance = null;
   }
 
   private void exportOSGiService() {
@@ -99,7 +100,7 @@ final class OSGiServiceExport<T>
     if (null != reg) {
       try {
         reg.unregister();
-      } catch (final RuntimeException re) {/* ignore */} // NOPMD
+      } catch (final RuntimeException re) {/* already gone */} // NOPMD
       reg = null;
     }
 
@@ -107,7 +108,7 @@ final class OSGiServiceExport<T>
     if (null != originalService) {
       try {
         originalService.unget();
-      } catch (final RuntimeException re) {/* ignore */} // NOPMD
+      } catch (final RuntimeException re) {/* already gone */} // NOPMD
       originalService = null;
     }
   }
