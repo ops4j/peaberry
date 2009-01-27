@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.util.decorators;
 
+import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -48,19 +49,23 @@ public final class StickyDecorator<S>
 
     private final Import<T> handle;
     private boolean reset = true;
-    private T instance;
+    private WeakReference<T> instanceRef;
 
     StickyImport(final Import<T> handle) {
       this.handle = handle;
     }
 
+    private T instance() {
+      return null == instanceRef ? null : instanceRef.get();
+    }
+
     public synchronized T get() {
 
       // use attributes() to detect when the current service instance is invalid
-      if (null != resetTask && null != instance && null == handle.attributes()) {
+      if (null != resetTask && null != instance() && null == handle.attributes()) {
 
         // always clear the current service once it's invalid
-        instance = null;
+        instanceRef.clear();
 
         try {
           // should we reset and take the next valid service?
@@ -76,8 +81,8 @@ public final class StickyDecorator<S>
 
       if (reset) {
         try {
-          instance = handle.get();
-          reset = null == instance;
+          instanceRef = new WeakReference<T>(handle.get());
+          reset = null == instance();
         } finally {
           if (reset) {
             handle.unget(); // balance previous unsuccessful get
@@ -85,11 +90,11 @@ public final class StickyDecorator<S>
         }
       }
 
-      return instance;
+      return instance();
     }
 
     public synchronized Map<String, ?> attributes() {
-      return null == instance ? null : handle.attributes();
+      return null == instance() ? null : handle.attributes();
     }
 
     public void unget() {/* nothing to do */}
