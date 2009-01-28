@@ -43,11 +43,14 @@ abstract class Setting<T> {
     }
 
     return new Setting<T>() {
+      private boolean configured;
+
       @Override
       public T get(final Injector injector) {
-        if (null != injector) {
+        if (!configured && null != injector) {
           // given value may need injecting
           injector.injectMembers(instance);
+          configured = true;
         }
         return instance;
       }
