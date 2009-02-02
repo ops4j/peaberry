@@ -1,8 +1,7 @@
--include: ${common.basedir}/common.bnd
 
 Private-Package:\
  ${module}.test
 
 -output:\
- ../director.jar
+ ${director.jar}
 

@@ -1,4 +1,3 @@
--include: ${common.basedir}/common.bnd
 
 Bundle-Activator:\
  examples.ids.internal.Activator

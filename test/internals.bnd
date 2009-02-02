@@ -1,5 +1,5 @@
--include: ${common.basedir}/common.bnd
--classpath: ../${peaberry.jar}
+
+-classpath: ${peaberry.jar}
 
 Private-Package:\
  ${module},\

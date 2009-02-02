@@ -1,4 +1,3 @@
--include: ${common.basedir}/common.bnd
 
 Export-Package:\
  examples.ids

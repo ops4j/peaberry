@@ -13,12 +13,12 @@
   </target>
 
   <target name="trim.guice" unless="have.guice">
-    <mkdir dir="${build}/dist"/>
+    <mkdir dir="${dist}"/>
     <proguard>
       -libraryjars "${java.home}/lib/rt.jar"
-      -libraryjars ${lib}/aopalliance-${aop.version}.jar
-      -injars ${lib}/guice-${guice.version}.jar
-      -outjars ${guice.jar}
+      -libraryjars "${lib}/aopalliance-${aop.version}.jar"
+      -injars "${lib}/guice-${guice.version}.jar"
+      -outjars "${guice.jar}"
       -keep class !com.google.inject.internal.collect.** { *; }
       -keepattributes
       -dontobfuscate
@@ -45,30 +45,5 @@
   </target>
 
   <target name="jar" depends="with.deps,common.jar"/>
-
-  <target name="dist" depends="jar,doc">
-    <jar destfile="${build}/dist/peaberry-${version}-javadoc.jar" basedir="${doc}/javadoc"/>
-    <jar destfile="${build}/dist/peaberry-${version}-sources.jar" basedir="${src}">
-      <metainf dir="." includes="NOTICE,LICENSE"/>
-    </jar>
-    <copy todir="${build}/dist">
-      <fileset dir="." includes="NOTICE,LICENSE*,README.TXT,pom.xml"/>
-      <filtermapper>
-        <replacestring from="pom.xml" to="peaberry-${version}.pom"/>
-      </filtermapper>
-      <filterset>
-        <filter token="AOP_VERSION" value="${aop.version}"/>
-        <filter token="GUICE_VERSION" value="${guice.version}"/>
-        <filter token="VERSION" value="${version}"/>
-      </filterset>
-    </copy>
-    <checksum format="MD5SUM" algorithm="md5">
-      <fileset dir="${build}/dist" includes="*.jar,*.pom"/>
-    </checksum>
-    <zip destfile="${build}/peaberry-${version}.zip" basedir="${build}/dist"/>
-    <checksum format="MD5SUM" algorithm="md5" file="${build}/peaberry-${version}.zip"/>
-  </target>
-
-  <target name="test.dist" depends="test.jar"/>
 
 </project>

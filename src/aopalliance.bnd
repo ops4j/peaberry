@@ -1,5 +1,5 @@
--include: ${common.basedir}/common.bnd
--classpath: ../${lib}/aopalliance-${aop.version}.jar
+
+-classpath: ${lib.dir}/aopalliance-${aop.version}.jar
 
 Export-Package: org.aopalliance.*
 
