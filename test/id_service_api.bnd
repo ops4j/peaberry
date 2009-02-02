@@ -1,4 +1,4 @@
--include: ../common.bnd
+-include: ../${setup}/common.bnd
 
 Export-Package:\
  examples.ids

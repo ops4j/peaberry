@@ -2,11 +2,7 @@
 <project name="peaberry" default="dist">
 
   <property file="build.properties"/>
-
-  <import file="clover.xml"/>
-  <import file="bnd.xml"/>
-  <import file="test.xml"/>
-  <import file="doc.xml"/>
+  <import file="${setup}/common.xml"/>
 
   <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
 
@@ -32,36 +28,25 @@
     </proguard>
   </target>
 
-  <target name="compile" depends="guice">
-    <mkdir dir="${build}/classes"/>
-    <javac debug="on" srcdir="${src}" destdir="${build}/classes" classpath="${build.cp}">
-      <compilerarg value="-Xlint"/>
-    </javac>
+  <target name="compile" depends="guice,common.compile"/>
+
+  <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
+
+  <target name="with.deps" depends="compile">
+    <jarjar jarfile="${build}/classes.jar">
+      <fileset dir="${build}/classes"/>
+      <zipfileset src="${asm.jar}"/>
+      <zipfileset src="${felix.jar}"/>
+      <rule pattern="jsr166y.*" result="org.ops4j.peaberry.internal.@1"/>
+      <rule pattern="org.objectweb.asm.*" result="org.ops4j.peaberry.internal.@1"/>
+      <rule pattern="org.apache.felix.framework.util.ldap.*" result="org.ops4j.peaberry.util.ldap.@1"/>
+      <keep pattern="org.ops4j.**"/>
+    </jarjar>
   </target>
 
-  <target name="test.compile" depends="compile">
-    <mkdir dir="${build}/test-classes"/>
-    <javac debug="on" srcdir="${test}" destdir="${build}/test-classes" classpath="${test.cp}">
-      <compilerarg value="-Xlint"/>
-    </javac>
-  </target>
+  <target name="jar" depends="with.deps,common.jar"/>
 
-  <target name="clean">
-    <delete dir="${build}/classes"/>
-    <delete dir="${build}/test-classes"/>
-    <delete dir="${build}/test"/>
-  </target>
-
-  <target name="clean.all">
-    <delete dir="${build}"/>
-    <delete dir="${doc}"/>
-  </target>
-
-  <target name="wipe" depends="clean.all"/>
-
-  <target name="jar" depends="peaberry"/>
-
-  <target name="dist" depends="peaberry,doc">
+  <target name="dist" depends="jar,doc">
     <jar destfile="${build}/dist/peaberry-${version}-javadoc.jar" basedir="${doc}/javadoc"/>
     <jar destfile="${build}/dist/peaberry-${version}-sources.jar" basedir="${src}">
       <metainf dir="." includes="NOTICE,LICENSE"/>
@@ -84,8 +69,6 @@
     <checksum format="MD5SUM" algorithm="md5" file="${build}/peaberry-${version}.zip"/>
   </target>
 
-  <target name="test.dist" depends="peaberry,test.peaberry"/>
-
-  <target name="reports" depends="clean,with.clover,peaberry,test.peaberry,clover.report,pmd"/>
+  <target name="test.dist" depends="test.jar"/>
 
 </project>

@@ -1,5 +1,8 @@
 -include: ../${setup}/common.bnd
 
 Private-Package:\
- ${module}.test.cases
+ ${module}.test
+
+-output:\
+ ../director.jar
 

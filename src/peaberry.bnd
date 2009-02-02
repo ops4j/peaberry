@@ -1,4 +1,5 @@
--include: common.bnd
+-include: ../${setup}/common.bnd
+-classpath: ../${build}/classes.jar
 
 Bundle-Activator: ${module}.osgi.Activator
 
@@ -12,9 +13,9 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 
 Include-Resource:\
- META-INF/NOTICE=NOTICE,\
- META-INF/LICENSE=LICENSE,\
- META-INF/LICENSE.asm=LICENSE.asm
+ META-INF/NOTICE=../NOTICE,\
+ META-INF/LICENSE=../LICENSE,\
+ META-INF/LICENSE.asm=../LICENSE.asm
 
 api.range:\
  "[${api.version},${version;+;${api.version}})"

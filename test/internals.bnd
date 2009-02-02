@@ -1,5 +1,4 @@
--include: ../common.bnd
-
+-include: ../${setup}/common.bnd
 -classpath: ../${peaberry.jar}
 
 Private-Package:\

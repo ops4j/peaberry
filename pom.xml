@@ -47,4 +47,22 @@ limitations under the License.
     such as Apache Felix or Eclipse/Equinox. 
   </description>
 
+  <scm>
+    <url>http://peaberry.googlecode.com/svn/tags/@VERSION@</url>
+  </scm>
+
+  <issueManagement>
+    <url>http://code.google.com/p/peaberry/issues/list</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Guice and OSGi</name>
+      <subscribe>guice-osgi-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>guice-osgi+unsubscribe@googlegroups.com</unsubscribe>
+      <archive>http://groups.google.com/group/guice-osgi</archive>
+      <post>guice-osgi@googlegroups.com</post>
+    </mailingList>
+  </mailingLists>
+
 </project>

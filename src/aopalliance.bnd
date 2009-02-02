@@ -1,0 +1,8 @@
+-include: ../${setup}/common.bnd
+-classpath: ../${lib}/aopalliance-${aop.version}.jar
+
+Export-Package: org.aopalliance.*
+
+-output:\
+ ${aop.jar}
+
