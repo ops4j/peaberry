@@ -28,15 +28,16 @@ import org.ops4j.peaberry.ServiceScope;
 public class EclipseRegistry
     implements ServiceRegistry {
 
-  public <T> Export<T> add(Import<T> service) {
+  public <T> Export<T> add(final Import<T> service) {
     throw new UnsupportedOperationException();
   }
 
-  public <T> Iterable<Import<T>> lookup(Class<T> clazz, AttributeFilter filter) {
+  public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
     throw new UnsupportedOperationException();
   }
 
-  public <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<? super T> scope) {
+  public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
+      final ServiceScope<? super T> scope) {
     throw new UnsupportedOperationException();
   }
 }
