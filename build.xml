@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="peaberry" default="dist">
+<project name="peaberry" default="all">
 
   <import file="setup/common.xml"/>
   <property file="build.properties"/>
@@ -45,5 +45,11 @@
   </target>
 
   <target name="jar" depends="with.deps,common.jar"/>
+
+  <target name="all">
+    <antcall target="${target}"/>
+    <ant target="${target}" dir="extensions/eclipse" inheritAll="false"/>
+    <ant target="${target}" dir="extensions/lifecycle" inheritAll="false"/>
+  </target>
 
 </project>

@@ -140,10 +140,16 @@ public final class Activator
     }
   }
 
-  public void stop(final BundleContext ctx) {
+  public void stop(final BundleContext ctx)
+      throws InterruptedException {
+
     if (null != cleanupThread) {
       cleanupThread.interrupt();
-      cleanupThread = null;
+      try {
+        cleanupThread.join();
+      } finally {
+        cleanupThread = null;
+      }
     }
   }
 }

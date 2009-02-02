@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.eclipse.test.cases;
+package org.ops4j.peaberry.eclipse.test;
 
 import org.testng.annotations.Test;
 

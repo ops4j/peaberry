@@ -1,8 +1,15 @@
 <?xml version="1.0"?>
-<project name="peaberry.lifecycle">
+<project name="peaberry-lifecycle">
 
   <property name="antlib" value="../../lib/ant"/>
   <import file="../../setup/common.xml"/>
   <property file="build.properties"/>
+
+  <target name="jar" depends="common.jar">
+    <makeurl property="deploy.urls">
+      <fileset dir="../../build/dist" includes="*.jar"/>
+      <fileset dir="${dist}" includes="*.jar"/>
+    </makeurl>
+  </target>
 
 </project>

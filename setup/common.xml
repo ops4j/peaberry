@@ -58,13 +58,13 @@
   <target name="test.jar" depends="jar,testcases">
     <makeurl file="${common.dir}/felix.properties" property="felix.config.properties"/>
     <makeurl property="deploy.urls">
-      <fileset dir="${dist}" includes="*.jar" excludes="*-sources-*,*-javadocs-*"/>
+      <fileset dir="${dist}" includes="*.jar"/>
     </makeurl>
     <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.Director">
       <xmlfileset dir="${test}"/>
       <sysproperty key="felix.config.properties" value="${felix.config.properties}"/>
       <sysproperty key="deploy.urls" value="${deploy.urls}"/>
-      <sysproperty key="build" value="${build}"/>
+      <sysproperty key="build.dir" value="${build.dir}"/>
       <classpath>
         <pathelement location="${felix.jar}"/>
         <pathelement location="${director.jar}"/>
