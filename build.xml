@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <project name="peaberry" default="dist">
 
+  <import file="setup/common.xml"/>
   <property file="build.properties"/>
-  <import file="${setup}/common.xml"/>
 
   <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
 

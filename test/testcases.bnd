@@ -1,4 +1,4 @@
--include: ../${setup}/common.bnd
+-include: ${common.basedir}/common.bnd
 
 Private-Package:\
  ${module}.test.cases

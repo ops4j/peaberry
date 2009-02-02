@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <project name="common">
 
+  <dirname property="common.basedir" file="${ant.file.common}"/>
+  <property file="${common.basedir}/common.properties"/>
+
   <target name="compile">
     <mkdir dir="${build}/classes"/>
     <javac debug="on" srcdir="${src}" source="1.5" target="1.5"
@@ -80,7 +83,7 @@
     <available file="${doc}/javadoc/index.html" property="have.doc"/>
   </target>
 
-  <target name="make.doc" unless="have.doc">
+  <target name="make.doc" if="public.api" unless="have.doc">
     <mkdir dir="${doc}/javadoc"/>
     <javadoc destdir="${doc}/javadoc" classpath="${build.cp}"
         sourcepath="${src}" packagenames="${public.api}"
@@ -120,7 +123,7 @@
 
   <target name="pmd" depends="compile">
     <mkdir dir="${doc}/coverage"/>
-    <pmd rulesetfiles="${setup}/pmd.xml" shortFilenames="true">
+    <pmd rulesetfiles="${common.basedir}/pmd.xml" shortFilenames="true">
       <formatter type="html" toFile="${doc}/coverage/pmd.html" linkPrefix="" linePrefix="src-"/>
       <fileset dir="${src}" includes="org/**/*.java"/>
     </pmd>
