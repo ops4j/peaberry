@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.osgi;
 
-import org.ops4j.peaberry.BundleScope;
+import org.ops4j.peaberry.BundleScoped;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 
@@ -40,11 +40,11 @@ public final class OSGiModule
   @Override
   protected void configure() {
     bind(BundleContext.class).toInstance(bundleContext);
-    bindScope(BundleScope.class, new BundleScopeImpl(bundleContext));
+    bindScope(BundleScoped.class, new BundleScopeImpl(bundleContext));
 
     // need indirect binding so registry is published as caching
     bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
-    bind(CachingServiceRegistry.class).in(BundleScope.class);
+    bind(CachingServiceRegistry.class).in(BundleScoped.class);
   }
 
   @Override
