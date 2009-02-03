@@ -125,7 +125,7 @@ final class ImportGlue {
 
     if (clazz.isInterface()) {
       superName = OBJECT_NAME;
-      interfaceNames = new String[] {clazzName};
+      interfaceNames = new String[]{clazzName};
     } else {
       superName = clazzName;
       interfaceNames = getInternalNames(clazz.getInterfaces());

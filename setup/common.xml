@@ -68,6 +68,7 @@
       <sysproperty key="boot.urls" value="${boot.urls}"/>
       <sysproperty key="deploy.urls" value="${deploy.urls}"/>
       <sysproperty key="build.dir" value="${build.dir}"/>
+      <sysproperty key="org.ops4j.peaberry.cache.interval" value="1"/>
       <classpath>
         <pathelement location="${felix.jar}"/>
         <pathelement location="${director.jar}"/>

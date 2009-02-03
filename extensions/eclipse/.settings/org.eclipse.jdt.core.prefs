@@ -1,4 +1,4 @@
-#Thu Jan 01 23:52:38 GMT 2009
+#Tue Feb 03 17:01:02 SGT 2009
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
@@ -269,7 +269,7 @@ org.eclipse.jdt.core.formatter.insert_space_before_opening_angle_bracket_in_type
 org.eclipse.jdt.core.formatter.insert_space_before_opening_angle_bracket_in_type_parameters=do not insert
 org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_annotation_type_declaration=insert
 org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_anonymous_type_declaration=insert
-org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_array_initializer=insert
+org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_array_initializer=do not insert
 org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_block=insert
 org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_constructor_declaration=insert
 org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_enum_constant=insert

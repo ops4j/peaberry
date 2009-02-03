@@ -32,7 +32,7 @@ import com.google.inject.Scope;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class BundleScope
+final class BundleScopeImpl
     implements Scope {
 
   // service attribute used to identify bundles
@@ -43,7 +43,7 @@ final class BundleScope
   final long bundleId;
   final String filter;
 
-  public BundleScope(final BundleContext bundleContext) {
+  public BundleScopeImpl(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
 
     // filter services to those registered by this context

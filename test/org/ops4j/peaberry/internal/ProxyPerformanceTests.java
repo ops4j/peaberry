@@ -52,7 +52,7 @@ public final class ProxyPerformanceTests {
 
     final Example jdkProxy =
         (Example) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class<?>[] {Example.class}, new InvocationHandler() {
+            new Class<?>[]{Example.class}, new InvocationHandler() {
               public Object invoke(final Object proxy, final Method method, final Object[] args)
                   throws Throwable {
                 return method.invoke(rawInstance, args);

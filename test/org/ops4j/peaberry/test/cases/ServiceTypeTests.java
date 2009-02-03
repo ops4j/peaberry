@@ -60,31 +60,31 @@ public final class ServiceTypeTests
     assertEquals(typeService.parseDouble(typeService.toString(8.9)), 8.9d);
     assertEquals(typeService.parseObject(typeService.toString("10")), "10");
 
-    assertTrue(Arrays.equals(typeService.parseBooleanArray(typeService.toString(new boolean[] {
-        true, false})), new boolean[] {true, false}));
-    assertTrue(Arrays.equals(typeService.parseByteArray(typeService.toString(new byte[] {1, 2})),
-        new byte[] {1, 2}));
-    assertTrue(Arrays.equals(typeService
-        .parseCharArray(typeService.toString(new char[] {'3', '4'})), new char[] {'3', '4'}));
-    assertTrue(Arrays.equals(typeService.parseShortArray(typeService.toString(new short[] {5, 6})),
-        new short[] {5, 6}));
-    assertTrue(Arrays.equals(typeService.parseIntArray(typeService.toString(new int[] {7, 8})),
-        new int[] {7, 8}));
+    assertTrue(Arrays.equals(typeService.parseBooleanArray(typeService.toString(new boolean[]{true,
+        false})), new boolean[]{true, false}));
+    assertTrue(Arrays.equals(typeService.parseByteArray(typeService.toString(new byte[]{1, 2})),
+        new byte[]{1, 2}));
     assertTrue(Arrays.equals(
-        typeService.parseLongArray(typeService.toString(new long[] {9l, 10l})),
-        new long[] {9l, 10l}));
-    assertTrue(Arrays.equals(typeService.parseFloatArray(typeService.toString(new float[] {11.12f,
-        13.14f})), new float[] {11.12f, 13.14f}));
-    assertTrue(Arrays.equals(typeService.parseDoubleArray(typeService.toString(new double[] {
-        15.16d, 17.18d})), new double[] {15.16d, 17.18d}));
-    assertTrue(Arrays.equals(typeService.parseObjectArray(typeService.toString(new Object[] {"19",
-        "20"})), new Object[] {"19", "20"}));
+        typeService.parseCharArray(typeService.toString(new char[]{'3', '4'})),
+        new char[]{'3', '4'}));
+    assertTrue(Arrays.equals(typeService.parseShortArray(typeService.toString(new short[]{5, 6})),
+        new short[]{5, 6}));
+    assertTrue(Arrays.equals(typeService.parseIntArray(typeService.toString(new int[]{7, 8})),
+        new int[]{7, 8}));
+    assertTrue(Arrays.equals(typeService.parseLongArray(typeService.toString(new long[]{9l, 10l})),
+        new long[]{9l, 10l}));
+    assertTrue(Arrays.equals(typeService.parseFloatArray(typeService.toString(new float[]{11.12f,
+        13.14f})), new float[]{11.12f, 13.14f}));
+    assertTrue(Arrays.equals(typeService.parseDoubleArray(typeService.toString(new double[]{15.16d,
+        17.18d})), new double[]{15.16d, 17.18d}));
+    assertTrue(Arrays.equals(typeService.parseObjectArray(typeService.toString(new Object[]{"19",
+        "20"})), new Object[]{"19", "20"}));
 
     assertTrue(Arrays.equals(
-        typeService.parseIntArray(typeService.toString(int.class, 24, 25, 26)), new int[] {24, 25,
+        typeService.parseIntArray(typeService.toString(int.class, 24, 25, 26)), new int[]{24, 25,
             26}));
     assertTrue(Arrays.equals(typeService.parseObjectArray(typeService.toString(String.class, "27",
-        "28", "29")), new String[] {"27", "28", "29"}));
+        "28", "29")), new String[]{"27", "28", "29"}));
 
     assertEquals(typeService.parseGenericType(Integer.class, typeService.toString(Arrays.asList(21,
         22, 23))), Arrays.asList(21, 22, 23));

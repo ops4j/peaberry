@@ -16,12 +16,12 @@
 
 package org.ops4j.peaberry.osgi;
 
+import org.ops4j.peaberry.BundleScope;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
-import com.google.inject.Scope;
 
 /**
  * OSGi specific Guice binding {@link Module}.
@@ -40,11 +40,11 @@ public final class OSGiModule
   @Override
   protected void configure() {
     bind(BundleContext.class).toInstance(bundleContext);
-    final Scope bundleScope = new BundleScope(bundleContext);
+    bindScope(BundleScope.class, new BundleScopeImpl(bundleContext));
 
-    // need indirect binding so registry is registered as caching
+    // need indirect binding so registry is published as caching
     bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
-    bind(CachingServiceRegistry.class).in(bundleScope);
+    bind(CachingServiceRegistry.class).in(BundleScope.class);
   }
 
   @Override
