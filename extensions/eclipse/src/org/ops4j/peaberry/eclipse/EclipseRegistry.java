@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.eclipse;
 
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -27,6 +28,12 @@ import org.ops4j.peaberry.ServiceScope;
  */
 public class EclipseRegistry
     implements ServiceRegistry {
+
+  private final IExtensionRegistry registry;
+
+  public EclipseRegistry(final IExtensionRegistry registry) {
+    this.registry = registry;
+  }
 
   public <T> Export<T> add(final Import<T> service) {
     throw new UnsupportedOperationException();

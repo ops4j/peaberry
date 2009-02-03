@@ -5,11 +5,33 @@
   <import file="../../setup/common.xml"/>
   <property file="build.properties"/>
 
-  <target name="jar" depends="common.jar">
+  <target name="peaberry" depends="check.peaberry,build.peaberry"/>
+
+  <target name="check.peaberry">
+    <available file="../../build/classes" property="have.peaberry"/>
+  </target>
+
+  <target name="build.peaberry" unless="have.peaberry">
+    <ant dir="../.." inheritAll="false" target="compile"/>
+  </target>
+
+  <target name="jar" depends="peaberry,common.jar">
     <makeurl property="deploy.urls">
       <fileset dir="../../build/dist" includes="*.jar"/>
       <fileset dir="${dist}" includes="*.jar"/>
     </makeurl>
   </target>
+
+  <target name="director" depends="check.director,build.director"/>
+
+  <target name="check.director">
+    <available file="${director.jar}" property="have.director"/>
+  </target>
+
+  <target name="build.director" unless="have.director">
+    <ant dir="../.." inheritAll="false" target="testcases"/>
+  </target>
+
+  <target name="test.jar" depends="director,common.test.jar"/>
 
 </project>

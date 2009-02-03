@@ -4,5 +4,6 @@
 	<classpathentry kind="src" output="build/test-classes" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/peaberry"/>
+	<classpathentry kind="lib" path="lib/build/org.eclipse.equinox.registry_3.4.100.v20080722-0430.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
