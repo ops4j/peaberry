@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newStrongValueCache;
+import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newSoftCache;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 
 import java.lang.reflect.Constructor;
@@ -46,7 +46,7 @@ final class ServiceProxyFactory {
     return new Iterable<T>() {
 
       // local cache of provided proxy instances, so they can be re-used
-      final ConcurrentMap<Import<?>, T> PROXY_CACHE = newStrongValueCache();
+      final ConcurrentMap<Import<?>, T> PROXY_CACHE = newSoftCache();
 
       public Iterator<T> iterator() {
         return new Iterator<T>() {

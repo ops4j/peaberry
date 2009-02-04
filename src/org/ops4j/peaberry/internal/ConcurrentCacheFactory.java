@@ -17,12 +17,10 @@
 package org.ops4j.peaberry.internal;
 
 import static jsr166y.ConcurrentReferenceHashMap.Option.IDENTITY_COMPARISONS;
-import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.STRONG;
+import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.SOFT;
 import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.WEAK;
 
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import jsr166y.ConcurrentReferenceHashMap;
@@ -48,16 +46,16 @@ final class ConcurrentCacheFactory {
   private static final int CONCURRENCY = 16;
 
   /**
-   * @return {@link WeakHashMap} replacement with referential-equality semantics
+   * @return soft-cache with referential-equality semantics
    */
-  public static <K, V> ConcurrentMap<K, V> newStrongValueCache() {
-    return new ConcurrentReferenceHashMap<K, V>(CAPACITY, LOAD, CONCURRENCY, WEAK, STRONG, IDENTITY);
+  public static <K, V> ConcurrentMap<K, V> newSoftCache() {
+    return new ConcurrentReferenceHashMap<K, V>(CAPACITY, LOAD, CONCURRENCY, WEAK, SOFT, IDENTITY);
   }
 
   /**
-   * @return completely weak {@link HashMap} with referential-equality semantics
+   * @return weak-cache with referential-equality semantics
    */
-  public static <K, V> ConcurrentMap<K, V> newWeakValueCache() {
+  public static <K, V> ConcurrentMap<K, V> newWeakCache() {
     return new ConcurrentReferenceHashMap<K, V>(CAPACITY, LOAD, CONCURRENCY, WEAK, WEAK, IDENTITY);
   }
 }

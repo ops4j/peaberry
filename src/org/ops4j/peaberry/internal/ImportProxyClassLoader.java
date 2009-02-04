@@ -17,7 +17,7 @@
 package org.ops4j.peaberry.internal;
 
 import static java.security.AccessController.doPrivileged;
-import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newWeakValueCache;
+import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newWeakCache;
 import static org.ops4j.peaberry.internal.ImportGlue.generateProxy;
 import static org.ops4j.peaberry.internal.ImportGlue.getClazzName;
 import static org.ops4j.peaberry.internal.ImportGlue.getProxyName;
@@ -60,7 +60,7 @@ final class ImportProxyClassLoader
   }
 
   // weak map of classloaders, to allow eager collection of proxied classes
-  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP = newWeakValueCache();
+  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP = newWeakCache();
 
   private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
     final ClassLoader parent = null == typeLoader ? getSystemClassLoader() : typeLoader;
