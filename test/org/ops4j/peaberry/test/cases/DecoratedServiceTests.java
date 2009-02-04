@@ -21,9 +21,8 @@ import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 
 import java.util.Map;
 
-import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.builders.QualifiedServiceBuilder;
+import org.ops4j.peaberry.util.AbstractDecorator;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -56,24 +55,11 @@ public final class DecoratedServiceTests
   }
 
   static class IdDecorator
-      implements ImportDecorator<Id> {
+      extends AbstractDecorator<Id> {
 
-    public <T extends Id> Import<T> decorate(final Import<T> handle) {
-      return new Import<T>() {
-
-        @SuppressWarnings("unchecked")
-        public T get() {
-          return (T) new IdAdapter(handle.get());
-        }
-
-        public Map<String, ?> attributes() {
-          return handle.attributes();
-        }
-
-        public void unget() {
-          handle.unget();
-        }
-      };
+    @Override
+    public Id decorate(final Id instance, final Map<String, ?> attributes) {
+      return new IdAdapter(instance);
     }
   }
 
