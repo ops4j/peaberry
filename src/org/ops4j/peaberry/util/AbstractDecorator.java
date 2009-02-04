@@ -36,8 +36,9 @@ public abstract class AbstractDecorator<S>
   public <T extends S> Import<T> decorate(final Import<T> service) {
     return new Import<T>() {
 
+      @SuppressWarnings("unchecked")
       public T get() {
-        return decorate(service.get(), service.attributes());
+        return (T) decorate(service.get(), service.attributes());
       }
 
       public Map<String, ?> attributes() {
@@ -57,5 +58,5 @@ public abstract class AbstractDecorator<S>
    * @param attributes service attributes
    * @return decorated service instance
    */
-  protected abstract <T extends S> T decorate(T instance, Map<String, ?> attributes);
+  protected abstract S decorate(S instance, Map<String, ?> attributes);
 }
