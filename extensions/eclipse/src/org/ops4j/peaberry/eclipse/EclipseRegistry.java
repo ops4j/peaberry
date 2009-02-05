@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.eclipse;
 
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.ops4j.peaberry.AttributeFilter;
@@ -33,7 +34,12 @@ public final class EclipseRegistry
   private final IExtensionRegistry registry;
 
   public EclipseRegistry() {
-    this.registry = RegistryFactory.getRegistry();
+    registry = RegistryFactory.getRegistry();
+
+    IConfigurationElement config =
+        registry.getExtensionPoints()[0].getExtensions()[0].getConfigurationElements()[0];
+
+    System.out.println("NAME:" + config.getAttribute("name"));
   }
 
   public <T> Export<T> add(final Import<T> service) {

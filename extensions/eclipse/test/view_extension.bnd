@@ -1,7 +1,0 @@
-
-Private-Package:\
- examples.views.internal
-
-Include-Resource:\
- plugin.xml=view_extension.xml
-

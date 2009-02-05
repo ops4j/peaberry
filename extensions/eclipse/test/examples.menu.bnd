@@ -1,0 +1,10 @@
+
+Bundle-SymbolicName: examples.menu;singleton=true
+Eclipse-LazyStart: true
+
+Export-Package:\
+ examples.menu
+
+Include-Resource:\
+ plugin.xml=examples.menu.xml
+
