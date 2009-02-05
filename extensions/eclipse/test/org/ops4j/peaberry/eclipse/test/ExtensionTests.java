@@ -16,10 +16,16 @@
 
 package org.ops4j.peaberry.eclipse.test;
 
+import org.ops4j.peaberry.eclipse.EclipseRegistry;
 import org.testng.annotations.Test;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test
-public final class RegistryTests {}
+public final class ExtensionTests {
+
+  public void testExtensionPoint() {
+    new EclipseRegistry();
+  }
+}

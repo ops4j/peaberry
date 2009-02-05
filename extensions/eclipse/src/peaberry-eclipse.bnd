@@ -1,0 +1,20 @@
+
+-include: ${common.dir}/common.bnd
+-classpath: ${build.dir}/classes
+
+Include-Resource:\
+ META-INF/NOTICE=../NOTICE,\
+ META-INF/LICENSE=../LICENSE,\
+ @${riena.jar}
+
+Import-Package:\
+ ${module}.*;version=${api.range},\
+ org.eclipse.core.runtime;registry=split,\
+ *;resolution:=optional
+
+-exportcontents:\
+ ${module};version=${api.version}
+
+-output:\
+ ${peaberry-eclipse.jar}
+

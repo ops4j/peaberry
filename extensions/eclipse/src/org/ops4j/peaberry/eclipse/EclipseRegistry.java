@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.eclipse;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -26,13 +27,13 @@ import org.ops4j.peaberry.ServiceScope;
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public class EclipseRegistry
+public final class EclipseRegistry
     implements ServiceRegistry {
 
   private final IExtensionRegistry registry;
 
-  public EclipseRegistry(final IExtensionRegistry registry) {
-    this.registry = registry;
+  public EclipseRegistry() {
+    this.registry = RegistryFactory.getRegistry();
   }
 
   public <T> Export<T> add(final Import<T> service) {

@@ -20,7 +20,7 @@
       <path path="${shim.xml.jar}"/>
     </makeurl>
     <makeurl property="deploy.urls">
-      <fileset dir="${lib}" includes="org.*.jar"/>
+      <fileset dir="${lib}" includes="org.eclipse.equinox.*.jar"/>
       <fileset dir="../../build/dist" includes="*.jar"/>
       <fileset dir="${dist}" includes="*.jar"/>
     </makeurl>

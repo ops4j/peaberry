@@ -1,0 +1,7 @@
+
+Export-Package:\
+ examples.views
+
+Include-Resource:\
+ plugin.xml=view_point.xml
+
