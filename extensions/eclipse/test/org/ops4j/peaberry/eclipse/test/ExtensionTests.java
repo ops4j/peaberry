@@ -18,7 +18,7 @@ package org.ops4j.peaberry.eclipse.test;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.eclipse.EclipseRegistry;
-import org.ops4j.peaberry.eclipse.ExtensionInterface;
+import org.ops4j.peaberry.eclipse.ExtensionPoint;
 import org.testng.annotations.Test;
 
 import examples.menu.Item;
@@ -29,7 +29,7 @@ import examples.menu.Item;
 @Test
 public final class ExtensionTests {
 
-  @ExtensionInterface(point = "examples.menu")
+  @ExtensionPoint("examples.menu")
   private static interface MenuItem {
     String getName();
   }

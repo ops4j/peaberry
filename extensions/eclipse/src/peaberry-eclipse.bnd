@@ -1,11 +1,10 @@
 
 -include: ${common.dir}/common.bnd
--classpath: ${build.dir}/classes.jar
+-classpath: ${build.dir}/classes
 
 Include-Resource:\
  META-INF/NOTICE=../NOTICE,\
- META-INF/LICENSE=../LICENSE,\
- META-INF/LICENSE.riena=../LICENSE.riena
+ META-INF/LICENSE=../LICENSE
 
 Import-Package:\
  ${module}.*;version=${api.range},\

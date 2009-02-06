@@ -44,7 +44,7 @@ public final class ExtensionListener
   private final Class<?> clazz;
 
   private final String point;
-  private final boolean wrap;
+  private final boolean aggregate;
 
   private final List<ExtensionImport> imports;
   private final List<ServiceScope<Object>> watchers;
@@ -52,18 +52,18 @@ public final class ExtensionListener
   private long idCounter;
 
   public ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
-    final ExtensionInterface metadata = clazz.getAnnotation(ExtensionInterface.class);
+    final ExtensionPoint metadata = clazz.getAnnotation(ExtensionPoint.class);
 
     this.registry = registry;
     this.clazz = clazz;
 
-    if (null == metadata || metadata.point().isEmpty()) {
+    if (null == metadata || metadata.value().isEmpty()) {
       point = clazz.getPackage().getName();
     } else {
-      point = metadata.point();
+      point = metadata.value();
     }
 
-    wrap = metadata != null && metadata.heterogeneous();
+    aggregate = metadata != null && metadata.aggregate();
 
     imports = new ArrayList<ExtensionImport>(4);
     watchers = new ArrayList<ServiceScope<Object>>(2);
@@ -126,9 +126,9 @@ public final class ExtensionListener
   }
 
   private void insertExtension(final IExtension extension) {
-    IConfigurationElement[] elements;
-    if (wrap) {
-      elements = new IConfigurationElement[]{new ConfigurationWrapper(extension)};
+    final IConfigurationElement[] elements;
+    if (aggregate) {
+      elements = new IConfigurationElement[]{new AggregateExtension(extension)};
     } else {
       elements = extension.getConfigurationElements();
     }

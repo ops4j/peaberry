@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 Stuart McCulloch
+ * Copyright (C) 2008 Stuart McCulloch
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.eclipse.riena;
+package org.ops4j.peaberry.eclipse;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class Activator
-    implements BundleActivator {
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface ExtensionPoint {
+  boolean aggregate() default false;
 
-  public void start(final BundleContext context) {}
-
-  public void stop(final BundleContext context) {}
-
-  public static Activator getDefault() {
-    return new Activator();
-  }
-
-  public Logger getLogger(@SuppressWarnings("unused") final Class<?> clazz) {
-    return new Logger() {
-      public void log(final int level, final String message) {}
-    };
-  }
+  String value();
 }

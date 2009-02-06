@@ -26,12 +26,12 @@ import org.eclipse.core.runtime.IExtension;
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class ConfigurationWrapper
+final class AggregateExtension
     implements IConfigurationElement {
 
   private final IExtension extension;
 
-  public ConfigurationWrapper(final IExtension extension) {
+  public AggregateExtension(final IExtension extension) {
     this.extension = extension;
   }
 
