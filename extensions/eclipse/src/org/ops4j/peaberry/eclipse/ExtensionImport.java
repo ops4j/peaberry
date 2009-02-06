@@ -42,7 +42,7 @@ public final class ExtensionImport
   private static final int ACTIVE = 1;
 
   private final long id;
-  private final IConfigurationElement element;
+  private final IConfigurationElement config;
   private final Class<?> clazz;
 
   private Object instance;
@@ -51,13 +51,13 @@ public final class ExtensionImport
   private final Map<String, ?> attributes;
   private final List<Export<?>> watchers;
 
-  public ExtensionImport(final long id, final IConfigurationElement element, final Class<?> clazz) {
+  public ExtensionImport(final long id, final IConfigurationElement config, final Class<?> clazz) {
 
     this.id = id;
-    this.element = element;
+    this.config = config;
     this.clazz = clazz;
 
-    attributes = unmodifiableMap(collectAttributes(element));
+    attributes = unmodifiableMap(collectAttributes(config));
     watchers = new ArrayList<Export<?>>(2);
   }
 
@@ -70,7 +70,7 @@ public final class ExtensionImport
       synchronized (this) {
         if (DORMANT == state) {
           try {
-            instance = ExtensionBeanFactory.newInstance(clazz, element);
+            instance = ExtensionBeanFactory.newInstance(clazz, config);
           } catch (final RuntimeException re) {
             throw new ServiceUnavailableException(re);
           } finally {
@@ -83,7 +83,7 @@ public final class ExtensionImport
   }
 
   public Map<String, ?> attributes() {
-    return element.isValid() ? attributes : null;
+    return config.isValid() ? attributes : null;
   }
 
   public void unget() {/* do nothing */}
@@ -137,22 +137,22 @@ public final class ExtensionImport
     return id < rhs.id ? -1 : 1;
   }
 
-  private static Map<String, Object> collectAttributes(final IConfigurationElement element) {
+  private static Map<String, Object> collectAttributes(final IConfigurationElement config) {
     final Map<String, Object> map = new HashMap<String, Object>();
 
     try {
-      final IExtension extension = element.getDeclaringExtension();
+      final IExtension extension = config.getDeclaringExtension();
 
       map.put("@id", extension.getUniqueIdentifier());
       map.put("@label", extension.getLabel());
-      map.put("@contributor", element.getContributor());
+      map.put("@contributor", config.getContributor());
       map.put("@point", extension.getExtensionPointUniqueIdentifier());
 
-      map.put("name()", element.getName());
-      map.put("text()", element.getValue());
+      map.put("name()", config.getName());
+      map.put("text()", config.getValue());
 
-      for (final String key : element.getAttributeNames()) {
-        map.put(key, element.getAttribute(key));
+      for (final String key : config.getAttributeNames()) {
+        map.put(key, config.getAttribute(key));
       }
 
     } catch (final InvalidRegistryObjectException re) {

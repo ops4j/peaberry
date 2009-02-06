@@ -35,11 +35,11 @@ public final class ExtensionTests {
   }
 
   public void testExtensionPoint() {
-    for (Import<MenuItem> item : new EclipseRegistry().lookup(MenuItem.class, null)) {
+    for (final Import<MenuItem> item : new EclipseRegistry().lookup(MenuItem.class, null)) {
       System.out.println("ITEM: " + item.get().getName());
     }
 
-    for (Import<Item> item : new EclipseRegistry().lookup(Item.class, null)) {
+    for (final Import<Item> item : new EclipseRegistry().lookup(Item.class, null)) {
       System.out.println("HINT: " + item.get().getHint());
     }
   }

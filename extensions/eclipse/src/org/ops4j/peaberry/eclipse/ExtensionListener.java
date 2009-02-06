@@ -126,14 +126,14 @@ public final class ExtensionListener
   }
 
   private void insertExtension(final IExtension extension) {
-    final IConfigurationElement[] elements;
+    final IConfigurationElement[] configurations;
     if (aggregate) {
-      elements = new IConfigurationElement[]{new AggregateExtension(extension)};
+      configurations = new IConfigurationElement[]{new AggregateExtension(extension)};
     } else {
-      elements = extension.getConfigurationElements();
+      configurations = extension.getConfigurationElements();
     }
 
-    for (final IConfigurationElement i : elements) {
+    for (final IConfigurationElement i : configurations) {
       imports.add(new ExtensionImport(++idCounter, i, clazz));
     }
   }
