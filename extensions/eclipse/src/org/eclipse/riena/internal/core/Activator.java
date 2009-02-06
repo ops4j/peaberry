@@ -17,6 +17,7 @@
 package org.eclipse.riena.internal.core;
 
 import org.eclipse.equinox.log.Logger;
+import org.ops4j.peaberry.ServiceException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -34,10 +35,10 @@ public final class Activator
     return new Activator();
   }
 
-  public Logger getLogger(final Class<?> clazz) {
+  public Logger getLogger(@SuppressWarnings("unused") final Class<?> clazz) {
     return new Logger() {
       public void log(final int level, final String message) {
-        System.out.format("[%d] %s - %s", level, clazz, message);
+        throw new ServiceException("Injection error: " + message);
       }
     };
   }

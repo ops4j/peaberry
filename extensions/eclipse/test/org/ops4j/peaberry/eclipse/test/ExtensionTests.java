@@ -16,7 +16,9 @@
 
 package org.ops4j.peaberry.eclipse.test;
 
+import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.eclipse.EclipseRegistry;
+import org.ops4j.peaberry.eclipse.InjectExtension;
 import org.testng.annotations.Test;
 
 /**
@@ -25,7 +27,14 @@ import org.testng.annotations.Test;
 @Test
 public final class ExtensionTests {
 
+  @InjectExtension(point = "examples.menu")
+  private static interface MenuItem {
+    String getName();
+  }
+
   public void testExtensionPoint() {
-    new EclipseRegistry();
+    for (Import<MenuItem> item : new EclipseRegistry().lookup(MenuItem.class, null)) {
+      System.out.println("ITEM: " + item.get().getName());
+    }
   }
 }

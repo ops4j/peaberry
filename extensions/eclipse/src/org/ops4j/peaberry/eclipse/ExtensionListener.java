@@ -16,14 +16,22 @@
 
 package org.ops4j.peaberry.eclipse;
 
+import static java.util.Collections.binarySearch;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceScope;
 
 /**
@@ -32,26 +40,130 @@ import org.ops4j.peaberry.ServiceScope;
 public final class ExtensionListener
     implements IRegistryEventListener {
 
-  private final List<IConfigurationElement> elements;
+  private final IExtensionRegistry registry;
+  private final Class<?> clazz;
 
-  public ExtensionListener(Class<?> clazz) {
-    elements = new ArrayList<IConfigurationElement>();
+  private final String point;
+  private final boolean wrap;
+
+  private final List<ExtensionImport> imports;
+  private final List<ServiceScope<Object>> watchers;
+
+  private long idCounter;
+
+  public ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
+    this.registry = registry;
+    this.clazz = clazz;
+
+    final InjectExtension config = clazz.getAnnotation(InjectExtension.class);
+    if (null != config) {
+      point = config.point();
+      wrap = config.heterogeneous();
+    } else {
+      point = clazz.getPackage().getName();
+      wrap = false;
+    }
+
+    imports = new ArrayList<ExtensionImport>(4);
+    watchers = new ArrayList<ServiceScope<Object>>(2);
   }
 
-  public void start() {}
+  public synchronized void start() {
+    // register listener first to avoid race condition
+    registry.addListener(this, point);
 
-  public void added(IExtension[] extensions) {}
+    // retrieve any matching extensions that are already registered
+    final IExtensionPoint extensionPoint = registry.getExtensionPoint(point);
+    if (extensionPoint != null) {
+      for (final IExtension e : extensionPoint.getExtensions()) {
+        insertExtension(e);
+      }
+    }
+  }
 
-  public void removed(IExtension[] extensions) {}
+  public synchronized void added(final IExtension[] extensions) {
+    for (final IExtension e : extensions) {
+      insertExtension(e);
+    }
+  }
 
-  public void added(IExtensionPoint[] points) {/* do nothing */}
+  public synchronized void removed(final IExtension[] extensions) {
 
-  public void removed(IExtensionPoint[] points) {/* do nothing */}
+    final Set<String> ids = new HashSet<String>();
+    for (final IExtension e : extensions) {
+      ids.add(e.getUniqueIdentifier());
+    }
+
+    for (final Iterator<ExtensionImport> i = imports.iterator(); i.hasNext();) {
+      final ExtensionImport extensionImport = i.next();
+
+      final Map<String, ?> attributes = extensionImport.attributes();
+      if (null == attributes || ids.contains(attributes.get("@id"))) {
+        i.remove();
+
+        extensionImport.invalidate();
+      }
+    }
+  }
+
+  public void added(final IExtensionPoint[] points) {/* do nothing */}
+
+  public void removed(final IExtensionPoint[] points) {/* do nothing */}
 
   @SuppressWarnings("unchecked")
-  public void addWatcher(final ServiceScope scope) {}
+  public synchronized void addWatcher(final ServiceScope scope) {
+    if (!watchers.contains(scope) && watchers.add(scope)) {
 
-  public ExtensionImport findNextImport(final ExtensionImport prevImport, AttributeFilter filter) {
-    return null;
+      // report existing imports to the new scope
+      for (final ExtensionImport i : imports) {
+        final Export export = scope.add(i);
+        if (null != export) {
+          i.addWatcher(export);
+        }
+      }
+    }
+  }
+
+  private void insertExtension(final IExtension extension) {
+    IConfigurationElement[] elements;
+    if (wrap) {
+      elements = new IConfigurationElement[]{new ConfigurationWrapper(extension)};
+    } else {
+      elements = extension.getConfigurationElements();
+    }
+
+    for (final IConfigurationElement i : elements) {
+      imports.add(new ExtensionImport(++idCounter, i, clazz));
+    }
+  }
+
+  public synchronized ExtensionImport findNextImport(final ExtensionImport prevImport,
+      final AttributeFilter filter) {
+
+    if (imports.isEmpty()) {
+      return null;
+    }
+
+    if (prevImport == null && filter == null) {
+      return imports.get(0);
+    }
+
+    // estimate last position based on previous value and current list
+    return findNextImport(filter, null == prevImport ? ~0 : binarySearch(imports, prevImport));
+  }
+
+  private ExtensionImport findNextImport(final AttributeFilter filter, final int prevIndex) {
+
+    // may need to flip position if previous import is no longer in the list
+    for (int i = prevIndex < 0 ? ~prevIndex : prevIndex + 1; i < imports.size(); i++) {
+
+      // now do a linear search applying the given filter
+      final ExtensionImport nextImport = imports.get(i);
+      if (null == filter || nextImport.matches(filter)) {
+        return nextImport;
+      }
+    }
+
+    return null; // no matching extension
   }
 }

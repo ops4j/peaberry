@@ -31,7 +31,7 @@ public final class IterableExtension<T>
   final ExtensionListener listener;
   final AttributeFilter filter;
 
-  public IterableExtension(ExtensionListener listener, AttributeFilter filter) {
+  public IterableExtension(final ExtensionListener listener, final AttributeFilter filter) {
     this.listener = listener;
     this.filter = filter;
   }

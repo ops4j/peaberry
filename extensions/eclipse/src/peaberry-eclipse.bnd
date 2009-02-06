@@ -5,7 +5,8 @@
 Include-Resource:\
  META-INF/NOTICE=../NOTICE,\
  META-INF/LICENSE=../LICENSE,\
- @${riena.jar}!/org/eclipse/riena/core/extension/**,\
+ META-INF/LICENSE.riena=../LICENSE.riena,\
+ @${riena.jar}!/org/eclipse/riena/core/extension/[^E]*,\
  org/eclipse=${build.dir}/classes/org/eclipse
 
 Import-Package:\

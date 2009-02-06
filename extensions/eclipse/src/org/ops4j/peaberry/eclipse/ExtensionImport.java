@@ -16,33 +16,150 @@
 
 package org.ops4j.peaberry.eclipse;
 
+import static java.util.Collections.unmodifiableMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eclipse.riena.core.extension.PublicInterfaceBeanFactory;
 import org.ops4j.peaberry.AttributeFilter;
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class ExtensionImport
-    implements Import<Object> {
+    implements Import<Object>, Comparable<ExtensionImport> {
+
+  private static final int INVALID = -1;
+  private static final int DORMANT = 0;
+  private static final int ACTIVE = 1;
+
+  private final long id;
+  private final IConfigurationElement element;
+  private final Class<?> clazz;
+
+  private Object instance;
+  private volatile int state;
+
+  private final Map<String, ?> attributes;
+  private final List<Export<?>> watchers;
+
+  public ExtensionImport(final long id, final IConfigurationElement element, final Class<?> clazz) {
+
+    this.id = id;
+    this.element = element;
+    this.clazz = clazz;
+
+    attributes = unmodifiableMap(collectAttributes(element));
+    watchers = new ArrayList<Export<?>>(2);
+  }
+
+  public boolean matches(final AttributeFilter filter) {
+    return filter.matches(attributes);
+  }
 
   public Object get() {
-    // TODO Auto-generated method stub
-    return null;
+    if (DORMANT == state) {
+      synchronized (this) {
+        if (DORMANT == state) {
+          try {
+            instance = PublicInterfaceBeanFactory.newInstance(clazz, element);
+          } catch (final RuntimeException re) {
+            throw new ServiceUnavailableException(re);
+          } finally {
+            state = ACTIVE;
+          }
+        }
+      }
+    }
+    return instance;
   }
 
   public Map<String, ?> attributes() {
-    // TODO Auto-generated method stub
-    return null;
+    return element.isValid() ? attributes : null;
   }
 
-  public void unget() {
-  // TODO Auto-generated method stub
+  public void unget() {/* do nothing */}
+
+  /**
+   * Protected from concurrent access by {@link ExtensionListener}.
+   */
+  public void addWatcher(final Export<?> export) {
+    watchers.add(export);
   }
 
-  public boolean matches(AttributeFilter filter) {
-    // TODO Auto-generated method stub
+  /**
+   * Protected from concurrent access by {@link ExtensionListener}.
+   */
+  public void invalidate() {
+    notifyWatchers();
+    watchers.clear();
+    instance = null;
+    state = INVALID; // force memory flush
+  }
+
+  private void notifyWatchers() {
+    for (final Export<?> export : watchers) {
+      try {
+        export.unput();
+      } catch (final RuntimeException re) {/* ignore */} // NOPMD
+    }
+  }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof ExtensionImport) {
+      // allocated id is a unique identifier
+      return id == ((ExtensionImport) rhs).id;
+    }
     return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return (int) (id ^ id >>> 32);
+  }
+
+  public int compareTo(final ExtensionImport rhs) {
+
+    if (id == rhs.id) {
+      return 0;
+    }
+
+    // prefer lower allocated id
+    return id < rhs.id ? -1 : 1;
+  }
+
+  private static Map<String, Object> collectAttributes(final IConfigurationElement element) {
+    final Map<String, Object> map = new HashMap<String, Object>();
+
+    try {
+      final IExtension extension = element.getDeclaringExtension();
+
+      map.put("@id", extension.getUniqueIdentifier());
+      map.put("@label", extension.getLabel());
+      map.put("@contributor", element.getContributor());
+      map.put("@point", extension.getExtensionPointUniqueIdentifier());
+
+      map.put("name()", element.getName());
+      map.put("text()", element.getValue());
+
+      for (final String key : element.getAttributeNames()) {
+        map.put(key, element.getAttribute(key));
+      }
+
+    } catch (final InvalidRegistryObjectException re) {
+      map.clear();
+    }
+
+    return map;
   }
 }
