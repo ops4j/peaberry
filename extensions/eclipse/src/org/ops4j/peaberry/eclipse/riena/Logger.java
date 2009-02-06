@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.eclipse.equinox.log;
+package org.ops4j.peaberry.eclipse.riena;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)

@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 
-package org.eclipse.riena.core.extension;
+package org.ops4j.peaberry.eclipse.riena;
 
-import org.eclipse.core.runtime.IConfigurationElement;
+import org.ops4j.peaberry.ServiceException;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class PublicInterfaceBeanFactory {
+public final class Activator
+    implements BundleActivator {
 
-  // instances not allowed
-  private PublicInterfaceBeanFactory() {}
+  public void start(final BundleContext context) {}
 
-  @SuppressWarnings("unchecked")
-  public static <T> T newInstance(final Class<? extends T> clazz,
-      final IConfigurationElement configurationElement) {
-    return (T) InterfaceBeanFactory.newInstance(false, clazz, configurationElement);
+  public void stop(final BundleContext context) {}
+
+  public static Activator getDefault() {
+    return new Activator();
+  }
+
+  public Logger getLogger(@SuppressWarnings("unused") final Class<?> clazz) {
+    return new Logger() {
+      public void log(final int level, final String message) {
+        throw new ServiceException("Injection error: " + message);
+      }
+    };
   }
 }

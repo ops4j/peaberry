@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008 Stuart McCulloch
+ * Copyright (C) 2009 Stuart McCulloch
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.eclipse;
+package org.eclipse.riena.core.extension;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.eclipse.core.runtime.IConfigurationElement;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Target(TYPE)
-@Retention(RUNTIME)
-public @interface InjectExtension {
+public final class PublicBeanFactory {
 
-  boolean heterogeneous() default false;
+  // instances not allowed
+  private PublicBeanFactory() {}
 
-  String point();
+  @SuppressWarnings("unchecked")
+  public static <T> T newInstance(final Class<? extends T> clazz,
+      final IConfigurationElement configurationElement) {
+    return (T) InterfaceBeanFactory.newInstance(false, clazz, configurationElement);
+  }
 }

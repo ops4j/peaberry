@@ -1,13 +1,11 @@
 
 -include: ${common.dir}/common.bnd
--classpath: ${build.dir}/classes
+-classpath: ${build.dir}/classes.jar
 
 Include-Resource:\
  META-INF/NOTICE=../NOTICE,\
  META-INF/LICENSE=../LICENSE,\
- META-INF/LICENSE.riena=../LICENSE.riena,\
- @${riena.jar}!/org/eclipse/riena/core/extension/[^E]*,\
- org/eclipse=${build.dir}/classes/org/eclipse
+ META-INF/LICENSE.riena=../LICENSE.riena
 
 Import-Package:\
  ${module}.*;version=${api.range},\

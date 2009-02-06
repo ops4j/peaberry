@@ -12,7 +12,7 @@
     <mkdir dir="${build}/classes"/>
     <javac debug="on" srcdir="${src}" source="1.5" target="1.5"
         destdir="${build}/classes" classpath="${build.cp}">
-      <compilerarg value="-Xlint"/>
+      <compilerarg value="-Xlint:all,-deprecation"/>
     </javac>
   </target>
 
@@ -20,7 +20,7 @@
     <mkdir dir="${build}/test-classes"/>
     <javac debug="on" srcdir="${test}" source="1.5" target="1.5"
         destdir="${build}/test-classes" classpath="${test.cp}">
-      <compilerarg value="-Xlint"/>
+      <compilerarg value="-Xlint:all,-deprecation"/>
     </javac>
   </target>
 

@@ -26,7 +26,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.eclipse.riena.core.extension.PublicInterfaceBeanFactory;
+import org.eclipse.riena.core.extension.PublicBeanFactory;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -71,7 +71,7 @@ public final class ExtensionImport
       synchronized (this) {
         if (DORMANT == state) {
           try {
-            instance = PublicInterfaceBeanFactory.newInstance(clazz, element);
+            instance = PublicBeanFactory.newInstance(clazz, element);
           } catch (final RuntimeException re) {
             throw new ServiceUnavailableException(re);
           } finally {
