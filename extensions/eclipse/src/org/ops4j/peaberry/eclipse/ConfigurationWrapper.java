@@ -90,7 +90,7 @@ final class ConfigurationWrapper
   }
 
   public String getValue() {
-    throw new UnsupportedOperationException();
+    return null;
   }
 
   @SuppressWarnings("deprecation")

@@ -21,6 +21,8 @@ import org.ops4j.peaberry.eclipse.EclipseRegistry;
 import org.ops4j.peaberry.eclipse.ExtensionInterface;
 import org.testng.annotations.Test;
 
+import examples.menu.Item;
+
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -35,6 +37,10 @@ public final class ExtensionTests {
   public void testExtensionPoint() {
     for (Import<MenuItem> item : new EclipseRegistry().lookup(MenuItem.class, null)) {
       System.out.println("ITEM: " + item.get().getName());
+    }
+
+    for (Import<Item> item : new EclipseRegistry().lookup(Item.class, null)) {
+      System.out.println("HINT: " + item.get().getHint());
     }
   }
 }

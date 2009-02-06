@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.eclipse.riena;
+package examples.menu.internal;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+import examples.menu.Item;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class Activator
-    implements BundleActivator {
+public class SaveItem
+    implements Item {
 
-  public void start(final BundleContext context) {}
-
-  public void stop(final BundleContext context) {}
-
-  public static Activator getDefault() {
-    return new Activator();
-  }
-
-  public Logger getLogger(@SuppressWarnings("unused") final Class<?> clazz) {
-    return new Logger() {
-      public void log(final int level, final String message) {}
-    };
+  public String getHint() {
+    return "Save the current document";
   }
 }

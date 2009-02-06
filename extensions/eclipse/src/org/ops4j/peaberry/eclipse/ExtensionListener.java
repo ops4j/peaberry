@@ -54,15 +54,16 @@ public final class ExtensionListener
   public ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
     final ExtensionInterface metadata = clazz.getAnnotation(ExtensionInterface.class);
 
-    if (null == metadata) {
-      throw new IllegalArgumentException("Class is missing @ExtensionInterface");
-    }
-
     this.registry = registry;
     this.clazz = clazz;
 
-    point = metadata.point().isEmpty() ? clazz.getPackage().getName() : metadata.point();
-    wrap = metadata.heterogeneous();
+    if (null == metadata || metadata.point().isEmpty()) {
+      point = clazz.getPackage().getName();
+    } else {
+      point = metadata.point();
+    }
+
+    wrap = metadata != null && metadata.heterogeneous();
 
     imports = new ArrayList<ExtensionImport>(4);
     watchers = new ArrayList<ServiceScope<Object>>(2);
