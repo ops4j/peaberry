@@ -16,7 +16,13 @@
 
 package org.ops4j.peaberry.eclipse;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+import org.eclipse.core.runtime.ContributorFactoryOSGi;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.osgi.framework.Bundle;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
@@ -24,8 +30,25 @@ import org.eclipse.core.runtime.IConfigurationElement;
 final class ExtensionBeanFactory {
 
   public static Object newInstance(Class<?> clazz, IConfigurationElement element) {
-    // TODO Auto-generated method stub
-    return null;
+    final String clazzName = element.getAttribute("class");
+    if (clazzName != null) {
+      Bundle bundle = ContributorFactoryOSGi.resolve(element.getContributor());
+      try {
+        final Class<?> elementClazz = bundle.loadClass(clazzName);
+        if (clazz.isAssignableFrom(elementClazz)) {
+          return elementClazz.newInstance();
+        }
+      } catch (ClassNotFoundException e) {} catch (InstantiationException e) {} catch (IllegalAccessException e) {}
+    }
+
+    return Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]{clazz},
+        new InvocationHandler() {
+          public Object invoke(Object proxy, Method method, Object[] args)
+              throws Throwable {
+            // TODO Auto-generated method stub
+            return null;
+          }
+        });
   }
 
 }
