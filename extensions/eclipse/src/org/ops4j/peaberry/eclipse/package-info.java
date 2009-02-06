@@ -15,7 +15,7 @@
  */
 
 /**
- * EclipseRegistry extension.
+ * Eclipse extension registry implementation of the {@link org.ops4j.peaberry.ServiceRegistry} API.
  */
 package org.ops4j.peaberry.eclipse;
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+	<extension point="examples.menu">
+		<menu name="Open" class="examples.menu.internal.OpenItem" id="examples.menu.open" />
+		<menu name="Save" class="examples.menu.internal.SaveItem" id="examples.menu.save" />
+		<menu name="Exit" class="examples.menu.internal.ExitItem" id="examples.menu.exit" />
+	</extension>
+</plugin>

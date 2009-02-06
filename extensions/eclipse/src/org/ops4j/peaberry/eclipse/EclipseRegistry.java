@@ -16,11 +16,11 @@
 
 package org.ops4j.peaberry.eclipse;
 
-import org.eclipse.core.runtime.IConfigurationElement;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.riena.core.extension.ExtensionInterface;
-import org.eclipse.riena.core.extension.PublicInterfaceBeanFactory;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -35,34 +35,61 @@ public final class EclipseRegistry
 
   private final IExtensionRegistry registry;
 
-  @ExtensionInterface
-  public static interface Menu {
-
-    String getName();
-
-    Menu create();
-  }
+  // per-class map of extension listeners (much faster than polling)
+  private final ConcurrentMap<String, ExtensionListener> listenerMap =
+      new ConcurrentHashMap<String, ExtensionListener>();
 
   public EclipseRegistry() {
     registry = RegistryFactory.getRegistry();
+  }
 
-    final IConfigurationElement config =
-        registry.getExtensionPoints()[0].getExtensions()[0].getConfigurationElements()[0];
-
-    System.out.println("NAME:"
-        + PublicInterfaceBeanFactory.newInstance(Menu.class, config).getName());
+  public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
+    return new IterableExtension<T>(registerListener(clazz), filter);
   }
 
   public <T> Export<T> add(final Import<T> service) {
     throw new UnsupportedOperationException();
   }
 
-  public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
-    throw new UnsupportedOperationException();
-  }
-
+  @SuppressWarnings("unchecked")
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceScope<? super T> scope) {
-    throw new UnsupportedOperationException();
+
+    registerListener(clazz).addWatcher(new FilteredExtensionScope(filter, scope));
+  }
+
+  @Override
+  public String toString() {
+    return String.format("EclipseRegistry[%s]", registry.toString());
+  }
+
+  @Override
+  public int hashCode() {
+    return registry.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof EclipseRegistry) {
+      return registry.equals(((EclipseRegistry) rhs).registry);
+    }
+    return false;
+  }
+
+  private <T> ExtensionListener registerListener(final Class<T> clazz) {
+    final String clazzName = clazz.getName();
+    ExtensionListener listener;
+
+    listener = listenerMap.get(clazzName);
+    if (null == listener) {
+      final ExtensionListener newListener = new ExtensionListener(clazz);
+      listener = listenerMap.putIfAbsent(clazzName, newListener);
+      if (null == listener) {
+        newListener.start();
+        return newListener;
+      }
+    }
+
+    return listener;
   }
 }
