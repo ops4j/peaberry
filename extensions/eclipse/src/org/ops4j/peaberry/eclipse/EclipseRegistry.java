@@ -19,6 +19,8 @@ package org.ops4j.peaberry.eclipse;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.riena.core.extension.ExtensionInterface;
+import org.eclipse.riena.core.extension.PublicInterfaceBeanFactory;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
@@ -33,13 +35,22 @@ public final class EclipseRegistry
 
   private final IExtensionRegistry registry;
 
+  @ExtensionInterface
+  public static interface Menu {
+
+    String getName();
+
+    Menu create();
+  }
+
   public EclipseRegistry() {
     registry = RegistryFactory.getRegistry();
 
-    IConfigurationElement config =
+    final IConfigurationElement config =
         registry.getExtensionPoints()[0].getExtensions()[0].getConfigurationElements()[0];
 
-    System.out.println("NAME:" + config.getAttribute("name"));
+    System.out.println("NAME:"
+        + PublicInterfaceBeanFactory.newInstance(Menu.class, config).getName());
   }
 
   public <T> Export<T> add(final Import<T> service) {

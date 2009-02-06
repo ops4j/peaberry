@@ -5,11 +5,14 @@
 Include-Resource:\
  META-INF/NOTICE=../NOTICE,\
  META-INF/LICENSE=../LICENSE,\
- @${riena.jar}
+ @${riena.jar}!/org/eclipse/riena/core/extension/**,\
+ org/eclipse=${build.dir}/classes/org/eclipse
 
 Import-Package:\
  ${module}.*;version=${api.range},\
+ org.ops4j.peaberry;version="[1,2)",\
  org.eclipse.core.runtime;registry=split,\
+ org.osgi.framework;version="[1.3,2)",\
  *;resolution:=optional
 
 -exportcontents:\
