@@ -1,7 +1,7 @@
 
 -classpath: ${lib.dir}/aopalliance-${aop.version}.jar
 
-Export-Package: org.aopalliance.*
+Export-Package: *
 
 -output:\
  ${aop.jar}

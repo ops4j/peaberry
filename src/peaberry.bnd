@@ -1,6 +1,6 @@
 
 -include: ${common.dir}/common.bnd
--classpath: ${build.dir}/classes.jar
+-classpath: ${build.dir}/classes.jar,${guice.jar},${felix.jar}
 
 Bundle-Activator: ${module}.osgi.Activator
 
@@ -9,14 +9,11 @@ Include-Resource:\
  META-INF/LICENSE=../LICENSE,\
  META-INF/LICENSE.asm=../LICENSE.asm
 
-Import-Package:\
- ${module}.*;version=${api.range},\
- com.google.inject.*;version="[1,2)",\
- org.osgi.framework;version="[1.3,2)",\
- *;resolution:=optional
-
 -exportcontents:\
  ${module}(|.builders|.util);version=${api.version}
+
+extra.imports:\
+ javax.*;resolution:=optional
 
 -output:\
  ${peaberry.jar}

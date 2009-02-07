@@ -1,17 +1,10 @@
 
 -include: ${common.dir}/common.bnd
--classpath: ${build.dir}/classes
+-classpath: ${build.dir}/classes,${eqcom.jar},${eqreg.jar},${felix.jar}
 
 Include-Resource:\
  META-INF/NOTICE=../NOTICE,\
  META-INF/LICENSE=../LICENSE
-
-Import-Package:\
- ${module}.*;version=${api.range},\
- org.ops4j.peaberry;version="[1,2)",\
- org.eclipse.core.runtime;registry=split,\
- org.osgi.framework;version="[1.3,2)",\
- *;resolution:=optional
 
 -exportcontents:\
  ${module};version=${api.version}
