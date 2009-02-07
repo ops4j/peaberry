@@ -30,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.runtime.ContributorFactoryOSGi;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.ops4j.peaberry.ServiceException;
 import org.osgi.framework.Bundle;
 
 /**
@@ -82,7 +81,7 @@ final class ExtensionBeanHandler
         return ((ExtensionBeanHandler) handler).config;
       }
     }
-    return instance;
+    return null;
   }
 
   private Object invokeGetter(final Method method) {
@@ -98,24 +97,22 @@ final class ExtensionBeanHandler
     final String key = getElementKey(method, element);
     final String value = getElementValue(config, key);
 
-    if (String.class == resultType) {
-      return value;
-    } else if (Class.class == resultType) {
-      return getElementClass(config, value);
-    } else if (resultType.isPrimitive()) {
-      return valueOf(resultType, value);
+    if (null != value) {
+
+      if (String.class == resultType) {
+        return value;
+      } else if (Class.class == resultType) {
+        return getElementClass(config, value);
+      } else if (resultType.isPrimitive()) {
+        return valueOf(resultType, value);
+      }
+
+      try {
+        return config.createExecutableExtension(key);
+      } catch (final CoreException e) {}
     }
 
-    final Object nestedResult = invokeNestedGetter(resultType, key);
-    if (nestedResult != null) {
-      return nestedResult;
-    }
-
-    try {
-      return config.createExecutableExtension(key);
-    } catch (final CoreException e) {
-      throw new ServiceException(e);
-    }
+    return invokeNestedGetter(resultType, key);
   }
 
   private Object invokeNestedGetter(final Class<?> resultType, final String key) {
