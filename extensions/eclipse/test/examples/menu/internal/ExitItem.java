@@ -24,7 +24,7 @@ import examples.menu.Item;
 public class ExitItem
     implements Item {
 
-  public String getHint() {
+  public String getName() {
     return "Exit the application";
   }
 }

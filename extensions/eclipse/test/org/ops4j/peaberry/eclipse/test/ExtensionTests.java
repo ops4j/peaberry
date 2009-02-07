@@ -18,7 +18,7 @@ package org.ops4j.peaberry.eclipse.test;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.eclipse.EclipseRegistry;
-import org.ops4j.peaberry.eclipse.ExtensionPoint;
+import org.ops4j.peaberry.eclipse.ExtensionInterface;
 import org.testng.annotations.Test;
 
 import examples.menu.Item;
@@ -29,18 +29,30 @@ import examples.menu.Item;
 @Test
 public final class ExtensionTests {
 
-  @ExtensionPoint("examples.menu")
-  private static interface MenuItem {
+  @ExtensionInterface("examples.menu")
+  private static interface ItemFacade {
     String getName();
   }
 
   public void testExtensionPoint() {
-    for (final Import<MenuItem> item : new EclipseRegistry().lookup(MenuItem.class, null)) {
-      System.out.println("ITEM: " + item.get().getName());
+    System.out.println("@ExtensionInterface proxy");
+    System.out.println("----------------------------------------------------------------");
+    for (final Import<ItemFacade> item : new EclipseRegistry().lookup(ItemFacade.class, null)) {
+      System.out.println("getClass(): " + item.get().getClass());
+      System.out.println("toString(): " + item.get().toString());
+      System.out.println("getName():  " + item.get().getName());
+      System.out.println("equals():   " + item.get().equals(item.get()));
+      System.out.println("----------------------------------------------------------------");
     }
-
+    System.out.println("\ncreateExecutableExtension");
+    System.out.println("----------------------------------------------------------------");
     for (final Import<Item> item : new EclipseRegistry().lookup(Item.class, null)) {
-      System.out.println("HINT: " + item.get().getHint());
+      System.out.println("getClass(): " + item.get().getClass());
+      System.out.println("toString(): " + item.get().toString());
+      System.out.println("getName():  " + item.get().getName());
+      System.out.println("equals():   " + item.get().equals(item.get()));
+      System.out.println("----------------------------------------------------------------");
     }
+    System.out.println();
   }
 }

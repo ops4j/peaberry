@@ -24,7 +24,7 @@ import examples.menu.Item;
 public class SaveItem
     implements Item {
 
-  public String getHint() {
+  public String getName() {
     return "Save the current document";
   }
 }

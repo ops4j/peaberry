@@ -101,4 +101,22 @@ final class AggregateExtension
   public boolean isValid() {
     return extension.isValid();
   }
+
+  @Override
+  public String toString() {
+    return extension.toString();
+  }
+
+  @Override
+  public boolean equals(Object rhs) {
+    if (rhs instanceof AggregateExtension) {
+      return extension.equals(((AggregateExtension) rhs).extension);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return extension.hashCode();
+  }
 }

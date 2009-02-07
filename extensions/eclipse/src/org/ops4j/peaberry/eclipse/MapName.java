@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.eclipse;
 
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -25,10 +26,8 @@ import java.lang.annotation.Target;
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Target(TYPE)
+@Target({METHOD, TYPE})
 @Retention(RUNTIME)
-public @interface ExtensionPoint {
-  boolean aggregate() default false;
-
+public @interface MapName {
   String value();
 }

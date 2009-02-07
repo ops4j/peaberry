@@ -19,12 +19,11 @@ package org.ops4j.peaberry.eclipse;
 import static java.lang.reflect.Proxy.newProxyInstance;
 
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 import org.eclipse.core.runtime.ContributorFactoryOSGi;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.ops4j.peaberry.ServiceException;
 import org.osgi.framework.Bundle;
 
 /**
@@ -32,64 +31,59 @@ import org.osgi.framework.Bundle;
  */
 final class ExtensionBeanFactory {
 
+  private static final String CONTENT_KEY = "text()";
+
   // instances not allowed
   private ExtensionBeanFactory() {}
 
   public static Object newInstance(final Class<?> clazz, final IConfigurationElement config) {
-    Object instance = null;
-
     try {
-      instance = createExtensionInstance(clazz, config);
+      return newExtensionImpl(clazz, config);
     } catch (final RuntimeException re) {}
 
-    if (null == instance) {
-      return newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new BeanHandler(config));
-    }
+    final ClassLoader loader = clazz.getClassLoader();
+    final Class<?>[] api = new Class[]{clazz};
 
-    return instance;
+    return newProxyInstance(loader, api, new ExtensionBeanHandler(config));
   }
 
-  private static Object createExtensionInstance(final Class<?> clazz,
-      final IConfigurationElement config) {
+  static Object newExtensionImpl(final Class<?> clazz, final IConfigurationElement config) {
 
-    final String clazzKey = getAttributeName(clazz, "class");
-    final String name = config.getAttribute(clazzKey);
+    final String clazzKey = getElementKey(clazz, "class");
+    final String clazzName = getElementValue(config, clazzKey);
 
-    if (clazz.isAssignableFrom(getElementClass(name, config))) {
-      try {
-        return config.createExecutableExtension(name);
-      } catch (CoreException e) {}
+    if (!clazz.isAssignableFrom(getElementClass(config, clazzName))) {
+      throw new ClassCastException(clazz + " is not assignable from: " + clazzName);
     }
 
-    return null;
-  }
-
-  private static class BeanHandler
-      implements InvocationHandler {
-
-    public BeanHandler(final IConfigurationElement config) {}
-
-    public Object invoke(final Object proxy, final Method method, final Object[] args)
-        throws Throwable {
-      // TODO Auto-generated method stub
-      return null;
+    try {
+      return config.createExecutableExtension(clazzKey);
+    } catch (CoreException e) {
+      throw new ServiceException(e);
     }
   }
 
-  private static String getAttributeName(final AnnotatedElement type, final String key) {
-    final Attribute name = type.getAnnotation(Attribute.class);
-    return null == name || name.value().isEmpty() ? key : name.value();
+  static String getElementKey(final AnnotatedElement type, final String element) {
+    if (type.isAnnotationPresent(MapContent.class)) {
+      return CONTENT_KEY;
+    }
+    final MapName mapName = type.getAnnotation(MapName.class);
+    return null == mapName || mapName.value().isEmpty() ? element : mapName.value();
   }
 
-  private static Class<?> getElementClass(String name, final IConfigurationElement config) {
-    if (name != null) {
-      final Bundle bundle = ContributorFactoryOSGi.resolve(config.getContributor());
-      if (bundle != null) {
-        try {
-          return bundle.loadClass(name.replaceFirst(":.*$", ""));
-        } catch (final ClassNotFoundException e) {}
-      }
+  static String getElementValue(final IConfigurationElement config, final String elementKey) {
+    return CONTENT_KEY.equals(elementKey) ? config.getValue() : config.getAttribute(elementKey);
+  }
+
+  static Class<?> getElementClass(final IConfigurationElement config, final String clazzName) {
+    final Bundle bundle = ContributorFactoryOSGi.resolve(config.getContributor());
+    if (null == bundle) {
+      throw new ServiceException("Missing bundle context");
     }
-    return null;
+    try {
+      return bundle.loadClass(clazzName.replaceFirst(":.*$", ""));
+    } catch (final ClassNotFoundException e) {
+      throw new ServiceException(e);
+    }
   }
 }

@@ -34,7 +34,7 @@ import org.ops4j.peaberry.ServiceUnavailableException;
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class ExtensionImport
+final class ExtensionImport
     implements Import<Object>, Comparable<ExtensionImport> {
 
   private static final int INVALID = -1;
@@ -57,7 +57,7 @@ public final class ExtensionImport
     this.config = config;
     this.clazz = clazz;
 
-    attributes = unmodifiableMap(collectAttributes(config));
+    attributes = collectAttributes(config);
     watchers = new ArrayList<Export<?>>(2);
   }
 
@@ -156,9 +156,9 @@ public final class ExtensionImport
       }
 
     } catch (final InvalidRegistryObjectException re) {
-      map.clear();
+      map.clear(); // invalid, so wipe slate clean
     }
 
-    return map;
+    return unmodifiableMap(map);
   }
 }

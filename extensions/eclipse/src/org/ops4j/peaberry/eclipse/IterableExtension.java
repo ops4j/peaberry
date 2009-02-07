@@ -25,7 +25,7 @@ import org.ops4j.peaberry.Import;
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class IterableExtension<T>
+final class IterableExtension<T>
     implements Iterable<Import<T>> {
 
   final ExtensionListener listener;

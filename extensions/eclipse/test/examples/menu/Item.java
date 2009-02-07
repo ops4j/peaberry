@@ -20,5 +20,5 @@ package examples.menu;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface Item {
-  String getHint();
+  String getName();
 }

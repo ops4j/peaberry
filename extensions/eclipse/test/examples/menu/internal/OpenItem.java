@@ -24,7 +24,7 @@ import examples.menu.Item;
 public class OpenItem
     implements Item {
 
-  public String getHint() {
+  public String getName() {
     return "Open a new document";
   }
 }

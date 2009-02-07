@@ -37,7 +37,7 @@ import org.ops4j.peaberry.ServiceScope;
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class ExtensionListener
+final class ExtensionListener
     implements IRegistryEventListener {
 
   private final IExtensionRegistry registry;
@@ -45,14 +45,13 @@ public final class ExtensionListener
 
   private final String point;
   private final boolean aggregate;
+  private long idCounter;
 
   private final List<ExtensionImport> imports;
   private final List<ServiceScope<Object>> watchers;
 
-  private long idCounter;
-
   public ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
-    final ExtensionPoint metadata = clazz.getAnnotation(ExtensionPoint.class);
+    final ExtensionInterface metadata = clazz.getAnnotation(ExtensionInterface.class);
 
     this.registry = registry;
     this.clazz = clazz;
