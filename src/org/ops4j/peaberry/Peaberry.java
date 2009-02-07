@@ -148,9 +148,11 @@ public final class Peaberry {
    * Create a new Guice binding {@link Module} for the given bundle context.
    * 
    * @param bundleContext current bundle context
+   * @param registries alternative service registries
    * @return OSGi specific Guice bindings
    */
-  public static Module osgiModule(final BundleContext bundleContext) {
-    return new OSGiModule(bundleContext);
+  public static Module osgiModule(final BundleContext bundleContext,
+      final ServiceRegistry... registries) {
+    return new OSGiModule(bundleContext, registries);
   }
 }

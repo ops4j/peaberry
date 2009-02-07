@@ -32,9 +32,11 @@ public final class OSGiModule
     extends AbstractModule {
 
   private final BundleContext bundleContext;
+  private final ServiceRegistry[] registries;
 
-  public OSGiModule(final BundleContext bundleContext) {
+  public OSGiModule(final BundleContext bundleContext, final ServiceRegistry... registries) {
     this.bundleContext = bundleContext;
+    this.registries = registries;
   }
 
   @Override
@@ -42,8 +44,14 @@ public final class OSGiModule
     bind(BundleContext.class).toInstance(bundleContext);
     bindScope(BundleScoped.class, new BundleScopeImpl(bundleContext));
 
+    if (registries.length == 0) {
+      bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
+    } else {
+      bind(ServiceRegistry[].class).toInstance(registries);
+      bind(ServiceRegistry.class).to(RegistryChain.class);
+    }
+
     // need indirect binding so registry is published as caching
-    bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
     bind(CachingServiceRegistry.class).in(BundleScoped.class);
   }
 
