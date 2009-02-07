@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.eclipse;
 
+import static java.lang.Character.toLowerCase;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementClass;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementKey;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementValue;
@@ -37,6 +38,8 @@ import org.osgi.framework.Bundle;
  */
 final class ExtensionBeanHandler
     implements InvocationHandler {
+
+  private static final String[] PREFIXES = {"is", "get", "create"};
 
   private final ConcurrentHashMap<Method, Object> cache;
   private final IConfigurationElement config;
@@ -83,25 +86,39 @@ final class ExtensionBeanHandler
   }
 
   private Object invokeGetter(final Method method) {
+    final Class<?> resultType = method.getReturnType();
+
+    if (IConfigurationElement.class == resultType) {
+      return config;
+    } else if (Bundle.class == resultType) {
+      return ContributorFactoryOSGi.resolve(config.getContributor());
+    }
 
     final String element = findElement(method);
     final String key = getElementKey(method, element);
     final String value = getElementValue(config, key);
 
-    final Class<?> resultType = method.getReturnType();
-
     if (String.class == resultType) {
       return value;
     } else if (Class.class == resultType) {
       return getElementClass(config, value);
-    } else if (Bundle.class == resultType) {
-      return ContributorFactoryOSGi.resolve(config.getContributor());
-    } else if (IConfigurationElement.class == resultType) {
-      return config;
     } else if (resultType.isPrimitive()) {
       return valueOf(resultType, value);
     }
 
+    final Object nestedResult = invokeNestedGetter(resultType, key);
+    if (nestedResult != null) {
+      return nestedResult;
+    }
+
+    try {
+      return config.createExecutableExtension(key);
+    } catch (final CoreException e) {
+      throw new ServiceException(e);
+    }
+  }
+
+  private Object invokeNestedGetter(final Class<?> resultType, final String key) {
     final IConfigurationElement[] kids = config.getChildren(key);
 
     if (resultType.isArray()) {
@@ -110,24 +127,43 @@ final class ExtensionBeanHandler
       for (int i = 0; i < kids.length; i++) {
         results[i] = ExtensionBeanFactory.newInstance(componentType, kids[i]);
       }
-    } else if (null == value && kids.length > 0) {
+      return results;
+    } else if (kids.length > 0) {
       return ExtensionBeanFactory.newInstance(resultType, kids[0]);
     }
 
-    try {
-      return config.createExecutableExtension(key);
-    } catch (CoreException e) {
-      throw new ServiceException(e);
+    return null;
+  }
+
+  private static String findElement(final Method method) {
+    final String name = method.getName();
+    for (final String prefix : PREFIXES) {
+      if (name.startsWith(prefix)) {
+        final int n = prefix.length();
+        return toLowerCase(name.charAt(n)) + name.substring(n + 1);
+      }
     }
+    return name;
   }
 
-  private static String findElement(Method method) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  private static Object valueOf(Class<?> clazz, String value) {
-    // TODO Auto-generated method stub
-    return null;
+  private static Object valueOf(final Class<?> clazz, final String value) {
+    if (Boolean.class == clazz) {
+      return Boolean.valueOf(value);
+    } else if (Byte.class == clazz) {
+      return Byte.valueOf(value);
+    } else if (Character.class == clazz) {
+      return value.charAt(0);
+    } else if (Short.class == clazz) {
+      return Short.valueOf(value);
+    } else if (Integer.class == clazz) {
+      return Integer.valueOf(value);
+    } else if (Float.class == clazz) {
+      return Float.valueOf(value);
+    } else if (Long.class == clazz) {
+      return Long.valueOf(value);
+    } else if (Double.class == clazz) {
+      return Double.valueOf(value);
+    }
+    throw new IllegalArgumentException("Unknown primitive type: " + clazz);
   }
 }

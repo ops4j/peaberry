@@ -39,7 +39,7 @@ final class ExtensionBeanFactory {
   public static Object newInstance(final Class<?> clazz, final IConfigurationElement config) {
     try {
       return newExtensionImpl(clazz, config);
-    } catch (final RuntimeException re) {}
+    } catch (final RuntimeException re) {/* fall back to proxy */} // NOPMD
 
     final ClassLoader loader = clazz.getClassLoader();
     final Class<?>[] api = new Class[]{clazz};
@@ -58,7 +58,7 @@ final class ExtensionBeanFactory {
 
     try {
       return config.createExecutableExtension(clazzKey);
-    } catch (CoreException e) {
+    } catch (final CoreException e) {
       throw new ServiceException(e);
     }
   }

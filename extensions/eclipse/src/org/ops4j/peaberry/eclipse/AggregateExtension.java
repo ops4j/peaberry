@@ -108,7 +108,7 @@ final class AggregateExtension
   }
 
   @Override
-  public boolean equals(Object rhs) {
+  public boolean equals(final Object rhs) {
     if (rhs instanceof AggregateExtension) {
       return extension.equals(((AggregateExtension) rhs).extension);
     }

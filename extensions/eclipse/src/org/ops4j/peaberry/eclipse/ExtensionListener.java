@@ -133,7 +133,7 @@ final class ExtensionListener
     }
 
     for (final IConfigurationElement i : configurations) {
-      imports.add(new ExtensionImport(++idCounter, i, clazz));
+      imports.add(new ExtensionImport(++idCounter, i, clazz)); // NOPMD
     }
   }
 
