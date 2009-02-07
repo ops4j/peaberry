@@ -142,7 +142,7 @@ final class ServiceSettings<T>
 
     // enable outjection, but only if it's going to a different scope
     final ServiceScope<? super T> serviceScope = watcher.get(injector);
-    if (null != serviceScope && !serviceScope.equals(serviceRegistry)) {
+    if (null != serviceScope && serviceScope != serviceRegistry) { // NOPMD
       serviceRegistry.watch(clazz, attributeFilter, serviceScope);
     }
 
