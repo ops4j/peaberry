@@ -69,13 +69,21 @@ final class ExtensionListener
   }
 
   public synchronized void start() {
+    final IExtensionPoint[] extensionPoints;
+
     // register listener first to avoid race condition
-    registry.addListener(this, point);
+    if (Object.class == clazz) {
+      registry.addListener(this);
+      extensionPoints = registry.getExtensionPoints();
+    } else {
+      registry.addListener(this, point);
+      final IExtensionPoint p = registry.getExtensionPoint(point);
+      extensionPoints = null == p ? new IExtensionPoint[0] : new IExtensionPoint[]{p};
+    }
 
     // retrieve any matching extensions that are already registered
-    final IExtensionPoint extensionPoint = registry.getExtensionPoint(point);
-    if (extensionPoint != null) {
-      for (final IExtension e : extensionPoint.getExtensions()) {
+    for (final IExtensionPoint p : extensionPoints) {
+      for (final IExtension e : p.getExtensions()) {
         insertExtension(e);
       }
     }

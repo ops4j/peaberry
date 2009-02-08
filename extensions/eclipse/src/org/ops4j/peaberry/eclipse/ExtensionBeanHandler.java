@@ -18,8 +18,8 @@ package org.ops4j.peaberry.eclipse;
 
 import static java.lang.Character.toLowerCase;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementClass;
-import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.mapName;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.mapContent;
+import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.mapName;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
@@ -108,7 +108,7 @@ final class ExtensionBeanHandler
 
       try {
         return config.createExecutableExtension(key);
-      } catch (final CoreException e) {}
+      } catch (final CoreException e) {/* try nested getter */} // NOPMD
     }
 
     return invokeNestedGetter(resultType, key);

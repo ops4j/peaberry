@@ -85,12 +85,13 @@ public final class EclipseRegistry
   }
 
   private <T> ExtensionListener registerListener(final Class<T> clazz) {
-    final String clazzName = clazz.getName();
+    final Class<?> safeClazz = null == clazz ? Object.class : clazz;
+    final String clazzName = safeClazz.getName();
     ExtensionListener listener;
 
     listener = listenerMap.get(clazzName);
     if (null == listener) {
-      final ExtensionListener newListener = new ExtensionListener(extensionRegistry, clazz);
+      final ExtensionListener newListener = new ExtensionListener(extensionRegistry, safeClazz);
       listener = listenerMap.putIfAbsent(clazzName, newListener);
       if (null == listener) {
         newListener.start();

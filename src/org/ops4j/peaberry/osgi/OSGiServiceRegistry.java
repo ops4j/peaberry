@@ -88,7 +88,7 @@ public final class OSGiServiceRegistry
   }
 
   private <T> OSGiServiceListener registerListener(final Class<T> clazz) {
-    final String clazzName = clazz.getName();
+    final String clazzName = (null == clazz ? Object.class : clazz).getName();
     OSGiServiceListener listener;
 
     listener = listenerMap.get(clazzName);
