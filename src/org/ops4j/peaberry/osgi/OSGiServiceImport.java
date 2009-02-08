@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.osgi;
 
+import static java.util.logging.Level.WARNING;
 import static org.osgi.framework.Constants.SERVICE_ID;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 import static org.osgi.framework.ServiceEvent.MODIFIED;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
@@ -41,6 +43,8 @@ import org.osgi.framework.ServiceReference;
 @SuppressWarnings("PMD.TooManyMethods")
 final class OSGiServiceImport
     implements Import<Object>, Comparable<OSGiServiceImport> {
+
+  private static final Logger LOGGER = Logger.getLogger(OSGiServiceImport.class.getName());
 
   private static final int INVALID = -1;
   private static final int DORMANT = 0;
@@ -217,7 +221,9 @@ final class OSGiServiceImport
         default:
           break;
         }
-      } catch (final RuntimeException re) {/* ignore */} // NOPMD
+      } catch (final RuntimeException re) {
+        LOGGER.log(WARNING, "Exception in service watcher", re);
+      }
     }
   }
 }

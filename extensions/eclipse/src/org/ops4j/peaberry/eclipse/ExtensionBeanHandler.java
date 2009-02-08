@@ -17,7 +17,7 @@
 package org.ops4j.peaberry.eclipse;
 
 import static java.lang.Character.toLowerCase;
-import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementClass;
+import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.loadExtensionClass;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.mapContent;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.mapName;
 
@@ -101,7 +101,7 @@ final class ExtensionBeanHandler
       if (String.class == resultType) {
         return value;
       } else if (Class.class == resultType) {
-        return getElementClass(config, value);
+        return loadExtensionClass(config, value);
       } else if (resultType.isPrimitive()) {
         return valueOf(resultType, value);
       }

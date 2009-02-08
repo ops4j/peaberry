@@ -52,7 +52,7 @@ final class ExtensionBeanFactory {
     final String clazzKey = mapName(clazz, "class");
     final String clazzName = mapContent(config, clazzKey);
 
-    if (!clazz.isAssignableFrom(getElementClass(config, clazzName))) {
+    if (!clazz.isAssignableFrom(loadExtensionClass(config, clazzName))) {
       throw new ClassCastException(clazz + " is not assignable from: " + clazzName);
     }
 
@@ -75,7 +75,7 @@ final class ExtensionBeanFactory {
     return CONTENT_KEY.equals(elementKey) ? config.getValue() : config.getAttribute(elementKey);
   }
 
-  static Class<?> getElementClass(final IConfigurationElement config, final String clazzName) {
+  static Class<?> loadExtensionClass(final IConfigurationElement config, final String clazzName) {
     final Bundle bundle = ContributorFactoryOSGi.resolve(config.getContributor());
     if (null == bundle) {
       throw new ServiceException("Missing bundle context");
