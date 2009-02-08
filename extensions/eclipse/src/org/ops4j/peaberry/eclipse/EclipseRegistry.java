@@ -33,14 +33,22 @@ import org.ops4j.peaberry.ServiceScope;
 public final class EclipseRegistry
     implements ServiceRegistry {
 
-  private final IExtensionRegistry registry;
+  private static class SingletonHolder {
+    static final ServiceRegistry thisRegistry = new EclipseRegistry();
+  }
+
+  public static ServiceRegistry eclipseRegistry() {
+    return SingletonHolder.thisRegistry;
+  }
+
+  private final IExtensionRegistry extensionRegistry;
 
   // per-class map of extension listeners (much faster than polling)
   private final ConcurrentMap<String, ExtensionListener> listenerMap =
       new ConcurrentHashMap<String, ExtensionListener>();
 
-  public EclipseRegistry() {
-    registry = RegistryFactory.getRegistry();
+  EclipseRegistry() {
+    extensionRegistry = RegistryFactory.getRegistry();
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
@@ -60,18 +68,18 @@ public final class EclipseRegistry
 
   @Override
   public String toString() {
-    return String.format("EclipseRegistry[%s]", registry.toString());
+    return String.format("EclipseRegistry[%s]", extensionRegistry.toString());
   }
 
   @Override
   public int hashCode() {
-    return registry.hashCode();
+    return extensionRegistry.hashCode();
   }
 
   @Override
   public boolean equals(final Object rhs) {
     if (rhs instanceof EclipseRegistry) {
-      return registry.equals(((EclipseRegistry) rhs).registry);
+      return extensionRegistry.equals(((EclipseRegistry) rhs).extensionRegistry);
     }
     return false;
   }
@@ -82,7 +90,7 @@ public final class EclipseRegistry
 
     listener = listenerMap.get(clazzName);
     if (null == listener) {
-      final ExtensionListener newListener = new ExtensionListener(registry, clazz);
+      final ExtensionListener newListener = new ExtensionListener(extensionRegistry, clazz);
       listener = listenerMap.putIfAbsent(clazzName, newListener);
       if (null == listener) {
         newListener.start();

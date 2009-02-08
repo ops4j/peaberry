@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.eclipse.test;
 
 import static org.ops4j.peaberry.Peaberry.osgiModule;
+import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
 import static org.ops4j.peaberry.test.Director.findContext;
 
 import java.util.Collections;
@@ -24,7 +25,6 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.eclipse.EclipseRegistry;
 import org.ops4j.peaberry.eclipse.ExtensionInterface;
 import org.testng.annotations.Test;
 
@@ -52,7 +52,7 @@ public final class ExtensionTests {
   ServiceRegistry registry;
 
   public ExtensionTests() {
-    injector = Guice.createInjector(osgiModule(findContext(getClass()), new EclipseRegistry()));
+    injector = Guice.createInjector(osgiModule(findContext(getClass()), eclipseRegistry()));
     injector.injectMembers(this);
   }
 
