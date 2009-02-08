@@ -49,8 +49,8 @@ final class ExtensionBeanFactory {
 
   static Object newExtensionImpl(final Class<?> clazz, final IConfigurationElement config) {
 
-    final String clazzKey = getElementKey(clazz, "class");
-    final String clazzName = getElementValue(config, clazzKey);
+    final String clazzKey = mapName(clazz, "class");
+    final String clazzName = mapContent(config, clazzKey);
 
     if (!clazz.isAssignableFrom(getElementClass(config, clazzName))) {
       throw new ClassCastException(clazz + " is not assignable from: " + clazzName);
@@ -63,15 +63,15 @@ final class ExtensionBeanFactory {
     }
   }
 
-  static String getElementKey(final AnnotatedElement type, final String element) {
+  static String mapName(final AnnotatedElement type, final String name) {
     if (type.isAnnotationPresent(MapContent.class)) {
       return CONTENT_KEY;
     }
     final MapName mapName = type.getAnnotation(MapName.class);
-    return null == mapName || mapName.value().isEmpty() ? element : mapName.value();
+    return null == mapName || mapName.value().isEmpty() ? name : mapName.value();
   }
 
-  static String getElementValue(final IConfigurationElement config, final String elementKey) {
+  static String mapContent(final IConfigurationElement config, final String elementKey) {
     return CONTENT_KEY.equals(elementKey) ? config.getValue() : config.getAttribute(elementKey);
   }
 

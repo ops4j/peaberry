@@ -66,12 +66,6 @@ public final class RegistryChain
   }
 
   public <T> Export<T> add(final Import<T> service) {
-    for (final ServiceRegistry r : registries) {
-      final Export<T> export = r.add(service);
-      if (export != null) {
-        return export;
-      }
-    }
-    return null;
+    return registries[0].add(service); // only add to main repository
   }
 }

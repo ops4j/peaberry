@@ -18,8 +18,8 @@ package org.ops4j.peaberry.eclipse;
 
 import static java.lang.Character.toLowerCase;
 import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementClass;
-import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementKey;
-import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.getElementValue;
+import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.mapName;
+import static org.ops4j.peaberry.eclipse.ExtensionBeanFactory.mapContent;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
@@ -93,9 +93,8 @@ final class ExtensionBeanHandler
       return ContributorFactoryOSGi.resolve(config.getContributor());
     }
 
-    final String element = findElement(method);
-    final String key = getElementKey(method, element);
-    final String value = getElementValue(config, key);
+    final String key = mapName(method, findElementName(method));
+    final String value = mapContent(config, key);
 
     if (null != value) {
 
@@ -132,7 +131,7 @@ final class ExtensionBeanHandler
     return null;
   }
 
-  private static String findElement(final Method method) {
+  private static String findElementName(final Method method) {
     final String name = method.getName();
     for (final String prefix : PREFIXES) {
       if (name.startsWith(prefix)) {
