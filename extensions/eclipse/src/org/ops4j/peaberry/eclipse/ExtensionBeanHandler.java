@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.osgi.framework.Bundle;
 
 /**
+ * Proxy {@code InvocationHandler} that maps method calls to bean properties.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ExtensionBeanHandler
@@ -40,6 +42,7 @@ final class ExtensionBeanHandler
 
   private static final String[] PREFIXES = {"is", "get", "create"};
 
+  // cache methods that always return the same result
   private final ConcurrentHashMap<Method, Object> cache;
   private final IConfigurationElement config;
 
@@ -58,15 +61,17 @@ final class ExtensionBeanHandler
 
     if (method.getDeclaringClass() == Object.class) {
       if (args != null) {
-        args[0] = unwrapExtensionBeanProxy(args[0]); // equals
+        // must unwrap target so equals will work
+        args[0] = unwrapExtensionBeanProxy(args[0]);
       }
-      result = method.invoke(config, args); // hashCode, etc...
+      result = method.invoke(config, args); // hashCode, equals, etc...
     } else if (null == args) {
       result = invokeGetter(method);
     } else {
       throw new UnsupportedOperationException(method.toString());
     }
 
+    // "is" and "get" methods with no arguments always return constant values
     if (result != null && null == args && !method.getName().startsWith("create")) {
       cache.putIfAbsent(method, result);
     }
@@ -81,7 +86,7 @@ final class ExtensionBeanHandler
         return ((ExtensionBeanHandler) handler).config;
       }
     }
-    return null;
+    return instance;
   }
 
   private Object invokeGetter(final Method method) {
@@ -93,7 +98,8 @@ final class ExtensionBeanHandler
       return ContributorFactoryOSGi.resolve(config.getContributor());
     }
 
-    final String key = mapName(method, findElementName(method));
+    // map bean name to an XML attribute
+    final String key = mapName(method, findPropertyName(method));
     final String value = mapContent(config, key);
 
     if (null != value) {
@@ -131,7 +137,7 @@ final class ExtensionBeanHandler
     return null;
   }
 
-  private static String findElementName(final Method method) {
+  private static String findPropertyName(final Method method) {
     final String name = method.getName();
     for (final String prefix : PREFIXES) {
       if (name.startsWith(prefix)) {
@@ -143,6 +149,7 @@ final class ExtensionBeanHandler
   }
 
   private static Object valueOf(final Class<?> clazz, final String value) {
+    // primitive String mappings...
     if (Boolean.class == clazz) {
       return Boolean.valueOf(value);
     } else if (Byte.class == clazz) {

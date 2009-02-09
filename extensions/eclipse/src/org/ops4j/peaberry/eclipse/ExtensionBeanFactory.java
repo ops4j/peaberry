@@ -28,6 +28,8 @@ import org.ops4j.peaberry.ServiceException;
 import org.osgi.framework.Bundle;
 
 /**
+ * A factory that attempts to create bean instances from Eclipse Extensions.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ExtensionBeanFactory {
@@ -39,9 +41,11 @@ final class ExtensionBeanFactory {
 
   static Object newInstance(final Class<?> clazz, final IConfigurationElement config) {
     try {
+      // first try to instantiate direct class
       return newExtensionImpl(clazz, config);
     } catch (final RuntimeException re) {/* fall back to proxy */} // NOPMD
 
+    // create proxy based on the supplied interface
     final ClassLoader loader = clazz.getClassLoader();
     final Class<?>[] api = new Class[]{clazz};
 
@@ -50,9 +54,11 @@ final class ExtensionBeanFactory {
 
   static Object newExtensionImpl(final Class<?> clazz, final IConfigurationElement config) {
 
+    // assume name is kept under "class" (unless mapped)
     final String clazzKey = mapName(clazz, "class");
     final String clazzName = mapContent(config, clazzKey);
 
+    // make sure implementation is compatible with the required interface
     if (!clazz.isAssignableFrom(loadExtensionClass(config, clazzName))) {
       throw new ClassCastException(clazz + " is not assignable from: " + clazzName);
     }
@@ -78,13 +84,11 @@ final class ExtensionBeanFactory {
 
   static Class<?> loadExtensionClass(final IConfigurationElement config, final String clazzName) {
     final Bundle bundle = ContributorFactoryOSGi.resolve(config.getContributor());
-    if (null == bundle) {
-      throw new ServiceException("Missing bundle context");
-    }
 
     String value = clazzName;
     int n = value.indexOf(':');
 
+    // unravel the factory indirection to get the real class
     if (value.startsWith(GuiceExtensionFactory.class.getName())) {
       value = config.getAttribute(mapClassAttribute(n < 0 ? null : value.substring(n + 1)));
       n = value.indexOf(':');
