@@ -134,9 +134,9 @@ public final class GuiceExtensionFactory
       ref = context.getServiceReferences(Injector.class.getName(), filter)[0];
       return ((Injector) context.getService(ref)).getInstance(clazz);
 
-    } catch (final NullPointerException e) {
+    } catch (final NullPointerException e) { // NOPMD
 
-      /* no injector service available so silently drop through... NOPMD */
+      /* no injector service available so silently drop through... */
 
     } catch (final Exception e) {
 

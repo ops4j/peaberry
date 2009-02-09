@@ -75,7 +75,7 @@ final class ExtensionListener
 
     imports = new ArrayList<ExtensionImport>(4);
     watchers = new ArrayList<ServiceScope<Object>>(2);
-    activeExtensions = new HashSet<String>();
+    activeExtensions = new HashSet<String>(4);
   }
 
   synchronized void start() {
@@ -148,7 +148,7 @@ final class ExtensionListener
   }
 
   private void insertExtension(final IExtension extension) {
-    if (activeExtensions.add(extension.getUniqueIdentifier()) == false) {
+    if (!activeExtensions.add(extension.getUniqueIdentifier())) {
       return; // we've already seen this particular extension
     }
 
@@ -161,7 +161,7 @@ final class ExtensionListener
 
     // create an import for each major configuration element
     for (final IConfigurationElement config : configurations) {
-      final ExtensionImport i = new ExtensionImport(++idCounter, config, clazz);
+      final ExtensionImport i = new ExtensionImport(++idCounter, config, clazz); // NOPMD
       imports.add(i);
 
       // report the new import to any watching scopes

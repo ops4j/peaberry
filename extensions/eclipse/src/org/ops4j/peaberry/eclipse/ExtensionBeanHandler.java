@@ -43,7 +43,7 @@ final class ExtensionBeanHandler
   private final ConcurrentHashMap<Method, Object> cache;
   private final IConfigurationElement config;
 
-  public ExtensionBeanHandler(final IConfigurationElement config) {
+  ExtensionBeanHandler(final IConfigurationElement config) {
     cache = new ConcurrentHashMap<Method, Object>();
     this.config = config;
   }

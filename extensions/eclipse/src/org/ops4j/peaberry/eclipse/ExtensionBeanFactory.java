@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.eclipse;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.ops4j.peaberry.eclipse.GuiceExtensionFactory.mapClassAttribute;
 
 import java.lang.reflect.AnnotatedElement;
 
@@ -36,7 +37,7 @@ final class ExtensionBeanFactory {
   // instances not allowed
   private ExtensionBeanFactory() {}
 
-  public static Object newInstance(final Class<?> clazz, final IConfigurationElement config) {
+  static Object newInstance(final Class<?> clazz, final IConfigurationElement config) {
     try {
       return newExtensionImpl(clazz, config);
     } catch (final RuntimeException re) {/* fall back to proxy */} // NOPMD
@@ -80,8 +81,17 @@ final class ExtensionBeanFactory {
     if (null == bundle) {
       throw new ServiceException("Missing bundle context");
     }
+
+    String value = clazzName;
+    int n = value.indexOf(':');
+
+    if (value.startsWith(GuiceExtensionFactory.class.getName())) {
+      value = config.getAttribute(mapClassAttribute(n < 0 ? null : value.substring(n + 1)));
+      n = value.indexOf(':');
+    }
+
     try {
-      return bundle.loadClass(clazzName.replaceFirst(":.*$", ""));
+      return bundle.loadClass(n < 0 ? value : value.substring(0, n));
     } catch (final ClassNotFoundException e) {
       throw new ServiceException(e);
     }
