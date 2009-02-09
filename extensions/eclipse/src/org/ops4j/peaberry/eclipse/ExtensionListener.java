@@ -55,6 +55,7 @@ final class ExtensionListener
 
   private final List<ExtensionImport> imports;
   private final List<ServiceScope<Object>> watchers;
+  private final Set<String> activeExtensions;
 
   ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
     final ExtensionInterface metadata = clazz.getAnnotation(ExtensionInterface.class);
@@ -74,6 +75,7 @@ final class ExtensionListener
 
     imports = new ArrayList<ExtensionImport>(4);
     watchers = new ArrayList<ServiceScope<Object>>(2);
+    activeExtensions = new HashSet<String>();
   }
 
   synchronized void start() {
@@ -115,6 +117,8 @@ final class ExtensionListener
       ids.add(e.getUniqueIdentifier());
     }
 
+    activeExtensions.removeAll(ids);
+
     for (final Iterator<ExtensionImport> i = imports.iterator(); i.hasNext();) {
       final ExtensionImport extensionImport = i.next();
 
@@ -144,6 +148,10 @@ final class ExtensionListener
   }
 
   private void insertExtension(final IExtension extension) {
+    if (activeExtensions.add(extension.getUniqueIdentifier()) == false) {
+      return; // we've already seen this particular extension
+    }
+
     final IConfigurationElement[] configurations;
     if (aggregate) {
       configurations = new IConfigurationElement[]{new AggregatedExtension(extension)};
