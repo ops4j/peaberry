@@ -33,7 +33,7 @@ final class OSGiServiceAttributes
 
   final ServiceReference ref;
 
-  public OSGiServiceAttributes(final ServiceReference ref) {
+  OSGiServiceAttributes(final ServiceReference ref) {
     this.ref = ref;
   }
 

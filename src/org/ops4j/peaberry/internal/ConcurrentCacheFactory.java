@@ -48,14 +48,14 @@ final class ConcurrentCacheFactory {
   /**
    * @return soft-cache with referential-equality semantics
    */
-  public static <K, V> ConcurrentMap<K, V> newSoftCache() {
+  static <K, V> ConcurrentMap<K, V> newSoftCache() {
     return new ConcurrentReferenceHashMap<K, V>(CAPACITY, LOAD, CONCURRENCY, WEAK, SOFT, IDENTITY);
   }
 
   /**
    * @return weak-cache with referential-equality semantics
    */
-  public static <K, V> ConcurrentMap<K, V> newWeakCache() {
+  static <K, V> ConcurrentMap<K, V> newWeakCache() {
     return new ConcurrentReferenceHashMap<K, V>(CAPACITY, LOAD, CONCURRENCY, WEAK, WEAK, IDENTITY);
   }
 }

@@ -33,7 +33,7 @@ import com.google.inject.Inject;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class OSGiServiceRegistry
+public class OSGiServiceRegistry
     implements CachingServiceRegistry {
 
   private final BundleContext bundleContext;

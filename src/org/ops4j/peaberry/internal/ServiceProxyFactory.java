@@ -38,7 +38,7 @@ final class ServiceProxyFactory {
   // instances not allowed
   private ServiceProxyFactory() {}
 
-  public static <S, T extends S> Iterable<T> serviceProxies(final Class<T> clazz,
+  static <S, T extends S> Iterable<T> serviceProxies(final Class<T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
     final Constructor<T> ctor = getProxyConstructor(clazz);
@@ -90,8 +90,8 @@ final class ServiceProxyFactory {
     };
   }
 
-  public static <S, T extends S> T serviceProxy(final Class<T> clazz,
-      final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
+  static <S, T extends S> T serviceProxy(final Class<T> clazz, final Iterable<Import<T>> handles,
+      final ImportDecorator<S> decorator) {
 
     // provide concurrent access to the head of the import list
     final Import<T> lookup = new ConcurrentImport<T>(handles);

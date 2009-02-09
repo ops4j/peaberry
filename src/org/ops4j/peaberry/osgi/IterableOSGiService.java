@@ -37,7 +37,7 @@ final class IterableOSGiService<T>
   final OSGiServiceListener listener;
   final AttributeFilter filter;
 
-  public IterableOSGiService(final OSGiServiceListener listener, final AttributeFilter filter) {
+  IterableOSGiService(final OSGiServiceListener listener, final AttributeFilter filter) {
     this.listener = listener;
     this.filter = filter;
   }

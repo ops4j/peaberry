@@ -55,7 +55,7 @@ final class ServiceSettings<T>
    * Configure service based on binding key.
    */
   @SuppressWarnings("unchecked")
-  public ServiceSettings(final Key<? extends T> key) {
+  ServiceSettings(final Key<? extends T> key) {
     service = newSetting(key);
     clazz = (Class) key.getTypeLiteral().getRawType();
   }
@@ -64,7 +64,7 @@ final class ServiceSettings<T>
    * Configure service based on explicit instance.
    */
   @SuppressWarnings("unchecked")
-  public ServiceSettings(final T instance) {
+  ServiceSettings(final T instance) {
     if (null == instance) {
       service = nullSetting();
       clazz = (Class) Object.class;
@@ -76,23 +76,23 @@ final class ServiceSettings<T>
 
   // setters...
 
-  public void setDecorator(final Setting<ImportDecorator<? super T>> decorator) {
+  void setDecorator(final Setting<ImportDecorator<? super T>> decorator) {
     this.decorator = decorator;
   }
 
-  public void setAttributes(final Setting<Map<String, ?>> attributes) {
+  void setAttributes(final Setting<Map<String, ?>> attributes) {
     this.attributes = attributes;
   }
 
-  public void setFilter(final Setting<AttributeFilter> filter) {
+  void setFilter(final Setting<AttributeFilter> filter) {
     this.filter = filter;
   }
 
-  public void setWatcher(final Setting<ServiceScope<? super T>> watcher) {
+  void setWatcher(final Setting<ServiceScope<? super T>> watcher) {
     this.watcher = watcher;
   }
 
-  public void setRegistry(final Setting<ServiceRegistry> registry) {
+  void setRegistry(final Setting<ServiceRegistry> registry) {
     this.registry = registry;
   }
 
@@ -111,11 +111,11 @@ final class ServiceSettings<T>
 
   // query methods...
 
-  public Class<T> getClazz() {
+  Class<T> getClazz() {
     return clazz;
   }
 
-  public ImportDecorator<? super T> getDecorator(final Injector injector) {
+  ImportDecorator<? super T> getDecorator(final Injector injector) {
     return decorator.get(injector);
   }
 
@@ -136,7 +136,7 @@ final class ServiceSettings<T>
     return attributeFilter;
   }
 
-  public Iterable<Import<T>> getImports(final Injector injector) {
+  Iterable<Import<T>> getImports(final Injector injector) {
     final ServiceRegistry serviceRegistry = registry.get(injector);
     final AttributeFilter attributeFilter = getFilter(injector);
 
@@ -157,7 +157,7 @@ final class ServiceSettings<T>
     return serviceScope;
   }
 
-  public Export<T> getExport(final Injector injector) {
+  Export<T> getExport(final Injector injector) {
 
     // wrap local instance up as an import and push it out to the relevant scope
     final Import<T> _import = new StaticImport<T>(service.get(injector), attributes.get(injector));

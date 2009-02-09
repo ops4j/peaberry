@@ -29,7 +29,7 @@ final class ImmutableAttribute
   private final String k;
   private final Object v;
 
-  public ImmutableAttribute(final String key, final Object value) {
+  ImmutableAttribute(final String key, final Object value) {
     k = key;
     v = value;
   }

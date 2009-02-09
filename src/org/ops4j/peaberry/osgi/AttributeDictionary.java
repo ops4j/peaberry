@@ -33,7 +33,7 @@ final class AttributeDictionary
   private final Map<String, Object> attributes;
 
   @SuppressWarnings("unchecked")
-  public AttributeDictionary(final Map<String, ?> attributes) {
+  AttributeDictionary(final Map<String, ?> attributes) {
     this.attributes = (Map) attributes;
   }
 

@@ -39,7 +39,7 @@ final class MultipleServiceProvider<T>
   private final ServiceSettings<T> settings;
   private final Class<T> clazz;
 
-  public MultipleServiceProvider(final ServiceSettings<T> settings) {
+  MultipleServiceProvider(final ServiceSettings<T> settings) {
     // clone current state of settings
     this.settings = settings.clone();
     this.clazz = settings.getClazz();
@@ -57,7 +57,7 @@ final class MultipleServiceProvider<T>
 
     private final ServiceSettings<T> settings;
 
-    public DirectProvider(final ServiceSettings<T> settings) {
+    DirectProvider(final ServiceSettings<T> settings) {
       // settings already cloned
       this.settings = settings;
     }

@@ -27,9 +27,11 @@ import org.ops4j.peaberry.ServiceScope;
 import com.google.inject.Inject;
 
 /**
+ * A {@code ServiceRegistry} that delegates to a series of other registries.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class RegistryChain
+public class RegistryChain
     implements ServiceRegistry {
 
   final ServiceRegistry[] registries;
@@ -38,6 +40,7 @@ public final class RegistryChain
   public RegistryChain(final CachingServiceRegistry mainRegistry,
       final ServiceRegistry[] alternativeRegistries) {
 
+    // merge main and alternative registries into a single array
     registries = new ServiceRegistry[1 + alternativeRegistries.length];
     System.arraycopy(alternativeRegistries, 0, registries, 1, alternativeRegistries.length);
     registries[0] = mainRegistry;
@@ -51,6 +54,7 @@ public final class RegistryChain
       iterables[i] = registries[i].lookup(clazz, filter);
     }
 
+    // chain the iterators together
     return new Iterable<Import<T>>() {
       public Iterator<Import<T>> iterator() {
         return new IteratorChain<T>(iterables);
@@ -60,8 +64,9 @@ public final class RegistryChain
 
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceScope<? super T> scope) {
+
     for (final ServiceRegistry r : registries) {
-      r.watch(clazz, filter, scope);
+      r.watch(clazz, filter, scope); // need to watch all of them
     }
   }
 

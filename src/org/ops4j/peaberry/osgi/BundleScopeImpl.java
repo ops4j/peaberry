@@ -43,7 +43,7 @@ final class BundleScopeImpl
   final long bundleId;
   final String filter;
 
-  public BundleScopeImpl(final BundleContext bundleContext) {
+  BundleScopeImpl(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
 
     // filter services to those registered by this context

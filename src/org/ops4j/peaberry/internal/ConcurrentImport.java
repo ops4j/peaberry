@@ -42,7 +42,7 @@ final class ConcurrentImport<T>
   private T instance;
   private int count;
 
-  public ConcurrentImport(final Iterable<Import<T>> handles) {
+  ConcurrentImport(final Iterable<Import<T>> handles) {
     this.handles = handles;
   }
 

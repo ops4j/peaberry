@@ -31,12 +31,12 @@ abstract class Setting<T> {
    * @param injector optional injector
    * @return injected setting value
    */
-  public abstract T get(final Injector injector);
+  abstract T get(final Injector injector);
 
   /**
    * @return setting based on explicit instance
    */
-  public static <T> Setting<T> newSetting(final T instance) {
+  static <T> Setting<T> newSetting(final T instance) {
     if (null == instance) {
       // null instances are not tolerated
       throw new IllegalArgumentException("null instance");
@@ -46,7 +46,7 @@ abstract class Setting<T> {
       private boolean configured;
 
       @Override
-      public T get(final Injector injector) {
+      T get(final Injector injector) {
         if (!configured && null != injector) {
           // given value may need injecting
           injector.injectMembers(instance);
@@ -60,7 +60,7 @@ abstract class Setting<T> {
   /**
    * @return setting based on binding key
    */
-  public static <T> Setting<T> newSetting(final Key<? extends T> key) {
+  static <T> Setting<T> newSetting(final Key<? extends T> key) {
     if (null == key) {
       // null binding keys are not tolerated
       throw new IllegalArgumentException("null binding key");
@@ -68,7 +68,7 @@ abstract class Setting<T> {
 
     return new Setting<T>() {
       @Override
-      public T get(final Injector injector) {
+      T get(final Injector injector) {
         // query the injector for the value
         return injector.getInstance(key);
       }
@@ -76,14 +76,14 @@ abstract class Setting<T> {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T> Setting<T> nullSetting() {
+  static <T> Setting<T> nullSetting() {
     return (Setting<T>) NULL_SETTING;
   }
 
   // constant null setting, safe to share between builders
   private static final Setting<Object> NULL_SETTING = new Setting<Object>() {
     @Override
-    public Object get(final Injector injector) {
+    Object get(final Injector injector) {
       return null;
     }
   };

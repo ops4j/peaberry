@@ -36,7 +36,7 @@ final class DirectServiceFactory {
   // instances not allowed
   private DirectServiceFactory() {}
 
-  public static <S, T extends S> Iterable<T> directServices(final Iterable<Import<T>> handles,
+  static <S, T extends S> Iterable<T> directServices(final Iterable<Import<T>> handles,
       final ImportDecorator<S> decorator) {
 
     final List<T> services = new ArrayList<T>();
@@ -53,7 +53,7 @@ final class DirectServiceFactory {
     return unmodifiableList(services);
   }
 
-  public static <S, T extends S> T directService(final Iterable<Import<T>> handles,
+  static <S, T extends S> T directService(final Iterable<Import<T>> handles,
       final ImportDecorator<S> decorator) {
 
     final Iterator<Import<T>> i = handles.iterator();

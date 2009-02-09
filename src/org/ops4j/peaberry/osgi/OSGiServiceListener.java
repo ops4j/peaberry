@@ -51,7 +51,7 @@ final class OSGiServiceListener
   private final List<OSGiServiceImport> imports;
   private final List<ServiceScope<Object>> watchers;
 
-  public OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
+  OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     this.bundleContext = bundleContext;
 
     if (OBJECT_CLAZZ_NAME.equals(clazzName)) {
@@ -64,7 +64,7 @@ final class OSGiServiceListener
     watchers = new ArrayList<ServiceScope<Object>>(2);
   }
 
-  public synchronized void start() {
+  synchronized void start() {
     try {
 
       // register listener first to avoid race condition
@@ -104,7 +104,7 @@ final class OSGiServiceListener
   }
 
   @SuppressWarnings("unchecked")
-  public synchronized void addWatcher(final ServiceScope scope) {
+  synchronized void addWatcher(final ServiceScope scope) {
     if (!watchers.contains(scope) && watchers.add(scope)) {
 
       // report existing imports to the new scope
@@ -117,7 +117,7 @@ final class OSGiServiceListener
     }
   }
 
-  public synchronized void flush(final int targetGeneration) {
+  synchronized void flush(final int targetGeneration) {
     // flush any unused cached service instances
     for (final OSGiServiceImport i : imports) {
       i.flush(targetGeneration);
@@ -170,7 +170,7 @@ final class OSGiServiceListener
     }
   }
 
-  public synchronized OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
+  synchronized OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
       final AttributeFilter filter) {
 
     if (imports.isEmpty()) {

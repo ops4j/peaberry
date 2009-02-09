@@ -22,17 +22,20 @@ import java.util.NoSuchElementException;
 import org.ops4j.peaberry.Import;
 
 /**
+ * An {@code Iterator} that iterates over a series of iterators in turn.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public final class IteratorChain<T>
+final class IteratorChain<T>
     implements Iterator<Import<T>> {
 
   private final Iterable<Import<T>>[] iterables;
 
-  public IteratorChain(final Iterable<Import<T>>[] iterables) {
+  IteratorChain(final Iterable<Import<T>>[] iterables) {
     this.iterables = iterables.clone();
   }
 
+  // keep track which iterator is next
   private int nextIterableIndex = 0;
   private Iterator<Import<T>> i;
 
@@ -41,6 +44,7 @@ public final class IteratorChain<T>
       if (nextIterableIndex > 0 && i.hasNext()) {
         return true;
       } else if (nextIterableIndex < iterables.length) {
+        // move onto next iterator and test again...
         i = iterables[nextIterableIndex++].iterator();
       } else {
         return false;
@@ -53,6 +57,7 @@ public final class IteratorChain<T>
       if (nextIterableIndex > 0 && i.hasNext()) {
         return i.next();
       } else if (nextIterableIndex < iterables.length) {
+        // move onto next iterator and ask again...
         i = iterables[nextIterableIndex++].iterator();
       } else {
         throw new NoSuchElementException();

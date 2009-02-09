@@ -93,7 +93,7 @@ final class ImportGlue {
 
   private static final String NO_SERVICE = "NO_SERVICE";
 
-  public static String getProxyName(final String clazzName) {
+  static String getProxyName(final String clazzName) {
     final StringBuilder tmpName = new StringBuilder();
 
     // support proxy of java.* interfaces by changing the package space
@@ -104,7 +104,7 @@ final class ImportGlue {
     return tmpName.append(clazzName).append(PROXY_SUFFIX).toString();
   }
 
-  public static String getClazzName(final String proxyName) {
+  static String getClazzName(final String proxyName) {
     final int head = '$' == proxyName.charAt(0) ? 1 : 0;
     final int tail = proxyName.lastIndexOf(PROXY_SUFFIX);
 
@@ -115,7 +115,7 @@ final class ImportGlue {
     return proxyName;
   }
 
-  public static byte[] generateProxy(final Class<?> clazz) {
+  static byte[] generateProxy(final Class<?> clazz) {
 
     final String clazzName = getInternalName(clazz);
     final String proxyName = getProxyName(clazzName);

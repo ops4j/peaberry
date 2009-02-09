@@ -34,7 +34,7 @@ final class DecoratedExport<T>
   private final Export<T> originalExport;
   private final Import<T> decoratedImport;
 
-  public DecoratedExport(final Export<T> originalExport, final ImportDecorator<? super T> decorator) {
+  DecoratedExport(final Export<T> originalExport, final ImportDecorator<? super T> decorator) {
     this.originalExport = originalExport;
     this.decoratedImport = decorator.decorate(originalExport);
   }

@@ -36,7 +36,7 @@ final class ExportedServiceProvider<T>
 
   private final ServiceSettings<T> settings;
 
-  public ExportedServiceProvider(final ServiceSettings<T> settings) {
+  ExportedServiceProvider(final ServiceSettings<T> settings) {
     // clone current state of settings
     this.settings = settings.clone();
   }
@@ -53,7 +53,7 @@ final class ExportedServiceProvider<T>
 
     private final ServiceSettings<T> settings;
 
-    public DirectProvider(final ServiceSettings<T> settings) {
+    DirectProvider(final ServiceSettings<T> settings) {
       // settings already cloned
       this.settings = settings;
     }

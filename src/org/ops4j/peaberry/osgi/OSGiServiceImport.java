@@ -69,7 +69,7 @@ final class OSGiServiceImport
   // current cache generation (global member)
   private static volatile int cacheGeneration;
 
-  public OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
+  OSGiServiceImport(final BundleContext bundleContext, final ServiceReference ref) {
     this.bundleContext = bundleContext;
     this.ref = ref;
 
@@ -87,7 +87,7 @@ final class OSGiServiceImport
   /**
    * Protected from concurrent access by {@link OSGiServiceListener}.
    */
-  public boolean updateRanking() {
+  boolean updateRanking() {
     notifyWatchers(MODIFIED);
 
     // ranking is mutable...
@@ -96,7 +96,7 @@ final class OSGiServiceImport
     return oldRank != rank;
   }
 
-  public boolean matches(final AttributeFilter filter) {
+  boolean matches(final AttributeFilter filter) {
     return filter.matches(attributes);
   }
 
@@ -130,14 +130,14 @@ final class OSGiServiceImport
   /**
    * Protected from concurrent access by {@link OSGiServiceListener}.
    */
-  public void addWatcher(final Export<?> export) {
+  void addWatcher(final Export<?> export) {
     watchers.add(export);
   }
 
   /**
    * Protected from concurrent access by {@link OSGiServiceListener}.
    */
-  public void invalidate() {
+  void invalidate() {
     notifyWatchers(UNREGISTERING);
     watchers.clear();
 
@@ -145,14 +145,14 @@ final class OSGiServiceImport
     state = INVALID; // force memory flush
   }
 
-  public static void setCacheGeneration(final int newGeneration) {
+  static void setCacheGeneration(final int newGeneration) {
     cacheGeneration = newGeneration;
   }
 
   /**
    * Protected from concurrent access by {@link OSGiServiceListener}.
    */
-  public void flush(final int targetGeneration) {
+  void flush(final int targetGeneration) {
 
     // check no-one is using the service and it belongs to the target generation
     if (targetGeneration == generation && ACTIVE == state && 0 == count.get()) {

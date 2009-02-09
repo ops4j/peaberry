@@ -44,7 +44,7 @@ final class ImportProxyClassLoader
   private static final String IMPORT_CLAZZ_NAME = Import.class.getName();
 
   @SuppressWarnings("unchecked")
-  public static <T> Constructor<T> getProxyConstructor(final Class<T> clazz) {
+  static <T> Constructor<T> getProxyConstructor(final Class<T> clazz) {
     try {
       // use a different custom classloader for each class-space, to avoid leaks
       final ClassLoader proxyLoader = getProxyClassLoader(clazz.getClassLoader());

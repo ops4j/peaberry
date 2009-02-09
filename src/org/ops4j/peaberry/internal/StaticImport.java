@@ -31,7 +31,7 @@ final class StaticImport<T>
   private final T instance;
   private final Map<String, ?> attributes;
 
-  public StaticImport(final T instance, final Map<String, ?> attributes) {
+  StaticImport(final T instance, final Map<String, ?> attributes) {
     this.instance = instance;
     this.attributes = attributes;
   }

@@ -43,7 +43,7 @@ final class OSGiServiceExport<T>
   private Map<String, ?> attributes;
   private ServiceRegistration reg;
 
-  public OSGiServiceExport(final BundleContext bundleContext, final Import<T> service) {
+  OSGiServiceExport(final BundleContext bundleContext, final Import<T> service) {
     this.bundleContext = bundleContext;
     this.originalService = service;
 
