@@ -17,11 +17,13 @@
 package org.ops4j.peaberry.eclipse;
 
 import static java.util.Collections.unmodifiableMap;
+import static java.util.logging.Level.WARNING;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -32,16 +34,20 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 
 /**
+ * {@link Import} implementation backed by an Eclipse Extension.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ExtensionImport
     implements Import<Object>, Comparable<ExtensionImport> {
 
+  private static final Logger LOGGER = Logger.getLogger(ExtensionImport.class.getName());
+
   private static final int INVALID = -1;
   private static final int DORMANT = 0;
   private static final int ACTIVE = 1;
 
-  private final long id;
+  private final long id; // internal sequence number
   private final IConfigurationElement config;
   private final Class<?> clazz;
 
@@ -51,7 +57,7 @@ final class ExtensionImport
   private final Map<String, ?> attributes;
   private final List<Export<?>> watchers;
 
-  public ExtensionImport(final long id, final IConfigurationElement config, final Class<?> clazz) {
+  ExtensionImport(final long id, final IConfigurationElement config, final Class<?> clazz) {
 
     this.id = id;
     this.config = config;
@@ -61,7 +67,7 @@ final class ExtensionImport
     watchers = new ArrayList<Export<?>>(2);
   }
 
-  public boolean matches(final AttributeFilter filter) {
+  boolean matches(final AttributeFilter filter) {
     return filter.matches(attributes);
   }
 
@@ -91,14 +97,14 @@ final class ExtensionImport
   /**
    * Protected from concurrent access by {@link ExtensionListener}.
    */
-  public void addWatcher(final Export<?> export) {
+  void addWatcher(final Export<?> export) {
     watchers.add(export);
   }
 
   /**
    * Protected from concurrent access by {@link ExtensionListener}.
    */
-  public void invalidate() {
+  void invalidate() {
     notifyWatchers();
     watchers.clear();
     instance = null;
@@ -109,7 +115,9 @@ final class ExtensionImport
     for (final Export<?> export : watchers) {
       try {
         export.unput();
-      } catch (final RuntimeException re) {/* ignore */} // NOPMD
+      } catch (final RuntimeException re) {
+        LOGGER.log(WARNING, "Exception in service watcher", re);
+      }
     }
   }
 
@@ -143,14 +151,18 @@ final class ExtensionImport
     try {
       final IExtension extension = config.getDeclaringExtension();
 
+      // use @ to avoid conflicting with attributes in the XML
       map.put("@id", extension.getUniqueIdentifier());
       map.put("@label", extension.getLabel());
       map.put("@contributor", config.getContributor());
+      map.put("@namespace", config.getNamespaceIdentifier());
       map.put("@point", extension.getExtensionPointUniqueIdentifier());
 
+      // similarly use () to avoid conflicts
       map.put("name()", config.getName());
       map.put("text()", config.getValue());
 
+      // now load the actual attributes from the XML
       for (final String key : config.getAttributeNames()) {
         map.put(key, config.getAttribute(key));
       }

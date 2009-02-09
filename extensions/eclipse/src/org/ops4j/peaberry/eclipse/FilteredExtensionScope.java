@@ -32,7 +32,7 @@ final class FilteredExtensionScope<S>
   private final AttributeFilter filter;
   private final ServiceScope<S> scope;
 
-  public FilteredExtensionScope(final AttributeFilter filter, final ServiceScope<S> scope) {
+  FilteredExtensionScope(final AttributeFilter filter, final ServiceScope<S> scope) {
     this.filter = filter;
     this.scope = scope;
   }

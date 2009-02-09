@@ -28,6 +28,8 @@ import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceScope;
 
 /**
+ * Eclipse Extension specific {@link ServiceRegistry} adapter.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class EclipseRegistry
@@ -37,6 +39,7 @@ public final class EclipseRegistry
     static final ServiceRegistry thisRegistry = new EclipseRegistry();
   }
 
+  // ensure the main Eclipse registry is a singleton
   public static ServiceRegistry eclipseRegistry() {
     return SingletonHolder.thisRegistry;
   }
@@ -56,6 +59,7 @@ public final class EclipseRegistry
   }
 
   public <T> Export<T> add(final Import<T> service) {
+    // Extension registry is currently read-only
     throw new UnsupportedOperationException();
   }
 

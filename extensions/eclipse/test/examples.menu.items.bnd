@@ -8,3 +8,6 @@ Private-Package:\
 Include-Resource:\
  plugin.xml=examples.menu.items.xml
 
+Import-Package:\
+ org.ops4j.peaberry.eclipse,*
+

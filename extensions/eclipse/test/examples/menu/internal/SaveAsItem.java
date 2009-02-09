@@ -14,30 +14,17 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.eclipse;
+package examples.menu.internal;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import examples.menu.Item;
 
 /**
- * Use this to map a bean type to a particular Extension Point.
- * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Target(TYPE)
-@Retention(RUNTIME)
-public @interface ExtensionInterface {
+public class SaveAsItem
+    implements Item {
 
-  /**
-   * @return true if the Extension elements should be combined into one bean
-   */
-  boolean aggregate() default false;
-
-  /**
-   * @return the Extension Point id
-   */
-  String value();
+  public String getName() {
+    return "Save the current document as...";
+  }
 }

@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.eclipse;
 
 import static java.util.Collections.binarySearch;
+import static java.util.logging.Level.WARNING;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -35,10 +37,14 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceScope;
 
 /**
+ * Keep track of imported Eclipse Extensions that provide a specific interface.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class ExtensionListener
     implements IRegistryEventListener {
+
+  private static final Logger LOGGER = Logger.getLogger(ExtensionListener.class.getName());
 
   private final IExtensionRegistry registry;
   private final Class<?> clazz;
@@ -50,25 +56,27 @@ final class ExtensionListener
   private final List<ExtensionImport> imports;
   private final List<ServiceScope<Object>> watchers;
 
-  public ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
+  ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
     final ExtensionInterface metadata = clazz.getAnnotation(ExtensionInterface.class);
 
     this.registry = registry;
     this.clazz = clazz;
 
+    // use package as extension point id if no annotation
     if (null == metadata || metadata.value().isEmpty()) {
       point = clazz.getPackage().getName();
     } else {
       point = metadata.value();
     }
 
+    // do we need to combine elements into a single bean?
     aggregate = metadata != null && metadata.aggregate();
 
     imports = new ArrayList<ExtensionImport>(4);
     watchers = new ArrayList<ServiceScope<Object>>(2);
   }
 
-  public synchronized void start() {
+  synchronized void start() {
     final IExtensionPoint[] extensionPoints;
 
     // register listener first to avoid race condition
@@ -77,11 +85,15 @@ final class ExtensionListener
       extensionPoints = registry.getExtensionPoints();
     } else {
       registry.addListener(this, point);
-      final IExtensionPoint p = registry.getExtensionPoint(point);
-      extensionPoints = null == p ? new IExtensionPoint[0] : new IExtensionPoint[]{p};
+      extensionPoints = new IExtensionPoint[]{registry.getExtensionPoint(point)};
     }
 
-    // retrieve any matching extensions that are already registered
+    // safety check in case there was no matching extension point
+    if (extensionPoints.length == 0 || null == extensionPoints[0]) {
+      return;
+    }
+
+    // retrieve any matching extensions for each point
     for (final IExtensionPoint p : extensionPoints) {
       for (final IExtension e : p.getExtensions()) {
         insertExtension(e);
@@ -97,7 +109,8 @@ final class ExtensionListener
 
   public synchronized void removed(final IExtension[] extensions) {
 
-    final Set<String> ids = new HashSet<String>();
+    // collect extension ids to speed up checking
+    final Set<String> ids = new HashSet<String>(extensions.length);
     for (final IExtension e : extensions) {
       ids.add(e.getUniqueIdentifier());
     }
@@ -105,6 +118,7 @@ final class ExtensionListener
     for (final Iterator<ExtensionImport> i = imports.iterator(); i.hasNext();) {
       final ExtensionImport extensionImport = i.next();
 
+      // remove any elements that belong to the removed extensions
       final Map<String, ?> attributes = extensionImport.attributes();
       if (null == attributes || ids.contains(attributes.get("@id"))) {
         i.remove();
@@ -119,15 +133,12 @@ final class ExtensionListener
   public void removed(final IExtensionPoint[] points) {/* do nothing */}
 
   @SuppressWarnings("unchecked")
-  public synchronized void addWatcher(final ServiceScope scope) {
+  synchronized void addWatcher(final ServiceScope scope) {
     if (!watchers.contains(scope) && watchers.add(scope)) {
 
       // report existing imports to the new scope
       for (final ExtensionImport i : imports) {
-        final Export export = scope.add(i);
-        if (null != export) {
-          i.addWatcher(export);
-        }
+        notifyWatcher(scope, i);
       }
     }
   }
@@ -135,17 +146,36 @@ final class ExtensionListener
   private void insertExtension(final IExtension extension) {
     final IConfigurationElement[] configurations;
     if (aggregate) {
-      configurations = new IConfigurationElement[]{new AggregateExtension(extension)};
+      configurations = new IConfigurationElement[]{new AggregatedExtension(extension)};
     } else {
       configurations = extension.getConfigurationElements();
     }
 
-    for (final IConfigurationElement i : configurations) {
-      imports.add(new ExtensionImport(++idCounter, i, clazz)); // NOPMD
+    // create an import for each major configuration element
+    for (final IConfigurationElement config : configurations) {
+      final ExtensionImport i = new ExtensionImport(++idCounter, config, clazz);
+      imports.add(i);
+
+      // report the new import to any watching scopes
+      for (final ServiceScope<Object> scope : watchers) {
+        notifyWatcher(scope, i);
+      }
     }
   }
 
-  public synchronized ExtensionImport findNextImport(final ExtensionImport prevImport,
+  @SuppressWarnings("unchecked")
+  private static void notifyWatcher(final ServiceScope scope, final ExtensionImport i) {
+    try {
+      final Export export = scope.add(i);
+      if (null != export) {
+        i.addWatcher(export);
+      }
+    } catch (final RuntimeException re) {
+      LOGGER.log(WARNING, "Exception in service watcher", re);
+    }
+  }
+
+  synchronized ExtensionImport findNextImport(final ExtensionImport prevImport,
       final AttributeFilter filter) {
 
     if (imports.isEmpty()) {

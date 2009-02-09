@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2008 Stuart McCulloch
+ * Copyright (C) 2009 Stuart McCulloch
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Use this to map a bean method to the text content of an XML element.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Target(METHOD)

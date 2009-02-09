@@ -24,14 +24,16 @@ import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 
 /**
+ * Wraps an Extension to behave like an aggregation of configuration elements.
+ * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class AggregateExtension
+final class AggregatedExtension
     implements IConfigurationElement {
 
   private final IExtension extension;
 
-  public AggregateExtension(final IExtension extension) {
+  AggregatedExtension(final IExtension extension) {
     this.extension = extension;
   }
 
@@ -95,7 +97,7 @@ final class AggregateExtension
 
   @SuppressWarnings("deprecation")
   public String getValueAsIs() {
-    throw new UnsupportedOperationException();
+    return null;
   }
 
   public boolean isValid() {
@@ -109,8 +111,8 @@ final class AggregateExtension
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof AggregateExtension) {
-      return extension.equals(((AggregateExtension) rhs).extension);
+    if (rhs instanceof AggregatedExtension) {
+      return extension.equals(((AggregatedExtension) rhs).extension);
     }
     return false;
   }
