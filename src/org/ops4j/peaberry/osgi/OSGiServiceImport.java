@@ -140,7 +140,6 @@ final class OSGiServiceImport
   void invalidate() {
     notifyWatchers(UNREGISTERING);
     watchers.clear();
-
     instance = null;
     state = INVALID; // force memory flush
   }

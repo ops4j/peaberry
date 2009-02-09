@@ -34,7 +34,7 @@ import com.google.inject.Inject;
 public class RegistryChain
     implements ServiceRegistry {
 
-  final ServiceRegistry[] registries;
+  private final ServiceRegistry[] registries;
 
   @Inject
   public RegistryChain(final CachingServiceRegistry mainRegistry,

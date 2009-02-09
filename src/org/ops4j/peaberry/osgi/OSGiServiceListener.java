@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.osgi;
 
 import static java.util.Collections.binarySearch;
+import static java.util.logging.Level.WARNING;
 import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.ServiceEvent.MODIFIED;
 import static org.osgi.framework.ServiceEvent.REGISTERED;
@@ -24,6 +25,7 @@ import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
@@ -42,6 +44,8 @@ import org.osgi.framework.ServiceReference;
  */
 final class OSGiServiceListener
     implements ServiceListener {
+
+  private static final Logger LOGGER = Logger.getLogger(OSGiServiceListener.class.getName());
 
   private static final String OBJECT_CLAZZ_NAME = Object.class.getName();
 
@@ -109,10 +113,7 @@ final class OSGiServiceListener
 
       // report existing imports to the new scope
       for (final OSGiServiceImport i : imports) {
-        final Export export = scope.add(i);
-        if (null != export) {
-          i.addWatcher(export);
-        }
+        notifyWatcher(scope, i);
       }
     }
   }
@@ -134,11 +135,20 @@ final class OSGiServiceListener
 
       // report new import to any watching scopes
       for (final ServiceScope<Object> scope : watchers) {
-        final Export<Object> export = scope.add(i);
-        if (null != export) {
-          i.addWatcher(export);
-        }
+        notifyWatcher(scope, i);
       }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static void notifyWatcher(final ServiceScope scope, final OSGiServiceImport i) {
+    try {
+      final Export export = scope.add(i);
+      if (null != export) {
+        i.addWatcher(export);
+      }
+    } catch (final RuntimeException re) {
+      LOGGER.log(WARNING, "Exception in service watcher", re);
     }
   }
 
