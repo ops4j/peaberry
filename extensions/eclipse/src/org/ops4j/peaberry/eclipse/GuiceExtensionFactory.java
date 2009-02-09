@@ -119,6 +119,10 @@ public final class GuiceExtensionFactory
 
     final BundleContext context = bundle.getBundleContext();
     final String value = config.getAttribute(clazzAttributeName);
+    if (null == value) {
+      throw new RuntimeException("Missing IExecutableExtension adapter data");
+    }
+
     final int n = value.indexOf(':');
 
     // separate name and data components from the attribute value
