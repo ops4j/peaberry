@@ -26,6 +26,8 @@ import java.util.Map;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.eclipse.ExtensionInterface;
+import org.ops4j.peaberry.eclipse.GuiceExtensionFactory;
+import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
 
 import com.google.inject.Guice;
@@ -52,7 +54,9 @@ public final class ExtensionTests {
   ServiceRegistry registry;
 
   public ExtensionTests() {
-    injector = Guice.createInjector(osgiModule(findContext(getClass()), eclipseRegistry()));
+    final BundleContext context = findContext(getClass());
+    injector = Guice.createInjector(osgiModule(context, eclipseRegistry()));
+    GuiceExtensionFactory.publishInjector(context, injector, context.getBundles());
     injector.injectMembers(this);
   }
 
