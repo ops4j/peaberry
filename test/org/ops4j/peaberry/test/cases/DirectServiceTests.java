@@ -45,7 +45,7 @@ public final class DirectServiceTests
   @interface Nullable {}
 
   // used for lazy binding
-  static class Holder {
+  public static class Holder {
     @Inject
     @Nullable
     Id id;
@@ -54,7 +54,7 @@ public final class DirectServiceTests
     Iterable<Id> ids;
   }
 
-  static class DirectIdImpl
+  public static class DirectIdImpl
       implements Id {
 
     @Override

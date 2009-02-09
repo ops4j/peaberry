@@ -40,7 +40,7 @@ public final class ServicePerformanceTests
     double action(String name, double id);
   }
 
-  static class ExampleImpl
+  public static class ExampleImpl
       implements Example {
     public double action(final String name, final double id) {
       return Math.exp(id * name.hashCode() * Math.cosh(id));
@@ -70,7 +70,7 @@ public final class ServicePerformanceTests
     bind(Holder.class);
   }
 
-  static class Holder {
+  public static class Holder {
 
     @Inject
     @Named("Raw")

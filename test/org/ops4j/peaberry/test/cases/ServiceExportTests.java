@@ -43,7 +43,7 @@ public final class ServiceExportTests
   @Inject
   Id importedId;
 
-  static class ExportedIdImpl
+  public static class ExportedIdImpl
       implements Id {
 
     @Override

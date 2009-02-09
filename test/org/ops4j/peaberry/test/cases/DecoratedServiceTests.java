@@ -39,7 +39,7 @@ import examples.ids.Id;
 public final class DecoratedServiceTests
     extends InjectableTestCase {
 
-  static class IdAdapter
+  public static class IdAdapter
       implements Id {
 
     final Id wrappedId;
@@ -54,7 +54,7 @@ public final class DecoratedServiceTests
     }
   }
 
-  static class IdDecorator
+  public static class IdDecorator
       extends AbstractDecorator<Id> {
 
     @Override

@@ -55,7 +55,7 @@ public final class ServiceContentionTests
     String test();
   }
 
-  static class DummyServiceImpl
+  public static class DummyServiceImpl
       implements DummyService {
 
     public String test() {
