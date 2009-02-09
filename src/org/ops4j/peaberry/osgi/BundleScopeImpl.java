@@ -17,8 +17,6 @@
 package org.ops4j.peaberry.osgi;
 
 import static java.util.Collections.singletonMap;
-import static org.ops4j.peaberry.BundleScoped.BUNDLE_ID;
-import static org.ops4j.peaberry.BundleScoped.BUNDLE_ID_FILTER;
 
 import org.ops4j.peaberry.ServiceException;
 import org.osgi.framework.BundleContext;
@@ -37,6 +35,9 @@ import com.google.inject.Scope;
 final class BundleScopeImpl
     implements Scope {
 
+  // attribute used to select bundle-scoped services
+  private static final String BUNDLE_ID = "bundle.id";
+
   final BundleContext bundleContext;
 
   final long bundleId;
@@ -47,7 +48,7 @@ final class BundleScopeImpl
 
     // filter services to those registered by this context
     bundleId = bundleContext.getBundle().getBundleId();
-    filter = String.format(BUNDLE_ID_FILTER, bundleId);
+    filter = '(' + BUNDLE_ID + '=' + bundleId + ')';
   }
 
   public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {

@@ -36,11 +36,4 @@ import com.google.inject.ScopeAnnotation;
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
 @ScopeAnnotation
-public @interface BundleScoped {
-
-  /**
-   * Constants used when scoping instances with the OSGi service registry.
-   */
-  static final String BUNDLE_ID = "bundle.id";
-  static final String BUNDLE_ID_FILTER = '(' + BUNDLE_ID + "=%s)";
-}
+public @interface BundleScoped {}
