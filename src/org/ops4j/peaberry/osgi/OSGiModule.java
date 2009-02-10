@@ -47,11 +47,11 @@ public final class OSGiModule
     if (registries.length == 0) {
       bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
     } else {
-      bind(ServiceRegistry[].class).toInstance(registries);
+      bind(ServiceRegistry[].class).annotatedWith(PrivateBinding.class).toInstance(registries);
       bind(ServiceRegistry.class).to(RegistryChain.class);
     }
 
-    // need indirect binding so registry is published as caching
+    // use CachingServiceRegistry so it will be used as the published API
     bind(CachingServiceRegistry.class).in(BundleScoped.class);
   }
 

@@ -53,9 +53,8 @@
     <bnd files="${test.bnd}" output="${build}/test/bundles" classpath="${build}/test-classes"/>
   </target>
 
-  <taskdef resource="testngtasks" classpath="${testng.jar}"/>
-
   <target name="test.jar" depends="jar,testcases">
+    <taskdef resource="testngtasks" classpath="${testng.jar}"/>
     <delete dir="${build}/test/felix-cache"/>
     <makeurl file="${common.dir}/felix.properties" property="felix.config.properties"/>
     <property name="boot.urls" value=""/>
@@ -132,9 +131,8 @@
 
   <target name="test.dist" depends="test.jar"/>
 
-  <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
-
   <target name="with.clover">
+    <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
     <clover-setup initstring="${build}/instrument/coverage.db">
       <fileset dir="${src}" includes="org/**/*.java" excludes="**/*Exception.java"/>
       <methodContext name="toString" regexp="(.* )?public String toString\(\).*"/>
@@ -155,10 +153,9 @@
     </clover-report>
   </target>
 
-  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
-      classpath="${jaxen.jar};${pmd.jar};${asm.jar}"/>
-
   <target name="pmd" depends="compile">
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
+        classpath="${jaxen.jar};${pmd.jar};${asm.jar}"/>
     <mkdir dir="${doc}/coverage"/>
     <pmd rulesetfiles="${common.dir}/pmd.xml" shortFilenames="true">
       <formatter type="html" toFile="${doc}/coverage/pmd.html" linkPrefix="" linePrefix="src-"/>

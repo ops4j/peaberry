@@ -38,7 +38,7 @@ public class RegistryChain
 
   @Inject
   public RegistryChain(final CachingServiceRegistry mainRegistry,
-      final ServiceRegistry[] alternativeRegistries) {
+      @PrivateBinding final ServiceRegistry[] alternativeRegistries) {
 
     // merge main and alternative registries into a single array
     registries = new ServiceRegistry[1 + alternativeRegistries.length];

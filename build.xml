@@ -4,8 +4,6 @@
   <import file="setup/common.xml"/>
   <property file="build.properties"/>
 
-  <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
-
   <target name="guice" depends="check.guice,trim.guice"/>
 
   <target name="check.guice">
@@ -13,6 +11,7 @@
   </target>
 
   <target name="trim.guice" unless="have.guice">
+    <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
     <mkdir dir="${dist}"/>
     <proguard>
       -libraryjars "${java.home}/lib/rt.jar"
@@ -30,9 +29,8 @@
 
   <target name="compile" depends="guice,common.compile"/>
 
-  <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
-
   <target name="with.deps" depends="compile">
+    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
     <jarjar jarfile="${build}/classes.jar">
       <fileset dir="${build}/classes"/>
       <zipfileset src="${asm.jar}"/>

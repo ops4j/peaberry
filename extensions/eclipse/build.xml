@@ -5,14 +5,8 @@
   <import file="../../setup/common.xml"/>
   <property file="build.properties"/>
 
-  <target name="peaberry" depends="check.peaberry,build.peaberry"/>
-
-  <target name="check.peaberry">
-    <available file="../../build/classes" property="have.peaberry"/>
-  </target>
-
-  <target name="build.peaberry" unless="have.peaberry">
-    <ant dir="../.." inheritAll="false" target="compile"/>
+  <target name="peaberry">
+    <ant dir="../.." inheritAll="false" target="jar"/>
   </target>
 
   <target name="jar" depends="peaberry,common.jar">
