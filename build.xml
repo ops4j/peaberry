@@ -42,7 +42,11 @@
     </jarjar>
   </target>
 
-  <target name="jar" depends="with.deps,common.jar"/>
+  <target name="jar" depends="with.deps,common.jar">
+    <makeurl property="deploy.urls">
+      <fileset dir="${dist}" includes="*.jar"/>
+    </makeurl>
+  </target>
 
   <target name="all">
     <antcall target="${target}"/>

@@ -1,6 +1,5 @@
 
 -include: ${common.dir}/common.bnd
--classpath: ${build.dir}/classes.jar,${guice.jar},${felix.jar}
 
 Bundle-Activator: ${module}.osgi.Activator
 

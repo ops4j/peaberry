@@ -1,6 +1,5 @@
 
 -include: ${common.dir}/common.bnd
--classpath: ${build.dir}/classes,${eqcom.jar},${eqreg.jar},${felix.jar}
 
 Include-Resource:\
  META-INF/NOTICE=../NOTICE,\

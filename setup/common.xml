@@ -37,6 +37,10 @@
   </target>
 
   <target name="main.bundle">
+    <property name="module.cp" value="${build}/classes"/>
+    <pathconvert pathsep="," dirsep="/" property="-classpath">
+      <path path="${build.cp};${module.cp}"/>
+    </pathconvert>
     <bnd files="${main.bnd}"/>
   </target>
 
@@ -59,6 +63,7 @@
     <makeurl file="${common.dir}/felix.properties" property="felix.config.properties"/>
     <property name="boot.urls" value=""/>
     <makeurl property="deploy.urls">
+      <fileset dir="${lib}" includes="*.jar"/>
       <fileset dir="${dist}" includes="*.jar"/>
     </makeurl>
     <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.Director">
@@ -66,7 +71,7 @@
       <sysproperty key="felix.config.properties" value="${felix.config.properties}"/>
       <sysproperty key="boot.urls" value="${boot.urls}"/>
       <sysproperty key="deploy.urls" value="${deploy.urls}"/>
-      <sysproperty key="build.dir" value="${build.dir}"/>
+      <sysproperty key="build" value="${build}"/>
       <sysproperty key="org.ops4j.peaberry.cache.interval" value="1"/>
       <classpath>
         <pathelement location="${felix.jar}"/>
