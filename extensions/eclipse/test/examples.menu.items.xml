@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-	<extension point="examples.menu">
-		<menu name="Open"
+	<extension point="examples.menu.items">
+		<item name="Open"
 		      class="examples.menu.internal.OpenItem"
-		      id="examples.menu.open" />
-		<menu name="Save"
+		      id="examples.menu.item.open" />
+		<item name="Save"
 		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
 		      id="examples.menu.internal.SaveItem" />
-		<menu name="Save As"
+		<item name="Save As"
 		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:clazz"
 		      clazz="examples.menu.internal.SaveAsItem"
-		      id="examples.menu.save" />
+		      id="examples.menu.item.saveas" />
 	</extension>
 </plugin>

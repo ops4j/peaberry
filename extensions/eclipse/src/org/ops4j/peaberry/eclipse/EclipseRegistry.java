@@ -28,7 +28,7 @@ import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceScope;
 
 /**
- * Eclipse Extension specific {@link ServiceRegistry} adapter.
+ * Eclipse Extension {@link ServiceRegistry} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

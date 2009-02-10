@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 import org.ops4j.peaberry.Import;
 
 /**
- * An {@code Iterator} that iterates over a series of iterators in turn.
+ * An {@link Iterator} that iterates over a series of iterators in turn.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

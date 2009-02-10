@@ -29,7 +29,7 @@ import org.osgi.framework.BundleContext;
 import com.google.inject.Inject;
 
 /**
- * OSGi specific {@link ServiceRegistry} adapter.
+ * OSGi {@link ServiceRegistry} implementation.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

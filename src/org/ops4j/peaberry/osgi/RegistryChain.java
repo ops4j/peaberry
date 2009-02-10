@@ -27,7 +27,7 @@ import org.ops4j.peaberry.ServiceScope;
 import com.google.inject.Inject;
 
 /**
- * A {@code ServiceRegistry} that delegates to a series of other registries.
+ * A {@link ServiceRegistry} that delegates to a series of other registries.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

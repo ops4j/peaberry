@@ -63,9 +63,9 @@ final class ExtensionListener
     this.registry = registry;
     this.clazz = clazz;
 
-    // use package as extension point id if no annotation
+    // no annotation => use lower-case class as point id
     if (null == metadata || metadata.value().isEmpty()) {
-      point = clazz.getPackage().getName();
+      point = clazz.getName().toLowerCase() + 's';
     } else {
       point = metadata.value();
     }

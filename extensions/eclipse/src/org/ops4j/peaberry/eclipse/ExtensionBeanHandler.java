@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.osgi.framework.Bundle;
 
 /**
- * Proxy {@code InvocationHandler} that maps method calls to bean properties.
+ * {@link InvocationHandler} that maps method calls to bean properties.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

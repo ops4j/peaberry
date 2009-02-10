@@ -42,7 +42,7 @@ import examples.menu.Item;
 @Test
 public final class ExtensionTests {
 
-  @ExtensionInterface("examples.menu")
+  @ExtensionInterface("examples.menu.items")
   private static interface ItemFacade {
     String getName();
   }

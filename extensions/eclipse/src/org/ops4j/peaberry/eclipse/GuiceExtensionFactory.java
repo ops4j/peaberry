@@ -37,30 +37,44 @@ import org.osgi.framework.ServiceReference;
 import com.google.inject.Injector;
 
 /**
- * An extension factory that uses {@code Injector}s published as OSGi services.
+ * An extension factory that uses {@link Injector}s published as OSGi services.
  * Bundles without published injectors will use the standard extension process.
  * <p>
  * To use this factory rename your current extension class attribute and replace
  * it with one that refers to both this class and the name of the new attribute:
  * 
- * <pre>
- *   <menu name="Open"
- *     class="examples.menu.OpenItem"
- *     id="examples.menu.open" />
- * </pre>
+ * <pre>{@literal <}extension point="org.eclipse.ui.views"{@literal >}
+ *   {@literal <}view name="Message"
+ *         allowMultiple="true"
+ *         icon="icons/sample2.gif"
+ *         class="example.View"
+ *         id="example.View"{@literal >}
+ *   {@literal <}/view>
+ * {@literal <}/extension{@literal >}</pre>
  * becomes:
  * 
- * <pre>
- *   <menu name="Open"
- *     class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:code"
- *     code="examples.menu.OpenItem"
- *     id="examples.menu.open" />
- * </pre>
- * If no name is given after the factory class it is assumed the name is "id".
- * <p>
+ * <pre>{@literal <}extension point="org.eclipse.ui.views"{@literal >}
+ *   {@literal <}view name="Message"
+ *         allowMultiple="true"
+ *         icon="icons/sample2.gif"
+ *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:key"
+ *         key="example.View"
+ *         id="example.View"{@literal >}
+ *   {@literal <}/view>
+ * {@literal <}/extension{@literal >}</pre>
+ * If no name is given after the factory class it is assumed to be "id":
+ * 
+ * <pre>{@literal <}extension point="org.eclipse.ui.views"{@literal >}
+ *   {@literal <}view name="Message"
+ *         allowMultiple="true"
+ *         icon="icons/sample2.gif"
+ *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
+ *         id="example.View"{@literal >}
+ *   {@literal <}/view>
+ * {@literal <}/extension{@literal >}</pre>
  * The {@code publishInjector} helper method can publish an injector for one or
  * more bundles. Alternatively you can publish the services yourself: they must
- * have the {@code Injector} interface and a service property {@code bundle.id}
+ * have the {@link Injector} interface and a service property {@code bundle.id}
  * containing a long or array of longs representing the associated bundle ids.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
@@ -77,7 +91,7 @@ public final class GuiceExtensionFactory
   private IConfigurationElement config;
 
   /**
-   * Publish an {@code Injector} as a service associated with the given bundles.
+   * Publish an {@link Injector} as a service associated with the given bundles.
    * 
    * @param context current bundle context
    * @param injector a valid injector
