@@ -101,6 +101,8 @@
         use="true" author="false" windowtitle="${title}">
       <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
       <link href="http://google-guice.googlecode.com/svn/trunk/latest-javadoc/"/>
+      <link href="http://peaberry.googlecode.com/svn/tags/1.0/reports/javadoc/"/>
+      <link href="http://help.eclipse.org/stable/topic/org.eclipse.platform.doc.isv/reference/api/"/>
       <link href="http://aopalliance.sourceforge.net/doc/"/>
       <link href="http://www2.osgi.org/javadoc/r4/"/>
     </javadoc>
