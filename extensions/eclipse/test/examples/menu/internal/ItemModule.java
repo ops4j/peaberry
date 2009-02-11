@@ -16,15 +16,17 @@
 
 package examples.menu.internal;
 
-import examples.menu.Item;
+import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public class SaveItem
-    implements Item {
+public class ItemModule
+    extends AbstractModule {
 
-  public String getName() {
-    return "Save the current document";
+  @Override
+  protected void configure() {
+    bindConstant().annotatedWith(Names.named("label")).to("Injected menu item");
   }
 }

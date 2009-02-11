@@ -2,6 +2,3 @@
 Private-Package:\
  org.ops4j.peaberry.eclipse.test
 
-Import-Package:\
- org.eclipse.core.runtime;registry=split,*
-

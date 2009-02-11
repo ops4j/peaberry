@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.eclipse.test;
 
+import static com.google.inject.Guice.createInjector;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
 import static org.ops4j.peaberry.test.Director.findContext;
@@ -26,13 +27,9 @@ import java.util.Map;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.eclipse.ExtensionInterface;
-import org.ops4j.peaberry.eclipse.GuiceExtensionFactory;
-import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 import examples.menu.Item;
 
@@ -44,20 +41,14 @@ public final class ExtensionTests {
 
   @ExtensionInterface("examples.menu.items")
   private static interface ItemFacade {
-    String getName();
+    String getLabel();
   }
-
-  @Inject
-  final Injector injector;
 
   @Inject
   ServiceRegistry registry;
 
   public ExtensionTests() {
-    final BundleContext context = findContext(getClass());
-    injector = Guice.createInjector(osgiModule(context, eclipseRegistry()));
-    GuiceExtensionFactory.publishInjector(context, injector, context.getBundles());
-    injector.injectMembers(this);
+    createInjector(osgiModule(findContext(getClass()), eclipseRegistry())).injectMembers(this);
   }
 
   public void testExtensionPoint() {
@@ -65,8 +56,8 @@ public final class ExtensionTests {
 
       public Item get() {
         return new Item() {
-          public String getName() {
-            return "Exit the application";
+          public String getLabel() {
+            return "Service-based menu item";
           }
         };
       }
@@ -83,7 +74,7 @@ public final class ExtensionTests {
     for (final Import<ItemFacade> item : registry.lookup(ItemFacade.class, null)) {
       System.out.println("getClass(): " + item.get().getClass());
       System.out.println("toString(): " + item.get().toString());
-      System.out.println("getName():  " + item.get().getName());
+      System.out.println("getName():  " + item.get().getLabel());
       System.out.println("equals():   " + item.get().equals(item.get()));
       System.out.println("----------------------------------------------------------------");
     }
@@ -92,7 +83,7 @@ public final class ExtensionTests {
     for (final Import<Item> item : registry.lookup(Item.class, null)) {
       System.out.println("getClass(): " + item.get().getClass());
       System.out.println("toString(): " + item.get().toString());
-      System.out.println("getName():  " + item.get().getName());
+      System.out.println("getName():  " + item.get().getLabel());
       System.out.println("equals():   " + item.get().equals(item.get()));
       System.out.println("----------------------------------------------------------------");
     }

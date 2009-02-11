@@ -16,15 +16,22 @@
 
 package examples.menu.internal;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import examples.menu.Item;
 
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public class OpenItem
+public class ItemImpl
     implements Item {
 
-  public String getName() {
-    return "Open a new document";
+  @Inject
+  @Named("label")
+  String label = "Non-injected menu item";
+
+  public String getLabel() {
+    return label;
   }
 }

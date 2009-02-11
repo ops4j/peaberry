@@ -16,39 +16,41 @@
 
 package org.ops4j.peaberry.eclipse;
 
-import static java.util.Collections.singletonMap;
-import static java.util.logging.Level.WARNING;
-import static org.osgi.framework.Bundle.ACTIVE;
+import static com.google.inject.Guice.createInjector;
+import static org.eclipse.core.runtime.ContributorFactoryOSGi.resolve;
+import static org.eclipse.core.runtime.RegistryFactory.getRegistry;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.core.runtime.ContributorFactoryOSGi;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceReference;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eclipse.core.runtime.Status;
 
 import com.google.inject.Injector;
+import com.google.inject.Module;
 
 /**
- * An extension factory that uses {@link Injector}s published as OSGi services.
- * Bundles without published injectors will use the standard extension process.
+ * An {@link IExecutableExtensionFactory} that looks for {@link Module} bindings
+ * under the extension point named in the {@code inject} attribute. It creates a
+ * new {@link Injector} based on the collection of modules and caches it against
+ * the same extension point. It then uses this injector to create and inject the
+ * extension instance.
  * <p>
  * To use this factory rename your current extension class attribute and replace
- * it with one that refers to both this class and the name of the new attribute:
+ * it with one that refers to this factory followed by your new class attribute,
+ * then add the {@code inject} attribute identifying the module extension point.
  * 
  * <pre>{@literal <}extension point="org.eclipse.ui.views"{@literal >}
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"
- *         class="example.View"
- *         id="example.View"{@literal >}
+ *         class="example.ViewImpl"
+ *         id="example.view"{@literal >}
  *   {@literal <}/view>
  * {@literal <}/extension{@literal >}</pre>
  * becomes:
@@ -57,9 +59,10 @@ import com.google.inject.Injector;
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"
+ *         inject="example.view.modules"
  *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:key"
- *         key="example.View"
- *         id="example.View"{@literal >}
+ *         key="example.ViewImpl"
+ *         id="example.view"{@literal >}
  *   {@literal <}/view>
  * {@literal <}/extension{@literal >}</pre>
  * If no name is given after the factory class it is assumed to be "id":
@@ -68,112 +71,105 @@ import com.google.inject.Injector;
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"
+ *         inject="example.view.modules"
  *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
- *         id="example.View"{@literal >}
+ *         id="example.ViewImpl"{@literal >}
  *   {@literal <}/view>
  * {@literal <}/extension{@literal >}</pre>
- * The {@code publishInjector} helper method can publish an injector for one or
- * more bundles. Alternatively you can publish the services yourself: they must
- * have the {@link Injector} interface and a service property {@code bundle.id}
- * containing a long or array of longs representing the associated bundle ids.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class GuiceExtensionFactory
     implements IExecutableExtension, IExecutableExtensionFactory {
 
-  private static final Logger LOGGER = Logger.getLogger(GuiceExtensionFactory.class.getName());
-
-  // attribute used to select bundle-scoped services
-  private static final String BUNDLE_ID = "bundle.id";
+  private static final ConcurrentHashMap<String, Injector> INJECTORS =
+      new ConcurrentHashMap<String, Injector>();
 
   private String clazzAttributeName;
   private IConfigurationElement config;
-
-  /**
-   * Publish an {@link Injector} as a service associated with the given bundles.
-   * 
-   * @param context current bundle context
-   * @param injector a valid injector
-   * @param bundles the target bundles
-   */
-  public static void publishInjector(final BundleContext context, final Injector injector,
-      final Bundle... bundles) {
-
-    final long[] ids = new long[bundles.length];
-    for (int i = 0; i < ids.length; i++) {
-      ids[i] = bundles[i].getBundleId();
-    }
-
-    @SuppressWarnings("unchecked")
-    final Dictionary props = new Hashtable(singletonMap(BUNDLE_ID, ids));
-    context.registerService(Injector.class.getName(), injector, props);
-  }
+  private IContributor contributor;
 
   public void setInitializationData(final IConfigurationElement config, final String name,
       final Object data) {
 
+    // find class attribute in the configuration
     clazzAttributeName = mapClassAttribute(data);
+    contributor = config.getContributor();
+
     this.config = config;
+  }
+
+  static String mapClassAttribute(final Object data) {
+    // data is expected to refer to another attribute with the real class string
+    return data instanceof String && !((String) data).isEmpty() ? (String) data : "id";
+  }
+
+  public static void reset(final String extensionPointId) {
+    INJECTORS.remove(extensionPointId);
+  }
+
+  public static void reset() {
+    INJECTORS.clear();
   }
 
   public Object create()
       throws CoreException {
 
-    final Bundle bundle = ContributorFactoryOSGi.resolve(config.getContributor());
-
-    // auto-start lazy bundles...
-    if ((bundle.getState() & ACTIVE) == 0) {
-      try {
-        bundle.start();
-      } catch (final BundleException e) {
-        LOGGER.log(WARNING, "Exception starting bundle", e);
-      }
-    }
-
-    final BundleContext context = bundle.getBundleContext();
     final String value = config.getAttribute(clazzAttributeName);
     if (null == value) {
-      throw new RuntimeException("Missing IExecutableExtension adapter data");
+      throw newCoreException("Missing IExecutableExtension adapter data");
     }
 
     final int n = value.indexOf(':');
 
     // separate name and data components from the attribute value
     final String clazzName = n < 0 ? value : value.substring(0, n);
-    final String filter = '(' + BUNDLE_ID + '=' + bundle.getBundleId() + ')';
 
-    ServiceReference ref = null;
-
+    final Class<?> clazz;
     try {
-
-      // find and use the service without explicit checks
-      final Class<?> clazz = bundle.loadClass(clazzName);
-      ref = context.getServiceReferences(Injector.class.getName(), filter)[0];
-      return ((Injector) context.getService(ref)).getInstance(clazz);
-
-    } catch (final NullPointerException e) { // NOPMD
-
-      /* no injector service available so silently drop through... */
-
-    } catch (final Exception e) {
-
-      LOGGER.log(WARNING, "Exception injecting: " + clazzName, e);
-
-    } finally {
-      try {
-        // play nice and clean-up
-        context.ungetService(ref);
-      } catch (final RuntimeException re) {/* already gone */} // NOPMD
+      clazz = resolve(contributor).loadClass(clazzName);
+    } catch (InvalidRegistryObjectException e) {
+      throw newCoreException(e);
+    } catch (ClassNotFoundException e) {
+      throw newCoreException(e);
     }
 
-    LOGGER.log(WARNING, "Creating non-injected extension: " + clazzName);
+    final String injectPointId = config.getAttribute("inject");
+    if (null == injectPointId) {
+      throw newCoreException("Configuration is missing inject attribute");
+    }
 
-    return config.createExecutableExtension(clazzAttributeName);
+    return getInjector(injectPointId).getInstance(clazz);
   }
 
-  static String mapClassAttribute(final Object data) {
-    // data is expected to refer to another attribute with the real class string
-    return data instanceof String && !((String) data).isEmpty() ? (String) data : "id";
+  private Injector getInjector(final String injectPointId)
+      throws CoreException {
+
+    Injector injector = INJECTORS.get(injectPointId);
+    if (null == injector) {
+
+      final IConfigurationElement[] moduleConfigs =
+          getRegistry().getConfigurationElementsFor(injectPointId);
+
+      final Module[] modules = new Module[moduleConfigs.length];
+      for (int i = 0; i < modules.length; i++) {
+        modules[i] = (Module) moduleConfigs[i].createExecutableExtension("class");
+      }
+
+      final Injector newInjector = createInjector(modules);
+      injector = INJECTORS.putIfAbsent(injectPointId, newInjector);
+      if (null == injector) {
+        return newInjector;
+      }
+    }
+    return injector;
+  }
+
+  private CoreException newCoreException(final Throwable e) {
+    return new CoreException(new Status(IStatus.ERROR, contributor.getName(), e.getMessage(), e));
+  }
+
+  private CoreException newCoreException(final String message) {
+    return new CoreException(new Status(IStatus.ERROR, contributor.getName(), message));
   }
 }

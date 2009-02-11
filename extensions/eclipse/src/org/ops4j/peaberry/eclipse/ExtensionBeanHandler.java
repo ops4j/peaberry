@@ -71,7 +71,7 @@ final class ExtensionBeanHandler
       throw new UnsupportedOperationException(method.toString());
     }
 
-    // "is" and "get" methods with no arguments always return constant values
+    // "is" and "get" methods (with no arguments) always return constant values
     if (result != null && null == args && !method.getName().startsWith("create")) {
       cache.putIfAbsent(method, result);
     }
