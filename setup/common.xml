@@ -102,7 +102,7 @@
   <target name="make.doc" unless="have.doc">
     <mkdir dir="${doc}/javadoc"/>
     <javadoc destdir="${doc}/javadoc" classpath="${build.cp}"
-        sourcepath="${src}" packagenames="${api.packages}"
+        sourcepath="${src};${common.dir}/../src" packagenames="${api.packages}"
         use="true" author="false" windowtitle="${title}">
       <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
       <link href="http://google-guice.googlecode.com/svn/trunk/latest-javadoc/"/>

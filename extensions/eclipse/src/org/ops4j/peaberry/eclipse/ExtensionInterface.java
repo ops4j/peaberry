@@ -32,12 +32,12 @@ import java.lang.annotation.Target;
 public @interface ExtensionInterface {
 
   /**
-   * @return true if the Extension elements should be combined into one bean
+   * if true then the Extension elements will be combined into one bean
    */
   boolean aggregate() default false;
 
   /**
-   * @return the Extension Point id
+   * the unique identifier of the Extension Point
    */
   String value();
 }

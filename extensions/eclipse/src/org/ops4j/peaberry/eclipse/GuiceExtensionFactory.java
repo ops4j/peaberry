@@ -41,9 +41,9 @@ import com.google.inject.Module;
  * It creates an {@link Injector} based on these bindings and uses it to build
  * the injected extension instance. Injectors will be re-used for extensions
  * with the same {@code inject} attribute value, unless the cache is forcibly
- * {@code reset} by the application.
+ * {@link #reset()} by the application.
  * <p>
- * To use this factory:<br>
+ * To use this factory:
  * <ol>
  * <li>rename your class attribute, for example from "class=" to "key="</li>
  * <li>add "class=org.ops4j.peaberry.eclipse.GuiceExtensionFactory:key"</li>
@@ -53,7 +53,7 @@ import com.google.inject.Module;
  * <p>
  * Here's a more detailed example, based on the standard RCP Mail Template:
  * 
- * <pre>{@literal <}extension point="org.eclipse.ui.views"{@literal >}
+ * <pre> {@literal <}extension point="org.eclipse.ui.views"{@literal >}
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"
@@ -62,7 +62,7 @@ import com.google.inject.Module;
  * {@literal <}/extension{@literal >}</pre>
  * becomes:
  * 
- * <pre>{@literal <}extension point="org.eclipse.ui.views"{@literal >}
+ * <pre> {@literal <}extension point="org.eclipse.ui.views"{@literal >}
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"
@@ -79,7 +79,7 @@ import com.google.inject.Module;
  * {@literal <}/extension{@literal >}</pre>
  * If no name is given after the factory class it is assumed to be "id":
  * 
- * <pre>{@literal <}extension point="org.eclipse.ui.views"{@literal >}
+ * <pre> {@literal <}extension point="org.eclipse.ui.views"{@literal >}
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"

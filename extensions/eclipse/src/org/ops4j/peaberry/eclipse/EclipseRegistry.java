@@ -39,7 +39,12 @@ public final class EclipseRegistry
     static final ServiceRegistry thisRegistry = new EclipseRegistry();
   }
 
-  // ensure the main Eclipse registry is a singleton
+  /**
+   * Create a singleton {@link ServiceRegistry} that queries the default
+   * {@link IExtensionRegistry} for named extension point contributions.
+   * 
+   * @return Eclipse Extension service registry
+   */
   public static ServiceRegistry eclipseRegistry() {
     return SingletonHolder.thisRegistry;
   }

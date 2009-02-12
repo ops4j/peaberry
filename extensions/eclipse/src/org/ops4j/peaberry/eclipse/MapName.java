@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 public @interface MapName {
 
   /**
-   * @return the XML attribute name
+   * the XML attribute name
    */
   String value();
 }

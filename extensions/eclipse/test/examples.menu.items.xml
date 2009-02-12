@@ -3,8 +3,7 @@
 <plugin>
 	<extension point="examples.menu.items">
 		<item label="Open"
-		      class="examples.menu.internal.ItemImpl"
-		      id="examples.menu.item.open" />
+		      class="examples.menu.internal.ItemImpl" />
 		<item label="Close"
 		      inject="examples.menu.modules"
 		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
@@ -12,8 +11,7 @@
 		<item label="Save"
 		      inject="examples.menu.modules"
 		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:key"
-		      key="examples.menu.internal.ItemImpl"
-		      id="examples.menu.item.save" />
+		      key="examples.menu.internal.ItemImpl" />
 	</extension>
 	<extension point="examples.menu.modules">
 	    <module class="examples.menu.internal.ItemModule" />

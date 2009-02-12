@@ -25,8 +25,8 @@ import org.ops4j.peaberry.builders.ImportDecorator;
  * Skeletal implementation to simplify development of {@link ImportDecorator}s.
  * <p>
  * Developers only have to extend this class and provide an implementation of
- * the {@code decorate} method, which takes a service instance and associated
- * attribute map, and returns the decorated instance.
+ * the {@link #decorate(Object, Map)} method, which takes the original service
+ * instance and associated attribute map, and returns a decorated instance.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

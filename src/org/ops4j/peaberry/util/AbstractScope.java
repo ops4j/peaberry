@@ -27,8 +27,9 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * Skeletal implementation to simplify development of {@link ServiceScope}s.
  * <p>
  * Developers only have to extend this class and provide implementations of the
- * {@code adding} {@code modified} and {@code removed} service tracking methods.
- * The design is loosely based on the OSGi {@link ServiceTrackerCustomizer}.
+ * {@link #adding(Import)}, {@link #modified(Object, Map)}, and {@link #removed}
+ * service tracking methods. The design of this helper class is loosely based on
+ * the OSGi {@link ServiceTrackerCustomizer}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
