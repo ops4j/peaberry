@@ -1,9 +1,13 @@
 
--include: ${common.dir}/common.bnd
+-include: ~${common.dir}/common.bnd
+
+Bundle-SymbolicName: ${module};singleton=true
+Bundle-Activator: ${module}.Activator
 
 Include-Resource:\
  META-INF/NOTICE=../NOTICE,\
- META-INF/LICENSE=../LICENSE
+ META-INF/LICENSE=../LICENSE,\
+ plugin.xml=../plugin.xml
 
 -exportcontents:\
  ${module};version=${api.version}

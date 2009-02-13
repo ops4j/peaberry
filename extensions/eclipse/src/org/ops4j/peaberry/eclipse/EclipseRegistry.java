@@ -75,6 +75,12 @@ public final class EclipseRegistry
     registerListener(clazz).addWatcher(new FilteredExtensionScope(filter, scope));
   }
 
+  public void cleanup() {
+    for (final ExtensionListener l : listenerMap.values()) {
+      extensionRegistry.removeListener(l);
+    }
+  }
+
   @Override
   public String toString() {
     return String.format("EclipseRegistry[%s]", extensionRegistry.toString());

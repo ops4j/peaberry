@@ -19,7 +19,11 @@ package org.ops4j.peaberry.eclipse;
 import static com.google.inject.Guice.createInjector;
 import static org.eclipse.core.runtime.ContributorFactoryOSGi.resolve;
 import static org.eclipse.core.runtime.RegistryFactory.getRegistry;
+import static org.ops4j.peaberry.Peaberry.osgiModule;
+import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -36,22 +40,21 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
- * {@link IExecutableExtensionFactory} that looks for {@link Module} bindings
- * registered under the extension point named in the {@code inject} attribute.
- * It creates an {@link Injector} based on these bindings and uses it to build
- * the injected extension instance. Injectors will be re-used for extensions
- * with the same {@code inject} attribute value, unless the cache is forcibly
- * {@link #reset()} by the application.
+ * {@link IExecutableExtensionFactory} that creates an injected extension based
+ * on the class named in the adapter data section. If the data section is empty
+ * the class is assumed to be in the {@code id} attribute. The factory searches
+ * the {@code org.ops4j.peaberry.modules} extension point for {@link Module}s
+ * belonging to the same plug-in and uses them to create a new {@link Injector}.
+ * This injector creates the injected extension and is then cached so it can be
+ * re-used for other extensions in the same plug-in.
  * <p>
- * To use this factory:
- * <ol>
- * <li>rename your class attribute, for example from "class=" to "key="</li>
- * <li>add "class=org.ops4j.peaberry.eclipse.GuiceExtensionFactory:key"</li>
- * <li>add an "inject" attribute identifying the module extension point</li>
- * </ol>
- * ... and sit back!
+ * To use the factory put it in front of your class name in the extension XML.
+ * Or replace your class with the factory and put your class in the {@code id}
+ * attribute instead. Because the implementation will be injected based on the
+ * bindings you could even replace your class name with one of its interfaces,
+ * and that interface will then be used to lookup the correct implementation.
  * <p>
- * Here's a more detailed example, based on the standard RCP Mail Template:
+ * Here's a more detailed walkthrough, based on the example RCP Mail Template:
  * 
  * <pre> {@literal <}extension point="org.eclipse.ui.views"{@literal >}
  *   {@literal <}view name="Message"
@@ -66,26 +69,35 @@ import com.google.inject.Module;
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"
- *         inject="example.modules"
- *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:key"
- *         key="example.ViewImpl"
+ *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:example.ViewImpl"
  *         id="example.view" /{@literal >}
  * {@literal <}/extension{@literal >}
- * 
- * {@literal <}!-- then somewhere else --{@literal >}
- * 
- * {@literal <}extension point="example.modules"{@literal >}
+ * {@literal <}extension point="org.ops4j.peaberry.modules"{@literal >}
  *   {@literal <}module class="example.ViewModule" /{@literal >}
  * {@literal <}/extension{@literal >}</pre>
- * If no name is given after the factory class it is assumed to be "id":
+ * Here's the same example with the class in the {@code id} attribute:
  * 
  * <pre> {@literal <}extension point="org.eclipse.ui.views"{@literal >}
  *   {@literal <}view name="Message"
  *         allowMultiple="true"
  *         icon="icons/sample2.gif"
- *         inject="example.modules"
  *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
  *         id="example.ViewImpl" /{@literal >}
+ * {@literal <}/extension{@literal >}
+ * {@literal <}extension point="org.ops4j.peaberry.modules"{@literal >}
+ *   {@literal <}module class="example.ViewModule" /{@literal >}
+ * {@literal <}/extension{@literal >}</pre>
+ * and again, this time using an interface instead of the implementation:
+ * 
+ * <pre> {@literal <}extension point="org.eclipse.ui.views"{@literal >}
+ *   {@literal <}view name="Message"
+ *         allowMultiple="true"
+ *         icon="icons/sample2.gif"
+ *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:org.eclipse.ui.IViewPart"
+ *         id="example.view" /{@literal >}
+ * {@literal <}/extension{@literal >}
+ * {@literal <}extension point="org.ops4j.peaberry.modules"{@literal >}
+ *   {@literal <}module class="example.ViewModule" /{@literal >}
  * {@literal <}/extension{@literal >}</pre>
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
@@ -93,59 +105,32 @@ import com.google.inject.Module;
 public final class GuiceExtensionFactory
     implements IExecutableExtension, IExecutableExtensionFactory {
 
+  public static final String POINT_ID = "org.ops4j.peaberry.modules";
+
   private static final Logger LOGGER = Logger.getLogger(GuiceExtensionFactory.class.getName());
 
-  // injectors are shared by extensions with the same inject attribute
-  private static final ConcurrentHashMap<String, Injector> INJECTORS =
-      new ConcurrentHashMap<String, Injector>();
+  // injectors are re-used for extensions with the same contributor
+  private static final ConcurrentHashMap<IContributor, Injector> INJECTORS =
+      new ConcurrentHashMap<IContributor, Injector>();
 
-  private IConfigurationElement config;
-  private String clazzAttributeName;
   private IContributor contributor;
+  private String clazzName;
 
   public void setInitializationData(final IConfigurationElement config, final String name,
       final Object data) {
 
-    this.config = config;
-
-    // find class attribute in the configuration
-    clazzAttributeName = mapClassAttribute(data);
     contributor = config.getContributor();
-  }
 
-  static String mapClassAttribute(final Object data) {
-    // data is expected to refer to another attribute with the real class string
-    return data instanceof String && !((String) data).isEmpty() ? (String) data : "id";
-  }
-
-  /**
-   * Remove {@link Injector} based on the given {@link Module} extension point.
-   * 
-   * @param extensionPointId the module extension point
-   */
-  public static void reset(final String extensionPointId) {
-    INJECTORS.remove(extensionPointId);
-  }
-
-  /**
-   * Remove all {@link Injector}s.
-   */
-  public static void reset() {
-    INJECTORS.clear();
+    // if there's no (string-based) adapter data then class must be under "id"
+    clazzName = data instanceof String ? (String) data : config.getAttribute("id");
   }
 
   public Object create()
       throws CoreException {
 
-    final String value = config.getAttribute(clazzAttributeName);
-    if (null == value) {
-      throw newCoreException("Configuration is missing " + clazzAttributeName + " attribute");
+    if (null == clazzName) {
+      throw newCoreException("Configuration is missing class information");
     }
-
-    final int n = value.indexOf(':');
-
-    // separate name and data components from the attribute value
-    final String clazzName = n < 0 ? value : value.substring(0, n);
 
     final Class<?> clazz;
     try {
@@ -156,36 +141,31 @@ public final class GuiceExtensionFactory
       throw newCoreException(e);
     }
 
-    final String injectPointId = config.getAttribute("inject");
-    if (null == injectPointId) {
-      throw newCoreException("Configuration is missing inject attribute");
-    }
-
-    return getInjector(injectPointId).getInstance(clazz);
+    return getInjector().getInstance(clazz);
   }
 
-  private Injector getInjector(final String injectPointId)
+  // TODO: cleanup injectors when plug-ins are uninstalled
+
+  private Injector getInjector()
       throws CoreException {
 
-    Injector injector = INJECTORS.get(injectPointId);
+    Injector injector = INJECTORS.get(contributor);
     if (null == injector) {
 
-      final IConfigurationElement[] moduleConfigs =
-          getRegistry().getConfigurationElementsFor(injectPointId);
+      final List<Module> modules = new ArrayList<Module>();
 
-      if (moduleConfigs.length == 0) {
-        throw newCoreException("No Guice modules registered under: " + injectPointId);
+      // first add the default SGi service and Eclipse extension bindings
+      modules.add(osgiModule(resolve(contributor).getBundleContext(), eclipseRegistry()));
+
+      // now add any module extensions contributed by the current plug-in
+      for (final IConfigurationElement e : getRegistry().getConfigurationElementsFor(POINT_ID)) {
+        if (contributor.equals(e.getContributor())) {
+          modules.add((Module) e.createExecutableExtension("class"));
+        }
       }
 
-      // load up the various modules...
-      final Module[] modules = new Module[moduleConfigs.length];
-      for (int i = 0; i < modules.length; i++) {
-        modules[i] = (Module) moduleConfigs[i].createExecutableExtension("class");
-      }
-
-      // create injector (may end up throwing it away if we're too late)
       final Injector newInjector = createInjector(modules);
-      injector = INJECTORS.putIfAbsent(injectPointId, newInjector);
+      injector = INJECTORS.putIfAbsent(contributor, newInjector);
       if (null == injector) {
         return newInjector;
       }

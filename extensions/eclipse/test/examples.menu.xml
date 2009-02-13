@@ -2,5 +2,4 @@
 <?eclipse version="3.2"?>
 <plugin>
 	<extension-point id="examples.menu.items" name="Menu Items" />
-	<extension-point id="examples.menu.modules" name="Menu Modules" />
 </plugin>

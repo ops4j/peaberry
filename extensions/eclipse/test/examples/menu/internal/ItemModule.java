@@ -19,6 +19,8 @@ package examples.menu.internal;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
+import examples.menu.Item;
+
 /**
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -28,5 +30,6 @@ public class ItemModule
   @Override
   protected void configure() {
     bindConstant().annotatedWith(Names.named("label")).to("Injected menu item");
+    bind(Item.class).to(ItemImpl.class);
   }
 }

@@ -17,7 +17,6 @@
 package org.ops4j.peaberry.eclipse;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.ops4j.peaberry.eclipse.GuiceExtensionFactory.mapClassAttribute;
 
 import java.lang.reflect.AnnotatedElement;
 
@@ -90,7 +89,7 @@ final class ExtensionBeanFactory {
 
     // unravel the factory indirection to get the real class
     if (value.startsWith(GuiceExtensionFactory.class.getName())) {
-      value = config.getAttribute(mapClassAttribute(n < 0 ? null : value.substring(n + 1)));
+      value = n < 0 ? config.getAttribute("id") : value.substring(n + 1);
       n = value.indexOf(':');
     }
 

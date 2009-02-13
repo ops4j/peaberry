@@ -5,15 +5,12 @@
 		<item label="Open"
 		      class="examples.menu.internal.ItemImpl" />
 		<item label="Close"
-		      inject="examples.menu.modules"
 		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
 		      id="examples.menu.internal.ItemImpl" />
 		<item label="Save"
-		      inject="examples.menu.modules"
-		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:key"
-		      key="examples.menu.internal.ItemImpl" />
+		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:examples.menu.Item" />
 	</extension>
-	<extension point="examples.menu.modules">
+	<extension point="org.ops4j.peaberry.modules">
 	    <module class="examples.menu.internal.ItemModule" />
 	</extension>
 </plugin>
