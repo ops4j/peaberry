@@ -38,8 +38,6 @@ import org.ops4j.peaberry.ServiceUnavailableException;
 final class ImportProxyClassLoader
     extends ClassLoader {
 
-  private static final ClassNotFoundException NO_SUCH_CLASS = new ClassNotFoundException();
-
   private static final String UNAVAILABLE_CLAZZ_NAME = ServiceUnavailableException.class.getName();
   private static final String IMPORT_CLAZZ_NAME = Import.class.getName();
 
@@ -108,6 +106,6 @@ final class ImportProxyClassLoader
     }
 
     // ignore any non-proxy requests
-    throw NO_SUCH_CLASS;
+    throw new ClassNotFoundException(clazzOrProxyName);
   }
 }
