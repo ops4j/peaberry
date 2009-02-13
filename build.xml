@@ -43,15 +43,33 @@
   </target>
 
   <target name="jar" depends="with.deps,common.jar">
-    <makeurl property="deploy.urls">
-      <fileset dir="${dist}" includes="*.jar"/>
+    <makeurl property="boot.urls">
+      <path path="${aop.jar}"/>
     </makeurl>
   </target>
 
-  <target name="all">
-    <antcall target="${target}"/>
-    <ant target="${target}" dir="extensions/eclipse" inheritAll="false"/>
-    <ant target="${target}" dir="extensions/lifecycle" inheritAll="false"/>
+  <target name="dist">
+    <antcall target="common.dist"/>
+    <ant target="dist" dir="extensions/eclipse" inheritAll="false"/>
+<!--
+    <ant target="dist" dir="extensions/lifecycle" inheritAll="false"/>
+-->
+    <zip destfile="${build}/${ant.project.name}-${version}.zip" basedir="${dist}"/>
+    <checksum format="MD5SUM" algorithm="md5" file="${build}/${ant.project.name}-${version}.zip"/>
+  </target>
+
+  <target name="test.dist">
+    <antcall target="common.test.dist"/>
+    <ant target="test.dist" dir="extensions/eclipse" inheritAll="false"/>
+<!--
+    <ant target="test.dist" dir="extensions/lifecycle" inheritAll="false"/>
+-->
+  </target>
+
+  <target name="wipe">
+    <antcall target="common.wipe"/>
+    <ant target="wipe" dir="extensions/eclipse" inheritAll="false"/>
+    <ant target="wipe" dir="extensions/lifecycle" inheritAll="false"/>
   </target>
 
 </project>

@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.osgi;
 
+import java.util.Arrays;
+
 import org.ops4j.peaberry.BundleScoped;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.osgi.framework.BundleContext;
@@ -57,18 +59,20 @@ public final class OSGiModule
 
   @Override
   public String toString() {
-    return String.format("OSGiModule[%s]", bundleContext.getBundle());
+    return String.format("OSGiModule[%s, %s]", bundleContext.getBundle(), Arrays
+        .toString(registries));
   }
 
   @Override
   public int hashCode() {
-    return bundleContext.hashCode();
+    return bundleContext.hashCode() ^ Arrays.hashCode(registries);
   }
 
   @Override
   public boolean equals(final Object rhs) {
     if (rhs instanceof OSGiModule) {
-      return bundleContext.equals(((OSGiModule) rhs).bundleContext);
+      return bundleContext.equals(((OSGiModule) rhs).bundleContext)
+          && Arrays.equals(registries, ((OSGiModule) rhs).registries);
     }
     return false;
   }

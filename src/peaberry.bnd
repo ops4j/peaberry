@@ -1,5 +1,5 @@
 
--include: ${common.dir}/common.bnd
+-include: ~${common.dir}/common.bnd
 
 Bundle-Activator: ${module}.osgi.Activator
 

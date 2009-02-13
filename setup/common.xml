@@ -64,7 +64,7 @@
     <property name="boot.urls" value=""/>
     <makeurl property="deploy.urls">
       <fileset dir="${lib}" includes="*.jar"/>
-      <fileset dir="${dist}" includes="*.jar"/>
+      <fileset dir="${dist}" includes="${ant.project.name}-${version}.jar"/>
     </makeurl>
     <testng outputDir="${doc}/testNG" suiteRunnerClass="org.ops4j.peaberry.test.Director">
       <xmlfileset dir="${test}"/>
@@ -132,8 +132,6 @@
     <checksum format="MD5SUM" algorithm="md5">
       <fileset dir="${dist}" includes="*.jar,*.pom"/>
     </checksum>
-    <zip destfile="${build}/${ant.project.name}-${version}.zip" basedir="${dist}"/>
-    <checksum format="MD5SUM" algorithm="md5" file="${build}/${ant.project.name}-${version}.zip"/>
   </target>
 
   <target name="test.dist" depends="test.jar"/>
