@@ -10,7 +10,7 @@
 		<item label="Save"
 		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:examples.menu.Item" />
 	</extension>
-	<extension point="org.ops4j.peaberry.modules">
+	<extension point="org.ops4j.peaberry.eclipse.modules">
 	    <module class="examples.menu.internal.ItemModule" />
 	</extension>
 </plugin>

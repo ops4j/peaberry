@@ -43,7 +43,7 @@ import com.google.inject.Module;
  * {@link IExecutableExtensionFactory} that creates an injected extension based
  * on the class named in the adapter data section. If the data section is empty
  * the class is assumed to be in the {@code id} attribute. The factory searches
- * the {@code org.ops4j.peaberry.modules} extension point for {@link Module}s
+ * the {@code org.ops4j.peaberry.eclipse.modules} extension for {@link Module}s
  * belonging to the same plug-in and uses them to create a new {@link Injector}.
  * This injector creates the injected extension and is then cached so it can be
  * re-used for other extensions in the same plug-in.
@@ -72,7 +72,7 @@ import com.google.inject.Module;
  *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:example.ViewImpl"
  *         id="example.view" /{@literal >}
  * {@literal <}/extension{@literal >}
- * {@literal <}extension point="org.ops4j.peaberry.modules"{@literal >}
+ * {@literal <}extension point="org.ops4j.peaberry.eclipse.modules"{@literal >}
  *   {@literal <}module class="example.ViewModule" /{@literal >}
  * {@literal <}/extension{@literal >}</pre>
  * Here's the same example with the class in the {@code id} attribute:
@@ -84,7 +84,7 @@ import com.google.inject.Module;
  *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
  *         id="example.ViewImpl" /{@literal >}
  * {@literal <}/extension{@literal >}
- * {@literal <}extension point="org.ops4j.peaberry.modules"{@literal >}
+ * {@literal <}extension point="org.ops4j.peaberry.eclipse.modules"{@literal >}
  *   {@literal <}module class="example.ViewModule" /{@literal >}
  * {@literal <}/extension{@literal >}</pre>
  * and again, this time using an interface instead of the implementation:
@@ -96,7 +96,7 @@ import com.google.inject.Module;
  *         class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:org.eclipse.ui.IViewPart"
  *         id="example.view" /{@literal >}
  * {@literal <}/extension{@literal >}
- * {@literal <}extension point="org.ops4j.peaberry.modules"{@literal >}
+ * {@literal <}extension point="org.ops4j.peaberry.eclipse.modules"{@literal >}
  *   {@literal <}module class="example.ViewModule" /{@literal >}
  * {@literal <}/extension{@literal >}</pre>
  * 
@@ -105,7 +105,7 @@ import com.google.inject.Module;
 public final class GuiceExtensionFactory
     implements IExecutableExtension, IExecutableExtensionFactory {
 
-  public static final String POINT_ID = "org.ops4j.peaberry.modules";
+  public static final String POINT_ID = "org.ops4j.peaberry.eclipse.modules";
 
   private static final Logger LOGGER = Logger.getLogger(GuiceExtensionFactory.class.getName());
 
