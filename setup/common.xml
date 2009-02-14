@@ -118,13 +118,15 @@
       <metainf dir="." includes="NOTICE,LICENSE"/>
     </jar>
     <copy todir="${dist}">
-      <fileset dir="." includes="NOTICE,LICENSE*,README.TXT,pom.xml"/>
+      <fileset dir="." includes="NOTICE,LICENSE*,README.TXT"/>
+      <fileset dir="${common.dir}" includes="pom.xml"/>
       <filtermapper>
         <replacestring from="pom.xml" to="${ant.project.name}-${version}.pom"/>
       </filtermapper>
       <filterset>
         <filter token="AOP_VERSION" value="${aop.version}"/>
         <filter token="GUICE_VERSION" value="${guice.version}"/>
+        <filter token="PROJECT" value="${ant.project.name}"/>
         <filter token="VERSION" value="${version}"/>
       </filterset>
     </copy>

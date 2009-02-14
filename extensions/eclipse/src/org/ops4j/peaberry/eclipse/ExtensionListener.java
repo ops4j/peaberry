@@ -64,7 +64,7 @@ final class ExtensionListener
     this.clazz = clazz;
 
     // no annotation => use lower-case class as point id
-    if (null == metadata || metadata.value().isEmpty()) {
+    if (null == metadata || metadata.value().length() == 0) {
       point = clazz.getName().toLowerCase() + 's';
     } else {
       point = metadata.value();

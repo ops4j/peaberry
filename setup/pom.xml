@@ -30,7 +30,7 @@ limitations under the License.
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j</groupId>
-  <artifactId>peaberry</artifactId>
+  <artifactId>@PROJECT@</artifactId>
   <version>@VERSION@</version>
 
   <name>peaberry - dynamic service extension for Google-Guice</name>
@@ -46,10 +46,6 @@ limitations under the License.
     as an OSGi bundle that can be dropped into any R4 framework,
     such as Apache Felix or Eclipse/Equinox. 
   </description>
-
-  <scm>
-    <url>http://peaberry.googlecode.com/svn/tags/@VERSION@</url>
-  </scm>
 
   <issueManagement>
     <url>http://code.google.com/p/peaberry/issues/list</url>

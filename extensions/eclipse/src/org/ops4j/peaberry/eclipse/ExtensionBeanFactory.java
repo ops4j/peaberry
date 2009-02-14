@@ -74,7 +74,7 @@ final class ExtensionBeanFactory {
       return CONTENT_KEY;
     }
     final MapName mapName = type.getAnnotation(MapName.class);
-    return null == mapName || mapName.value().isEmpty() ? name : mapName.value();
+    return null == mapName || mapName.value().length() == 0 ? name : mapName.value();
   }
 
   static String mapContent(final IConfigurationElement config, final String elementKey) {
