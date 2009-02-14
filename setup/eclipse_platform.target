@@ -13,13 +13,16 @@
       <plugins>
          <plugin id="aopalliance"/>
          <plugin id="com.google.inject"/>
+         <plugin id="org.eclipse.core.runtime.compatibility"/>
+         <plugin id="org.eclipse.equinox.common"/>
+         <plugin id="org.eclipse.equinox.registry"/>
          <plugin id="org.eclipse.osgi"/>
       </plugins>
       <features>
       </features>
       <extraLocations>
-         <location path="${eclipse_home}/plugins"/>
          <location path="${workspace_loc:/peaberry/build/dist}"/>
+         <location path="${eclipse_home}/plugins"/>
       </extraLocations>
    </content>
 

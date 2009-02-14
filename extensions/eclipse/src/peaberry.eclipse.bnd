@@ -1,7 +1,7 @@
 
 -include: ~${common.dir}/common.bnd
 
-Bundle-SymbolicName: ${module};singleton=true
+Bundle-SymbolicName: ${module};singleton:=true
 Bundle-Activator: ${module}.Activator
 
 Include-Resource:\
@@ -13,5 +13,5 @@ Include-Resource:\
  ${module};version=${api.version}
 
 -output:\
- ${peaberry-eclipse.jar}
+ ${peaberry.eclipse.jar}
 

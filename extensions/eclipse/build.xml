@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="peaberry-eclipse">
+<project name="peaberry.eclipse">
 
   <property name="antlib" value="../../lib/ant"/>
   <import file="../../setup/common.xml"/>

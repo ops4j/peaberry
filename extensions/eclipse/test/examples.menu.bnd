@@ -1,5 +1,5 @@
 
-Bundle-SymbolicName: examples.menu;singleton=true
+Bundle-SymbolicName: examples.menu;singleton:=true
 Eclipse-LazyStart: true
 
 Export-Package:\

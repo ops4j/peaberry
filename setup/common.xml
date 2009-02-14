@@ -34,7 +34,7 @@
         <fileset dir="${src}" includes="*.bnd"/>
       </path>
     </foreach>
-    <unjar src="${dist.dir}/${ant.project.name}-${version}.jar" dest="${build}/classes">
+    <unjar src="${dist}/${ant.project.name}-${version}.jar" dest="${build}/classes">
       <filtermapper>
         <replacestring from="META-INF" to="../../META-INF"/>
       </filtermapper>
@@ -93,6 +93,7 @@
 
   <target name="wipe">
     <delete dir="${build}"/>
+    <delete dir="META-INF"/>
     <delete dir="${dist}"/>
     <delete dir="${doc}"/>
   </target>

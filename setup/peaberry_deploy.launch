@@ -21,8 +21,8 @@
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <booleanAttribute key="show_selected_only" value="false"/>
-<stringAttribute key="target_bundles" value="com.google.inject*1.0.0.snapshot-20090210@default:default,aopalliance@default:default,org.eclipse.osgi@:,com.google.inject*1.0.0.snapshot-20090210@default:default"/>
+<stringAttribute key="target_bundles" value="org.eclipse.equinox.common@default:default,com.google.inject*1.0.0.snapshot-20090210@default:default,org.eclipse.osgi@:,aopalliance@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,com.google.inject*1.0.0.snapshot-20090210@default:default,org.eclipse.equinox.registry@default:default"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
-<stringAttribute key="workspace_bundles" value="org.ops4j.peaberry@default:default"/>
+<stringAttribute key="workspace_bundles" value="org.ops4j.peaberry@default:default,org.ops4j.peaberry.eclipse@default:default"/>
 </launchConfiguration>

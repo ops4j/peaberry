@@ -1,5 +1,5 @@
 
-Bundle-SymbolicName: examples.menu.items;singleton=true
+Bundle-SymbolicName: examples.menu.items;singleton:=true
 Eclipse-LazyStart: true
 
 Private-Package:\
