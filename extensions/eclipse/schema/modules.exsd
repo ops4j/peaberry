@@ -6,7 +6,7 @@
          <meta.schema plugin="org.ops4j.peaberry.eclipse" id="modules" name="Guice binding modules"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         A sequence of Guice binding modules that will be used to create an injector for the plug-in.
       </documentation>
    </annotation>
 
@@ -17,6 +17,9 @@
          </appinfo>
       </annotation>
       <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="module"/>
+         </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
@@ -44,21 +47,30 @@
       </complexType>
    </element>
 
-   <annotation>
-      <appinfo>
-         <meta.section type="since"/>
-      </appinfo>
-      <documentation>
-         [Enter the first release in which this extension point appears.]
-      </documentation>
-   </annotation>
+   <element name="module">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":com.google.inject.Module"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
 
    <annotation>
       <appinfo>
          <meta.section type="examples"/>
       </appinfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;extension point=&quot;org.ops4j.peaberry.eclipse.modules&quot;&gt;
+    &lt;module class=&quot;examples.menu.internal.ItemModule&quot; /&gt;
+&lt;/extension&gt;
       </documentation>
    </annotation>
 
@@ -67,18 +79,10 @@
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         [Enter API information here.]
+         The class attribute points to an implementation of the com.google.inject.Module interface.
       </documentation>
    </annotation>
 
-   <annotation>
-      <appinfo>
-         <meta.section type="implementation"/>
-      </appinfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
 
 
 </schema>
