@@ -93,7 +93,6 @@
 
   <target name="wipe">
     <delete dir="${build}"/>
-    <delete dir="META-INF"/>
     <delete dir="${dist}"/>
     <delete dir="${doc}"/>
   </target>
