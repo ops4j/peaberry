@@ -5,7 +5,6 @@
 <booleanAttribute key="automaticValidate" value="false"/>
 <stringAttribute key="bad_container_name" value="$peaberry/setup"/>
 <stringAttribute key="bootstrap" value=""/>
-<stringAttribute key="checked" value="[NONE]"/>
 <booleanAttribute key="clearConfig" value="true"/>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/peaberry_deploy"/>
 <booleanAttribute key="default_auto_start" value="true"/>
@@ -21,7 +20,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <booleanAttribute key="show_selected_only" value="false"/>
-<stringAttribute key="target_bundles" value="org.eclipse.equinox.common@default:default,com.google.inject*1.0.0.snapshot-20090210@default:default,org.eclipse.osgi@:,aopalliance@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,com.google.inject*1.0.0.snapshot-20090210@default:default,org.eclipse.equinox.registry@default:default"/>
+<stringAttribute key="target_bundles" value="org.eclipse.core.runtime.compatibility.registry@default:false,aopalliance@default:default,com.google.inject@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.osgi@:,org.eclipse.equinox.common@default:default"/>
 <booleanAttribute key="tracing" value="false"/>
 <booleanAttribute key="useDefaultConfigArea" value="true"/>
 <stringAttribute key="workspace_bundles" value="org.ops4j.peaberry@default:default,org.ops4j.peaberry.eclipse@default:default"/>

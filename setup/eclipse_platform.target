@@ -21,7 +21,6 @@
       <features>
       </features>
       <extraLocations>
-         <location path="${workspace_loc:/peaberry/build/dist}"/>
          <location path="${eclipse_home}/plugins"/>
       </extraLocations>
    </content>

@@ -15,7 +15,7 @@
     <mkdir dir="${dist}"/>
     <proguard>
       -libraryjars "${java.home}/lib/rt.jar"
-      -libraryjars "${lib}/aopalliance-${aop.version}.jar"
+      -libraryjars "${lib}/aopalliance-1.0.jar"
       -injars "${lib}/guice-${guice.version}.jar"
       -outjars "${guice.jar}"
       -keep class !com.google.inject.internal.collect.** { *; }
@@ -30,6 +30,7 @@
   <target name="compile" depends="guice,common.compile"/>
 
   <target name="with.deps" depends="compile">
+    <copy file="${lib}/aopalliance-1.0.jar" tofile="${aop.jar}"/>
     <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
     <jarjar jarfile="${build}/classes.jar">
       <fileset dir="${build}/classes"/>

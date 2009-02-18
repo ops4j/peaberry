@@ -1,8 +1,0 @@
-
--classpath: ${lib.dir}/aopalliance-${aop.version}.jar
-
-Export-Package: *
-
--output:\
- ${aop.jar}
-
