@@ -65,10 +65,9 @@
   <target name="test.jar" depends="jar,testcases">
     <taskdef resource="testngtasks" classpath="${testng.jar}"/>
     <makeurl file="${common.dir}/felix.properties" property="felix.config.properties"/>
-    <property name="boot.urls" value=""/>
+    <property name="deploy.cp" value=""/>
     <makeurl property="deploy.urls">
-      <fileset dir="${lib}" includes="*.jar"/>
-      <fileset dir="${dist}" includes="${ant.project.name}-${version}.jar"/>
+      <path path="${deploy.cp}"/>
     </makeurl>
     <testng outputDir="${doc}/testNG" suiteRunnerClass="Director">
       <xmlfileset dir="${test}"/>

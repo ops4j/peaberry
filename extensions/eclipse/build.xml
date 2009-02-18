@@ -5,19 +5,4 @@
   <import file="../../setup/common.xml"/>
   <property file="build.properties"/>
 
-  <target name="director" depends="check.director,build.director"/>
-
-  <target name="check.director">
-    <available file="${director.jar}" property="have.director"/>
-    <makeurl property="boot.urls">
-      <path path="${shim.xml.jar}"/>
-    </makeurl>
-  </target>
-
-  <target name="build.director" unless="have.director">
-    <ant dir="../.." inheritAll="false" target="testcases"/>
-  </target>
-
-  <target name="test.jar" depends="director,common.test.jar"/>
-
 </project>

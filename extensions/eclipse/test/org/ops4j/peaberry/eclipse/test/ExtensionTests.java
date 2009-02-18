@@ -19,7 +19,6 @@ package org.ops4j.peaberry.eclipse.test;
 import static com.google.inject.Guice.createInjector;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
-import static org.ops4j.peaberry.test.Director.findContext;
 
 import java.util.Collections;
 import java.util.Map;
@@ -27,6 +26,8 @@ import java.util.Map;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.eclipse.ExtensionInterface;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -39,6 +40,13 @@ import examples.menu.Item;
 @Test
 public final class ExtensionTests {
 
+  private static BundleContext BUNDLE_CONTEXT;
+
+  @Test(enabled = false)
+  public static void setBundle(final Bundle bundle) {
+    BUNDLE_CONTEXT = bundle.getBundleContext();
+  }
+
   @ExtensionInterface("examples.menu.items")
   private static interface ItemFacade {
     String getLabel();
@@ -48,7 +56,7 @@ public final class ExtensionTests {
   ServiceRegistry registry;
 
   public ExtensionTests() {
-    createInjector(osgiModule(findContext(getClass()), eclipseRegistry())).injectMembers(this);
+    createInjector(osgiModule(BUNDLE_CONTEXT, eclipseRegistry())).injectMembers(this);
   }
 
   public void testExtensionPoint() {
