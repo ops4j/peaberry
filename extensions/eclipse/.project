@@ -3,6 +3,7 @@
 	<name>peaberry.eclipse</name>
 	<comment></comment>
 	<projects>
+		<project>peaberry</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -4,14 +4,6 @@
 Bundle-SymbolicName: ${module};singleton:=true
 Bundle-Activator: ${module}.Activator
 
-Include-Resource:\
- META-INF/NOTICE=../NOTICE,\
- META-INF/LICENSE=../LICENSE,\
+extra.includes:\
  plugin.xml=../plugin.xml
-
--exportcontents:\
- ${module};version=${api.version}
-
--output:\
- ${peaberry.eclipse.jar}
 

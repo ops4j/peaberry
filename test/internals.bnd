@@ -1,5 +1,5 @@
 
--classpath: ${peaberry.jar}
+-classpath: ${final.jar}
 
 Private-Package:\
  ${module},\

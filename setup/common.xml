@@ -3,10 +3,7 @@
 
   <dirname property="common.dir" file="${ant.file.common}"/>
   <property file="${common.dir}/common.properties"/>
-
-  <property name="lib.dir" location="${lib}"/>
   <property name="build.dir" location="${build}"/>
-  <property name="dist.dir" location="${dist}"/>
 
   <target name="compile">
     <mkdir dir="${build}/classes"/>
@@ -62,7 +59,7 @@
     <makeurl file="${common.dir}/felix.properties" property="felix.config.properties"/>
     <property name="deploy.cp" value=""/>
     <makeurl property="deploy.urls">
-      <path path="${deploy.cp}"/>
+      <path path="${deploy.cp};${final.jar}"/>
     </makeurl>
     <testng outputDir="${doc}/testNG" suiteRunnerClass="Director">
       <xmlfileset dir="${test}"/>

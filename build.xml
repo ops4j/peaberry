@@ -36,9 +36,9 @@
       <fileset dir="${build}/classes"/>
       <zipfileset src="${asm.jar}"/>
       <zipfileset src="${felix.jar}"/>
-      <rule pattern="jsr166y.*" result="org.ops4j.peaberry.internal.@1"/>
-      <rule pattern="org.objectweb.asm.*" result="org.ops4j.peaberry.internal.@1"/>
-      <rule pattern="org.apache.felix.framework.util.ldap.*" result="org.ops4j.peaberry.util.ldap.@1"/>
+      <rule pattern="jsr166y.*" result="${module}.internal.@1"/>
+      <rule pattern="org.objectweb.asm.*" result="${module}.internal.@1"/>
+      <rule pattern="org.apache.felix.framework.util.ldap.*" result="${module}.util.ldap.@1"/>
       <keep pattern="org.ops4j.**"/>
     </jarjar>
   </target>
@@ -60,7 +60,6 @@
   <target name="wipe">
     <antcall target="common.wipe"/>
     <ant target="wipe" dir="extensions/eclipse" inheritAll="false"/>
-    <ant target="wipe" dir="extensions/lifecycle" inheritAll="false"/>
   </target>
 
 </project>
