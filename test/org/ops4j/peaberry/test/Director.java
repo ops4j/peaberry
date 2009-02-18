@@ -37,8 +37,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.packageadmin.PackageAdmin;
 import org.testng.IObjectFactory;
 import org.testng.TestNG;
 import org.testng.TestNGException;
@@ -78,6 +76,7 @@ public final class Director
     FELIX = new Felix(config);
   }
 
+  // customised to unravel ITEs
   public static class ObjectFactory
       implements IObjectFactory {
 
@@ -108,12 +107,13 @@ public final class Director
       throw new RuntimeException(e);
     }
 
-    setDefaultSuiteName("Peaberry");
+    final String name = FELIX.getBundleContext().getProperty("test.suite.name");
+    setDefaultSuiteName(name == null ? "${test.suite.name}" : name);
     setDefaultTestName("UnitTests");
 
     // clear out dummy command-line tests
-    setObjectFactory(ObjectFactory.class);
     setXmlSuites(new ArrayList<XmlSuite>());
+    setObjectFactory(ObjectFactory.class);
 
     // load testcase classes from the appropriate bundles
     setTestClasses(installTestCases(installTestBundles()));
@@ -159,7 +159,7 @@ public final class Director
     return bundles.toArray(new Bundle[bundles.size()]);
   }
 
-  private Class<?>[] installTestCases(final Bundle[] bundles) {
+  private Class<?>[] installTestCases(final Bundle... bundles) {
     final Collection<Class<?>> clazzes = new HashSet<Class<?>>();
 
     System.out.println();
@@ -167,8 +167,8 @@ public final class Director
     for (final Bundle b : bundles) {
       System.out.println("[Director] Starting: " + b);
       try {
-        clazzes.addAll(installTestCases(b));
         b.start();
+        clazzes.addAll(installTestCases(b));
       } catch (final BundleException e) {
         System.err.println("Error starting test bundle: " + b + " message: " + e.getMessage());
       }
@@ -190,28 +190,23 @@ public final class Director
 
       System.out.println("[Director]  Loading: " + name);
 
+      final Class<?> clazz;
+
       try {
-        clazzes.add(bundle.loadClass(name));
+        clazz = bundle.loadClass(name);
       } catch (final ClassNotFoundException e) {
         System.err.println("Error loading test class: " + name + " message: " + e.getMessage());
+        continue;
       }
+
+      clazzes.add(clazz); // add the test class to the current suite
+
+      try {
+        // store bundle reference in testcase class using static method
+        clazz.getMethod("setBundle", Bundle.class).invoke(null, bundle);
+      } catch (final Exception e) {}
     }
 
     return clazzes;
-  }
-
-  private static volatile PackageAdmin PACKAGE_ADMIN;
-
-  public static BundleContext findContext(final Class<?> clazz) {
-
-    if (null == PACKAGE_ADMIN) {
-      // lazy-load the framework package-admin service
-      final BundleContext ctx = FELIX.getBundleContext();
-      final ServiceReference ref = ctx.getServiceReference(PackageAdmin.class.getName());
-      PACKAGE_ADMIN = (PackageAdmin) ctx.getService(ref);
-    }
-
-    // find the bundle which loaded the given testcase class
-    return PACKAGE_ADMIN.getBundle(clazz).getBundleContext();
   }
 }

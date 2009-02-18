@@ -20,12 +20,13 @@ import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
-import static org.ops4j.peaberry.test.Director.findContext;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -43,20 +44,24 @@ import examples.ids.IdManager;
 public abstract class InjectableTestCase
     extends AbstractModule {
 
-  @Inject
+  private static BundleContext BUNDLE_CONTEXT;
+
+  public static void setBundle(final Bundle bundle) {
+    BUNDLE_CONTEXT = bundle.getBundleContext();
+  }
+
   final Injector injector;
 
   @Inject
   IdManager idService;
 
   public InjectableTestCase() {
-    injector =
-        Guice.createInjector(this, osgiModule(findContext(getClass())), new AbstractModule() {
-          @Override
-          public void configure() {
-            bind(IdManager.class).toProvider(service(IdManager.class).single());
-          }
-        });
+    injector = Guice.createInjector(this, osgiModule(BUNDLE_CONTEXT), new AbstractModule() {
+      @Override
+      public void configure() {
+        bind(IdManager.class).toProvider(service(IdManager.class).single());
+      }
+    });
 
     injector.injectMembers(this);
   }

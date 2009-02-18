@@ -1,7 +1,0 @@
-
-Private-Package:\
- ${module}.test
-
--output:\
- ${director.jar}
-
