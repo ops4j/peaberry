@@ -1,0 +1,3 @@
+
+-include: ~${common.dir}/common.bnd
+
