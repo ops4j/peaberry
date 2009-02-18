@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.test.cases;
+package org.ops4j.peaberry.tests;
 
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
