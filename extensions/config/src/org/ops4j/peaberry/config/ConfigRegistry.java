@@ -25,7 +25,7 @@ import org.ops4j.peaberry.ServiceScope;
 /**
  * Configuration {@link ServiceRegistry} implementation.
  * 
- * @author mcculls@gmail.com (Stuart McCulloch)
+ * @author .......@gmail.com (................)
  */
 public final class ConfigRegistry
     implements ServiceRegistry {

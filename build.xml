@@ -57,10 +57,8 @@
   <target name="test.dist">
     <antcall target="common.test.dist"/>
     <ant target="test.dist" dir="extensions/eclipse" inheritAll="false"/>
-<!--
     <ant target="test.dist" dir="extensions/lifecycle" inheritAll="false"/>
     <ant target="test.dist" dir="extensions/config" inheritAll="false"/>
--->
   </target>
 
   <target name="wipe">

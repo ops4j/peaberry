@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 Stuart McCulloch
+ * Copyright (C) 2009 ................
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
