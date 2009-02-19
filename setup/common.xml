@@ -31,6 +31,14 @@
         <fileset dir="${src}" includes="*.bnd"/>
       </path>
     </foreach>
+    <property name="pde.manifest" value=""/>
+    <concat destfile="META-INF/MANIFEST.MF">
+      <zipfileset src="${final.jar}" includes="META-INF/MANIFEST.MF"/>
+      <header>${pde.manifest}</header>
+      <filterchain>
+        <tokenfilter delimoutput="\n"/>
+      </filterchain>
+    </concat>
   </target>
 
   <target name="main.bundle">
