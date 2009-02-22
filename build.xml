@@ -4,33 +4,13 @@
   <import file="setup/common.xml"/>
   <property file="build.properties"/>
 
-  <target name="guice" depends="check.guice,trim.guice"/>
-
-  <target name="check.guice">
-    <available file="${guice.jar}" property="have.guice"/>
+  <target name="compile">
+    <copy file="${lib}/aopalliance-1.0.jar" tofile="${aop.jar}"/>
+    <copy file="${lib}/guice-${guice.version}.jar" tofile="${guice.jar}"/>
+    <antcall target="common.compile"/>
   </target>
-
-  <target name="trim.guice" unless="have.guice">
-    <taskdef resource="proguard/ant/task.properties" classpath="${proguard.jar}"/>
-    <mkdir dir="${dist}"/>
-    <proguard>
-      -libraryjars "${java.home}/lib/rt.jar"
-      -libraryjars "${lib}/aopalliance-1.0.jar"
-      -injars "${lib}/guice-${guice.version}.jar"
-      -outjars "${guice.jar}"
-      -keep class !com.google.inject.internal.collect.** { *; }
-      -keepattributes
-      -dontobfuscate
-      -dontoptimize
-      -dontwarn
-      -dontnote
-    </proguard>
-  </target>
-
-  <target name="compile" depends="guice,common.compile"/>
 
   <target name="with.deps" depends="compile">
-    <copy file="${lib}/aopalliance-1.0.jar" tofile="${aop.jar}"/>
     <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="${jarjar.jar}"/>
     <jarjar jarfile="${build}/classes.jar">
       <fileset dir="${build}/classes"/>
@@ -48,8 +28,10 @@
   <target name="dist">
     <antcall target="common.dist"/>
     <ant target="dist" dir="extensions/eclipse" inheritAll="false"/>
+<!--
     <ant target="dist" dir="extensions/lifecycle" inheritAll="false"/>
     <ant target="dist" dir="extensions/config" inheritAll="false"/>
+-->
     <zip destfile="${build}/${ant.project.name}-${version}.zip" basedir="${dist}"/>
     <checksum format="MD5SUM" algorithm="md5" file="${build}/${ant.project.name}-${version}.zip"/>
   </target>
@@ -57,8 +39,10 @@
   <target name="test.dist">
     <antcall target="common.test.dist"/>
     <ant target="test.dist" dir="extensions/eclipse" inheritAll="false"/>
+<!--
     <ant target="test.dist" dir="extensions/lifecycle" inheritAll="false"/>
     <ant target="test.dist" dir="extensions/config" inheritAll="false"/>
+-->
   </target>
 
   <target name="wipe">
