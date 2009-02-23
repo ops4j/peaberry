@@ -41,13 +41,11 @@ final class ServiceProxyFactory {
   static <S, T extends S> Iterable<T> serviceProxies(final Class<T> clazz,
       final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
 
+    // local cache of provided proxy instances, so they can be re-used
+    final ConcurrentMap<Import<?>, T> PROXY_CACHE = newSoftCache();
     final Constructor<T> ctor = getProxyConstructor(clazz);
 
     return new Iterable<T>() {
-
-      // local cache of provided proxy instances, so they can be re-used
-      final ConcurrentMap<Import<?>, T> PROXY_CACHE = newSoftCache();
-
       public Iterator<T> iterator() {
         return new Iterator<T>() {
 
@@ -64,7 +62,9 @@ final class ServiceProxyFactory {
             if (null == proxy) {
               final T newProxy = buildProxy(ctor, decorator, handle);
               proxy = PROXY_CACHE.putIfAbsent(handle, newProxy);
+              // /CLOVER:OFF - rare event
               if (null == proxy) {
+                // /CLOVER:ON
                 return newProxy;
               }
             }
@@ -107,11 +107,13 @@ final class ServiceProxyFactory {
       // minimize wrapping of exceptions to help with problem determination
       return constructor.newInstance(null == decorator ? handle : decorator.decorate(handle));
     } catch (final InstantiationException e) {
+      // /CLOVER:OFF - checked => runtime exceptions
       throw new ServiceException(e);
     } catch (final IllegalAccessException e) {
       throw new ServiceException(e);
     } catch (final InvocationTargetException e) {
       throw new ServiceException(e);
+      // /CLOVER:ON
     }
   }
 }

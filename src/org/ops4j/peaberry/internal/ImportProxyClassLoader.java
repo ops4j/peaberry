@@ -51,9 +51,11 @@ final class ImportProxyClassLoader
     } catch (final LinkageError e) {
       throw new ServiceException(e);
     } catch (final NoSuchMethodException e) {
+      // /CLOVER:OFF - checked => runtime exceptions
       throw new ServiceException(e);
     } catch (final ClassNotFoundException e) {
       throw new ServiceException(e);
+      // /CLOVER:ON
     }
   }
 
@@ -72,7 +74,9 @@ final class ImportProxyClassLoader
         }
       });
       proxyLoader = LOADER_MAP.putIfAbsent(parent, newProxyLoader);
+      // /CLOVER:OFF - rare event
       if (null == proxyLoader) {
+        // /CLOVER:ON
         return newProxyLoader;
       }
     }
