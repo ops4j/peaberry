@@ -40,22 +40,17 @@ final class ConcurrentCacheFactory {
 
   private static final EnumSet<Option> IDENTITY = EnumSet.of(IDENTITY_COMPARISONS);
 
-  // usual defaults
-  private static final int CAPACITY = 16;
-  private static final float LOAD = 0.75f;
-  private static final int CONCURRENCY = 16;
-
   /**
    * @return soft-cache with referential-equality semantics
    */
   static <K, V> ConcurrentMap<K, V> newSoftCache() {
-    return new ConcurrentReferenceHashMap<K, V>(CAPACITY, LOAD, CONCURRENCY, WEAK, SOFT, IDENTITY);
+    return new ConcurrentReferenceHashMap<K, V>(WEAK, SOFT, IDENTITY);
   }
 
   /**
    * @return weak-cache with referential-equality semantics
    */
   static <K, V> ConcurrentMap<K, V> newWeakCache() {
-    return new ConcurrentReferenceHashMap<K, V>(CAPACITY, LOAD, CONCURRENCY, WEAK, WEAK, IDENTITY);
+    return new ConcurrentReferenceHashMap<K, V>(WEAK, WEAK, IDENTITY);
   }
 }

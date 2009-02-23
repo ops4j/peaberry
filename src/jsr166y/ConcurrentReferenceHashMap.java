@@ -955,6 +955,35 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
+     * Creates a new, empty reference map with the specified key
+     * and value reference types.
+     *
+     * @param keyType the reference type to use for keys
+     * @param valueType the reference type to use for values
+     * @throws IllegalArgumentException if the initial capacity of
+     * elements is negative.
+     */
+    public ConcurrentReferenceHashMap(ReferenceType keyType, ReferenceType valueType) {
+        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL,
+                keyType, valueType, null);
+    }
+
+    /**
+     * Creates a new, empty reference map with the specified reference types
+     * and behavioral options.
+     *
+     * @param keyType the reference type to use for keys
+     * @param valueType the reference type to use for values
+     * @throws IllegalArgumentException if the initial capacity of
+     * elements is negative.
+     */
+    public ConcurrentReferenceHashMap(ReferenceType keyType, ReferenceType valueType, EnumSet<Option> options) {
+        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR, DEFAULT_CONCURRENCY_LEVEL,
+                keyType, valueType, options);
+    }
+
+
+    /**
      * Creates a new, empty map with the specified initial capacity,
      * and with default reference types (weak keys, strong values),
      * load factor (0.75) and concurrencyLevel (16).
