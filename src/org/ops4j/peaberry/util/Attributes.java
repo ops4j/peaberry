@@ -69,10 +69,7 @@ public final class Attributes {
 
     // now add non-String values that have String keys
     for (final Entry<?, ?> entry : properties.entrySet()) {
-      final Object key = entry.getKey();
-      if (key instanceof String) {
-        attributes.put((String) key, entry.getValue());
-      }
+      attributes.put(entry.getKey().toString(), entry.getValue());
     }
 
     return unmodifiableMap(attributes);
