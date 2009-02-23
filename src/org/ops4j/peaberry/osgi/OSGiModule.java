@@ -37,6 +37,10 @@ public final class OSGiModule
   private final ServiceRegistry[] registries;
 
   public OSGiModule(final BundleContext bundleContext, final ServiceRegistry... registries) {
+    if (null == bundleContext) {
+      throw new IllegalArgumentException("null bundle context");
+    }
+
     this.bundleContext = bundleContext;
     this.registries = registries;
   }
