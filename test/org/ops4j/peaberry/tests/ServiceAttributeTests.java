@@ -36,9 +36,8 @@ import org.testng.annotations.Test;
 public final class ServiceAttributeTests {
 
   public void testPropertyAttributes() {
-    final Properties sysProp = new Properties();
+    final Properties sysProp = new Properties(System.getProperties());
 
-    sysProp.putAll(System.getProperties());
     sysProp.setProperty("string", "one");
     sysProp.put("integer", 1);
 
@@ -51,19 +50,16 @@ public final class ServiceAttributeTests {
       fail("Expected IllegalArgumentException");
     } catch (final IllegalArgumentException e) {}
 
-    sysProp.remove(1);
+    assertNull(cleanAttributes.get(1));
 
-    final Map<String, ?> fixedAttributes = properties(sysProp);
+    assertEquals(cleanAttributes.get("string"), "one");
+    assertEquals(cleanAttributes.get("integer"), 1);
 
-    assertNull(fixedAttributes.get(1));
+    assertEquals(cleanAttributes.size(), System.getProperties().size() + 2);
 
-    assertEquals(fixedAttributes.get("string"), "one");
-    assertEquals(fixedAttributes.get("integer"), 1);
-
-    assertEquals(fixedAttributes.size(), System.getProperties().size() + 2);
-
-    for (final String key : fixedAttributes.keySet()) {
-      assertEquals(fixedAttributes.get(key), cleanAttributes.get(key));
+    for (final String key : cleanAttributes.keySet()) {
+      final Object value = cleanAttributes.get(key);
+      assertEquals(value instanceof String ? value : null, sysProp.getProperty(key), key);
     }
   }
 

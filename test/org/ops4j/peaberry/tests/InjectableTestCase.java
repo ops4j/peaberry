@@ -16,13 +16,14 @@
 
 package org.ops4j.peaberry.tests;
 
-import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
+
+import java.util.Collections;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.Bundle;
@@ -33,6 +34,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
 import examples.ids.IdManager;
 
@@ -50,10 +52,10 @@ public abstract class InjectableTestCase
     BUNDLE_CONTEXT = bundle.getBundleContext();
   }
 
-  final Injector injector;
+  private final Injector injector;
 
   @Inject
-  IdManager idService;
+  private IdManager idService;
 
   public InjectableTestCase() {
     injector = Guice.createInjector(this, osgiModule(BUNDLE_CONTEXT), new AbstractModule() {
@@ -66,13 +68,20 @@ public abstract class InjectableTestCase
     injector.injectMembers(this);
   }
 
+  protected <T> T getInstance(final Class<? extends T> clazz) {
+    return injector.getInstance(clazz);
+  }
+
+  protected <T> T getInstance(final TypeLiteral<? extends T> type) {
+    return injector.getInstance(Key.get(type));
+  }
+
   protected <T> T getInstance(final Key<? extends T> key) {
     return injector.getInstance(key);
   }
 
-  @SuppressWarnings("unchecked")
   protected void register(final String... ids) {
-    idService.add(EMPTY_MAP, ids);
+    idService.add(Collections.<String, Object> emptyMap(), ids);
   }
 
   protected void register(final int ranking, final String... ids) {

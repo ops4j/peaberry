@@ -90,9 +90,9 @@ public final class ServicePerformanceTests
   }
 
   public void testServiceLookupPerformance() {
+    getInstance(export(Example.class));
 
-    injector.getInstance(Key.get(export(Example.class)));
-    final Holder holder = injector.getInstance(Holder.class);
+    final Holder holder = getInstance(Holder.class);
 
     // warm-up...
     time(holder.raw);
