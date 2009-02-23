@@ -23,6 +23,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.ServiceException;
@@ -84,5 +85,14 @@ public final class ServiceFilterTests {
       Filters.ldap("(name=*bad-type*)").matches(singletonMap("name", true));
       fail("Expected ServiceException");
     } catch (final ServiceException e) {}
+  }
+
+  @SuppressWarnings("unchecked")
+  public void testAttributeFilter() {
+    final Properties testProps = new Properties();
+    final Map testMap = System.getProperties();
+    testProps.putAll(testMap);
+
+    assertTrue(Filters.attributes(Attributes.properties(testProps)).matches(testMap));
   }
 }

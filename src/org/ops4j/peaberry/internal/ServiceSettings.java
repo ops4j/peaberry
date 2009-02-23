@@ -130,7 +130,7 @@ final class ServiceSettings<T>
         // no filter configured, so attempt to use attributes as a basic filter
         return new AttributeFilter() {
           public boolean matches(final Map<String, ?> targetAttributes) {
-            return targetAttributes.entrySet().contains(serviceAttributes.entrySet());
+            return targetAttributes.entrySet().containsAll(serviceAttributes.entrySet());
           }
         };
       }
