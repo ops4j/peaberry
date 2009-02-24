@@ -24,7 +24,6 @@ import static org.ops4j.peaberry.util.TypeLiterals.export;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
-import com.google.inject.Key;
 import com.google.inject.name.Named;
 
 /**
@@ -49,25 +48,24 @@ public final class ServicePerformanceTests
 
   @Override
   protected void configure() {
+    final Example rawExample = new ExampleImpl();
 
-    // service uses same implementation
-    bind(export(Example.class)).toProvider(service(Key.get(ExampleImpl.class)).export());
+    // exported service uses same implementation
+    bind(export(Example.class)).toProvider(service(rawExample).export());
 
     // standard injection: raw method invocation
-    bind(Example.class).annotatedWith(named("Raw")).to(ExampleImpl.class);
+    bind(Example.class).annotatedWith(named("Raw")).toInstance(rawExample);
 
     // service registry lookup: indirect method invocation via normal proxy
     bind(Example.class).annotatedWith(named("Service")).toProvider(service(Example.class).single());
-
-    // service registry lookup: raw method invocation
-    bind(Example.class).annotatedWith(named("Direct")).toProvider(
-        service(Example.class).single().direct());
 
     // service registry lookup: indirect method invocation via sticky proxy
     bind(Example.class).annotatedWith(named("Sticky")).toProvider(
         service(Example.class).decoratedWith(sticky(null)).single());
 
-    bind(Holder.class);
+    // service registry lookup: raw method invocation
+    bind(Example.class).annotatedWith(named("Direct")).toProvider(
+        service(Example.class).single().direct());
   }
 
   public static class Holder {
@@ -81,15 +79,17 @@ public final class ServicePerformanceTests
     public Example service;
 
     @Inject
-    @Named("Direct")
-    public Example direct;
-
-    @Inject
     @Named("Sticky")
     public Example sticky;
+
+    @Inject
+    @Named("Direct")
+    public Example direct;
   }
 
   public void testServiceLookupPerformance() {
+
+    // ensure service is exported first
     getInstance(export(Example.class));
 
     final Holder holder = getInstance(Holder.class);

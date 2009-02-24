@@ -16,24 +16,20 @@
 
 package org.ops4j.peaberry.tests;
 
+import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
-import java.util.Properties;
-
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceUnavailableException;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
-import com.google.inject.Key;
 
 /**
- * Test service contention.
+ * Test service contention and ranking consistency.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -43,11 +39,11 @@ public final class ServiceContentionTests
 
   @Override
   protected void configure() {
-
-    bind(export(DummyService.class)).toProvider(service(Key.get(DummyServiceImpl.class)).export());
-
+    bind(export(DummyService.class)).toProvider(service(DummyServiceImpl.class).export());
     bind(DummyService.class).toProvider(service(DummyService.class).single());
 
+    // use null placeholder, real implementation will be exported later on
+    bind(export(RankService.class)).toProvider(service((RankService) null).export());
     bind(iterable(RankService.class)).toProvider(service(RankService.class).multiple());
   }
 
@@ -68,13 +64,12 @@ public final class ServiceContentionTests
   }
 
   @Inject
-  DummyService importedService;
-
-  @Inject
   Export<DummyService> exportedService;
 
-  public void testSingleServiceContention() {
+  @Inject
+  DummyService importedService;
 
+  public void testSingleServiceContention() {
     final Thread[] threads = new Thread[42];
 
     for (int i = 0; i < threads.length; i++) {
@@ -110,42 +105,39 @@ public final class ServiceContentionTests
   }
 
   @Inject
-  BundleContext bundleContext;
-
-  @Inject
   Iterable<RankService> rankings;
 
   public void testServiceRankingIntegrity() {
-
     final Thread[] threads = new Thread[42];
 
     for (int i = 0; i < threads.length; i++) {
       threads[i] = new Thread(new Runnable() {
         public void run() {
 
+          // line all threads up at this point
           synchronized (ServiceContentionTests.this) {
             try {
               ServiceContentionTests.this.wait();
             } catch (final InterruptedException e) {}
           }
 
+          @SuppressWarnings("unchecked")
+          final Export<RankService> exportedRank = (Export) getInstance(export(RankService.class));
+
+          // export random rank for random length of time
           final int rank = (int) (1000 * Math.random());
-
-          final Properties props = new Properties();
-          props.put(SERVICE_RANKING, rank);
-
-          final ServiceRegistration registration =
-              bundleContext.registerService(RankService.class.getName(), new RankService() {
-                public int rank() {
-                  return rank;
-                }
-              }, props);
+          exportedRank.attributes(singletonMap(SERVICE_RANKING, rank));
+          exportedRank.put(new RankService() {
+            public int rank() {
+              return rank;
+            }
+          });
 
           try {
             Thread.sleep((int) (10 * Math.random()));
           } catch (final InterruptedException e2) {}
 
-          registration.unregister();
+          exportedRank.unput();
         }
       });
     }
@@ -160,10 +152,12 @@ public final class ServiceContentionTests
 
         int prevRank;
         do {
+          // release all the ranking threads
           synchronized (ServiceContentionTests.this) {
             ServiceContentionTests.this.notifyAll();
           }
 
+          // continually test ranking order
           prevRank = Integer.MAX_VALUE;
           for (final RankService next : rankings) {
             try {
@@ -177,6 +171,7 @@ public final class ServiceContentionTests
 
     testThread[0].start();
 
+    // wait for everything to finish
     for (final Thread t : threads) {
       try {
         t.join();
