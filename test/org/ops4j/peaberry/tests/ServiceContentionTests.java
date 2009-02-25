@@ -33,7 +33,7 @@ import com.google.inject.Inject;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-@Test
+@Test(sequential = true)
 public final class ServiceContentionTests
     extends InjectableTestCase {
 
