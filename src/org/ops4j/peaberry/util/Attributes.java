@@ -117,4 +117,20 @@ public final class Attributes {
 
     return singletonMap(OBJECTCLASS, objectclass);
   }
+
+  /**
+   * Create a union of all the services attributes passed into this method.
+   * 
+   * @param attributes collection of service attributes
+   * @return union of the given service attributes
+   * 
+   * @since 1.1
+   */
+  public static Map<String, ?> union(final Map<String, ?>... attributes) {
+    final Map<String, Object> unionMap = new HashMap<String, Object>();
+    for (Map<String, ?> a : attributes) {
+      unionMap.putAll(a);
+    }
+    return unmodifiableMap(unionMap);
+  }
 }
