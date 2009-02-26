@@ -62,7 +62,7 @@ public final class StickyDecorator<S>
     public synchronized T get() {
 
       // use attributes() to detect when the current service instance is invalid
-      if (null != resetTask && null != instance() && null == handle.attributes()) {
+      if (null != resetTask && null != instanceRef && null == attributes()) {
 
         // always clear the current service once it's invalid
         instanceRef.clear();
@@ -81,10 +81,12 @@ public final class StickyDecorator<S>
 
       if (reset) {
         try {
-          instanceRef = new WeakReference<T>(handle.get());
-          reset = null == instance();
+          final T service = handle.get();
+          instanceRef = new WeakReference<T>(service);
+          reset = null == service;
         } finally {
           if (reset) {
+            instanceRef = null;
             handle.unget(); // balance previous unsuccessful get
           }
         }

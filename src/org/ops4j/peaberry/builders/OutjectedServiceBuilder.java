@@ -30,7 +30,7 @@ public interface OutjectedServiceBuilder<T>
     extends ServiceBuilder<T> {
 
   /**
-   * Outject the (undecorated) dynamic service to the given scope.
+   * Outject the dynamic service to the given scope.
    * 
    * @param key service scope key
    * @return dynamic service builder
@@ -38,7 +38,7 @@ public interface OutjectedServiceBuilder<T>
   ServiceBuilder<T> out(Key<? extends ServiceScope<? super T>> key);
 
   /**
-   * Outject the (undecorated) dynamic service to the given scope.
+   * Outject the dynamic service to the given scope.
    * 
    * @param instance service scope
    * @return dynamic service builder
