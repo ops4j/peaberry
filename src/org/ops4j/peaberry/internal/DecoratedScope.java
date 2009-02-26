@@ -107,7 +107,7 @@ final class DecoratedScope<S>
     }
 
     public Map<String, ?> attributes() {
-      // allow metadata overriding, tied to service availability
+      // allow overriding, but still honour service availability
       return null == service.attributes() ? null : attributes;
     }
 

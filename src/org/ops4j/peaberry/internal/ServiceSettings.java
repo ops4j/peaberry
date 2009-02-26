@@ -143,28 +143,35 @@ final class ServiceSettings<T>
     final AttributeFilter attributeFilter = getFilter(injector);
 
     // enable outjection, but only if it's going to a different scope
-    final ServiceScope<? super T> serviceScope = watcher.get(injector);
+    ServiceScope<? super T> serviceScope = watcher.get(injector);
     if (null != serviceScope && serviceScope != serviceRegistry) { // NOPMD
+
+      // decorate the scope if necessary, to support decorated watching
+      final ImportDecorator<? super T> scopeDecorator = decorator.get(injector);
+      if (null != scopeDecorator) {
+        serviceScope = new DecoratedScope<T>(scopeDecorator, serviceScope);
+      }
+
       serviceRegistry.watch(clazz, attributeFilter, serviceScope);
     }
 
     return serviceRegistry.lookup(clazz, attributeFilter);
   }
 
-  private ServiceScope<? super T> getReceivingScope(final Injector injector) {
-    final ServiceScope<? super T> serviceScope = watcher.get(injector);
-    if (null == serviceScope) {
-      return registry.get(injector);
-    }
-    return serviceScope;
-  }
-
   Export<T> getExport(final Injector injector) {
 
-    // wrap local instance up as an import and push it out to the relevant scope
-    final Import<T> _import = new StaticImport<T>(service.get(injector), attributes.get(injector));
-    final Export<T> _export = getReceivingScope(injector).add(_import);
+    // watcher can be null, but registry setting will be non-null
+    ServiceScope<? super T> serviceScope = watcher.get(injector);
+    if (null == serviceScope) {
+      serviceScope = registry.get(injector);
+    }
 
-    return _export;
+    // decorate the scope if necessary, to support decorated exports
+    final ImportDecorator<? super T> scopeDecorator = decorator.get(injector);
+    if (null != scopeDecorator) {
+      serviceScope = new DecoratedScope<T>(scopeDecorator, serviceScope);
+    }
+
+    return serviceScope.add(new StaticImport<T>(service.get(injector), attributes.get(injector)));
   }
 }
