@@ -73,10 +73,11 @@ public abstract class AbstractScope<S>
     }
 
     public synchronized void put(final S newInstance) {
-      if (null != instance) {
-        removed(instance);
+      unput(); // check if we need to unput before put
+
+      if (null != newInstance) {
+        instance = adding(new SimpleImport<S>(newInstance, attributes));
       }
-      instance = adding(new SimpleImport<S>(newInstance, attributes));
     }
 
     public synchronized void attributes(final Map<String, ?> newAttributes) {
