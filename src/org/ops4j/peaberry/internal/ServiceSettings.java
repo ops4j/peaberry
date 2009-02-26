@@ -165,12 +165,6 @@ final class ServiceSettings<T>
     final Import<T> _import = new StaticImport<T>(service.get(injector), attributes.get(injector));
     final Export<T> _export = getReceivingScope(injector).add(_import);
 
-    // apply decoration to the incoming aspect, just like with normal imports
-    final ImportDecorator<? super T> importDecorator = decorator.get(injector);
-    if (null != importDecorator) {
-      return new DecoratedExport<T>(_export, importDecorator);
-    }
-
     return _export;
   }
 }
