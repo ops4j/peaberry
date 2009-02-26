@@ -50,13 +50,13 @@ final class DecoratedScope<S>
 
       // Export aspect... (ensure decoration of new instances/attributes)
 
-      public synchronized void put(T instance) {
+      public synchronized void put(final T instance) {
         // force decoration of new instance
         backingService.put(instance);
         publishedService.put(decoratedService.get());
       }
 
-      public synchronized void attributes(Map<String, ?> attributes) {
+      public synchronized void attributes(final Map<String, ?> attributes) {
         // force decoration of new attributes
         backingService.attributes(attributes);
         publishedService.attributes(decoratedService.attributes());

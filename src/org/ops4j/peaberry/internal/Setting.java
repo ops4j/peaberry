@@ -46,7 +46,7 @@ abstract class Setting<T> {
       private boolean configured;
 
       @Override
-      T get(final Injector injector) {
+      synchronized T get(final Injector injector) {
         if (!configured && null != injector) {
           // given value may need injecting
           injector.injectMembers(instance);
@@ -67,10 +67,15 @@ abstract class Setting<T> {
     }
 
     return new Setting<T>() {
+      private T instance;
+
       @Override
-      T get(final Injector injector) {
-        // query the injector for the value
-        return injector.getInstance(key);
+      synchronized T get(final Injector injector) {
+        if (null == instance) {
+          // query the injector for the value
+          instance = injector.getInstance(key);
+        }
+        return instance;
       }
     };
   }

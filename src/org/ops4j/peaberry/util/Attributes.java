@@ -128,7 +128,7 @@ public final class Attributes {
    */
   public static Map<String, ?> union(final Map<String, ?>... attributes) {
     final Map<String, Object> unionMap = new HashMap<String, Object>();
-    for (Map<String, ?> a : attributes) {
+    for (final Map<String, ?> a : attributes) {
       unionMap.putAll(a);
     }
     return unmodifiableMap(unionMap);
