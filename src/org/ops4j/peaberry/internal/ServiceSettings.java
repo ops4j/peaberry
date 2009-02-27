@@ -121,18 +121,40 @@ final class ServiceSettings<T>
     return decorator.get(injector);
   }
 
+  // simple filter based on sample attributes
+  private static class SampleAttributeFilter
+      implements AttributeFilter {
+
+    private final Map<String, ?> attributes;
+
+    public SampleAttributeFilter(final Map<String, ?> attributes) {
+      this.attributes = attributes;
+    }
+
+    public boolean matches(final Map<String, ?> targetAttributes) {
+      return targetAttributes.entrySet().containsAll(attributes.entrySet());
+    }
+
+    @Override
+    public boolean equals(final Object rhs) {
+      if (rhs instanceof SampleAttributeFilter) {
+        return attributes.equals(((SampleAttributeFilter) rhs).attributes);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return null == attributes ? 0 : attributes.hashCode();
+    }
+  }
+
   private AttributeFilter getFilter(final Injector injector) {
     final AttributeFilter attributeFilter = filter.get(injector);
     if (null == attributeFilter) {
       final Map<String, ?> serviceAttributes = attributes.get(injector);
       if (null != serviceAttributes) {
-
-        // no filter configured, so attempt to use attributes as a basic filter
-        return new AttributeFilter() {
-          public boolean matches(final Map<String, ?> targetAttributes) {
-            return targetAttributes.entrySet().containsAll(serviceAttributes.entrySet());
-          }
-        };
+        return new SampleAttributeFilter(serviceAttributes);
       }
     }
     return attributeFilter;

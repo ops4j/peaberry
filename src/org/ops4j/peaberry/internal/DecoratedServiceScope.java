@@ -43,7 +43,7 @@ final class DecoratedServiceScope<S>
   public <T extends S> Export<T> add(final Import<T> service) {
 
     // wrap service to allow updates, decorate the wrapper, then publish
-    final Export<T> backingService = new BackingExport<T>(service);
+    final Export<T> backingService = new SimpleExport<T>(service);
     final Import<T> decoratedService = decorator.decorate(backingService);
     final Export<T> publishedService = scope.add(decoratedService);
 
@@ -86,50 +86,6 @@ final class DecoratedServiceScope<S>
         publishedService.unget();
       }
     };
-  }
-
-  // allow update of decorated service under the covers
-  private static class BackingExport<T>
-      implements Export<T> {
-
-    private static final Import<?> UNAVAILABLE = new StaticImport<Object>(null, null);
-
-    private Map<String, ?> attributes;
-    private Import<T> service;
-
-    BackingExport(final Import<T> service) {
-      // cache original service metadata
-      attributes = service.attributes();
-      this.service = service;
-    }
-
-    public T get() {
-      return service.get();
-    }
-
-    public Map<String, ?> attributes() {
-      // allow overriding, but still honour service availability
-      return null == service.attributes() ? null : attributes;
-    }
-
-    public void unget() {
-      service.unget();
-    }
-
-    public void put(final T newInstance) {
-      // override original service with new static instance
-      service = new StaticImport<T>(newInstance, attributes);
-    }
-
-    public void attributes(final Map<String, ?> newAttributes) {
-      // override original metadata
-      attributes = newAttributes;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void unput() {
-      service = (Import) UNAVAILABLE;
-    }
   }
 
   @Override
