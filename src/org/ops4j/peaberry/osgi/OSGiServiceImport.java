@@ -140,8 +140,10 @@ final class OSGiServiceImport
   void invalidate() {
     notifyWatchers(UNREGISTERING);
     watchers.clear();
-    instance = null;
-    state = INVALID; // force memory flush
+    synchronized (this) {
+      instance = null;
+      state = INVALID;
+    }
   }
 
   static void setCacheGeneration(final int newGeneration) {
@@ -156,6 +158,11 @@ final class OSGiServiceImport
     // check no-one is using the service and it belongs to the target generation
     if (targetGeneration == generation && ACTIVE == state && 0 == count.get()) {
       synchronized (this) {
+
+        // has it just gone?
+        if (INVALID == state) {
+          return;
+        }
 
         // block other threads entering get()
         state = DORMANT;
