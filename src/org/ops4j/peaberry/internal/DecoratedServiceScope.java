@@ -28,13 +28,14 @@ import org.ops4j.peaberry.builders.ImportDecorator;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class DecoratedScope<S>
+final class DecoratedServiceScope<S>
     implements ServiceScope<S> {
 
   private final ImportDecorator<? super S> decorator;
   private final ServiceScope<? super S> scope;
 
-  DecoratedScope(final ImportDecorator<? super S> decorator, final ServiceScope<? super S> scope) {
+  DecoratedServiceScope(final ImportDecorator<? super S> decorator,
+      final ServiceScope<? super S> scope) {
     this.decorator = decorator;
     this.scope = scope;
   }
@@ -129,5 +130,23 @@ final class DecoratedScope<S>
     public void unput() {
       service = (Import) UNAVAILABLE;
     }
+  }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof DecoratedServiceScope) {
+      final DecoratedServiceScope<?> decoratedScope = (DecoratedServiceScope<?>) rhs;
+      return equals(decorator, decoratedScope.decorator) && equals(scope, decoratedScope.scope);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return (null == decorator ? 0 : decorator.hashCode()) ^ (null == scope ? 0 : scope.hashCode());
+  }
+
+  private static boolean equals(final Object lhs, final Object rhs) {
+    return null == lhs ? null == rhs : lhs.equals(rhs);
   }
 }

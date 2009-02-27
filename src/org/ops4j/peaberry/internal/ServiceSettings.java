@@ -149,7 +149,7 @@ final class ServiceSettings<T>
       // decorate the scope if necessary, to support decorated watching
       final ImportDecorator<? super T> scopeDecorator = decorator.get(injector);
       if (null != scopeDecorator) {
-        serviceScope = new DecoratedScope<T>(scopeDecorator, serviceScope);
+        serviceScope = new DecoratedServiceScope<T>(scopeDecorator, serviceScope);
       }
 
       serviceRegistry.watch(clazz, attributeFilter, serviceScope);
@@ -169,7 +169,7 @@ final class ServiceSettings<T>
     // decorate the scope if necessary, to support decorated exports
     final ImportDecorator<? super T> scopeDecorator = decorator.get(injector);
     if (null != scopeDecorator) {
-      serviceScope = new DecoratedScope<T>(scopeDecorator, serviceScope);
+      serviceScope = new DecoratedServiceScope<T>(scopeDecorator, serviceScope);
     }
 
     return serviceScope.add(new StaticImport<T>(service.get(injector), attributes.get(injector)));
