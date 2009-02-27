@@ -38,7 +38,7 @@ final class FilteredExtensionScope<S>
   }
 
   public <T extends S> Export<T> add(final Import<T> service) {
-    if (null == filter || ((ExtensionImport) (Import<?>) service).matches(filter)) {
+    if (((ExtensionImport) (Import<?>) service).matches(filter)) {
       return scope.add(service);
     }
     return null;
@@ -48,17 +48,13 @@ final class FilteredExtensionScope<S>
   public boolean equals(final Object rhs) {
     if (rhs instanceof FilteredExtensionScope) {
       final FilteredExtensionScope<?> filteredScope = (FilteredExtensionScope<?>) rhs;
-      return equals(filter, filteredScope.filter) && equals(scope, filteredScope.scope);
+      return filter.equals(filteredScope.filter) && scope.equals(filteredScope.scope);
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return (null == filter ? 0 : filter.hashCode()) ^ (null == scope ? 0 : scope.hashCode());
-  }
-
-  private static boolean equals(final Object lhs, final Object rhs) {
-    return null == lhs ? null == rhs : lhs.equals(rhs);
+    return filter.hashCode() ^ scope.hashCode();
   }
 }

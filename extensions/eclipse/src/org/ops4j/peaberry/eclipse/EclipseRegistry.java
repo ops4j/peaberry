@@ -72,7 +72,8 @@ public final class EclipseRegistry
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceScope<? super T> scope) {
 
-    registerListener(clazz).addWatcher(new FilteredExtensionScope(filter, scope));
+    registerListener(clazz).addWatcher(
+        null == filter ? scope : new FilteredExtensionScope(filter, scope));
   }
 
   public void cleanup() {

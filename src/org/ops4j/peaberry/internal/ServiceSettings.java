@@ -145,7 +145,7 @@ final class ServiceSettings<T>
 
     @Override
     public int hashCode() {
-      return null == attributes ? 0 : attributes.hashCode();
+      return attributes.hashCode();
     }
   }
 
@@ -160,24 +160,31 @@ final class ServiceSettings<T>
     return attributeFilter;
   }
 
-  Iterable<Import<T>> getImports(final Injector injector) {
+  Iterable<Import<T>> getImports(final Injector injector, final boolean isConcurrent) {
     final ServiceRegistry serviceRegistry = registry.get(injector);
     final AttributeFilter attributeFilter = getFilter(injector);
+
+    final Iterable<Import<T>> imports = serviceRegistry.lookup(clazz, attributeFilter);
 
     // enable outjection, but only if it's going to a different scope
     ServiceScope<? super T> serviceScope = watcher.get(injector);
     if (null != serviceScope && serviceScope != serviceRegistry) { // NOPMD
 
-      // decorate the scope if necessary, to support decorated watching
       final ImportDecorator<? super T> scopeDecorator = decorator.get(injector);
       if (null != scopeDecorator) {
+        // decorate the scope if necessary, to support decorated watching
         serviceScope = new DecoratedServiceScope<T>(scopeDecorator, serviceScope);
+      }
+
+      if (isConcurrent) {
+        // apply concurrent behaviour to scope when watching single services
+        serviceScope = new ConcurrentServiceScope<T>(imports, serviceScope);
       }
 
       serviceRegistry.watch(clazz, attributeFilter, serviceScope);
     }
 
-    return serviceRegistry.lookup(clazz, attributeFilter);
+    return imports;
   }
 
   Export<T> getExport(final Injector injector) {

@@ -88,4 +88,22 @@ final class IterableExtension<T>
       }
     };
   }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof IterableExtension) {
+      final IterableExtension<?> iterable = (IterableExtension<?>) rhs;
+      return listener.equals(iterable.listener) && equals(filter, iterable.filter);
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return listener.hashCode() ^ (null == filter ? 0 : filter.hashCode());
+  }
+
+  private static boolean equals(final Object lhs, final Object rhs) {
+    return null == lhs ? null == rhs : lhs.equals(rhs);
+  }
 }

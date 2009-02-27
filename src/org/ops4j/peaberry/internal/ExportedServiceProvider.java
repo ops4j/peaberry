@@ -34,15 +34,15 @@ final class ExportedServiceProvider<T>
   @Inject
   Injector injector;
 
-  private final ServiceSettings<T> settings;
+  private final ServiceSettings<T> setup;
 
-  ExportedServiceProvider(final ServiceSettings<T> settings) {
+  ExportedServiceProvider(final ServiceSettings<T> setup) {
     // clone current state of settings
-    this.settings = settings.clone();
+    this.setup = setup.clone();
   }
 
   public Export<T> get() {
-    return settings.getExport(injector);
+    return setup.getExport(injector);
   }
 
   private static final class DirectProvider<T>
@@ -51,19 +51,19 @@ final class ExportedServiceProvider<T>
     @Inject
     Injector injector;
 
-    private final ServiceSettings<T> settings;
+    private final ServiceSettings<T> setup;
 
-    DirectProvider(final ServiceSettings<T> settings) {
+    DirectProvider(final ServiceSettings<T> setup) {
       // settings already cloned
-      this.settings = settings;
+      this.setup = setup;
     }
 
     public T get() {
-      return settings.getExport(injector).get();
+      return setup.getExport(injector).get();
     }
   }
 
   public Provider<T> direct() {
-    return new DirectProvider<T>(settings);
+    return new DirectProvider<T>(setup);
   }
 }

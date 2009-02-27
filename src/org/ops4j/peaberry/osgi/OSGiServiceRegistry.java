@@ -59,7 +59,8 @@ public class OSGiServiceRegistry
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceScope<? super T> scope) {
 
-    registerListener(clazz).addWatcher(new FilteredServiceScope(filter, scope));
+    registerListener(clazz).addWatcher(
+        null == filter ? scope : new FilteredServiceScope(filter, scope));
   }
 
   public void flush(final int targetGeneration) {

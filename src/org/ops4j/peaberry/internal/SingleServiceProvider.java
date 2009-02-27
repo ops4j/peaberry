@@ -36,17 +36,17 @@ final class SingleServiceProvider<T>
   @Inject
   Injector injector;
 
-  private final ServiceSettings<T> settings;
+  private final ServiceSettings<T> setup;
   private final Class<T> clazz;
 
-  SingleServiceProvider(final ServiceSettings<T> settings) {
+  SingleServiceProvider(final ServiceSettings<T> setup) {
     // clone current state of settings
-    this.settings = settings.clone();
-    this.clazz = settings.getClazz();
+    this.setup = setup.clone();
+    this.clazz = setup.getClazz();
   }
 
   public T get() {
-    return serviceProxy(clazz, settings.getImports(injector), settings.getDecorator(injector));
+    return serviceProxy(clazz, setup.getImports(injector, true), setup.getDecorator(injector));
   }
 
   private static final class DirectProvider<T>
@@ -55,19 +55,19 @@ final class SingleServiceProvider<T>
     @Inject
     Injector injector;
 
-    private final ServiceSettings<T> settings;
+    private final ServiceSettings<T> setup;
 
-    DirectProvider(final ServiceSettings<T> settings) {
+    DirectProvider(final ServiceSettings<T> setup) {
       // settings already cloned
-      this.settings = settings;
+      this.setup = setup;
     }
 
     public T get() {
-      return directService(settings.getImports(injector), settings.getDecorator(injector));
+      return directService(setup.getImports(injector, true), setup.getDecorator(injector));
     }
   }
 
   public Provider<T> direct() {
-    return new DirectProvider<T>(settings);
+    return new DirectProvider<T>(setup);
   }
 }

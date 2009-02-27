@@ -92,17 +92,13 @@ final class DecoratedServiceScope<S>
   public boolean equals(final Object rhs) {
     if (rhs instanceof DecoratedServiceScope) {
       final DecoratedServiceScope<?> decoratedScope = (DecoratedServiceScope<?>) rhs;
-      return equals(decorator, decoratedScope.decorator) && equals(scope, decoratedScope.scope);
+      return decorator.equals(decoratedScope.decorator) && scope.equals(decoratedScope.scope);
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return (null == decorator ? 0 : decorator.hashCode()) ^ (null == scope ? 0 : scope.hashCode());
-  }
-
-  private static boolean equals(final Object lhs, final Object rhs) {
-    return null == lhs ? null == rhs : lhs.equals(rhs);
+    return decorator.hashCode() ^ scope.hashCode();
   }
 }
