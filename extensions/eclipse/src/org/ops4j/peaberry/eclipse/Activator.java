@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 public final class Activator
     implements BundleActivator {
 
-  public void start(final BundleContext bundleContext) {}
+  public void start(final BundleContext bundleContext) {/* nothing to do */}
 
   public void stop(final BundleContext bundleContext) {
     ((EclipseRegistry) EclipseRegistry.eclipseRegistry()).cleanup();

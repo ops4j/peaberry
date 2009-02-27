@@ -58,7 +58,7 @@ final class ConcurrentServiceScope<S>
     @SuppressWarnings("unchecked")
     public void put(final T instance) {
       synchronized (ConcurrentServiceScope.this) {
-        if (trackedImport == currentImport) {
+        if (trackedImport == currentImport) { // NOPMD
           currentExport.put((S) instance);
         }
       }
@@ -66,7 +66,7 @@ final class ConcurrentServiceScope<S>
 
     public void attributes(final Map<String, ?> attributes) {
       synchronized (ConcurrentServiceScope.this) {
-        if (trackedImport == currentImport) {
+        if (trackedImport == currentImport) { // NOPMD
           currentExport.attributes(attributes);
         }
       }
@@ -74,7 +74,7 @@ final class ConcurrentServiceScope<S>
 
     public void unput() {
       synchronized (ConcurrentServiceScope.this) {
-        if (trackedImport == currentImport) {
+        if (trackedImport == currentImport) { // NOPMD
           currentExport.unput();
 
           // pass the baton onto the next "best" service
