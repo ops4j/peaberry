@@ -23,10 +23,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.fail;
 
 import java.util.Iterator;
-import java.util.Map;
 
-import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.util.AbstractScope;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -50,25 +47,7 @@ public final class ServiceInjectionTests
 
   @Override
   protected void configure() {
-    bind(Id.class).toProvider(service(Id.class).out(new AbstractScope<Id>() {
-
-      @Override
-      protected Id adding(final Import<Id> service) {
-        final Id instance = super.adding(service);
-        System.out.println("ADDING:" + instance);
-        return instance;
-      }
-
-      @Override
-      protected void modified(final Id instance, final Map<String, ?> attributes) {
-        System.out.println("MODIFIED:" + instance);
-      }
-
-      @Override
-      protected void removed(final Id instance) {
-        System.out.println("REMOVED:" + instance);
-      }
-    }).single());
+    bind(Id.class).toProvider(service(Id.class).single());
     bind(iterable(Id.class)).toProvider(service(Id.class).multiple());
   }
 
