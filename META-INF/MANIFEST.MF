@@ -3,9 +3,10 @@ Manifest-Version: 1.0
 Export-Package: org.ops4j.peaberry.builders;uses:="com.google.inject,o
  rg.ops4j.peaberry";version="1.1",org.ops4j.peaberry.util;uses:="org.o
  ps4j.peaberry,org.ops4j.peaberry.builders,javax.naming,javax.naming.l
- dap,com.google.inject.util,com.google.inject";version="1.1",org.ops4j
- .peaberry;uses:="com.google.inject,org.ops4j.peaberry.builders,org.os
- gi.framework";version="1.1"
+ dap,org.aopalliance.intercept,com.google.inject.matcher,com.google.in
+ ject.util,com.google.inject";version="1.1",org.ops4j.peaberry;uses:="
+ com.google.inject,org.ops4j.peaberry.builders,org.osgi.framework";ver
+ sion="1.1"
 Bundle-Name: peaberry
 Created-By: 1.6.0_11 (Sun Microsystems Inc.)
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
@@ -16,11 +17,12 @@ Bundle-Description: peaberry - dynamic service extension for Google-Gu
  ice
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
 Import-Package: com.google.inject;version="[1.0,2)",com.google.inject.
- binder;version="[1.0,2)",com.google.inject.name;version="[1.0,2)",com
- .google.inject.util;version="[1.0,2)",javax.naming;resolution:=option
- al,javax.naming.ldap;resolution:=optional,org.ops4j.peaberry;version=
- "[1.1,2)",org.ops4j.peaberry.builders;version="[1.1,2)",org.ops4j.pea
- berry.util;version="[1.1,2)",org.osgi.framework;version="[1.3,2)"
+ binder;version="[1.0,2)",com.google.inject.matcher;version="[1.0,2)",
+ com.google.inject.name;version="[1.0,2)",com.google.inject.util;versi
+ on="[1.0,2)",javax.naming;resolution:=optional,javax.naming.ldap;reso
+ lution:=optional,org.aopalliance.intercept,org.ops4j.peaberry;version
+ ="[1.1,2)",org.ops4j.peaberry.builders;version="[1.1,2)",org.ops4j.pe
+ aberry.util;version="[1.1,2)",org.osgi.framework;version="[1.3,2)"
 Bundle-SymbolicName: org.ops4j.peaberry
 Bundle-DocURL: http://code.google.com/p/peaberry/
 

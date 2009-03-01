@@ -16,11 +16,16 @@
 
 package org.ops4j.peaberry.util;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.util.decorators.DecoratorChain;
+import org.ops4j.peaberry.util.decorators.InterceptingDecorator;
 import org.ops4j.peaberry.util.decorators.StickyDecorator;
+
+import com.google.inject.matcher.Matcher;
 
 /**
  * Methods for creating various general purpose {@link ImportDecorator}s.
@@ -56,5 +61,17 @@ public final class Decorators {
    */
   public static <S> ImportDecorator<S> chain(final ImportDecorator<S>... decorators) {
     return new DecoratorChain<S>(decorators);
+  }
+
+  /**
+   * An {@link ImportDecorator} that supports {@link MethodInterceptor}s.
+   * 
+   * @param methodMatcher matches methods to be intercepted
+   * @param interceptors sequence of method interceptors
+   * @return decorator that intercepts imported services
+   */
+  public static <S> ImportDecorator<S> intercept(final Matcher<? super Method> methodMatcher,
+      final MethodInterceptor... interceptors) {
+    return new InterceptingDecorator<S>(methodMatcher, interceptors);
   }
 }
