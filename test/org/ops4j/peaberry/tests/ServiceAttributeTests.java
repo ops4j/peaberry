@@ -17,7 +17,9 @@
 package org.ops4j.peaberry.tests;
 
 import static org.ops4j.peaberry.util.Attributes.names;
+import static org.ops4j.peaberry.util.Attributes.objectClass;
 import static org.ops4j.peaberry.util.Attributes.properties;
+import static org.ops4j.peaberry.util.Attributes.union;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.fail;
@@ -68,5 +70,18 @@ public final class ServiceAttributeTests {
       names("cn=John Doe", "=", "dc=com");
       fail("Expected IllegalArgumentException");
     } catch (final IllegalArgumentException e) {}
+  }
+
+  interface A {}
+
+  interface B {}
+
+  @SuppressWarnings("unchecked")
+  public void testAttributeUnion() {
+    final Map<String, ?> mapA = objectClass(A.class);
+    final Map<String, ?> mapB = objectClass(B.class);
+
+    assertEquals(union(mapA, mapB), mapB);
+    assertEquals(union(mapB, mapA), mapA);
   }
 }

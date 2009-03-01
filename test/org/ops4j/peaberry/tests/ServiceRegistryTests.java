@@ -24,7 +24,6 @@ import static org.testng.Assert.fail;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.builders.ServiceBuilder;
 import org.testng.annotations.Test;
 
 import com.google.inject.AbstractModule;
@@ -43,6 +42,9 @@ import com.google.inject.name.Named;
 public final class ServiceRegistryTests {
 
   @Inject
+  Export<ClassLoader> exportedLoader;
+
+  @Inject
   @Named("service")
   ClassLoader importedLoader;
 
@@ -51,22 +53,16 @@ public final class ServiceRegistryTests {
 
       @Override
       protected void configure() {
-        final Key<? extends ServiceRegistry> registryKey = Key.get(MockServiceRegistry.class);
+        final Key<? extends ServiceRegistry> registryKey = Key.get(TrivialServiceRegistry.class);
 
-        final ServiceBuilder<ClassLoader> builder = service(ClassLoader.class).in(registryKey);
+        bind(ClassLoader.class).annotatedWith(named("service")).toProvider(
+            service(ClassLoader.class).in(registryKey).single());
 
-        bind(ClassLoader.class).annotatedWith(named("service")).toProvider(builder.single());
-
-        final Key<ClassLoader> loaderImplKey = Key.get(ClassLoader.class, named("impl"));
-
-        bind(loaderImplKey).toInstance(getClass().getClassLoader());
-
-        bind(export(ClassLoader.class)).toProvider(service(loaderImplKey).in(registryKey).export());
+        bind(export(ClassLoader.class)).toProvider(
+            service(getClass().getClassLoader()).in(registryKey).export());
       }
     });
 
-    final Export<? extends ClassLoader> exportedLoader =
-        injector.getInstance(Key.get(export(ClassLoader.class)));
 
     injector.injectMembers(this);
 

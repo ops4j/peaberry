@@ -32,34 +32,35 @@ import org.ops4j.peaberry.ServiceScope;
 import com.google.inject.Singleton;
 
 /**
- * Very simple example of a custom {@code ServiceRegistry}.
+ * Trivial example of a custom {@code ServiceRegistry}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Singleton
-@SuppressWarnings("unchecked")
-final class MockServiceRegistry
+final class TrivialServiceRegistry
     implements ServiceRegistry {
 
-  final Map<Object, Map> registry = new HashMap<Object, Map>();
+  final Map<Object, Map<String, ?>> registry = new HashMap<Object, Map<String, ?>>();
 
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
-    return new Iterable() {
-      public Iterator iterator() {
+    return new Iterable<Import<T>>() {
+      public Iterator<Import<T>> iterator() {
 
         final List<Import<T>> imports = new ArrayList<Import<T>>();
 
-        for (final Entry<Object, Map> e : registry.entrySet()) {
-          final Object service = e.getKey();
+        for (final Entry<Object, Map<String, ?>> e : registry.entrySet()) {
+
+          @SuppressWarnings("unchecked")
+          final T service = (T) e.getKey();
 
           if (clazz.isInstance(service) && (null == filter || filter.matches(e.getValue()))) {
             imports.add(new Import<T>() {
 
               public T get() {
-                return (T) service;
+                return service;
               }
 
-              public Map attributes() {
+              public Map<String, ?> attributes() {
                 return e.getValue();
               }
 
@@ -75,19 +76,19 @@ final class MockServiceRegistry
 
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceScope<? super T> scope) {
-  // TODO Auto-generated method stub
+    throw new UnsupportedOperationException();
   }
 
   public <T> Export<T> add(final Import<T> service) {
     registry.put(service.get(), service.attributes());
 
-    return new Export() {
+    return new Export<T>() {
 
-      public Object get() {
+      public T get() {
         return service.get();
       }
 
-      public Map attributes() {
+      public Map<String, ?> attributes() {
         return service.attributes();
       }
 
@@ -95,7 +96,7 @@ final class MockServiceRegistry
 
       public void put(final Object newService) {}
 
-      public void attributes(final Map newAttributes) {
+      public void attributes(final Map<String, ?> newAttributes) {
         registry.put(service.get(), newAttributes);
       }
 
