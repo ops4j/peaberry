@@ -63,7 +63,6 @@ public final class ServiceRegistryTests {
       }
     });
 
-
     injector.injectMembers(this);
 
     try {

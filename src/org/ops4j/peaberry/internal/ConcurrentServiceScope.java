@@ -58,7 +58,7 @@ final class ConcurrentServiceScope<S>
     @SuppressWarnings("unchecked")
     public void put(final T instance) {
       synchronized (ConcurrentServiceScope.this) {
-        if (trackedImport == currentImport) { // NOPMD
+        if (trackedImport.equals(currentImport)) {
           currentExport.put((S) instance);
         }
       }
@@ -66,26 +66,25 @@ final class ConcurrentServiceScope<S>
 
     public void attributes(final Map<String, ?> attributes) {
       synchronized (ConcurrentServiceScope.this) {
-        if (trackedImport == currentImport) { // NOPMD
+        if (trackedImport.equals(currentImport)) {
           currentExport.attributes(attributes);
+        }
+
+        // this update might change the ranking of services
+        final Import<S> bestImport = handles.iterator().next();
+        if (!bestImport.equals(currentImport)) {
+          activateService(bestImport);
         }
       }
     }
 
     public void unput() {
       synchronized (ConcurrentServiceScope.this) {
-        if (trackedImport == currentImport) { // NOPMD
-          currentExport.unput();
+        if (trackedImport.equals(currentImport)) {
 
           // pass the baton onto the next "best" service
           final Iterator<Import<S>> i = handles.iterator();
-          if (i.hasNext()) {
-            currentImport = i.next();
-            currentExport = scope.add(currentImport);
-          } else {
-            currentImport = null;
-            currentExport = null;
-          }
+          activateService(i.hasNext() ? i.next() : null);
         }
       }
     }
@@ -110,17 +109,21 @@ final class ConcurrentServiceScope<S>
     final Iterator<Import<S>> i = handles.iterator();
 
     // will this new service become the "best"
-    if (i.hasNext() && i.next().equals(service)) {
-      if (currentExport != null) {
-        currentExport.unput();
-      }
-
-      currentImport = (Import<S>) service;
-      currentExport = scope.add(currentImport);
+    if (i.hasNext() && service.equals(i.next())) {
+      activateService((Import<S>) service);
     }
 
     // every new service has a tracker
     return new TrackingExport<T>(service);
+  }
+
+  void activateService(final Import<S> service) {
+    if (currentExport != null) {
+      currentExport.unput();
+    }
+
+    currentImport = service;
+    currentExport = null == service ? null : scope.add(service);
   }
 
   @Override

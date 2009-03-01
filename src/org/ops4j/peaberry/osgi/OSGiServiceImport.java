@@ -88,8 +88,6 @@ final class OSGiServiceImport
    * Protected from concurrent access by {@link OSGiServiceListener}.
    */
   boolean updateRanking() {
-    notifyWatchers(MODIFIED);
-
     // ranking is mutable...
     final int oldRank = rank;
     rank = getNumberProperty(SERVICE_RANKING).intValue();
@@ -214,7 +212,7 @@ final class OSGiServiceImport
     return num instanceof Number ? (Number) num : 0;
   }
 
-  private void notifyWatchers(final int eventType) {
+  void notifyWatchers(final int eventType) {
     for (final Export<?> export : watchers) {
       try {
         switch (eventType) {

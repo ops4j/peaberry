@@ -165,6 +165,9 @@ final class OSGiServiceListener
         imports.remove(index);
         imports.add(~binarySearch(imports, orig), orig);
       }
+
+      // finally update any watchers
+      orig.notifyWatchers(MODIFIED);
     } else {
       // not seen before
       insertService(i);

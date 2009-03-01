@@ -62,9 +62,7 @@ final class ServiceProxyFactory {
             if (null == proxy) {
               final T newProxy = buildProxy(ctor, decorator, handle);
               proxy = PROXY_CACHE.putIfAbsent(handle, newProxy);
-              // /CLOVER:OFF - rare event
               if (null == proxy) {
-                // /CLOVER:ON
                 return newProxy;
               }
             }
@@ -107,13 +105,11 @@ final class ServiceProxyFactory {
       // minimize wrapping of exceptions to help with problem determination
       return constructor.newInstance(null == decorator ? handle : decorator.decorate(handle));
     } catch (final InstantiationException e) {
-      // /CLOVER:OFF - checked => runtime exceptions
       throw new ServiceException(e);
     } catch (final IllegalAccessException e) {
       throw new ServiceException(e);
     } catch (final InvocationTargetException e) {
       throw new ServiceException(e);
-      // /CLOVER:ON
     }
   }
 }

@@ -96,9 +96,7 @@ public class OSGiServiceRegistry
     if (null == listener) {
       final OSGiServiceListener newListener = new OSGiServiceListener(bundleContext, clazzName);
       listener = listenerMap.putIfAbsent(clazzName, newListener);
-      // /CLOVER:OFF - rare event
       if (null == listener) {
-        // /CLOVER:ON
         newListener.start();
         return newListener;
       }

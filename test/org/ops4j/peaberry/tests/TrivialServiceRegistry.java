@@ -32,7 +32,7 @@ import org.ops4j.peaberry.ServiceScope;
 import com.google.inject.Singleton;
 
 /**
- * Trivial example of a custom {@code ServiceRegistry}.
+ * Trivial (not fully implemented) example of a custom {@code ServiceRegistry}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -80,12 +80,14 @@ final class TrivialServiceRegistry
   }
 
   public <T> Export<T> add(final Import<T> service) {
-    registry.put(service.get(), service.attributes());
+    final T instance = service.get();
+
+    registry.put(instance, service.attributes());
 
     return new Export<T>() {
 
       public T get() {
-        return service.get();
+        return instance;
       }
 
       public Map<String, ?> attributes() {
@@ -94,14 +96,16 @@ final class TrivialServiceRegistry
 
       public void unget() {}
 
-      public void put(final Object newService) {}
+      public void put(final Object newService) {
+        throw new UnsupportedOperationException();
+      }
 
       public void attributes(final Map<String, ?> newAttributes) {
-        registry.put(service.get(), newAttributes);
+        registry.put(instance, newAttributes);
       }
 
       public void unput() {
-        registry.remove(service.get());
+        registry.remove(instance);
       }
     };
   }

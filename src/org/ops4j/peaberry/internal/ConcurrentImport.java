@@ -67,9 +67,10 @@ final class ConcurrentImport<T>
   public synchronized void unget() {
     // last thread to exit does the unget...
     if (0 == --count && null != handle) {
+      final Import<T> temp = handle;
       instance = null;
-      handle.unget();
       handle = null;
+      temp.unget();
     }
   }
 }
