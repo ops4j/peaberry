@@ -18,8 +18,9 @@ package org.ops4j.peaberry.osgi;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Callable;
 
-import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceException;
 
 /**
  * An {@link Iterator} that iterates over a series of iterators in turn.
@@ -27,42 +28,53 @@ import org.ops4j.peaberry.Import;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class IteratorChain<T>
-    implements Iterator<Import<T>> {
+    implements Iterator<T> {
 
-  private final Iterable<Import<T>>[] iterables;
+  private final Callable<Iterator<T>>[] lazyIterators;
+  private final Iterator<T>[] iterators;
 
-  IteratorChain(final Iterable<Import<T>>[] iterables) {
-    this.iterables = iterables.clone();
+  @SuppressWarnings("unchecked")
+  IteratorChain(final Callable<Iterator<T>>[] lazyIterators) {
+    this.lazyIterators = lazyIterators.clone();
+    iterators = new Iterator[lazyIterators.length];
   }
 
-  // keep track which iterator is next
-  private int nextIterableIndex = 0;
-  private Iterator<Import<T>> i;
+  private int index;
 
   public boolean hasNext() {
-    do {
-      if (nextIterableIndex > 0 && i.hasNext()) {
-        return true;
-      } else if (nextIterableIndex < iterables.length) {
-        // move onto next iterator and test again...
-        i = iterables[nextIterableIndex++].iterator();
-      } else {
-        return false;
+    // peek ahead, but don't disturb current position
+    for (int i = index; i < iterators.length; i++) {
+      if (null == iterators[i]) {
+        activateIterator(i);
       }
-    } while (true);
+      if (iterators[i].hasNext()) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  public Import<T> next() {
-    do {
-      if (nextIterableIndex > 0 && i.hasNext()) {
-        return i.next();
-      } else if (nextIterableIndex < iterables.length) {
-        // move onto next iterator and ask again...
-        i = iterables[nextIterableIndex++].iterator();
-      } else {
-        throw new NoSuchElementException();
+  public T next() {
+    // move forwards along the chain
+    while (index < iterators.length) {
+      if (null == iterators[index]) {
+        activateIterator(index);
       }
-    } while (true);
+      try {
+        return iterators[index].next();
+      } catch (NoSuchElementException e) {
+        index++;
+      }
+    }
+    throw new NoSuchElementException();
+  }
+
+  private void activateIterator(final int i) {
+    try {
+      iterators[i] = lazyIterators[i].call();
+    } catch (final Exception e) {
+      throw new ServiceException(e);
+    }
   }
 
   public void remove() {

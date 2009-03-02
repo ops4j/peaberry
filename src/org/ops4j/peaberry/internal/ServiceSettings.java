@@ -120,7 +120,7 @@ final class ServiceSettings<T>
   }
 
   // simple filter based on sample attributes
-  private static class SampleAttributeFilter
+  private static final class SampleAttributeFilter
       implements AttributeFilter {
 
     private final Map<String, ?> attributes;

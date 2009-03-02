@@ -51,7 +51,7 @@ public final class InterceptingDecorator<S>
   }
 
   // use JDK proxy for simplicity
-  private class ProxyImport<T>
+  private final class ProxyImport<T>
       implements Import<T>, InvocationHandler {
 
     private final Import<T> handle;

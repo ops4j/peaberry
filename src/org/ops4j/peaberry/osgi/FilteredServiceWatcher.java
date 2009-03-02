@@ -44,7 +44,7 @@ final class FilteredServiceWatcher<S>
     return new FilteredExport<T>(service);
   }
 
-  private class FilteredExport<T extends S>
+  private final class FilteredExport<T extends S>
       implements Export<T> {
 
     private final Import<T> service;
@@ -57,8 +57,8 @@ final class FilteredServiceWatcher<S>
 
     private synchronized void checkMatchingService() {
       if (((OSGiServiceImport) (Import<?>) service).matches(filter)) {
-        // service metadata now matches
         if (null == realExport) {
+          // service metadata now matches
           realExport = watcher.add(service);
         }
       } else if (null != realExport) {

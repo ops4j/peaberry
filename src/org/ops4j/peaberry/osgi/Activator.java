@@ -60,7 +60,7 @@ public final class Activator
   /**
    * Cleans up registered {@link CachingServiceRegistry}s at a fixed interval.
    */
-  public static class ImportManager
+  public static final class ImportManager
       implements Runnable {
 
     private final Bundle bundle;

@@ -45,7 +45,7 @@ final class ConcurrentServiceWatcher<S>
   }
 
   // every candidate has a tracker
-  private class TrackingExport<T>
+  private final class TrackingExport<T>
       implements Export<T> {
 
     private final Import<T> trackedImport;

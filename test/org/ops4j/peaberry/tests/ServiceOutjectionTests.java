@@ -67,7 +67,7 @@ public final class ServiceOutjectionTests
   @Named("multiple")
   Watcher multipleWatcher;
 
-  static class Watcher
+  protected static class Watcher
       extends AbstractWatcher<Id> {
 
     final Set<Id> watchedIds = new LinkedHashSet<Id>();

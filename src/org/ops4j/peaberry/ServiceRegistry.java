@@ -17,8 +17,7 @@
 package org.ops4j.peaberry;
 
 /**
- * A service registry is a {@link ServiceWatcher} that allows lookup of
- * services.
+ * A registry is a {@link ServiceWatcher} that allows lookup of services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
@@ -40,6 +39,8 @@ public interface ServiceRegistry
    * @param clazz expected service interface
    * @param filter service attribute filter
    * @param watcher the watcher that should receive any matching services
+   * 
+   * @throws UnsupportedOperationException if watching is not supported
    */
   <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceWatcher<? super T> watcher);
 }

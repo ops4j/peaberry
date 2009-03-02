@@ -17,6 +17,7 @@
 package org.ops4j.peaberry.osgi;
 
 import java.util.Iterator;
+import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
@@ -49,15 +50,27 @@ public class RegistryChain
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
 
     @SuppressWarnings("unchecked")
-    final Iterable<Import<T>>[] iterables = new Iterable[registries.length];
-    for (int i = 0; i < iterables.length; i++) {
-      iterables[i] = registries[i].lookup(clazz, filter);
+    final Callable<Iterator<Import<T>>>[] lazyIterators = new Callable[registries.length];
+
+    // support lazy lookup from multiple registries
+    for (int i = 0; i < lazyIterators.length; i++) {
+      final ServiceRegistry reg = registries[i];
+      lazyIterators[i] = new Callable<Iterator<Import<T>>>() {
+        private Iterable<Import<T>> iterable;
+
+        public synchronized Iterator<Import<T>> call() {
+          if (null == iterable) {
+            iterable = reg.lookup(clazz, filter);
+          }
+          return iterable.iterator();
+        }
+      };
     }
 
     // chain the iterators together
     return new Iterable<Import<T>>() {
       public Iterator<Import<T>> iterator() {
-        return new IteratorChain<T>(iterables);
+        return new IteratorChain<Import<T>>(lazyIterators);
       }
     };
   }
@@ -66,7 +79,9 @@ public class RegistryChain
       final ServiceWatcher<? super T> watcher) {
 
     for (final ServiceRegistry r : registries) {
-      r.watch(clazz, filter, watcher); // need to watch all of them
+      try {
+        r.watch(clazz, filter, watcher); // attempt to watch all of them
+      } catch (final UnsupportedOperationException e) {/* unable to watch */}
     }
   }
 
