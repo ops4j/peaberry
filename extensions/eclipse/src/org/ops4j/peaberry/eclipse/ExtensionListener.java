@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IRegistryEventListener;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 /**
  * Keep track of imported Eclipse Extensions that provide a specific interface.
@@ -54,7 +54,7 @@ final class ExtensionListener
   private long idCounter;
 
   private final List<ExtensionImport> imports;
-  private final List<ServiceScope<Object>> watchers;
+  private final List<ServiceWatcher<Object>> watchers;
   private final Set<String> activeExtensions;
 
   ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
@@ -74,7 +74,7 @@ final class ExtensionListener
     aggregate = metadata != null && metadata.aggregate();
 
     imports = new ArrayList<ExtensionImport>(4);
-    watchers = new ArrayList<ServiceScope<Object>>(2);
+    watchers = new ArrayList<ServiceWatcher<Object>>(2);
     activeExtensions = new HashSet<String>(4);
   }
 
@@ -137,12 +137,12 @@ final class ExtensionListener
   public void removed(final IExtensionPoint[] points) {/* do nothing */}
 
   @SuppressWarnings("unchecked")
-  synchronized void addWatcher(final ServiceScope scope) {
-    if (!watchers.contains(scope) && watchers.add(scope)) {
+  synchronized void addWatcher(final ServiceWatcher watcher) {
+    if (!watchers.contains(watcher) && watchers.add(watcher)) {
 
-      // report existing imports to the new scope
+      // report existing imports to the new watcher
       for (final ExtensionImport i : imports) {
-        notifyWatcher(scope, i);
+        notifyWatcher(watcher, i);
       }
     }
   }
@@ -164,17 +164,17 @@ final class ExtensionListener
       final ExtensionImport i = new ExtensionImport(++idCounter, config, clazz); // NOPMD
       imports.add(i);
 
-      // report the new import to any watching scopes
-      for (final ServiceScope<Object> scope : watchers) {
-        notifyWatcher(scope, i);
+      // report the new import to any watching watchers
+      for (final ServiceWatcher<Object> w : watchers) {
+        notifyWatcher(w, i);
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-  private static void notifyWatcher(final ServiceScope scope, final ExtensionImport i) {
+  private static void notifyWatcher(final ServiceWatcher watcher, final ExtensionImport i) {
     try {
-      final Export export = scope.add(i);
+      final Export export = watcher.add(i);
       if (null != export) {
         i.addWatcher(export);
       }

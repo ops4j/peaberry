@@ -28,7 +28,7 @@ import java.util.Set;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.util.AbstractScope;
+import org.ops4j.peaberry.util.AbstractWatcher;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -68,7 +68,7 @@ public final class ServiceOutjectionTests
   Watcher multipleWatcher;
 
   static class Watcher
-      extends AbstractScope<Id> {
+      extends AbstractWatcher<Id> {
 
     final Set<Id> watchedIds = new LinkedHashSet<Id>();
 

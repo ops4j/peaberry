@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 import org.ops4j.peaberry.builders.ExportProvider;
 import org.ops4j.peaberry.builders.ImportDecorator;
@@ -88,13 +88,13 @@ public final class ServiceBuilderImpl<T>
     return this;
   }
 
-  public ServiceBuilderImpl<T> out(final Key<? extends ServiceScope<? super T>> key) {
+  public ServiceBuilderImpl<T> out(final Key<? extends ServiceWatcher<? super T>> key) {
     settings.setWatcher(Setting.newSetting(key));
     return this;
   }
 
-  public ServiceBuilderImpl<T> out(final ServiceScope<? super T> instance) {
-    settings.setWatcher(Setting.<ServiceScope<? super T>> newSetting(instance));
+  public ServiceBuilderImpl<T> out(final ServiceWatcher<? super T> instance) {
+    settings.setWatcher(Setting.<ServiceWatcher<? super T>> newSetting(instance));
     return this;
   }
 

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceException;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -53,7 +53,7 @@ final class OSGiServiceListener
   private final String clazzFilter;
 
   private final List<OSGiServiceImport> imports;
-  private final List<ServiceScope<Object>> watchers;
+  private final List<ServiceWatcher<Object>> watchers;
 
   OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
     this.bundleContext = bundleContext;
@@ -65,7 +65,7 @@ final class OSGiServiceListener
     }
 
     imports = new ArrayList<OSGiServiceImport>(4);
-    watchers = new ArrayList<ServiceScope<Object>>(2);
+    watchers = new ArrayList<ServiceWatcher<Object>>(2);
   }
 
   synchronized void start() {
@@ -108,12 +108,12 @@ final class OSGiServiceListener
   }
 
   @SuppressWarnings("unchecked")
-  synchronized void addWatcher(final ServiceScope scope) {
-    if (!watchers.contains(scope) && watchers.add(scope)) {
+  synchronized void addWatcher(final ServiceWatcher watcher) {
+    if (!watchers.contains(watcher) && watchers.add(watcher)) {
 
-      // report existing imports to the new scope
+      // report existing imports to the new watcher
       for (final OSGiServiceImport i : imports) {
-        notifyWatcher(scope, i);
+        notifyWatcher(watcher, i);
       }
     }
   }
@@ -133,17 +133,17 @@ final class OSGiServiceListener
       // new object, must flip index
       imports.add(~insertIndex, i);
 
-      // report new import to any watching scopes
-      for (final ServiceScope<Object> scope : watchers) {
-        notifyWatcher(scope, i);
+      // report new import to any watching watchers
+      for (final ServiceWatcher<Object> w : watchers) {
+        notifyWatcher(w, i);
       }
     }
   }
 
   @SuppressWarnings("unchecked")
-  private static void notifyWatcher(final ServiceScope scope, final OSGiServiceImport i) {
+  private static void notifyWatcher(final ServiceWatcher watcher, final OSGiServiceImport i) {
     try {
-      final Export export = scope.add(i);
+      final Export export = watcher.add(i);
       if (null != export) {
         i.addWatcher(export);
       }

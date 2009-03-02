@@ -17,12 +17,13 @@
 package org.ops4j.peaberry;
 
 /**
- * A service registry is a {@link ServiceScope} that allows lookup of services.
+ * A service registry is a {@link ServiceWatcher} that allows lookup of
+ * services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public interface ServiceRegistry
-    extends ServiceScope<Object> {
+    extends ServiceWatcher<Object> {
 
   /**
    * Lookup services from the registry, constrained by the given filter.
@@ -38,7 +39,7 @@ public interface ServiceRegistry
    * 
    * @param clazz expected service interface
    * @param filter service attribute filter
-   * @param scope the watching scope which receives any matching services
+   * @param watcher the watcher that should receive any matching services
    */
-  <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceScope<? super T> scope);
+  <T> void watch(Class<T> clazz, AttributeFilter filter, ServiceWatcher<? super T> watcher);
 }

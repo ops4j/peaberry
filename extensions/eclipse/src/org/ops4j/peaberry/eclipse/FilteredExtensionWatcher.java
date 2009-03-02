@@ -19,42 +19,42 @@ package org.ops4j.peaberry.eclipse;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 /**
- * Pre-filtered {@link ServiceScope}.
+ * Pre-filtered {@link ServiceWatcher}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class FilteredExtensionScope<S>
-    implements ServiceScope<S> {
+final class FilteredExtensionWatcher<S>
+    implements ServiceWatcher<S> {
 
   private final AttributeFilter filter;
-  private final ServiceScope<S> scope;
+  private final ServiceWatcher<S> watcher;
 
-  FilteredExtensionScope(final AttributeFilter filter, final ServiceScope<S> scope) {
+  FilteredExtensionWatcher(final AttributeFilter filter, final ServiceWatcher<S> watcher) {
     this.filter = filter;
-    this.scope = scope;
+    this.watcher = watcher;
   }
 
   public <T extends S> Export<T> add(final Import<T> service) {
     if (((ExtensionImport) (Import<?>) service).matches(filter)) {
-      return scope.add(service);
+      return watcher.add(service);
     }
     return null;
   }
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof FilteredExtensionScope) {
-      final FilteredExtensionScope<?> filteredScope = (FilteredExtensionScope<?>) rhs;
-      return filter.equals(filteredScope.filter) && scope.equals(filteredScope.scope);
+    if (rhs instanceof FilteredExtensionWatcher) {
+      final FilteredExtensionWatcher<?> filteredWatcher = (FilteredExtensionWatcher<?>) rhs;
+      return filter.equals(filteredWatcher.filter) && watcher.equals(filteredWatcher.watcher);
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return filter.hashCode() ^ scope.hashCode();
+    return filter.hashCode() ^ watcher.hashCode();
   }
 }

@@ -21,22 +21,22 @@ import java.util.Map;
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 /**
- * Pre-filtered {@link ServiceScope} that handles mutable services.
+ * Pre-filtered {@link ServiceWatcher} that handles mutable services.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class FilteredServiceScope<S>
-    implements ServiceScope<S> {
+final class FilteredServiceWatcher<S>
+    implements ServiceWatcher<S> {
 
   final AttributeFilter filter;
-  final ServiceScope<S> scope;
+  final ServiceWatcher<S> watcher;
 
-  FilteredServiceScope(final AttributeFilter filter, final ServiceScope<S> scope) {
+  FilteredServiceWatcher(final AttributeFilter filter, final ServiceWatcher<S> watcher) {
     this.filter = filter;
-    this.scope = scope;
+    this.watcher = watcher;
   }
 
   public <T extends S> Export<T> add(final Import<T> service) {
@@ -59,7 +59,7 @@ final class FilteredServiceScope<S>
       if (((OSGiServiceImport) (Import<?>) service).matches(filter)) {
         // service metadata now matches
         if (null == realExport) {
-          realExport = scope.add(service);
+          realExport = watcher.add(service);
         }
       } else if (null != realExport) {
         // metadata doesn't match anymore
@@ -105,15 +105,15 @@ final class FilteredServiceScope<S>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof FilteredServiceScope) {
-      final FilteredServiceScope<?> filteredScope = (FilteredServiceScope<?>) rhs;
-      return filter.equals(filteredScope.filter) && scope.equals(filteredScope.scope);
+    if (rhs instanceof FilteredServiceWatcher) {
+      final FilteredServiceWatcher<?> filteredWatcher = (FilteredServiceWatcher<?>) rhs;
+      return filter.equals(filteredWatcher.filter) && watcher.equals(filteredWatcher.watcher);
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return filter.hashCode() ^ scope.hashCode();
+    return filter.hashCode() ^ watcher.hashCode();
   }
 }

@@ -25,7 +25,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 import com.google.inject.Injector;
@@ -47,7 +47,7 @@ final class ServiceSettings<T>
   // current builder state...
   private Setting<ServiceRegistry> registry = newSetting(Key.get(ServiceRegistry.class));
   private Setting<ImportDecorator<? super T>> decorator = nullSetting();
-  private Setting<ServiceScope<? super T>> watcher = nullSetting();
+  private Setting<ServiceWatcher<? super T>> watcher = nullSetting();
   private Setting<Map<String, ?>> attributes = nullSetting();
   private Setting<AttributeFilter> filter = nullSetting();
 
@@ -88,7 +88,7 @@ final class ServiceSettings<T>
     this.filter = filter;
   }
 
-  void setWatcher(final Setting<ServiceScope<? super T>> watcher) {
+  void setWatcher(final Setting<ServiceWatcher<? super T>> watcher) {
     this.watcher = watcher;
   }
 
@@ -164,22 +164,22 @@ final class ServiceSettings<T>
 
     final Iterable<Import<T>> imports = serviceRegistry.lookup(clazz, attributeFilter);
 
-    // enable outjection, but only if it's going to a different scope
-    ServiceScope<? super T> serviceScope = watcher.get(injector);
-    if (null != serviceScope && serviceScope != serviceRegistry) { // NOPMD
+    // enable outjection, but only if it's going to a different watcher
+    ServiceWatcher<? super T> serviceWatcher = watcher.get(injector);
+    if (null != serviceWatcher && serviceWatcher != serviceRegistry) { // NOPMD
 
-      final ImportDecorator<? super T> scopeDecorator = decorator.get(injector);
-      if (null != scopeDecorator) {
-        // decorate the scope if necessary, to support decorated watching
-        serviceScope = new DecoratedServiceScope<T>(scopeDecorator, serviceScope);
+      final ImportDecorator<? super T> watcherDecorator = decorator.get(injector);
+      if (null != watcherDecorator) {
+        // decorate the watcher if necessary, to support decorated watching
+        serviceWatcher = new DecoratedServiceWatcher<T>(watcherDecorator, serviceWatcher);
       }
 
       if (isConcurrent) {
-        // apply concurrent behaviour to scope when watching single services
-        serviceScope = new ConcurrentServiceScope<T>(imports, serviceScope);
+        // apply concurrent behaviour when watching single services
+        serviceWatcher = new ConcurrentServiceWatcher<T>(imports, serviceWatcher);
       }
 
-      serviceRegistry.watch(clazz, attributeFilter, serviceScope);
+      serviceRegistry.watch(clazz, attributeFilter, serviceWatcher);
     }
 
     return imports;
@@ -188,17 +188,17 @@ final class ServiceSettings<T>
   Export<T> getExport(final Injector injector) {
 
     // watcher can be null, but registry setting will be non-null
-    ServiceScope<? super T> serviceScope = watcher.get(injector);
-    if (null == serviceScope) {
-      serviceScope = registry.get(injector);
+    ServiceWatcher<? super T> serviceWatcher = watcher.get(injector);
+    if (null == serviceWatcher) {
+      serviceWatcher = registry.get(injector);
     }
 
-    // decorate the scope if necessary, to support decorated exports
-    final ImportDecorator<? super T> scopeDecorator = decorator.get(injector);
-    if (null != scopeDecorator) {
-      serviceScope = new DecoratedServiceScope<T>(scopeDecorator, serviceScope);
+    // decorate the watcher if necessary, to support decorated exports
+    final ImportDecorator<? super T> watcherDecorator = decorator.get(injector);
+    if (null != watcherDecorator) {
+      serviceWatcher = new DecoratedServiceWatcher<T>(watcherDecorator, serviceWatcher);
     }
 
-    return serviceScope.add(new StaticImport<T>(service.get(injector), attributes.get(injector)));
+    return serviceWatcher.add(new StaticImport<T>(service.get(injector), attributes.get(injector)));
   }
 }

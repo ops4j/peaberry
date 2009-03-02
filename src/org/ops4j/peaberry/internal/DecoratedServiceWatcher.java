@@ -20,24 +20,24 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.builders.ImportDecorator;
 
 /**
- * A {@link ServiceScope} decorated by the given {@link ImportDecorator}.
+ * A {@link ServiceWatcher} decorated by the given {@link ImportDecorator}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class DecoratedServiceScope<S>
-    implements ServiceScope<S> {
+final class DecoratedServiceWatcher<S>
+    implements ServiceWatcher<S> {
 
   private final ImportDecorator<? super S> decorator;
-  private final ServiceScope<? super S> scope;
+  private final ServiceWatcher<? super S> watcher;
 
-  DecoratedServiceScope(final ImportDecorator<? super S> decorator,
-      final ServiceScope<? super S> scope) {
+  DecoratedServiceWatcher(final ImportDecorator<? super S> decorator,
+      final ServiceWatcher<? super S> watcher) {
     this.decorator = decorator;
-    this.scope = scope;
+    this.watcher = watcher;
   }
 
   public <T extends S> Export<T> add(final Import<T> service) {
@@ -45,7 +45,7 @@ final class DecoratedServiceScope<S>
     // wrap service to allow updates, decorate the wrapper, then publish
     final Export<T> backingService = new SimpleExport<T>(service);
     final Import<T> decoratedService = decorator.decorate(backingService);
-    final Export<T> publishedService = scope.add(decoratedService);
+    final Export<T> publishedService = watcher.add(decoratedService);
 
     return new Export<T>() {
 
@@ -90,15 +90,16 @@ final class DecoratedServiceScope<S>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof DecoratedServiceScope) {
-      final DecoratedServiceScope<?> decoratedScope = (DecoratedServiceScope<?>) rhs;
-      return decorator.equals(decoratedScope.decorator) && scope.equals(decoratedScope.scope);
+    if (rhs instanceof DecoratedServiceWatcher) {
+      final DecoratedServiceWatcher<?> decoratedWatcher = (DecoratedServiceWatcher<?>) rhs;
+      return decorator.equals(decoratedWatcher.decorator)
+          && watcher.equals(decoratedWatcher.watcher);
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return decorator.hashCode() ^ scope.hashCode();
+    return decorator.hashCode() ^ watcher.hashCode();
   }
 }

@@ -20,7 +20,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 /**
  * Configuration {@link ServiceRegistry} implementation.
@@ -39,7 +39,7 @@ public final class ConfigRegistry
   }
 
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
-      final ServiceScope<? super T> scope) {
+      final ServiceWatcher<? super T> watcher) {
     throw new UnsupportedOperationException();
   }
 }

@@ -17,7 +17,7 @@
 package org.ops4j.peaberry.builders;
 
 import org.ops4j.peaberry.Peaberry;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 import com.google.inject.Key;
 
@@ -30,18 +30,18 @@ public interface OutjectedServiceBuilder<T>
     extends ServiceBuilder<T> {
 
   /**
-   * Outject the dynamic service to the given scope.
+   * Outject the dynamic service to the given watcher.
    * 
-   * @param key service scope key
+   * @param key service watcher key
    * @return dynamic service builder
    */
-  ServiceBuilder<T> out(Key<? extends ServiceScope<? super T>> key);
+  ServiceBuilder<T> out(Key<? extends ServiceWatcher<? super T>> key);
 
   /**
-   * Outject the dynamic service to the given scope.
+   * Outject the dynamic service to the given watcher.
    * 
-   * @param instance service scope
+   * @param instance service watcher
    * @return dynamic service builder
    */
-  ServiceBuilder<T> out(ServiceScope<? super T> instance);
+  ServiceBuilder<T> out(ServiceWatcher<? super T> instance);
 }

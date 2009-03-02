@@ -75,11 +75,10 @@ import com.google.inject.TypeLiteral;
  * 
  * Outjection is a way of actively monitoring for services instead of polling:
  * 
- * <pre> service(StockQuote.class).out(myScopeImpl).multiple()</pre>
+ * <pre> service(StockQuote.class).out(myWatcherImpl).multiple()</pre>
  * 
- * the given scope will be notified when matching services appear and disappear.
- * <br>
- * ({@link org.ops4j.peaberry.util} offers abstract scope and decorator classes)
+ * the given watcher is notified when matching services appear and disappear. <br>
+ * ({@link org.ops4j.peaberry.util} has abstract watcher and decorator classes)
  * <p>
  * See the online <a href="http://code.google.com/p/peaberry/wiki/UserGuide"
  * target="_blank">User Guide</a> for the latest examples and suggested best

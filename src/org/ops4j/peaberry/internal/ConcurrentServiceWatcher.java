@@ -21,26 +21,27 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 /**
- * A {@link ServiceScope} with similar behaviour to {@link ConcurrentImport}.
+ * A {@link ServiceWatcher} with similar behaviour to {@link ConcurrentImport}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class ConcurrentServiceScope<S>
-    implements ServiceScope<S> {
+final class ConcurrentServiceWatcher<S>
+    implements ServiceWatcher<S> {
 
   final Iterable<Import<S>> handles;
-  final ServiceScope<? super S> scope;
+  final ServiceWatcher<? super S> watcher;
 
   // the "best" service
   Import<S> currentImport;
   Export<S> currentExport;
 
-  ConcurrentServiceScope(final Iterable<Import<S>> handles, final ServiceScope<? super S> scope) {
+  ConcurrentServiceWatcher(final Iterable<Import<S>> handles,
+      final ServiceWatcher<? super S> watcher) {
     this.handles = handles;
-    this.scope = scope;
+    this.watcher = watcher;
   }
 
   // every candidate has a tracker
@@ -57,7 +58,7 @@ final class ConcurrentServiceScope<S>
 
     @SuppressWarnings("unchecked")
     public void put(final T instance) {
-      synchronized (ConcurrentServiceScope.this) {
+      synchronized (ConcurrentServiceWatcher.this) {
         if (trackedImport.equals(currentImport)) {
           currentExport.put((S) instance);
         }
@@ -65,7 +66,7 @@ final class ConcurrentServiceScope<S>
     }
 
     public void attributes(final Map<String, ?> attributes) {
-      synchronized (ConcurrentServiceScope.this) {
+      synchronized (ConcurrentServiceWatcher.this) {
         if (trackedImport.equals(currentImport)) {
           currentExport.attributes(attributes);
         }
@@ -79,7 +80,7 @@ final class ConcurrentServiceScope<S>
     }
 
     public void unput() {
-      synchronized (ConcurrentServiceScope.this) {
+      synchronized (ConcurrentServiceWatcher.this) {
         if (trackedImport.equals(currentImport)) {
 
           // pass the baton onto the next "best" service
@@ -123,20 +124,20 @@ final class ConcurrentServiceScope<S>
     }
 
     currentImport = service;
-    currentExport = null == service ? null : scope.add(service);
+    currentExport = null == service ? null : watcher.add(service);
   }
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof ConcurrentServiceScope) {
-      final ConcurrentServiceScope<?> concurrentScope = (ConcurrentServiceScope<?>) rhs;
-      return handles.equals(concurrentScope.handles) && scope.equals(concurrentScope.scope);
+    if (rhs instanceof ConcurrentServiceWatcher) {
+      final ConcurrentServiceWatcher<?> concurrentWatcher = (ConcurrentServiceWatcher<?>) rhs;
+      return handles.equals(concurrentWatcher.handles) && watcher.equals(concurrentWatcher.watcher);
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return handles.hashCode() ^ scope.hashCode();
+    return handles.hashCode() ^ watcher.hashCode();
   }
 }

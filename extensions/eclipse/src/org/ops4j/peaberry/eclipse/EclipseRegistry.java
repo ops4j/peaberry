@@ -25,7 +25,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 /**
  * Eclipse Extension {@link ServiceRegistry} implementation.
@@ -70,10 +70,10 @@ public final class EclipseRegistry
 
   @SuppressWarnings("unchecked")
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
-      final ServiceScope<? super T> scope) {
+      final ServiceWatcher<? super T> watcher) {
 
     registerListener(clazz).addWatcher(
-        null == filter ? scope : new FilteredExtensionScope(filter, scope));
+        null == filter ? watcher : new FilteredExtensionWatcher(filter, watcher));
   }
 
   public void cleanup() {

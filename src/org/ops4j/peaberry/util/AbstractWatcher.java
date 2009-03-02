@@ -20,11 +20,11 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
- * Skeletal implementation to simplify development of {@link ServiceScope}s.
+ * Skeletal implementation to simplify development of {@link ServiceWatcher}s.
  * <p>
  * Developers only have to extend this class and provide implementations of the
  * {@link #adding(Import)}, {@link #modified(Object, Map)}, and {@link #removed}
@@ -33,8 +33,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public abstract class AbstractScope<S>
-    implements ServiceScope<S> {
+public abstract class AbstractWatcher<S>
+    implements ServiceWatcher<S> {
 
   @SuppressWarnings("unchecked")
   public <T extends S> Export<T> add(final Import<T> service) {
@@ -97,7 +97,7 @@ public abstract class AbstractScope<S>
   }
 
   /**
-   * Notification that a service has been added to this scope.
+   * Notification that a service has been added to this watcher.
    * 
    * @param service new service handle
    * @return tracking instance, null if the service shouldn't be tracked
@@ -115,7 +115,7 @@ public abstract class AbstractScope<S>
   protected void modified(final S instance, final Map<String, ?> attributes) {} // NOPMD
 
   /**
-   * Notification that a service has been removed from this scope.
+   * Notification that a service has been removed from this watcher.
    * 
    * @param instance tracking instance
    */

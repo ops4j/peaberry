@@ -22,7 +22,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.ServiceScope;
+import org.ops4j.peaberry.ServiceWatcher;
 
 import com.google.inject.Inject;
 
@@ -63,10 +63,10 @@ public class RegistryChain
   }
 
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
-      final ServiceScope<? super T> scope) {
+      final ServiceWatcher<? super T> watcher) {
 
     for (final ServiceRegistry r : registries) {
-      r.watch(clazz, filter, scope); // need to watch all of them
+      r.watch(clazz, filter, watcher); // need to watch all of them
     }
   }
 

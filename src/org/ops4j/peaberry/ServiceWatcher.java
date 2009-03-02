@@ -17,17 +17,17 @@
 package org.ops4j.peaberry;
 
 /**
- * A service scope can receive services provided by other registries.
+ * A service watcher can receive services provided by other registries.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-public interface ServiceScope<S> {
+public interface ServiceWatcher<S> {
 
   /**
-   * Add the given service to this scope.
+   * Expose the given service to this watcher.
    * 
    * @param service imported service handle
-   * @return exported service handle, null if the scope is not interested
+   * @return exported service handle, null if the watcher is not interested
    */
   <T extends S> Export<T> add(Import<T> service);
 }

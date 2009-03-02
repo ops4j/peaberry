@@ -31,7 +31,7 @@
  * <dt>{@link org.ops4j.peaberry.ServiceRegistry}
  * <dd>The interface you can implement in order to plug-in other service frameworks.
  *
- * <dt>{@link org.ops4j.peaberry.ServiceScope}
+ * <dt>{@link org.ops4j.peaberry.ServiceWatcher}
  * <dd>The interface you can implement in order to watch services coming and going.
  *
  * </dl>
