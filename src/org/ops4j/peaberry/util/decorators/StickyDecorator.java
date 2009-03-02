@@ -47,12 +47,12 @@ public final class StickyDecorator<S>
   private final class StickyImport<T>
       implements Import<T> {
 
-    private final Import<T> handle;
+    private final Import<T> service;
     private boolean reset = true;
     private WeakReference<T> instanceRef;
 
-    StickyImport(final Import<T> handle) {
-      this.handle = handle;
+    StickyImport(final Import<T> service) {
+      this.service = service;
     }
 
     private T instance() {
@@ -75,19 +75,19 @@ public final class StickyDecorator<S>
         }
 
         if (reset) {
-          handle.unget(); // balance previous successful get
+          service.unget(); // balance previous successful get
         }
       }
 
       if (reset) {
         try {
-          final T service = handle.get();
-          instanceRef = new WeakReference<T>(service);
-          reset = null == service;
+          final T instance = service.get();
+          instanceRef = new WeakReference<T>(instance);
+          reset = null == instance;
         } finally {
           if (reset) {
             instanceRef = null;
-            handle.unget(); // balance previous unsuccessful get
+            service.unget(); // balance previous unsuccessful get
           }
         }
       }
@@ -96,13 +96,13 @@ public final class StickyDecorator<S>
     }
 
     public synchronized Map<String, ?> attributes() {
-      return null == instance() ? null : handle.attributes();
+      return null == instance() ? null : service.attributes();
     }
 
     public void unget() {/* nothing to do */}
   }
 
-  public <T extends S> Import<T> decorate(final Import<T> handle) {
-    return new StickyImport<T>(handle);
+  public <T extends S> Import<T> decorate(final Import<T> service) {
+    return new StickyImport<T>(service);
   }
 }

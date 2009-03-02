@@ -36,27 +36,27 @@ final class DirectServiceFactory {
   // instances not allowed
   private DirectServiceFactory() {}
 
-  static <S, T extends S> Iterable<T> directServices(final Iterable<Import<T>> handles,
+  static <S, T extends S> Iterable<T> directServices(final Iterable<Import<T>> services,
       final ImportDecorator<S> decorator) {
 
-    final List<T> services = new ArrayList<T>();
-    final Iterator<Import<T>> i = handles.iterator();
+    final List<T> instances = new ArrayList<T>();
+    final Iterator<Import<T>> i = services.iterator();
 
     while (i.hasNext()) {
       // collect all valid services into snapshot list
       final T instance = nextService(i, decorator);
       if (null != instance) {
-        services.add(instance);
+        instances.add(instance);
       }
     }
 
-    return unmodifiableList(services);
+    return unmodifiableList(instances);
   }
 
-  static <S, T extends S> T directService(final Iterable<Import<T>> handles,
+  static <S, T extends S> T directService(final Iterable<Import<T>> services,
       final ImportDecorator<S> decorator) {
 
-    final Iterator<Import<T>> i = handles.iterator();
+    final Iterator<Import<T>> i = services.iterator();
 
     while (i.hasNext()) {
       // return the first valid service found

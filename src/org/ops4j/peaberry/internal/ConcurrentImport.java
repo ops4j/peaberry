@@ -24,7 +24,7 @@ import org.ops4j.peaberry.Import;
 /**
  * Provide an {@link Import} that dynamically delegates to the best service but
  * also tracks its use (even across multiple threads) so that unget() is always
- * called on the same handle as get() was originally.
+ * called on the same service handle as get() was originally.
  * 
  * The solution below uses the same handle until no threads are actively using
  * the injected instance. This might keep a service in use for a little longer
@@ -36,40 +36,40 @@ import org.ops4j.peaberry.Import;
 final class ConcurrentImport<T>
     implements Import<T> {
 
-  private final Iterable<Import<T>> handles;
+  private final Iterable<Import<T>> services;
 
-  private Import<T> handle;
+  private Import<T> service;
   private T instance;
   private int count;
 
-  ConcurrentImport(final Iterable<Import<T>> handles) {
-    this.handles = handles;
+  ConcurrentImport(final Iterable<Import<T>> services) {
+    this.services = services;
   }
 
   // need barrier on entry...
   public synchronized T get() {
     count++;
-    if (null == handle) {
-      // first valid handle may appear at any time
-      final Iterator<Import<T>> i = handles.iterator();
+    if (null == service) {
+      // first valid service handle may appear at any time
+      final Iterator<Import<T>> i = services.iterator();
       if (i.hasNext()) {
-        handle = i.next();
-        instance = handle.get(); // only called once
+        service = i.next();
+        instance = service.get(); // only called once
       }
     }
     return instance;
   }
 
   public synchronized Map<String, ?> attributes() {
-    return null == instance ? null : handle.attributes();
+    return null == instance ? null : service.attributes();
   }
 
   public synchronized void unget() {
     // last thread to exit does the unget...
-    if (0 == --count && null != handle) {
-      final Import<T> temp = handle;
+    if (0 == --count && null != service) {
+      final Import<T> temp = service;
       instance = null;
-      handle = null;
+      service = null;
       temp.unget();
     }
   }

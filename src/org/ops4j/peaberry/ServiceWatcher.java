@@ -24,7 +24,7 @@ package org.ops4j.peaberry;
 public interface ServiceWatcher<S> {
 
   /**
-   * Expose the given service to this watcher.
+   * Add the given service to this watcher.
    * 
    * @param service imported service handle
    * @return exported service handle, null if the watcher is not interested

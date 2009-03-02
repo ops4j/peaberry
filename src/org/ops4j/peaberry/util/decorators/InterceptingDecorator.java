@@ -54,11 +54,11 @@ public final class InterceptingDecorator<S>
   private final class ProxyImport<T>
       implements Import<T>, InvocationHandler {
 
-    private final Import<T> handle;
+    private final Import<T> service;
     private volatile T proxy;
 
-    ProxyImport(final Import<T> handle) {
-      this.handle = handle;
+    ProxyImport(final Import<T> service) {
+      this.service = service;
     }
 
     @SuppressWarnings("unchecked")
@@ -66,14 +66,14 @@ public final class InterceptingDecorator<S>
       if (null == proxy) {
         synchronized (this) {
           try {
-            final T instance = handle.get();
+            final T instance = service.get();
             if (null == proxy && instance != null) {
-              // lazily-create proxy, only needs to be created once per handle
+              // lazily-create proxy, only needs to be created once per service
               final ClassLoader loader = instance.getClass().getClassLoader();
               proxy = (T) Proxy.newProxyInstance(loader, getInterfaces(instance), this);
             }
           } finally {
-            handle.unget();
+            service.unget();
           }
         }
       }
@@ -81,7 +81,7 @@ public final class InterceptingDecorator<S>
     }
 
     public Map<String, ?> attributes() {
-      return handle.attributes();
+      return service.attributes();
     }
 
     public void unget() {/* proxy does the cleanup */}
@@ -89,7 +89,7 @@ public final class InterceptingDecorator<S>
     public Object invoke(final Object unused, final Method method, final Object[] args)
         throws Throwable {
       try {
-        final Object instance = handle.get();
+        final Object instance = service.get();
         if (null == instance) {
           // just in case a decorator returns null
           throw new ServiceUnavailableException();
@@ -135,7 +135,7 @@ public final class InterceptingDecorator<S>
           }
         });
       } finally {
-        handle.unget();
+        service.unget();
       }
     }
   }
@@ -156,7 +156,7 @@ public final class InterceptingDecorator<S>
     return api.toArray(new Class[api.size()]);
   }
 
-  public <T extends S> Import<T> decorate(final Import<T> handle) {
-    return new ProxyImport<T>(handle);
+  public <T extends S> Import<T> decorate(final Import<T> service) {
+    return new ProxyImport<T>(service);
   }
 }

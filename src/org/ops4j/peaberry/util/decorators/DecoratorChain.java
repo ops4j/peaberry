@@ -33,11 +33,11 @@ public final class DecoratorChain<S>
     this.decorators = decorators.clone();
   }
 
-  public <T extends S> Import<T> decorate(final Import<T> handle) {
-    Import<T> h = handle;
+  public <T extends S> Import<T> decorate(final Import<T> service) {
+    Import<T> decoratedService = service;
     for (int i = decorators.length - 1; i >= 0; i--) {
-      h = decorators[i].decorate(h);
+      decoratedService = decorators[i].decorate(decoratedService);
     }
-    return h;
+    return decoratedService;
   }
 }

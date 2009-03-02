@@ -39,7 +39,7 @@ final class ServiceProxyFactory {
   private ServiceProxyFactory() {}
 
   static <S, T extends S> Iterable<T> serviceProxies(final Class<T> clazz,
-      final Iterable<Import<T>> handles, final ImportDecorator<S> decorator) {
+      final Iterable<Import<T>> services, final ImportDecorator<S> decorator) {
 
     // local cache of provided proxy instances, so they can be re-used
     final ConcurrentMap<Import<?>, T> PROXY_CACHE = newSoftCache();
@@ -50,18 +50,18 @@ final class ServiceProxyFactory {
         return new Iterator<T>() {
 
           // original service iterator, provided by the registry
-          private final Iterator<Import<T>> i = handles.iterator();
+          private final Iterator<Import<T>> i = services.iterator();
 
           public boolean hasNext() {
             return i.hasNext();
           }
 
           public T next() {
-            final Import<T> handle = i.next();
-            T proxy = PROXY_CACHE.get(handle);
+            final Import<T> service = i.next();
+            T proxy = PROXY_CACHE.get(service);
             if (null == proxy) {
-              final T newProxy = buildProxy(ctor, decorator, handle);
-              proxy = PROXY_CACHE.putIfAbsent(handle, newProxy);
+              final T newProxy = buildProxy(ctor, decorator, service);
+              proxy = PROXY_CACHE.putIfAbsent(service, newProxy);
               if (null == proxy) {
                 return newProxy;
               }
@@ -88,22 +88,22 @@ final class ServiceProxyFactory {
     };
   }
 
-  static <S, T extends S> T serviceProxy(final Class<T> clazz, final Iterable<Import<T>> handles,
+  static <S, T extends S> T serviceProxy(final Class<T> clazz, final Iterable<Import<T>> services,
       final ImportDecorator<S> decorator) {
 
     // provide concurrent access to the head of the import list
-    final Import<T> lookup = new ConcurrentImport<T>(handles);
+    final Import<T> lookup = new ConcurrentImport<T>(services);
 
     // can now wrap our delegating import as a decorated dynamic proxy
     return buildProxy(getProxyConstructor(clazz), decorator, lookup);
   }
 
   static <S, T extends S> T buildProxy(final Constructor<T> constructor,
-      final ImportDecorator<S> decorator, final Import<T> handle) {
+      final ImportDecorator<S> decorator, final Import<T> service) {
 
     try {
       // minimize wrapping of exceptions to help with problem determination
-      return constructor.newInstance(null == decorator ? handle : decorator.decorate(handle));
+      return constructor.newInstance(null == decorator ? service : decorator.decorate(service));
     } catch (final InstantiationException e) {
       throw new ServiceException(e);
     } catch (final IllegalAccessException e) {

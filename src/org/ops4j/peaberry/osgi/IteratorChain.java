@@ -62,7 +62,7 @@ final class IteratorChain<T>
       }
       try {
         return iterators[index].next();
-      } catch (NoSuchElementException e) {
+      } catch (final NoSuchElementException e) {
         index++;
       }
     }

@@ -31,16 +31,16 @@ import org.ops4j.peaberry.ServiceWatcher;
 final class ConcurrentServiceWatcher<S>
     implements ServiceWatcher<S> {
 
-  final Iterable<Import<S>> handles;
+  final Iterable<Import<S>> services;
   final ServiceWatcher<? super S> watcher;
 
   // the "best" service
   Import<S> currentImport;
   Export<S> currentExport;
 
-  ConcurrentServiceWatcher(final Iterable<Import<S>> handles,
+  ConcurrentServiceWatcher(final Iterable<Import<S>> services,
       final ServiceWatcher<? super S> watcher) {
-    this.handles = handles;
+    this.services = services;
     this.watcher = watcher;
   }
 
@@ -72,7 +72,7 @@ final class ConcurrentServiceWatcher<S>
         }
 
         // this update might change the ranking of services
-        final Import<S> bestImport = handles.iterator().next();
+        final Import<S> bestImport = services.iterator().next();
         if (!bestImport.equals(currentImport)) {
           activateService(bestImport);
         }
@@ -84,7 +84,7 @@ final class ConcurrentServiceWatcher<S>
         if (trackedImport.equals(currentImport)) {
 
           // pass the baton onto the next "best" service
-          final Iterator<Import<S>> i = handles.iterator();
+          final Iterator<Import<S>> i = services.iterator();
           activateService(i.hasNext() ? i.next() : null);
         }
       }
@@ -107,7 +107,7 @@ final class ConcurrentServiceWatcher<S>
 
   @SuppressWarnings("unchecked")
   public synchronized <T extends S> Export<T> add(final Import<T> service) {
-    final Iterator<Import<S>> i = handles.iterator();
+    final Iterator<Import<S>> i = services.iterator();
 
     // will this new service become the "best"
     if (i.hasNext() && service.equals(i.next())) {
@@ -131,13 +131,14 @@ final class ConcurrentServiceWatcher<S>
   public boolean equals(final Object rhs) {
     if (rhs instanceof ConcurrentServiceWatcher) {
       final ConcurrentServiceWatcher<?> concurrentWatcher = (ConcurrentServiceWatcher<?>) rhs;
-      return handles.equals(concurrentWatcher.handles) && watcher.equals(concurrentWatcher.watcher);
+      return services.equals(concurrentWatcher.services)
+          && watcher.equals(concurrentWatcher.watcher);
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    return handles.hashCode() ^ watcher.hashCode();
+    return services.hashCode() ^ watcher.hashCode();
   }
 }
