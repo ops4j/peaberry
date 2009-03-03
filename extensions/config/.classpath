@@ -5,6 +5,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="build/test-classes" path="test"/>
 	<classpathentry kind="lib" path="/peaberry/lib/ant/testng-5.8.jar"/>
-	<classpathentry kind="lib" path="/peaberry/lib/build/guice-snapshot-20090222.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
