@@ -20,7 +20,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -41,11 +41,13 @@ import com.google.inject.matcher.Matcher;
 public final class InterceptingDecorator<S>
     implements ImportDecorator<S> {
 
+  final Matcher<? super Class<?>> classMatcher;
   final Matcher<? super Method> methodMatcher;
   final MethodInterceptor[] interceptors;
 
-  public InterceptingDecorator(final Matcher<? super Method> methodMatcher,
-      final MethodInterceptor... interceptors) {
+  public InterceptingDecorator(final Matcher<? super Class<?>> classMatcher,
+      final Matcher<? super Method> methodMatcher, final MethodInterceptor... interceptors) {
+    this.classMatcher = classMatcher;
     this.methodMatcher = methodMatcher;
     this.interceptors = interceptors;
   }
@@ -96,7 +98,7 @@ public final class InterceptingDecorator<S>
         }
 
         // only intercept interesting methods
-        if (!methodMatcher.matches(method)) {
+        if (!methodMatcher.matches(method) || !classMatcher.matches(method.getDeclaringClass())) {
           return method.invoke(instance, args);
         }
 
@@ -140,18 +142,12 @@ public final class InterceptingDecorator<S>
     }
   }
 
-  // collect together all possible interfaces from the service
   static Class<?>[] getInterfaces(final Object instance) {
     @SuppressWarnings("unchecked")
     final Set<Class> api = new HashSet<Class>();
-    Class<?> clazz = instance.getClass();
-    while (clazz != null) {
-      if (clazz.isInterface()) {
-        api.add(clazz);
-      } else {
-        api.addAll(Arrays.asList(clazz.getInterfaces()));
-      }
-      clazz = clazz.getSuperclass();
+    // look through the class hierarchy collecting all visible interfaces
+    for (Class<?> clazz = instance.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
+      Collections.addAll(api, clazz.isInterface() ? new Class[]{clazz} : clazz.getInterfaces());
     }
     return api.toArray(new Class[api.size()]);
   }

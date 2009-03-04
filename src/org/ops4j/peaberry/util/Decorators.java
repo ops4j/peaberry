@@ -66,12 +66,13 @@ public final class Decorators {
   /**
    * An {@link ImportDecorator} that supports {@link MethodInterceptor}s.
    * 
+   * @param classMatcher matches interfaces to be intercepted
    * @param methodMatcher matches methods to be intercepted
    * @param interceptors sequence of method interceptors
    * @return decorator that intercepts imported services
    */
-  public static <S> ImportDecorator<S> intercept(final Matcher<? super Method> methodMatcher,
-      final MethodInterceptor... interceptors) {
-    return new InterceptingDecorator<S>(methodMatcher, interceptors);
+  public static <S> ImportDecorator<S> intercept(final Matcher<? super Class<?>> classMatcher,
+      final Matcher<? super Method> methodMatcher, final MethodInterceptor... interceptors) {
+    return new InterceptingDecorator<S>(classMatcher, methodMatcher, interceptors);
   }
 }
