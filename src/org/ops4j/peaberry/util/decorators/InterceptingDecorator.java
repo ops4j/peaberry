@@ -50,6 +50,10 @@ public final class InterceptingDecorator<S>
     this.classMatcher = classMatcher;
     this.methodMatcher = methodMatcher;
     this.interceptors = interceptors;
+
+    if (interceptors.length == 0) {
+      throw new IllegalArgumentException("Must provide at least one method interceptor");
+    }
   }
 
   // use JDK proxy for simplicity
@@ -71,7 +75,7 @@ public final class InterceptingDecorator<S>
             final T instance = service.get();
             if (null == proxy && instance != null) {
               // lazily-create proxy, only needs to be created once per service
-              final ClassLoader loader = instance.getClass().getClassLoader();
+              final ClassLoader loader = interceptors[0].getClass().getClassLoader();
               proxy = (T) Proxy.newProxyInstance(loader, getInterfaces(instance), this);
             }
           } finally {
@@ -79,7 +83,7 @@ public final class InterceptingDecorator<S>
           }
         }
       }
-      return proxy;
+      return proxy; // proxy will use get() to delegate to the active service
     }
 
     public Map<String, ?> attributes() {

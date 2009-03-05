@@ -49,7 +49,6 @@ public final class Attributes {
    * @throws IllegalArgumentException if there are any non-String keys
    */
   public static Map<String, ?> properties(final Properties properties) {
-
     final Map<String, Object> attributes = new HashMap<String, Object>(2 * properties.size());
 
     /*
@@ -86,7 +85,6 @@ public final class Attributes {
    * @see <a href="http://www.ietf.org/rfc/rfc2253.txt">RFC-2253</a>
    */
   public static Map<String, ?> names(final String... names) {
-
     final Map<String, Object> attributes = new HashMap<String, Object>(2 * names.length);
 
     for (final String n : names) {
@@ -128,9 +126,11 @@ public final class Attributes {
    */
   public static Map<String, ?> union(final Map<String, ?>... attributes) {
     final Map<String, Object> unionMap = new HashMap<String, Object>();
+
     for (final Map<String, ?> a : attributes) {
       unionMap.putAll(a);
     }
+
     return unmodifiableMap(unionMap);
   }
 }

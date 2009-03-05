@@ -48,8 +48,8 @@ public final class StickyDecorator<S>
       implements Import<T> {
 
     private final Import<T> service;
-    private boolean reset = true;
     private WeakReference<T> instanceRef;
+    private boolean reset = true;
 
     StickyImport(final Import<T> service) {
       this.service = service;
@@ -66,6 +66,7 @@ public final class StickyDecorator<S>
 
         // always clear the current service once it's invalid
         instanceRef.clear();
+        instanceRef = null;
 
         try {
           // should we reset and take the next valid service?

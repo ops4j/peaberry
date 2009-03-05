@@ -73,11 +73,9 @@ public abstract class AbstractWatcher<S>
     }
 
     public synchronized void put(final S newInstance) {
-      if (newInstance != instance) { // NOPMD
-        unput(); // make sure it's been unput
-        if (null != newInstance) {
-          instance = adding(new SimpleImport<S>(newInstance, attributes));
-        }
+      unput(); // make sure it's been unput
+      if (null != newInstance) {
+        instance = adding(new SimpleImport<S>(newInstance, attributes));
       }
     }
 

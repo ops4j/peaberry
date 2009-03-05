@@ -124,8 +124,7 @@ final class OSGiServiceExport<T>
 
     final Set<String> names = new HashSet<String>();
 
-    Class<?> clazz = instance.getClass();
-    while (clazz != null) {
+    for (Class<?> clazz = instance.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
       if (clazz.isInterface()) {
         names.add(clazz.getName());
       } else {
@@ -134,7 +133,6 @@ final class OSGiServiceExport<T>
           names.add(i.getName());
         }
       }
-      clazz = clazz.getSuperclass();
     }
 
     return names.toArray(new String[names.size()]);
