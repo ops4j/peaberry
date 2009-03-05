@@ -72,7 +72,8 @@ final class ConcurrentServiceWatcher<S>
         }
 
         // this update might change the ranking of services
-        final Import<S> bestImport = services.iterator().next();
+        final Iterator<Import<S>> i = services.iterator();
+        final Import<S> bestImport = i.hasNext() ? i.next() : null;
         if (!bestImport.equals(currentImport)) {
           activateService(bestImport);
         }

@@ -20,6 +20,7 @@ import static com.google.inject.name.Names.named;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Decorators.sticky;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
+import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 
 import org.testng.annotations.Test;
 
@@ -57,7 +58,11 @@ public final class ServicePerformanceTests
     bind(Example.class).annotatedWith(named("Raw")).toInstance(rawExample);
 
     // service registry lookup: indirect method invocation via normal proxy
-    bind(Example.class).annotatedWith(named("Service")).toProvider(service(Example.class).single());
+    bind(iterable(Example.class)).toProvider(service(Example.class).multiple());
+
+    // service registry lookup: indirect method invocation via concurrent proxy
+    bind(Example.class).annotatedWith(named("Concurrent")).toProvider(
+        service(Example.class).single());
 
     // service registry lookup: indirect method invocation via sticky proxy
     bind(Example.class).annotatedWith(named("Sticky")).toProvider(
@@ -75,8 +80,11 @@ public final class ServicePerformanceTests
     public Example raw;
 
     @Inject
-    @Named("Service")
-    public Example service;
+    public Iterable<Example> multiple;
+
+    @Inject
+    @Named("Concurrent")
+    public Example concurrent;
 
     @Inject
     @Named("Sticky")
@@ -102,7 +110,8 @@ public final class ServicePerformanceTests
     System.out.println("Service overhead\n");
     final double baseline = time(holder.raw);
 
-    benchmark("SERVICE PROXY ", baseline, time(holder.service));
+    benchmark("NORMAL SERVICE", baseline, time(holder.multiple.iterator().next()));
+    benchmark("CNCRNT SERVICE", baseline, time(holder.concurrent));
     benchmark("STICKY SERVICE", baseline, time(holder.sticky));
     benchmark("DIRECT SERVICE", baseline, time(holder.direct));
 

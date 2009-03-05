@@ -166,7 +166,7 @@ final class ServiceSettings<T>
 
     // enable outjection, but only if it's going to a different watcher
     ServiceWatcher<? super T> serviceWatcher = watcher.get(injector);
-    if (null != serviceWatcher && serviceWatcher != serviceRegistry) { // NOPMD
+    if (null != serviceWatcher && serviceRegistry != serviceWatcher) { // NOPMD
 
       final ImportDecorator<? super T> watcherDecorator = decorator.get(injector);
       if (null != watcherDecorator) {

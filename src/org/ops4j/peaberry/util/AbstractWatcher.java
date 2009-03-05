@@ -53,11 +53,11 @@ public abstract class AbstractWatcher<S>
       this.attributes = attributes;
     }
 
-    public synchronized T get() {
+    public T get() {
       return instance;
     }
 
-    public synchronized Map<String, ?> attributes() {
+    public Map<String, ?> attributes() {
       return attributes;
     }
 
