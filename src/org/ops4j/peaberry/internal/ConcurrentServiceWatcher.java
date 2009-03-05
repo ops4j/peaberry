@@ -70,23 +70,16 @@ final class ConcurrentServiceWatcher<S>
         if (trackedImport.equals(currentImport)) {
           currentExport.attributes(attributes);
         }
-
-        // this update might change the ranking of services
-        final Iterator<Import<S>> i = services.iterator();
-        final Import<S> bestImport = i.hasNext() ? i.next() : null;
-        if (!bestImport.equals(currentImport)) {
-          activateService(bestImport);
-        }
       }
+
+      // has ranking changed?
+      updateBestService();
     }
 
     public void unput() {
       synchronized (ConcurrentServiceWatcher.this) {
         if (trackedImport.equals(currentImport)) {
-
-          // pass the baton onto the next "best" service
-          final Iterator<Import<S>> i = services.iterator();
-          activateService(i.hasNext() ? i.next() : null);
+          updateBestService();
         }
       }
     }
@@ -106,26 +99,30 @@ final class ConcurrentServiceWatcher<S>
     }
   }
 
-  @SuppressWarnings("unchecked")
   public synchronized <T extends S> Export<T> add(final Import<T> service) {
-    final Iterator<Import<S>> i = services.iterator();
-
-    // will this new service become the "best"
-    if (i.hasNext() && service.equals(i.next())) {
-      activateService((Import<S>) service);
-    }
+    updateBestService();
 
     // every new service has a tracker
     return new TrackingExport<T>(service);
   }
 
-  void activateService(final Import<S> service) {
+  void updateBestService() {
+
+    // check the last-known best service is still the best
+    final Iterator<Import<S>> i = services.iterator();
+    final Import<S> bestImport = i.hasNext() ? i.next() : null;
+
+    if (currentImport != null && currentImport.equals(bestImport)) {
+      return; // still the same...
+    }
+
+    // we have a new best service
     if (currentExport != null) {
       currentExport.unput();
     }
 
-    currentImport = service;
-    currentExport = null == service ? null : watcher.add(service);
+    currentImport = bestImport;
+    currentExport = null == bestImport ? null : watcher.add(bestImport);
   }
 
   @Override

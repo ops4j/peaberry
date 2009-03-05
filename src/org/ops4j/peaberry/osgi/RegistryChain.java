@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.osgi;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 
@@ -53,14 +54,18 @@ public class RegistryChain
     final Callable<Iterator<Import<T>>>[] lazyIterators = new Callable[registries.length];
 
     // support lazy lookup from multiple registries
-    for (int i = 0; i < lazyIterators.length; i++) {
+    for (int i = 0; i < registries.length; i++) {
       final ServiceRegistry reg = registries[i];
       lazyIterators[i] = new Callable<Iterator<Import<T>>>() {
-        private Iterable<Import<T>> iterable;
+        private volatile Iterable<Import<T>> iterable;
 
-        public synchronized Iterator<Import<T>> call() {
+        public Iterator<Import<T>> call() {
           if (null == iterable) {
-            iterable = reg.lookup(clazz, filter);
+            synchronized (this) {
+              if (null == iterable) {
+                iterable = reg.lookup(clazz, filter);
+              }
+            }
           }
           return iterable.iterator();
         }
@@ -87,5 +92,23 @@ public class RegistryChain
 
   public <T> Export<T> add(final Import<T> service) {
     return registries[0].add(service); // only add to main repository
+  }
+
+  @Override
+  public String toString() {
+    return String.format("RegistryChain[%s]", Arrays.toString(registries));
+  }
+
+  @Override
+  public int hashCode() {
+    return Arrays.hashCode(registries);
+  }
+
+  @Override
+  public boolean equals(final Object rhs) {
+    if (rhs instanceof RegistryChain) {
+      return Arrays.equals(registries, ((RegistryChain) rhs).registries);
+    }
+    return false;
   }
 }

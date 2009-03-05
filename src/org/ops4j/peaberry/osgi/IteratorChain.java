@@ -61,9 +61,10 @@ final class IteratorChain<T>
         activateIterator(index);
       }
       try {
+        // is this section finished yet?
         return iterators[index].next();
       } catch (final NoSuchElementException e) {
-        index++;
+        index++; // move onto next section
       }
     }
     throw new NoSuchElementException();

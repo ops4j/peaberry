@@ -153,7 +153,7 @@ final class OSGiServiceImport
    */
   void flush(final int targetGeneration) {
 
-    // check no-one is using the service and it belongs to the target generation
+    // check no-one is using the active service and it belongs to the generation
     if (targetGeneration == generation && ACTIVE == state && 0 == count.get()) {
       synchronized (this) {
 
@@ -170,7 +170,7 @@ final class OSGiServiceImport
         } else {
           instance = null;
           try {
-            // cached result not being used
+            // let go of the OSGi service
             bundleContext.ungetService(ref);
           } catch (final RuntimeException re) {/* already gone */} // NOPMD
         }

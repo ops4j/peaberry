@@ -72,7 +72,8 @@ final class FilteredServiceWatcher<S>
     // Export aspect is only active when service matches filter
 
     public void put(final T instance) {
-    // this method will never actually get called for an OSGi service
+      // this method will never actually get called for an OSGi service
+      throw new UnsupportedOperationException();
     }
 
     public synchronized void attributes(final Map<String, ?> attributes) {
