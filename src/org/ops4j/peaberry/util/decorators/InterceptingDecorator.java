@@ -106,43 +106,50 @@ public final class InterceptingDecorator<S>
           return method.invoke(instance, args);
         }
 
-        // begin chain of intercepting method invocations
-        return interceptors[0].invoke(new MethodInvocation() {
-          private int index = 1;
+        return intercept(instance, method, args);
 
-          public AccessibleObject getStaticPart() {
-            return method;
-          }
-
-          public Method getMethod() {
-            return method;
-          }
-
-          public Object[] getArguments() {
-            return args;
-          }
-
-          public Object getThis() {
-            return instance;
-          }
-
-          public Object proceed()
-              throws Throwable {
-            try {
-              // walk down the stack of interceptors
-              if (index < interceptors.length) {
-                return interceptors[index++].invoke(this);
-              }
-              // no more interceptors, invoke service
-              return method.invoke(instance, args);
-            } finally {
-              index--; // rollback in case called again
-            }
-          }
-        });
       } finally {
         service.unget();
       }
+    }
+
+    private Object intercept(final Object instance, final Method method, final Object[] args)
+        throws Throwable {
+
+      // begin chain of intercepting method invocations
+      return interceptors[0].invoke(new MethodInvocation() {
+        private int index = 1;
+
+        public AccessibleObject getStaticPart() {
+          return method;
+        }
+
+        public Method getMethod() {
+          return method;
+        }
+
+        public Object[] getArguments() {
+          return args;
+        }
+
+        public Object getThis() {
+          return instance;
+        }
+
+        public Object proceed()
+            throws Throwable {
+          try {
+            // walk down the stack of interceptors
+            if (index < interceptors.length) {
+              return interceptors[index++].invoke(this);
+            }
+            // no more interceptors, invoke service
+            return method.invoke(instance, args);
+          } finally {
+            index--; // rollback in case called again
+          }
+        }
+      });
     }
   }
 
@@ -151,7 +158,7 @@ public final class InterceptingDecorator<S>
     final Set<Class> api = new HashSet<Class>();
     // look through the class hierarchy collecting all visible interfaces
     for (Class<?> clazz = instance.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
-      Collections.addAll(api, clazz.isInterface() ? new Class[]{clazz} : clazz.getInterfaces());
+      Collections.addAll(api, clazz.isInterface() ? new Class[]{clazz} : clazz.getInterfaces()); // NOPMD
     }
     return api.toArray(new Class[api.size()]);
   }
