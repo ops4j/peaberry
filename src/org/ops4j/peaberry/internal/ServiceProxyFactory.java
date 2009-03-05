@@ -91,11 +91,8 @@ final class ServiceProxyFactory {
   static <S, T extends S> T serviceProxy(final Class<T> clazz, final Iterable<Import<T>> services,
       final ImportDecorator<S> decorator) {
 
-    // provide concurrent access to the head of the import list
-    final Import<T> lookup = new ConcurrentImport<T>(services);
-
-    // can now wrap our delegating import as a decorated dynamic proxy
-    return buildProxy(getProxyConstructor(clazz), decorator, lookup);
+    // provide concurrent access to best import and wrap as a decorated proxy
+    return buildProxy(getProxyConstructor(clazz), decorator, new ConcurrentImport<T>(services));
   }
 
   static <S, T extends S> T buildProxy(final Constructor<T> constructor,

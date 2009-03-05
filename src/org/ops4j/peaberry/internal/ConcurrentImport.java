@@ -61,7 +61,11 @@ final class ConcurrentImport<T>
   }
 
   public synchronized Map<String, ?> attributes() {
-    return null == instance ? null : service.attributes();
+    if (null == service) {
+      final Iterator<Import<T>> i = services.iterator();
+      return i.hasNext() ? i.next().attributes() : null;
+    }
+    return service.attributes();
   }
 
   public synchronized void unget() {

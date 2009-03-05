@@ -175,7 +175,7 @@ final class ServiceSettings<T>
       }
 
       if (isConcurrent) {
-        // apply concurrent behaviour when watching single services
+        // now apply concurrent behaviour when watching single services
         serviceWatcher = new ConcurrentServiceWatcher<T>(imports, serviceWatcher);
       }
 
