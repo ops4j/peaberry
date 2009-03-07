@@ -22,7 +22,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceWatcher;
 
 /**
- * Pre-filtered {@link ServiceWatcher}.
+ * Pre-filtered {@link ServiceWatcher} for immutable Eclipse extensions.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */

@@ -71,7 +71,7 @@ final class ExtensionListener
     }
 
     // do we need to combine elements into a single bean?
-    aggregate = metadata != null && metadata.aggregate();
+    aggregate = null != metadata && metadata.aggregate();
 
     imports = new ArrayList<ExtensionImport>(4);
     watchers = new ArrayList<ServiceWatcher<Object>>(2);
@@ -190,7 +190,7 @@ final class ExtensionListener
       return null;
     }
 
-    if (prevImport == null && filter == null) {
+    if (null == prevImport && null == filter) {
       return imports.get(0);
     }
 

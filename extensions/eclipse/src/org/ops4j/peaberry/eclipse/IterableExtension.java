@@ -50,7 +50,7 @@ final class IterableExtension<T>
       private ExtensionImport nextImport;
 
       public boolean hasNext() {
-        return findNextImport() != null;
+        return null != findNextImport();
       }
 
       @SuppressWarnings("unchecked")

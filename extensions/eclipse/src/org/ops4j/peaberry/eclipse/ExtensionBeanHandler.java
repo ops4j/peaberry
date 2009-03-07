@@ -55,12 +55,12 @@ final class ExtensionBeanHandler
       throws Throwable {
 
     Object result = cache.get(method);
-    if (result != null) {
+    if (null != result) {
       return result;
     }
 
     if (method.getDeclaringClass() == Object.class) {
-      if (args != null) {
+      if (null != args) {
         // must unwrap target so equals will work
         args[0] = unwrapExtensionBeanProxy(args[0]);
       }
@@ -72,7 +72,7 @@ final class ExtensionBeanHandler
     }
 
     // "is" and "get" methods (with no arguments) always return constant values
-    if (result != null && null == args && !method.getName().startsWith("create")) {
+    if (null != result && null == args && !method.getName().startsWith("create")) {
       cache.putIfAbsent(method, result);
     }
 

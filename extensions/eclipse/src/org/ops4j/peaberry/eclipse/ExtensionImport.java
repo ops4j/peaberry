@@ -51,8 +51,8 @@ final class ExtensionImport
   private final IConfigurationElement config;
   private final Class<?> clazz;
 
-  private Object instance;
   private volatile int state;
+  private Object instance;
 
   private final Map<String, ?> attributes;
   private final List<Export<?>> watchers;
@@ -107,8 +107,10 @@ final class ExtensionImport
   void invalidate() {
     notifyWatchers();
     watchers.clear();
-    instance = null;
-    state = INVALID; // force memory flush
+    synchronized (this) {
+      instance = null;
+      state = INVALID;
+    }
   }
 
   private void notifyWatchers() {

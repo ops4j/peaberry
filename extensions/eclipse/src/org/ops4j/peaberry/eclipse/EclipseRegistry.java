@@ -53,7 +53,7 @@ public final class EclipseRegistry
 
   // per-class map of extension listeners (much faster than polling)
   private final ConcurrentMap<String, ExtensionListener> listenerMap =
-      new ConcurrentHashMap<String, ExtensionListener>();
+      new ConcurrentHashMap<String, ExtensionListener>(16, 0.75f, 2);
 
   EclipseRegistry() {
     extensionRegistry = RegistryFactory.getRegistry();
