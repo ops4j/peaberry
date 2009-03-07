@@ -17,7 +17,8 @@
 package org.ops4j.peaberry.internal;
 
 import static java.security.AccessController.doPrivileged;
-import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newWeakCache;
+import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.WEAK;
+import static org.ops4j.peaberry.internal.ComputedMapFactory.computedMap;
 import static org.ops4j.peaberry.internal.ImportGlue.generateProxy;
 import static org.ops4j.peaberry.internal.ImportGlue.getClazzName;
 import static org.ops4j.peaberry.internal.ImportGlue.getProxyName;
@@ -29,6 +30,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.ServiceUnavailableException;
+import org.ops4j.peaberry.internal.ComputedMapFactory.Function;
 
 /**
  * Custom classloader that provides optimized proxies for imported services.
@@ -58,26 +60,19 @@ final class ImportProxyClassLoader
   }
 
   // weak map of classloaders, to allow eager collection of proxied classes
-  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP = newWeakCache();
-
-  private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
-    final ClassLoader parent = null == typeLoader ? getSystemClassLoader() : typeLoader;
-    ClassLoader proxyLoader;
-
-    proxyLoader = LOADER_MAP.get(parent);
-    if (null == proxyLoader) {
-      final ClassLoader newProxyLoader = doPrivileged(new PrivilegedAction<ClassLoader>() {
-        public ClassLoader run() {
-          return new ImportProxyClassLoader(parent);
+  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP =
+      computedMap(WEAK, WEAK, 32, new Function<ClassLoader, ClassLoader>() {
+        public ClassLoader compute(final ClassLoader parent) {
+          return doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run() {
+              return new ImportProxyClassLoader(parent);
+            }
+          });
         }
       });
-      proxyLoader = LOADER_MAP.putIfAbsent(parent, newProxyLoader);
-      if (null == proxyLoader) {
-        return newProxyLoader;
-      }
-    }
 
-    return proxyLoader;
+  private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
+    return LOADER_MAP.get(null != typeLoader ? typeLoader : getSystemClassLoader());
   }
 
   // delegate to the original type's classloader
@@ -86,16 +81,23 @@ final class ImportProxyClassLoader
   }
 
   @Override
-  protected Class<?> findClass(final String clazzOrProxyName)
+  protected Class<?> loadClass(final String name, final boolean resolve)
       throws ClassNotFoundException {
 
-    // generated proxy will need access to these classes
-    if (UNAVAILABLE_CLAZZ_NAME.equals(clazzOrProxyName)) {
+    // short-circuit access to these classes
+    if (UNAVAILABLE_CLAZZ_NAME.equals(name)) {
       return ServiceUnavailableException.class;
     }
-    if (IMPORT_CLAZZ_NAME.equals(clazzOrProxyName)) {
+    if (IMPORT_CLAZZ_NAME.equals(name)) {
       return Import.class;
     }
+
+    return super.loadClass(name, resolve);
+  }
+
+  @Override
+  protected Class<?> findClass(final String clazzOrProxyName)
+      throws ClassNotFoundException {
 
     final String clazzName = getClazzName(clazzOrProxyName);
 

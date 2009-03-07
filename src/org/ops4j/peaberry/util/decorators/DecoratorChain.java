@@ -35,7 +35,7 @@ public final class DecoratorChain<S>
 
   public <T extends S> Import<T> decorate(final Import<T> service) {
     Import<T> decoratedService = service;
-    for (int i = decorators.length - 1; i >= 0; i--) {
+    for (int i = decorators.length - 1; 0 <= i; i--) {
       decoratedService = decorators[i].decorate(decoratedService);
     }
     return decoratedService;

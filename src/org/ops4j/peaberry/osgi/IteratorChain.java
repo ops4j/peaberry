@@ -18,9 +18,6 @@ package org.ops4j.peaberry.osgi;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Callable;
-
-import org.ops4j.peaberry.ServiceException;
 
 /**
  * An {@link Iterator} that iterates over a series of iterators in turn.
@@ -30,13 +27,13 @@ import org.ops4j.peaberry.ServiceException;
 final class IteratorChain<T>
     implements Iterator<T> {
 
-  private final Callable<Iterator<T>>[] lazyIterators;
+  private final Iterable<T>[] lazyIterables;
   private final Iterator<T>[] iterators;
 
   @SuppressWarnings("unchecked")
-  IteratorChain(final Callable<Iterator<T>>[] lazyIterators) {
-    this.lazyIterators = lazyIterators.clone();
-    iterators = new Iterator[lazyIterators.length];
+  IteratorChain(final Iterable<T>[] lazyIterables) {
+    this.lazyIterables = lazyIterables.clone();
+    iterators = new Iterator[lazyIterables.length];
   }
 
   private int index;
@@ -44,9 +41,7 @@ final class IteratorChain<T>
   public boolean hasNext() {
     // peek ahead, but don't disturb current position
     for (int i = index; i < iterators.length; i++) {
-      if (null == iterators[i]) {
-        activateIterator(i);
-      }
+      unroll(i);
       if (iterators[i].hasNext()) {
         return true;
       }
@@ -57,9 +52,7 @@ final class IteratorChain<T>
   public T next() {
     // move forwards along the chain
     while (index < iterators.length) {
-      if (null == iterators[index]) {
-        activateIterator(index);
-      }
+      unroll(index);
       try {
         // is this section finished yet?
         return iterators[index].next();
@@ -70,11 +63,9 @@ final class IteratorChain<T>
     throw new NoSuchElementException();
   }
 
-  private void activateIterator(final int i) {
-    try {
-      iterators[i] = lazyIterators[i].call();
-    } catch (final Exception e) {
-      throw new ServiceException(e);
+  private void unroll(final int i) {
+    if (null == iterators[i]) {
+      iterators[i] = lazyIterables[i].iterator();
     }
   }
 

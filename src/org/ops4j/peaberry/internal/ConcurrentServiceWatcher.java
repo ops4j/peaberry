@@ -112,17 +112,18 @@ final class ConcurrentServiceWatcher<S>
     final Iterator<Import<S>> i = services.iterator();
     final Import<S> bestImport = i.hasNext() ? i.next() : null;
 
-    if (currentImport != null && currentImport.equals(bestImport)) {
+    if (null != currentImport && currentImport.equals(bestImport)) {
       return; // still the same...
     }
 
-    // we have a new best service
-    if (currentExport != null) {
+    // best service has changed
+    if (null != currentExport) {
       currentExport.unput();
     }
 
+    // report service (if any)
     currentImport = bestImport;
-    currentExport = null == bestImport ? null : watcher.add(bestImport);
+    currentExport = null != bestImport ? watcher.add(bestImport) : null;
   }
 
   @Override

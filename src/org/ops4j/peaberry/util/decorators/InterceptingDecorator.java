@@ -47,6 +47,7 @@ public final class InterceptingDecorator<S>
 
   public InterceptingDecorator(final Matcher<? super Class<?>> classMatcher,
       final Matcher<? super Method> methodMatcher, final MethodInterceptor... interceptors) {
+
     this.classMatcher = classMatcher;
     this.methodMatcher = methodMatcher;
     this.interceptors = interceptors;
@@ -73,7 +74,7 @@ public final class InterceptingDecorator<S>
         synchronized (this) {
           try {
             final T instance = service.get();
-            if (null == proxy && instance != null) {
+            if (null == proxy && null != instance) {
               // lazily-create proxy, only needs to be created once per service
               final ClassLoader loader = interceptors[0].getClass().getClassLoader();
               proxy = (T) Proxy.newProxyInstance(loader, getInterfaces(instance), this);
@@ -95,6 +96,7 @@ public final class InterceptingDecorator<S>
     public Object invoke(final Object unused, final Method method, final Object[] args)
         throws Throwable {
       try {
+
         final Object instance = service.get();
         if (null == instance) {
           // just in case a decorator returns null
@@ -156,8 +158,8 @@ public final class InterceptingDecorator<S>
   static Class<?>[] getInterfaces(final Object instance) {
     @SuppressWarnings("unchecked")
     final Set<Class> api = new HashSet<Class>();
-    // look through the class hierarchy collecting all visible interfaces
-    for (Class<?> clazz = instance.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
+    // look through the entire class hierarchy collecting all visible interfaces
+    for (Class<?> clazz = instance.getClass(); null != clazz; clazz = clazz.getSuperclass()) {
       Collections.addAll(api, clazz.isInterface() ? new Class[]{clazz} : clazz.getInterfaces()); // NOPMD
     }
     return api.toArray(new Class[api.size()]);

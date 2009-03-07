@@ -35,8 +35,6 @@ final class SimpleExport<T>
   private Import<T> service;
 
   SimpleExport(final Import<T> service) {
-    // cache original service metadata
-    attributes = service.attributes();
     this.service = service;
   }
 
@@ -46,7 +44,8 @@ final class SimpleExport<T>
 
   public Map<String, ?> attributes() {
     // allow overriding, but still honour service availability
-    return null == service.attributes() ? null : attributes;
+    final Map<String, ?> liveAttributes = service.attributes();
+    return null == attributes || null == liveAttributes ? liveAttributes : attributes;
   }
 
   public void unget() {
@@ -55,7 +54,7 @@ final class SimpleExport<T>
 
   public void put(final T newInstance) {
     // override original service with new static instance
-    service = new StaticImport<T>(newInstance, attributes);
+    service = new StaticImport<T>(newInstance, attributes());
   }
 
   public void attributes(final Map<String, ?> newAttributes) {

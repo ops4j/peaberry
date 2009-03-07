@@ -156,7 +156,7 @@ final class OSGiServiceListener
     // use linear search in case ranking has changed
     final int index = imports.indexOf(i);
 
-    if (index >= 0) {
+    if (0 <= index) {
       // keep existing instance as it might be in use
       final OSGiServiceImport orig = imports.get(index);
 
@@ -177,7 +177,7 @@ final class OSGiServiceListener
   private void removeService(final OSGiServiceImport i) {
     // use linear search in case ranking has changed
     final int index = imports.indexOf(i);
-    if (index >= 0) {
+    if (0 <= index) {
       // flush cache even if being used
       imports.remove(index).invalidate();
     }
@@ -190,7 +190,7 @@ final class OSGiServiceListener
       return null;
     }
 
-    if (prevImport == null && filter == null) {
+    if (null == prevImport && null == filter) {
       return imports.get(0);
     }
 

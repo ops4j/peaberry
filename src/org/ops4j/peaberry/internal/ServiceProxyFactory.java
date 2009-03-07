@@ -16,7 +16,9 @@
 
 package org.ops4j.peaberry.internal;
 
-import static org.ops4j.peaberry.internal.ConcurrentCacheFactory.newSoftCache;
+import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.SOFT;
+import static jsr166y.ConcurrentReferenceHashMap.ReferenceType.WEAK;
+import static org.ops4j.peaberry.internal.ComputedMapFactory.computedMap;
 import static org.ops4j.peaberry.internal.ImportProxyClassLoader.getProxyConstructor;
 
 import java.lang.reflect.Constructor;
@@ -27,6 +29,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.internal.ComputedMapFactory.Function;
 
 /**
  * Factory methods for dynamic service proxies.
@@ -38,12 +41,17 @@ final class ServiceProxyFactory {
   // instances not allowed
   private ServiceProxyFactory() {}
 
-  static <S, T extends S> Iterable<T> serviceProxies(final Class<T> clazz,
-      final Iterable<Import<T>> services, final ImportDecorator<S> decorator) {
+  static <T> Iterable<T> serviceProxies(final Class<T> clazz, final Iterable<Import<T>> services,
+      final ImportDecorator<? super T> decorator) {
 
-    // local cache of provided proxy instances, so they can be re-used
-    final ConcurrentMap<Import<?>, T> PROXY_CACHE = newSoftCache();
+    // attempt to cache service proxies between iterations
     final Constructor<T> ctor = getProxyConstructor(clazz);
+    final ConcurrentMap<Import<T>, T> PROXY_CACHE =
+        computedMap(WEAK, SOFT, 8, new Function<Import<T>, T>() {
+          public T compute(final Import<T> service) {
+            return buildProxy(ctor, decorator, service);
+          }
+        });
 
     return new Iterable<T>() {
       public Iterator<T> iterator() {
@@ -57,16 +65,7 @@ final class ServiceProxyFactory {
           }
 
           public T next() {
-            final Import<T> service = i.next();
-            T proxy = PROXY_CACHE.get(service);
-            if (null == proxy) {
-              final T newProxy = buildProxy(ctor, decorator, service);
-              proxy = PROXY_CACHE.putIfAbsent(service, newProxy);
-              if (null == proxy) {
-                return newProxy;
-              }
-            }
-            return proxy;
+            return PROXY_CACHE.get(i.next());
           }
 
           public void remove() {
@@ -88,15 +87,15 @@ final class ServiceProxyFactory {
     };
   }
 
-  static <S, T extends S> T serviceProxy(final Class<T> clazz, final Iterable<Import<T>> services,
-      final ImportDecorator<S> decorator) {
+  static <T> T serviceProxy(final Class<T> clazz, final Iterable<Import<T>> services,
+      final ImportDecorator<? super T> decorator) {
 
     // provide concurrent access to best import and wrap as a decorated proxy
     return buildProxy(getProxyConstructor(clazz), decorator, new ConcurrentImport<T>(services));
   }
 
-  static <S, T extends S> T buildProxy(final Constructor<T> constructor,
-      final ImportDecorator<S> decorator, final Import<T> service) {
+  static <T> T buildProxy(final Constructor<T> constructor,
+      final ImportDecorator<? super T> decorator, final Import<T> service) {
 
     try {
       // minimize wrapping of exceptions to help with problem determination

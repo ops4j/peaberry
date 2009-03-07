@@ -40,7 +40,7 @@ public class OSGiServiceRegistry
 
   // per-class map of service listeners (much faster than polling)
   private final ConcurrentMap<String, OSGiServiceListener> listenerMap =
-      new ConcurrentHashMap<String, OSGiServiceListener>();
+      new ConcurrentHashMap<String, OSGiServiceListener>(16, 0.75f, 2);
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {

@@ -251,7 +251,7 @@ final class ImportGlue {
 
     final Type returnType = getReturnType(method);
 
-    if (returnType.getSort() != VOID) {
+    if (VOID != returnType.getSort()) {
       v.visitVarInsn(returnType.getOpcode(ISTORE), 1);
     }
 
@@ -264,7 +264,7 @@ final class ImportGlue {
 
     v.visitLabel(finalR);
 
-    if (returnType.getSort() != VOID) {
+    if (VOID != returnType.getSort()) {
       v.visitVarInsn(returnType.getOpcode(ILOAD), 1);
     }
 

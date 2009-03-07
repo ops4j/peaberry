@@ -72,6 +72,9 @@ abstract class Setting<T> {
       @Override
       synchronized T get(final Injector injector) {
         if (null == instance) {
+          if (null == injector) {
+            throw new IllegalArgumentException("missing injector for setting: " + key);
+          }
           // query the injector for the value
           instance = injector.getInstance(key);
         }

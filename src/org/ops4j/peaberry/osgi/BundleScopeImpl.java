@@ -73,7 +73,7 @@ final class BundleScopeImpl
                 throw new ServiceException(e); // this should never happen!
               }
 
-              if (refs != null && refs.length > 0) {
+              if (null != refs && refs.length > 0) {
                 // retrieve the existing instance from the registry
                 instance = (T) bundleContext.getService(refs[0]);
               } else {

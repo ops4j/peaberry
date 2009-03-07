@@ -65,12 +65,12 @@ final class ServiceSettings<T>
    */
   @SuppressWarnings("unchecked")
   ServiceSettings(final T instance) {
-    if (null == instance) {
-      service = nullSetting();
-      clazz = (Class) Object.class;
-    } else {
+    if (null != instance) {
       service = newSetting(instance);
       clazz = (Class) instance.getClass();
+    } else {
+      service = nullSetting();
+      clazz = (Class) Object.class;
     }
   }
 
@@ -150,6 +150,7 @@ final class ServiceSettings<T>
   private AttributeFilter getFilter(final Injector injector) {
     final AttributeFilter attributeFilter = filter.get(injector);
     if (null == attributeFilter) {
+      // no filter, try using the current attributes as a sample filter
       final Map<String, ?> serviceAttributes = attributes.get(injector);
       if (null != serviceAttributes) {
         return new SampleAttributeFilter(serviceAttributes);
@@ -187,7 +188,7 @@ final class ServiceSettings<T>
 
   Export<T> getExport(final Injector injector) {
 
-    // watcher can be null, but registry setting will be non-null
+    // watcher might be null, but registry setting will be non-null
     ServiceWatcher<? super T> serviceWatcher = watcher.get(injector);
     if (null == serviceWatcher) {
       serviceWatcher = registry.get(injector);

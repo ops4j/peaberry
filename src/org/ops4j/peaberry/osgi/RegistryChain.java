@@ -18,7 +18,6 @@ package org.ops4j.peaberry.osgi;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
@@ -40,26 +39,27 @@ public class RegistryChain
 
   @Inject
   public RegistryChain(final CachingServiceRegistry mainRegistry,
-      @PrivateBinding final ServiceRegistry[] alternativeRegistries) {
+      @PrivateBinding final ServiceRegistry[] extraRegistries) {
 
-    // merge main and alternative registries into a single array
-    registries = new ServiceRegistry[1 + alternativeRegistries.length];
-    System.arraycopy(alternativeRegistries, 0, registries, 1, alternativeRegistries.length);
+    // merge main and additional registries into a single array
+    registries = new ServiceRegistry[1 + extraRegistries.length];
+    System.arraycopy(extraRegistries, 0, registries, 1, extraRegistries.length);
     registries[0] = mainRegistry;
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
 
     @SuppressWarnings("unchecked")
-    final Callable<Iterator<Import<T>>>[] lazyIterators = new Callable[registries.length];
+    final Iterable<Import<T>>[] lazyIterables = new Iterable[registries.length];
 
     // support lazy lookup from multiple registries
     for (int i = 0; i < registries.length; i++) {
       final ServiceRegistry reg = registries[i];
-      lazyIterators[i] = new Callable<Iterator<Import<T>>>() { // NOPMD
+      lazyIterables[i] = new Iterable<Import<T>>() { // NOPMD
             private volatile Iterable<Import<T>> iterable;
 
-            public Iterator<Import<T>> call() {
+            // delay lookup until absolutely necessary
+            public Iterator<Import<T>> iterator() {
               if (null == iterable) {
                 synchronized (this) {
                   if (null == iterable) {
@@ -75,7 +75,7 @@ public class RegistryChain
     // chain the iterators together
     return new Iterable<Import<T>>() {
       public Iterator<Import<T>> iterator() {
-        return new IteratorChain<Import<T>>(lazyIterators);
+        return new IteratorChain<Import<T>>(lazyIterables);
       }
     };
   }
@@ -96,7 +96,7 @@ public class RegistryChain
 
   @Override
   public String toString() {
-    return String.format("RegistryChain[%s]", Arrays.toString(registries));
+    return String.format("RegistryChain%s", Arrays.toString(registries));
   }
 
   @Override

@@ -62,6 +62,7 @@ final class ConcurrentImport<T>
 
   public synchronized Map<String, ?> attributes() {
     if (null == service) {
+      // no service in use, fall-back to dynamic query
       final Iterator<Import<T>> i = services.iterator();
       return i.hasNext() ? i.next().attributes() : null;
     }

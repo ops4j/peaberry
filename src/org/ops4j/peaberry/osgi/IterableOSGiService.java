@@ -50,7 +50,7 @@ final class IterableOSGiService<T>
       private OSGiServiceImport nextImport;
 
       public boolean hasNext() {
-        return findNextImport() != null;
+        return null != findNextImport();
       }
 
       @SuppressWarnings("unchecked")
