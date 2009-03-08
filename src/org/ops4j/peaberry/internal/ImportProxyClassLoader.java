@@ -72,7 +72,7 @@ final class ImportProxyClassLoader
       });
 
   private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
-    return LOADER_MAP.get(null != typeLoader ? typeLoader : getSystemClassLoader());
+    return LOADER_MAP.get(null == typeLoader ? getSystemClassLoader() : typeLoader);
   }
 
   // delegate to the original type's classloader

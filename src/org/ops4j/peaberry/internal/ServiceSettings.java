@@ -65,12 +65,12 @@ final class ServiceSettings<T>
    */
   @SuppressWarnings("unchecked")
   ServiceSettings(final T instance) {
-    if (null != instance) {
-      service = newSetting(instance);
-      clazz = (Class) instance.getClass();
-    } else {
+    if (null == instance) {
       service = nullSetting();
       clazz = (Class) Object.class;
+    } else {
+      service = newSetting(instance);
+      clazz = (Class) instance.getClass();
     }
   }
 

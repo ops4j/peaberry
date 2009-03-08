@@ -61,9 +61,9 @@ public final class ProxyPerformanceTests {
 
     final Import<Example> staticImport = new StaticImport<Example>(rawInstance, null);
 
-    final Example importGlu;
+    final Example normalGlu;
     try {
-      importGlu = getProxyConstructor(Example.class).newInstance(staticImport);
+      normalGlu = getProxyConstructor(Example.class).newInstance(staticImport);
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }
@@ -79,7 +79,7 @@ public final class ProxyPerformanceTests {
     final double baseline = time(rawInstance);
 
     benchmark("JDK PROXY ", baseline, time(jdkProxy));
-    benchmark("IMPORT GLU", baseline, time(importGlu));
+    benchmark("NORMAL GLU", baseline, time(normalGlu));
     benchmark("CNCRNT GLU", baseline, time(cncrntGlu));
 
     System.out.println();

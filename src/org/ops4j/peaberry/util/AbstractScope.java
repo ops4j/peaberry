@@ -22,5 +22,6 @@ package org.ops4j.peaberry.util;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Deprecated
-public abstract class AbstractScope<S>
+@SuppressWarnings("PMD.AtLeastOneConstructor")
+public class AbstractScope<S>
     extends AbstractWatcher<S> {}

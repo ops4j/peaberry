@@ -39,8 +39,10 @@ final class ComputedMapFactory {
 
   static final EnumSet<Option> IDENTITY = EnumSet.of(IDENTITY_COMPARISONS);
 
-  // compute values based on keys
-  static interface Function<K, V> {
+  /**
+   * Computed mapping API.
+   */
+  interface Function<K, V> {
     V compute(K key);
   }
 

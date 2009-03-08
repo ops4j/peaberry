@@ -123,7 +123,7 @@ final class ConcurrentServiceWatcher<S>
 
     // report service (if any)
     currentImport = bestImport;
-    currentExport = null != bestImport ? watcher.add(bestImport) : null;
+    currentExport = null == bestImport ? null : watcher.add(bestImport);
   }
 
   @Override
