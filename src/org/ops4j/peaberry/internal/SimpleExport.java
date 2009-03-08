@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.internal;
 
+import static org.ops4j.peaberry.internal.StaticImport.UNAVAILABLE;
+
 import java.util.Map;
 
 import org.ops4j.peaberry.Export;
@@ -28,8 +30,6 @@ import org.ops4j.peaberry.Import;
  */
 final class SimpleExport<T>
     implements Export<T> {
-
-  private static final Import<?> UNAVAILABLE = new StaticImport<Object>(null, null);
 
   private Map<String, ?> attributes;
   private Import<T> service;

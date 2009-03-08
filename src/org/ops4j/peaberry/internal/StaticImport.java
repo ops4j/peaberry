@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.internal;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.ops4j.peaberry.Import;
@@ -28,12 +29,22 @@ import org.ops4j.peaberry.Import;
 final class StaticImport<T>
     implements Import<T> {
 
+  static final Import<?> UNAVAILABLE = new StaticImport<Object>();
+
   private final T instance;
   private final Map<String, ?> attributes;
 
+  // unavailable service
+  private StaticImport() {
+    this.instance = null;
+    this.attributes = null;
+  }
+
+  @SuppressWarnings("unchecked")
   StaticImport(final T instance, final Map<String, ?> attributes) {
     this.instance = instance;
-    this.attributes = attributes;
+    // convert null maps into empty maps, as null means service unavailable
+    this.attributes = null == attributes ? Collections.EMPTY_MAP : attributes;
   }
 
   public T get() {

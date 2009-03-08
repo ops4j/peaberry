@@ -80,7 +80,7 @@ public final class ServiceAttributeTests {
     final Map<String, ?> mapA = objectClass(A.class);
     final Map<String, ?> mapB = objectClass(B.class);
 
-    assertEquals(union(mapA, mapB), mapB);
-    assertEquals(union(mapB, mapA), mapA);
+    assertEquals(union(mapA, null, mapB), mapB);
+    assertEquals(union(null, mapB, mapA), mapA);
   }
 }

@@ -31,6 +31,7 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.util.AbstractDecorator;
 import org.ops4j.peaberry.util.AbstractWatcher;
 import org.testng.annotations.Test;
 
@@ -59,6 +60,10 @@ public final class ServiceOutjectionTests
   Iterable<Id> ids;
 
   @Inject
+  @Named("decorated")
+  Id decoratedId;
+
+  @Inject
   ServiceRegistry registry;
 
   @Inject
@@ -68,6 +73,23 @@ public final class ServiceOutjectionTests
   @Inject
   @Named("multiple")
   Watcher multipleWatcher;
+
+  @Inject
+  @Named("decorated")
+  Watcher decoratedWatcher;
+
+  static class Decorator
+      extends AbstractDecorator<Id> {
+    @Override
+    protected Id decorate(final Id instance, Map<String, ?> attributes) {
+      return new Id() {
+        @Override
+        public String toString() {
+          return "<=" + instance + "=>";
+        }
+      };
+    }
+  }
 
   protected static class Watcher
       extends AbstractWatcher<Id> {
@@ -97,12 +119,17 @@ public final class ServiceOutjectionTests
   protected void configure() {
     bind(Watcher.class).annotatedWith(named("single")).to(Watcher.class).asEagerSingleton();
     bind(Watcher.class).annotatedWith(named("multiple")).to(Watcher.class).asEagerSingleton();
+    bind(Watcher.class).annotatedWith(named("decorated")).to(Watcher.class).asEagerSingleton();
 
     bind(Id.class).toProvider(
         service(Id.class).out(Key.get(Watcher.class, named("single"))).single());
 
     bind(iterable(Id.class)).toProvider(
         service(Id.class).out(Key.get(Watcher.class, named("multiple"))).multiple());
+
+    bind(Id.class).annotatedWith(named("decorated")).toProvider(
+        service(Id.class).decoratedWith(new Decorator()).out(
+            Key.get(Watcher.class, named("decorated"))).single());
   }
 
   public void testServiceOutjection() {
@@ -112,11 +139,13 @@ public final class ServiceOutjectionTests
 
     check(singleWatcher, "[A]");
     check(multipleWatcher, "[A]");
+    check(decoratedWatcher, "[<=A=>]");
 
     register("B");
 
     check(singleWatcher, "[A]");
     check(multipleWatcher, "[A, B]");
+    check(decoratedWatcher, "[<=A=>]");
 
     final Export<Id> exportedId = registry.add(new Import<Id>() {
       public Id get() {
@@ -137,16 +166,19 @@ public final class ServiceOutjectionTests
 
     check(singleWatcher, "[A]");
     check(multipleWatcher, "[A, B, C]");
+    check(decoratedWatcher, "[<=A=>]");
 
     register(8, "D");
 
     check(singleWatcher, "[D]");
     check(multipleWatcher, "[A, B, C, D]");
+    check(decoratedWatcher, "[<=D=>]");
 
     exportedId.attributes(singletonMap(SERVICE_RANKING, 42));
 
     check(singleWatcher, "[C]");
     check(multipleWatcher, "[A, B, C, D]");
+    check(decoratedWatcher, "[<=C=>]");
 
     exportedId.put(new Id() {
       @Override
@@ -157,21 +189,25 @@ public final class ServiceOutjectionTests
 
     check(singleWatcher, "[E]");
     check(multipleWatcher, "[A, B, D, E]");
+    check(decoratedWatcher, "[<=E=>]");
 
     unregister("A");
 
     check(singleWatcher, "[E]");
     check(multipleWatcher, "[B, D, E]");
+    check(decoratedWatcher, "[<=E=>]");
 
     exportedId.unput();
 
     check(singleWatcher, "[D]");
     check(multipleWatcher, "[B, D]");
+    check(decoratedWatcher, "[<=D=>]");
 
     unregister("D");
 
     check(singleWatcher, "[B]");
     check(multipleWatcher, "[B]");
+    check(decoratedWatcher, "[<=B=>]");
   }
 
   public void testServiceWatcher() {

@@ -136,6 +136,6 @@ final class OSGiServiceExport<T>
   }
 
   private Dictionary<String, ?> getProperties() {
-    return null == attributes ? null : new AttributeDictionary(attributes);
+    return null == attributes || attributes.isEmpty() ? null : new AttributeDictionary(attributes);
   }
 }

@@ -152,7 +152,7 @@ final class ServiceSettings<T>
     if (null == attributeFilter) {
       // no filter, try using the current attributes as a sample filter
       final Map<String, ?> serviceAttributes = attributes.get(injector);
-      if (null != serviceAttributes) {
+      if (null != serviceAttributes && !serviceAttributes.isEmpty()) {
         return new SampleAttributeFilter(serviceAttributes);
       }
     }

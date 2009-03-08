@@ -3,6 +3,6 @@
 
 Private-Package:\
  ${module},\
- ${module}.builders,\
+ ${module}(.builders|.util|.util.*),\
  ${module}(.internal|.osgi);-split-package:=merge-first
 

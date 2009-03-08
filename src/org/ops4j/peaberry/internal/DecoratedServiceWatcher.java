@@ -75,15 +75,15 @@ final class DecoratedServiceWatcher<S>
       // Import aspect... (retrieve the decorated instances/attributes)
 
       public T get() {
-        return publishedService.get();
+        return decoratedService.get();
       }
 
       public Map<String, ?> attributes() {
-        return publishedService.attributes();
+        return decoratedService.attributes();
       }
 
       public void unget() {
-        publishedService.unget();
+        decoratedService.unget();
       }
     };
   }
