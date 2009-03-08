@@ -76,7 +76,6 @@ public final class ServiceAttributeTests {
 
   interface B {}
 
-  @SuppressWarnings("unchecked")
   public void testAttributeUnion() {
     final Map<String, ?> mapA = objectClass(A.class);
     final Map<String, ?> mapB = objectClass(B.class);

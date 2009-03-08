@@ -124,11 +124,13 @@ public final class Attributes {
    * 
    * @since 1.1
    */
-  public static Map<String, ?> union(final Map<String, ?>... attributes) {
+  public static Map<String, ?> union(@SuppressWarnings("unchecked") final Map... attributes) {
     final Map<String, Object> unionMap = new HashMap<String, Object>();
 
     for (final Map<String, ?> a : attributes) {
-      unionMap.putAll(a);
+      if (null != a) {
+        unionMap.putAll(a);
+      }
     }
 
     return unmodifiableMap(unionMap);

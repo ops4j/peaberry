@@ -19,6 +19,7 @@ package org.ops4j.peaberry.tests;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.names;
+import static org.ops4j.peaberry.util.Attributes.union;
 import static org.ops4j.peaberry.util.Filters.ldap;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
@@ -55,34 +56,38 @@ public final class ServiceExportTests
   @Override
   protected void configure() {
     bind(Id.class).toProvider(service(Id.class).filter(ldap("(id=TEST)")).single());
-
-    bind(export(Id.class)).toProvider(
-        service(Key.get(ExportedIdImpl.class)).attributes(singletonMap(SERVICE_RANKING, 8))
-            .export());
+    bind(export(Id.class)).toProvider(service(Key.get(ExportedIdImpl.class)).export());
   }
 
   public void testServiceExports() {
     reset();
 
-    final Export<? extends Id> exportedId = getInstance(Key.get(export(Id.class)));
-
     missing(importedId);
 
-    // standard service
     register("TEST");
     check(importedId, "TEST");
 
-    // modify our exported service so it matches the import filter
-    exportedId.attributes(names("id=TEST"));
+    // now publish our service (will get a later service.id) 
+    final Export<? extends Id> exportedId = getInstance(Key.get(export(Id.class)));
+
+    // exported service won't be used, as it doesn't match the filter
+    check(importedId, "TEST");
+
+    // modify exported service so it matches the import filter (drop ranking)
+    exportedId.attributes(union(names("id=TEST")));
+
+    // exported service still won't be used, as ranking isn't higher
+    check(importedId, "TEST");
+
+    // modify our exported service so it matches the import filter (add ranking)
+    exportedId.attributes(union(names("id=TEST"), singletonMap(SERVICE_RANKING, 8)));
 
     // exported service should now be used, as it has a higher ranking
     check(importedId, "EXPORTED");
 
-    // drop our exported service
     exportedId.unput();
     check(importedId, "TEST");
 
-    // drop standard service
     unregister("TEST");
     missing(importedId);
   }

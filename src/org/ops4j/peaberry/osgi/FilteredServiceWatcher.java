@@ -52,10 +52,12 @@ final class FilteredServiceWatcher<S>
 
     FilteredExport(final Import<T> service) {
       this.service = service;
-      checkMatchingService();
+      synchronized (this) {
+        checkMatchingService();
+      }
     }
 
-    private synchronized void checkMatchingService() {
+    private void checkMatchingService() {
       if (((OSGiServiceImport) (Import<?>) service).matches(filter)) {
         if (null == realExport) {
           // service metadata now matches

@@ -67,7 +67,6 @@ public final class DirectServiceTests
   protected void configure() {
     bind(Id.class).toProvider(service(Id.class).single().direct());
     bind(iterable(Id.class)).toProvider(service(Id.class).multiple().direct());
-
     bind(export(Id.class)).toProvider(service(Key.get(DirectIdImpl.class)).export());
   }
 

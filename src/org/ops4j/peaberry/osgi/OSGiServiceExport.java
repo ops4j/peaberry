@@ -18,6 +18,7 @@ package org.ops4j.peaberry.osgi;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,8 +61,9 @@ final class OSGiServiceExport<T>
     return instance;
   }
 
+  @SuppressWarnings("unchecked")
   public Map<String, ?> attributes() {
-    return attributes;
+    return null == attributes ? Collections.EMPTY_MAP : attributes;
   }
 
   public void unget() {/* nothing to do */}

@@ -20,6 +20,7 @@ import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
+import static org.testng.Assert.assertEquals;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -28,6 +29,7 @@ import java.util.Set;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.util.AbstractWatcher;
 import org.testng.annotations.Test;
 
@@ -170,5 +172,49 @@ public final class ServiceOutjectionTests
 
     check(singleWatcher, "[B]");
     check(multipleWatcher, "[B]");
+  }
+
+  public void testServiceWatcher() {
+    final ServiceWatcher<String> watcher = new AbstractWatcher<String>() {};
+    final Export<String> export = watcher.add(new Import<String>() {
+
+      public String get() {
+        return "hello";
+      }
+
+      public Map<String, ?> attributes() {
+        return singletonMap("KEY", "VALUE");
+      }
+
+      public void unget() {}
+    });
+
+    assertEquals(export.get(), "hello");
+    assertEquals(export.attributes().get("KEY"), "VALUE");
+    export.unget();
+
+    export.unput();
+
+    assertEquals(export.get(), null);
+    assertEquals(export.attributes().get("KEY"), "VALUE");
+    export.unget();
+
+    export.attributes(singletonMap("KEY", null));
+
+    assertEquals(export.get(), null);
+    assertEquals(export.attributes().get("KEY"), null);
+    export.unget();
+
+    export.put("world");
+
+    assertEquals(export.get(), "world");
+    assertEquals(export.attributes().get("KEY"), null);
+    export.unget();
+
+    export.put(null);
+
+    assertEquals(export.get(), null);
+    assertEquals(export.attributes().get("KEY"), null);
+    export.unget();
   }
 }
