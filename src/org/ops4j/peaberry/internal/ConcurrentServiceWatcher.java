@@ -22,6 +22,7 @@ import java.util.Map;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.util.SimpleExport;
 
 /**
  * A {@link ServiceWatcher} with similar behaviour to {@link ConcurrentImport}.
@@ -44,31 +45,38 @@ final class ConcurrentServiceWatcher<S>
     this.watcher = watcher;
   }
 
-  // every candidate has a tracker
   private final class TrackingExport<T>
-      implements Export<T> {
+      extends SimpleExport<T> {
 
-    private final Import<T> trackedImport;
+    private final Import<T> thisImport;
 
-    TrackingExport(final Import<T> trackedImport) {
-      this.trackedImport = trackedImport;
+    TrackingExport(final Import<T> thisImport) {
+      super(thisImport);
+
+      this.thisImport = thisImport;
     }
 
     // Export aspect is only active when our service is "best"
 
+    @Override
     @SuppressWarnings("unchecked")
-    public void put(final T instance) {
+    public void put(final T newInstance) {
+      super.put(newInstance);
+
       synchronized (ConcurrentServiceWatcher.this) {
-        if (trackedImport.equals(currentImport)) {
-          currentExport.put((S) instance);
+        if (null != currentExport && thisImport.equals(currentImport)) {
+          currentExport.put((S) newInstance);
         }
       }
     }
 
-    public void attributes(final Map<String, ?> attributes) {
+    @Override
+    public void attributes(final Map<String, ?> newAttributes) {
+      super.attributes(newAttributes);
+
       synchronized (ConcurrentServiceWatcher.this) {
-        if (trackedImport.equals(currentImport)) {
-          currentExport.attributes(attributes);
+        if (null != currentExport && thisImport.equals(currentImport)) {
+          currentExport.attributes(attributes());
         }
       }
 
@@ -76,26 +84,15 @@ final class ConcurrentServiceWatcher<S>
       updateBestService();
     }
 
+    @Override
     public void unput() {
+      super.unput();
+
       synchronized (ConcurrentServiceWatcher.this) {
-        if (trackedImport.equals(currentImport)) {
+        if (null != currentExport && thisImport.equals(currentImport)) {
           updateBestService();
         }
       }
-    }
-
-    // Import aspect is always available
-
-    public T get() {
-      return trackedImport.get();
-    }
-
-    public Map<String, ?> attributes() {
-      return trackedImport.attributes();
-    }
-
-    public void unget() {
-      trackedImport.unget();
     }
   }
 

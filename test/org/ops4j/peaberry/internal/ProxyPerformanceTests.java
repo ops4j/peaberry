@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.util.StaticImport;
 import org.testng.annotations.Test;
 
 /**

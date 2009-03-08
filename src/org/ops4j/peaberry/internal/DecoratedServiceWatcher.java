@@ -22,6 +22,7 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.util.SimpleExport;
 
 /**
  * A {@link ServiceWatcher} decorated by the given {@link ImportDecorator}.
@@ -46,6 +47,11 @@ final class DecoratedServiceWatcher<S>
     final Export<T> backingService = new SimpleExport<T>(service);
     final Import<T> decoratedService = decorator.decorate(backingService);
     final Export<T> publishedService = watcher.add(decoratedService);
+
+    // watcher is not interested!
+    if (null == publishedService) {
+      return null;
+    }
 
     return new Export<T>() {
 

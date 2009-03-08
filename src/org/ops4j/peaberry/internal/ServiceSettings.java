@@ -27,6 +27,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.util.StaticImport;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;

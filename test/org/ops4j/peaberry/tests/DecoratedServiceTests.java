@@ -139,12 +139,12 @@ public final class DecoratedServiceTests
   public void testDecoratorChaining() {
     final String text = Decorators.chain(new AbstractDecorator<String>() {
       @Override
-      protected String decorate(String instance, Map<String, ?> attributes) {
+      protected String decorate(final String instance, final Map<String, ?> attributes) {
         return "<1>" + instance + "<4>";
       }
     }, new AbstractDecorator<String>() {
       @Override
-      protected String decorate(String instance, Map<String, ?> attributes) {
+      protected String decorate(final String instance, final Map<String, ?> attributes) {
         return "<2>" + instance + "<3>";
       }
     }).decorate(new Import<String>() {

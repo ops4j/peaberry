@@ -38,58 +38,50 @@ public abstract class AbstractWatcher<S>
 
   @SuppressWarnings("unchecked")
   public <T extends S> Export<T> add(final Import<T> service) {
-    return (Export) new TrackingExport((Import) service);
-  }
-
-  // simple instance + attributes holder
-  private static class SimpleImport<T>
-      implements Import<T> {
-
-    protected T instance;
-    protected Map<String, ?> attributes;
-
-    public SimpleImport(final T instance, final Map<String, ?> attributes) {
-      this.instance = instance;
-      this.attributes = attributes;
-    }
-
-    public T get() {
-      return instance;
-    }
-
-    public Map<String, ?> attributes() {
-      return attributes;
-    }
-
-    public void unget() {/* nothing to do */}
+    final TrackingExport export = new TrackingExport((Import) service);
+    return export.isInterested() ? (Export) export : null;
   }
 
   private final class TrackingExport
-      extends SimpleImport<S>
-      implements Export<S> {
+      extends SimpleExport<S> {
 
-    public TrackingExport(final Import<S> service) {
-      super(adding(service), service.attributes());
+    private S tracker;
+
+    TrackingExport(final Import<S> service) {
+      super(service);
+
+      tracker = adding(service);
     }
 
+    boolean isInterested() {
+      return null != tracker;
+    }
+
+    @Override
     public synchronized void put(final S newInstance) {
-      unput(); // make sure it's been unput
+      super.put(newInstance);
+
       if (null != newInstance) {
-        instance = adding(new SimpleImport<S>(newInstance, attributes));
+        tracker = adding(new StaticImport<S>(newInstance, attributes()));
       }
     }
 
+    @Override
     public synchronized void attributes(final Map<String, ?> newAttributes) {
-      attributes = newAttributes;
-      if (null != instance) {
-        modified(instance, attributes);
+      super.attributes(newAttributes);
+
+      if (null != tracker) {
+        modified(tracker, attributes());
       }
     }
 
+    @Override
     public synchronized void unput() {
-      if (null != instance) {
-        removed(instance);
-        instance = null;
+      super.unput();
+
+      if (null != tracker) {
+        removed(tracker);
+        tracker = null;
       }
     }
   }

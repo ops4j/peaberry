@@ -42,12 +42,12 @@ public final class ServiceWatcherTests {
   private static final class TestImport
       implements Import<String> {
 
-    private String instance;
-    private Map<String, ?> attributes;
+    private final String instance;
+    private final Map<String, ?> attributes;
 
     TestImport(final String instance) {
       this.instance = instance;
-      this.attributes = singletonMap("id", instance);
+      attributes = singletonMap("id", instance);
     }
 
     public String get() {
@@ -59,11 +59,6 @@ public final class ServiceWatcherTests {
     }
 
     public void unget() {}
-
-    public void update(String newInstance) {
-      this.instance = newInstance;
-      this.attributes = singletonMap("id", newInstance);
-    }
   }
 
   public void testConcurrentWatcher() {
@@ -72,14 +67,15 @@ public final class ServiceWatcherTests {
     final String[] placeholder = new String[2];
     final ServiceWatcher<String> targetWatcher = new AbstractWatcher<String>() {
       @Override
-      protected String adding(Import<String> service) {
+      protected String adding(final Import<String> service) {
         placeholder[0] = service.get();
         placeholder[1] = (String) service.attributes().get("id");
         return super.adding(service);
       }
 
       @Override
-      protected void modified(String instance, Map<String, ?> attributes) {
+      protected void modified(final String instance, final Map<String, ?> attributes) {
+        placeholder[0] = instance;
         placeholder[1] = (String) attributes.get("id");
         super.modified(instance, attributes);
       }
@@ -106,22 +102,14 @@ public final class ServiceWatcherTests {
     assertEquals(placeholder[0], "A");
     assertEquals(placeholder[1], "A");
 
-    // update local settings
-    aImport.update("X");
-
-    // the change should be visible
-    assertEquals(aExport.get(), "X");
-    assertEquals(aExport.attributes().get("id"), "X");
-    aExport.unget();
-
     // notify the instance change
-    aExport.put(aImport.get());
+    aExport.put("X");
 
     assertEquals(placeholder[0], "X");
     assertEquals(placeholder[1], "A");
 
     // notify the attributes change
-    aExport.attributes(aImport.attributes());
+    aExport.attributes(singletonMap("id", "X"));
 
     assertEquals(placeholder[0], "X");
     assertEquals(placeholder[1], "X");
@@ -134,9 +122,8 @@ public final class ServiceWatcherTests {
     assertEquals(placeholder[0], "B");
     assertEquals(placeholder[1], "B");
 
-    aImport.update("Y");
-    aExport.put(aImport.get());
-    aExport.attributes(aImport.attributes());
+    aExport.put("Y");
+    aExport.attributes(singletonMap("id", "Y"));
 
     // change to A should be ignored
     assertEquals(placeholder[0], "B");
@@ -146,7 +133,7 @@ public final class ServiceWatcherTests {
   public void testDecoratedWatcher() {
     final ImportDecorator<String> decorator = new AbstractDecorator<String>() {
       @Override
-      protected String decorate(String instance, Map<String, ?> attributes) {
+      protected String decorate(final String instance, final Map<String, ?> attributes) {
         return "{" + instance + "}";
       }
     };
@@ -154,14 +141,15 @@ public final class ServiceWatcherTests {
     final String[] placeholder = new String[2];
     final ServiceWatcher<String> targetWatcher = new AbstractWatcher<String>() {
       @Override
-      protected String adding(Import<String> service) {
+      protected String adding(final Import<String> service) {
         placeholder[0] = service.get();
         placeholder[1] = (String) service.attributes().get("id");
         return super.adding(service);
       }
 
       @Override
-      protected void modified(String instance, Map<String, ?> attributes) {
+      protected void modified(final String instance, final Map<String, ?> attributes) {
+        placeholder[0] = instance;
         placeholder[1] = (String) attributes.get("id");
         super.modified(instance, attributes);
       }
@@ -184,22 +172,14 @@ public final class ServiceWatcherTests {
     assertEquals(placeholder[0], "{A}");
     assertEquals(placeholder[1], "A");
 
-    // update local settings
-    aImport.update("X");
-
-    // the change should be visible
-    assertEquals(aExport.get(), "{X}");
-    assertEquals(aExport.attributes().get("id"), "X");
-    aExport.unget();
-
     // notify the instance change
-    aExport.put(aImport.get());
+    aExport.put("X");
 
     assertEquals(placeholder[0], "{X}");
     assertEquals(placeholder[1], "A");
 
     // notify the attributes change
-    aExport.attributes(aImport.attributes());
+    aExport.attributes(singletonMap("id", "X"));
 
     assertEquals(placeholder[0], "{X}");
     assertEquals(placeholder[1], "X");

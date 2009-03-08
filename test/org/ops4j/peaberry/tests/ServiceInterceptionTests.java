@@ -57,12 +57,12 @@ public final class ServiceInterceptionTests
   protected void configure() {
     bind(Id.class).toProvider(service(Id.class).decoratedWith(chain(new AbstractDecorator<Id>() {
       @Override
-      protected Id decorate(Id instance, Map<String, ?> attributes) {
+      protected Id decorate(final Id instance, final Map<String, ?> attributes) {
         assertEquals(attributes.get("id"), "A");
         return instance;
       }
     }, intercept(any(), not(returns(identicalTo(int.class))), new MethodInterceptor() {
-      public Object invoke(MethodInvocation mi)
+      public Object invoke(final MethodInvocation mi)
           throws Throwable {
 
         assertEquals(mi.getStaticPart(), mi.getMethod());
@@ -78,7 +78,7 @@ public final class ServiceInterceptionTests
         return mi.proceed();
       }
     }, new MethodInterceptor() {
-      public Object invoke(MethodInvocation mi)
+      public Object invoke(final MethodInvocation mi)
           throws Throwable {
         if (mi.getMethod().getReturnType() == String.class) {
           return mi.getMethod() + " = " + mi.proceed();
@@ -99,7 +99,7 @@ public final class ServiceInterceptionTests
       synchronized (id) {
         id.wait(8);
       }
-    } catch (InterruptedException e) {}
+    } catch (final InterruptedException e) {}
 
     id.hashCode();
   }
@@ -115,7 +115,7 @@ public final class ServiceInterceptionTests
     final String[] placeholder = new String[1];
 
     final Import<CharSequence> service = intercept(any(), any(), new MethodInterceptor() {
-      public Object invoke(MethodInvocation mi)
+      public Object invoke(final MethodInvocation mi)
           throws Throwable {
         return mi.proceed();
       }

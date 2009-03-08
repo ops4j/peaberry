@@ -81,7 +81,7 @@ public final class ServiceOutjectionTests
   static class Decorator
       extends AbstractDecorator<Id> {
     @Override
-    protected Id decorate(final Id instance, Map<String, ?> attributes) {
+    protected Id decorate(final Id instance, final Map<String, ?> attributes) {
       return new Id() {
         @Override
         public String toString() {
@@ -232,13 +232,13 @@ public final class ServiceOutjectionTests
     export.unput();
 
     assertEquals(export.get(), null);
-    assertEquals(export.attributes().get("KEY"), "VALUE");
+    assertEquals(export.attributes(), null);
     export.unget();
 
     export.attributes(singletonMap("KEY", null));
 
     assertEquals(export.get(), null);
-    assertEquals(export.attributes().get("KEY"), null);
+    assertEquals(export.attributes(), null);
     export.unget();
 
     export.put("world");
@@ -250,7 +250,7 @@ public final class ServiceOutjectionTests
     export.put(null);
 
     assertEquals(export.get(), null);
-    assertEquals(export.attributes().get("KEY"), null);
+    assertEquals(export.attributes(), null);
     export.unget();
   }
 }

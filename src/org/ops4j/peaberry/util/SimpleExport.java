@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.internal;
+package org.ops4j.peaberry.util;
 
-import static org.ops4j.peaberry.internal.StaticImport.UNAVAILABLE;
+import static org.ops4j.peaberry.util.StaticImport.unavailable;
 
 import java.util.Map;
 
@@ -24,17 +24,22 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 
 /**
- * A simple mutable {@link Export}.
+ * A simple mutable {@link Export} built on top of a single {@link Import}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class SimpleExport<T>
+public class SimpleExport<T>
     implements Export<T> {
 
   private Map<String, ?> attributes;
-  private Import<T> service;
+  private volatile Import<T> service;
 
-  SimpleExport(final Import<T> service) {
+  /**
+   * Create a new {@link Export} using the given {@link Import} details.
+   * 
+   * @param service service to be exported
+   */
+  public SimpleExport(final Import<T> service) {
     this.service = service;
   }
 
@@ -42,9 +47,9 @@ final class SimpleExport<T>
     return service.get();
   }
 
-  public Map<String, ?> attributes() {
-    // allow overriding, but still honour service availability
+  public synchronized Map<String, ?> attributes() {
     final Map<String, ?> liveAttributes = service.attributes();
+    // can override attributes but must honour the original service availability
     return null == attributes || null == liveAttributes ? liveAttributes : attributes;
   }
 
@@ -52,18 +57,25 @@ final class SimpleExport<T>
     service.unget();
   }
 
-  public void put(final T newInstance) {
-    // override original service with new static instance
-    service = new StaticImport<T>(newInstance, attributes());
+  public synchronized void put(final T newInstance) {
+    unput();
+
+    if (null != newInstance) {
+      // override original service with new fixed instance
+      service = new StaticImport<T>(newInstance, attributes);
+    }
   }
 
-  public void attributes(final Map<String, ?> newAttributes) {
-    // override original metadata
+  public synchronized void attributes(final Map<String, ?> newAttributes) {
+    // override original map
     attributes = newAttributes;
   }
 
-  @SuppressWarnings("unchecked")
-  public void unput() {
-    service = (Import) UNAVAILABLE;
+  public synchronized void unput() {
+    if (null == attributes) {
+      // perform lazy backup if needed
+      attributes = service.attributes();
+    }
+    service = unavailable();
   }
 }

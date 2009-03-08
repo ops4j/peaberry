@@ -95,7 +95,7 @@ public final class StickyServiceTests {
     try {
       assertNull(brokenService.get());
       fail("Expected ServiceException");
-    } catch (ServiceException e) {}
+    } catch (final ServiceException e) {}
 
     placeholder[0] = "three";
 
