@@ -160,7 +160,7 @@ public final class InterceptingDecorator<S>
     final Set<Class> api = new HashSet<Class>();
     // look through the entire class hierarchy collecting all visible interfaces
     for (Class<?> clazz = instance.getClass(); null != clazz; clazz = clazz.getSuperclass()) {
-      Collections.addAll(api, clazz.isInterface() ? new Class[]{clazz} : clazz.getInterfaces()); // NOPMD
+      Collections.addAll(api, clazz.getInterfaces());
     }
     return api.toArray(new Class[api.size()]);
   }

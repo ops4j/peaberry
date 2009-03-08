@@ -127,13 +127,8 @@ final class OSGiServiceExport<T>
     final Set<String> names = new HashSet<String>();
 
     for (Class<?> clazz = instance.getClass(); null != clazz; clazz = clazz.getSuperclass()) {
-      if (clazz.isInterface()) {
-        names.add(clazz.getName());
-      } else {
-        // use direct interfaces declared by this class
-        for (final Class<?> i : clazz.getInterfaces()) {
-          names.add(i.getName());
-        }
+      for (final Class<?> i : clazz.getInterfaces()) {
+        names.add(i.getName());
       }
     }
 

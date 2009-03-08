@@ -31,6 +31,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.builders.ServiceBuilder;
 import org.ops4j.peaberry.util.AbstractDecorator;
+import org.ops4j.peaberry.util.Decorators;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -133,5 +134,32 @@ public final class DecoratedServiceTests
     exportedId = injector.getInstance(Key.get(export(Id.class), Names.named("attributes")));
     assertEquals(exportedId.attributes().get(SERVICE_DESCRIPTION), "DECORATED");
     exportedId.unput();
+  }
+
+  public void testDecoratorChaining() {
+    final String text = Decorators.chain(new AbstractDecorator<String>() {
+      @Override
+      protected String decorate(String instance, Map<String, ?> attributes) {
+        return "<1>" + instance + "<4>";
+      }
+    }, new AbstractDecorator<String>() {
+      @Override
+      protected String decorate(String instance, Map<String, ?> attributes) {
+        return "<2>" + instance + "<3>";
+      }
+    }).decorate(new Import<String>() {
+
+      public String get() {
+        return "HELLO";
+      }
+
+      public Map<String, ?> attributes() {
+        return null;
+      }
+
+      public void unget() {}
+    }).get();
+
+    assertEquals(text, "<1><2>HELLO<3><4>");
   }
 }

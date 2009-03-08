@@ -59,7 +59,8 @@ public final class Decorators {
    * @param decorators sequence of decorators
    * @return decorator combining the given decorators
    */
-  public static <S> ImportDecorator<S> chain(final ImportDecorator<S>... decorators) {
+  @SuppressWarnings("unchecked")
+  public static <S> ImportDecorator<S> chain(final ImportDecorator... decorators) {
     return new DecoratorChain<S>(decorators);
   }
 
