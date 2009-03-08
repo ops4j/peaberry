@@ -16,10 +16,12 @@
 
 package org.ops4j.peaberry.tests;
 
+import static com.google.inject.name.Names.named;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.annotation.Retention;
@@ -29,6 +31,8 @@ import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
 
 import examples.ids.Id;
 
@@ -63,11 +67,24 @@ public final class DirectServiceTests
     }
   }
 
+  @Inject
+  @Named("in")
+  CharSequence inToken;
+
+  @Inject
+  @Named("out")
+  CharSequence outToken;
+
   @Override
   protected void configure() {
     bind(Id.class).toProvider(service(Id.class).single().direct());
     bind(iterable(Id.class)).toProvider(service(Id.class).multiple().direct());
-    bind(export(Id.class)).toProvider(service(Key.get(DirectIdImpl.class)).export());
+    bind(export(Id.class)).toProvider(service(TypeLiteral.get(DirectIdImpl.class)).export());
+
+    bind(CharSequence.class).annotatedWith(named("out")).toProvider(
+        service("TOKEN").export().direct());
+    bind(CharSequence.class).annotatedWith(named("in")).toProvider(
+        service(CharSequence.class).single());
   }
 
   public void testDirectServiceInjection() {
@@ -97,5 +114,7 @@ public final class DirectServiceTests
 
     check(hasService.id, "DIRECT");
     check(hasService.ids, "[DIRECT]");
+
+    assertEquals(inToken.toString(), outToken.toString());
   }
 }

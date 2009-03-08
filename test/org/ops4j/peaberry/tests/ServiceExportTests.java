@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.tests;
 
+import static com.google.inject.name.Names.named;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.names;
@@ -29,6 +30,7 @@ import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
 import com.google.inject.Key;
+import com.google.inject.name.Named;
 
 import examples.ids.Id;
 
@@ -44,6 +46,10 @@ public final class ServiceExportTests
   @Inject
   Id importedId;
 
+  @Inject
+  @Named("sample")
+  Id sampleId;
+
   public static class ExportedIdImpl
       implements Id {
 
@@ -57,6 +63,10 @@ public final class ServiceExportTests
   protected void configure() {
     bind(Id.class).toProvider(service(Id.class).filter(ldap("(id=TEST)")).single());
     bind(export(Id.class)).toProvider(service(Key.get(ExportedIdImpl.class)).export());
+
+    // exercise the filter code that uses sample attributes...
+    bind(Id.class).annotatedWith(named("sample")).toProvider(
+        service(Id.class).attributes(singletonMap("id", "TEST")).single());
   }
 
   public void testServiceExports() {
@@ -66,29 +76,35 @@ public final class ServiceExportTests
 
     register("TEST");
     check(importedId, "TEST");
+    check(sampleId, "TEST");
 
-    // now publish our service (will get a later service.id) 
+    // now publish our service (will get a later service.id)
     final Export<? extends Id> exportedId = getInstance(Key.get(export(Id.class)));
 
     // exported service won't be used, as it doesn't match the filter
     check(importedId, "TEST");
+    check(sampleId, "TEST");
 
     // modify exported service so it matches the import filter (drop ranking)
     exportedId.attributes(union(names("id=TEST")));
 
     // exported service still won't be used, as ranking isn't higher
     check(importedId, "TEST");
+    check(sampleId, "TEST");
 
     // modify our exported service so it matches the import filter (add ranking)
     exportedId.attributes(union(names("id=TEST"), singletonMap(SERVICE_RANKING, 8)));
 
     // exported service should now be used, as it has a higher ranking
     check(importedId, "EXPORTED");
+    check(sampleId, "EXPORTED");
 
     exportedId.unput();
     check(importedId, "TEST");
+    check(sampleId, "TEST");
 
     unregister("TEST");
     missing(importedId);
+    missing(sampleId);
   }
 }

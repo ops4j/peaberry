@@ -26,10 +26,7 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.testng.annotations.Test;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Named;
 
@@ -39,7 +36,8 @@ import com.google.inject.name.Named;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test
-public final class ServiceRegistryTests {
+public final class ServiceRegistryTests
+    extends InjectableTestCase {
 
   @Inject
   Export<ClassLoader> exportedLoader;
@@ -48,22 +46,23 @@ public final class ServiceRegistryTests {
   @Named("service")
   ClassLoader importedLoader;
 
-  public void testCustomServiceRegistry() {
-    final Injector injector = Guice.createInjector(new AbstractModule() {
+  public ServiceRegistryTests() {
+    super(new TrivialServiceRegistry());
+  }
 
-      @Override
-      protected void configure() {
-        final Key<? extends ServiceRegistry> registryKey = Key.get(TrivialServiceRegistry.class);
+  @Override
+  protected void configure() {
+    final Key<? extends ServiceRegistry> alternateRegistryKey =
+        Key.get(ServiceRegistry.class, named("alternate"));
 
-        bind(ClassLoader.class).annotatedWith(named("service")).toProvider(
-            service(ClassLoader.class).in(registryKey).single());
+    bind(ClassLoader.class).annotatedWith(named("service")).toProvider(
+        service(ClassLoader.class).in(alternateRegistryKey).single());
 
-        bind(export(ClassLoader.class)).toProvider(
-            service(getClass().getClassLoader()).in(registryKey).export());
-      }
-    });
+    bind(export(ClassLoader.class)).toProvider(
+        service(getClass().getClassLoader()).in(alternateRegistryKey).export());
+  }
 
-    injector.injectMembers(this);
+  public void testCustomRegistry() {
 
     try {
       assertEquals(importedLoader.loadClass(getClass().getName()), getClass());

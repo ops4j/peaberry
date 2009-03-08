@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.tests;
 
+import static com.google.inject.name.Names.named;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
@@ -25,6 +26,7 @@ import static org.testng.Assert.fail;
 
 import java.util.Collections;
 
+import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -58,9 +60,16 @@ public abstract class InjectableTestCase
   private IdManager idService;
 
   public InjectableTestCase() {
-    injector = Guice.createInjector(this, osgiModule(BUNDLE_CONTEXT), new AbstractModule() {
+    this(new ServiceRegistry[0]);
+  }
+
+  public InjectableTestCase(final ServiceRegistry... regs) {
+    injector = Guice.createInjector(this, osgiModule(BUNDLE_CONTEXT, regs), new AbstractModule() {
       @Override
       public void configure() {
+        if (regs.length > 0) {
+          bind(ServiceRegistry.class).annotatedWith(named("alternate")).toInstance(regs[0]);
+        }
         bind(IdManager.class).toProvider(service(IdManager.class).single());
       }
     });

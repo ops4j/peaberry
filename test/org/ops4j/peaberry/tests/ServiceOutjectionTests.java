@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.tests;
 
+import static com.google.inject.name.Names.named;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
@@ -36,7 +37,6 @@ import org.testng.annotations.Test;
 import com.google.inject.Inject;
 import com.google.inject.Key;
 import com.google.inject.name.Named;
-import com.google.inject.name.Names;
 
 import examples.ids.Id;
 
@@ -95,14 +95,14 @@ public final class ServiceOutjectionTests
 
   @Override
   protected void configure() {
-    bind(Watcher.class).annotatedWith(Names.named("single")).to(Watcher.class).asEagerSingleton();
-    bind(Watcher.class).annotatedWith(Names.named("multiple")).to(Watcher.class).asEagerSingleton();
+    bind(Watcher.class).annotatedWith(named("single")).to(Watcher.class).asEagerSingleton();
+    bind(Watcher.class).annotatedWith(named("multiple")).to(Watcher.class).asEagerSingleton();
 
     bind(Id.class).toProvider(
-        service(Id.class).out(Key.get(Watcher.class, Names.named("single"))).single());
+        service(Id.class).out(Key.get(Watcher.class, named("single"))).single());
 
     bind(iterable(Id.class)).toProvider(
-        service(Id.class).out(Key.get(Watcher.class, Names.named("multiple"))).multiple());
+        service(Id.class).out(Key.get(Watcher.class, named("multiple"))).multiple());
   }
 
   public void testServiceOutjection() {

@@ -16,6 +16,7 @@
 
 package org.ops4j.peaberry.tests;
 
+import static com.google.inject.name.Names.named;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.union;
@@ -37,7 +38,6 @@ import org.testng.annotations.Test;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.name.Names;
 
 import examples.ids.Id;
 
@@ -108,10 +108,10 @@ public final class DecoratedServiceTests
     bind(iterable(Id.class)).toProvider(builder.multiple());
     bind(Id.class).toProvider(builder.single().direct());
 
-    bind(export(Id.class)).annotatedWith(Names.named("id")).toProvider(
+    bind(export(Id.class)).annotatedWith(named("id")).toProvider(
         service(new Id() {}).decoratedWith(new IdDecorator()).export());
 
-    bind(export(Id.class)).annotatedWith(Names.named("attributes")).toProvider(
+    bind(export(Id.class)).annotatedWith(named("attributes")).toProvider(
         service(new Id() {}).decoratedWith(new AttributeDecorator()).export());
   }
 
@@ -127,11 +127,11 @@ public final class DecoratedServiceTests
 
     Export<? extends Id> exportedId;
 
-    exportedId = injector.getInstance(Key.get(export(Id.class), Names.named("id")));
+    exportedId = injector.getInstance(Key.get(export(Id.class), named("id")));
     assertEquals(exportedId.attributes().get(SERVICE_DESCRIPTION), null);
     exportedId.unput();
 
-    exportedId = injector.getInstance(Key.get(export(Id.class), Names.named("attributes")));
+    exportedId = injector.getInstance(Key.get(export(Id.class), named("attributes")));
     assertEquals(exportedId.attributes().get(SERVICE_DESCRIPTION), "DECORATED");
     exportedId.unput();
   }
