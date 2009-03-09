@@ -22,6 +22,7 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.util.DelegatingImport;
 import org.ops4j.peaberry.util.SimpleExport;
 
 /**
@@ -44,58 +45,49 @@ final class DecoratedServiceWatcher<S>
   public <T extends S> Export<T> add(final Import<T> service) {
 
     // wrap service to allow updates, decorate the wrapper, then publish
-    final Export<T> backingService = new SimpleExport<T>(service);
-    final Import<T> decoratedService = decorator.decorate(backingService);
-    final Export<T> publishedService = watcher.add(decoratedService);
+    final Export<T> original = new SimpleExport<T>(service);
+    final Import<T> decorated = decorator.decorate(original);
+    final Export<T> published = watcher.add(decorated);
 
     // watcher is not interested!
-    if (null == publishedService) {
+    if (null == published) {
       return null;
     }
 
-    return new Export<T>() {
+    return new DecoratedExport<T>(original, decorated, published);
+  }
 
-      // Export aspect... (ensure decoration of new instances/attributes)
+  private static final class DecoratedExport<T>
+      extends DelegatingImport<T>
+      implements Export<T> {
 
-      public synchronized void put(final T instance) {
-        // force decoration of new instance
-        backingService.put(instance);
-        publishedService.put(null == instance ? null : decoratedService.get());
-      }
+    private final Export<T> original;
+    private final Import<T> decorated;
+    private final Export<T> published;
 
-      public synchronized void attributes(final Map<String, ?> attributes) {
-        // force decoration of new attributes
-        backingService.attributes(attributes);
-        publishedService.attributes(decoratedService.attributes());
-      }
+    DecoratedExport(final Export<T> original, final Import<T> decorated, final Export<T> published) {
+      super(original);
 
-      public synchronized void unput() {
-        try {
-          publishedService.unput();
-        } finally {
-          // clear wrapped service
-          backingService.unput();
-        }
-      }
+      this.original = original;
+      this.decorated = decorated;
+      this.published = published;
+    }
 
-      // Import aspect... (retrieve the undecorated instances/attributes)
+    public synchronized void put(final T instance) {
+      // force decoration of new instance
+      original.put(instance);
+      published.put(null == instance ? null : decorated.get());
+    }
 
-      public T get() {
-        return backingService.get();
-      }
+    public synchronized void attributes(final Map<String, ?> attributes) {
+      // force decoration of new attributes
+      original.attributes(attributes);
+      published.attributes(decorated.attributes());
+    }
 
-      public Map<String, ?> attributes() {
-        return backingService.attributes();
-      }
-
-      public void unget() {
-        backingService.unget();
-      }
-
-      public boolean available() {
-        return backingService.available();
-      }
-    };
+    public void unput() {
+      put(null); // simple alias
+    }
   }
 
   @Override

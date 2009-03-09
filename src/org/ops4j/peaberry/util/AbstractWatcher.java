@@ -38,7 +38,7 @@ public abstract class AbstractWatcher<S>
 
   @SuppressWarnings("unchecked")
   public <T extends S> Export<T> add(final Import<T> service) {
-    TrackingExport export = new TrackingExport((Import) service);
+    final TrackingExport export = new TrackingExport((Import) service);
     return null == export.tracker ? null : (Export) export;
   }
 

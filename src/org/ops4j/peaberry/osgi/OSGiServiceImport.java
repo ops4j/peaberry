@@ -57,9 +57,9 @@ final class OSGiServiceImport
   private int rank;
 
   // generation-based service cache
+  private volatile Object instance;
   private final AtomicInteger count;
   private volatile int state;
-  private Object instance;
   private int generation;
 
   private final Map<String, ?> attributes;

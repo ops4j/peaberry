@@ -25,6 +25,7 @@ import org.ops4j.peaberry.Import;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
+@SuppressWarnings("PMD.AbstractNaming")
 public abstract class DelegatingImport<T>
     implements Import<T> {
 
@@ -35,7 +36,7 @@ public abstract class DelegatingImport<T>
    * 
    * @param service delegate service
    */
-  public DelegatingImport(final Import<T> service) {
+  protected DelegatingImport(final Import<T> service) {
     this.service = service;
   }
 
