@@ -66,6 +66,11 @@ final class ConcurrentServiceWatcher<S>
       synchronized (ConcurrentServiceWatcher.this) {
         if (null != currentExport && thisImport.equals(currentImport)) {
           currentExport.put((S) newInstance);
+
+          // is this a removal?
+          if (null == newInstance) {
+            updateBestService();
+          }
         }
       }
     }
@@ -76,23 +81,12 @@ final class ConcurrentServiceWatcher<S>
 
       synchronized (ConcurrentServiceWatcher.this) {
         if (null != currentExport && thisImport.equals(currentImport)) {
-          currentExport.attributes(attributes());
+          currentExport.attributes(newAttributes);
         }
       }
 
       // has ranking changed?
       updateBestService();
-    }
-
-    @Override
-    public void unput() {
-      super.unput();
-
-      synchronized (ConcurrentServiceWatcher.this) {
-        if (null != currentExport && thisImport.equals(currentImport)) {
-          updateBestService();
-        }
-      }
     }
   }
 

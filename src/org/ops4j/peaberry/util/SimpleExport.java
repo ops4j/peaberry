@@ -16,66 +16,91 @@
 
 package org.ops4j.peaberry.util;
 
-import static org.ops4j.peaberry.util.StaticImport.unavailable;
-
 import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 
 /**
- * A simple mutable {@link Export} built on top of a single {@link Import}.
+ * A basic mutable {@link Export} derived from a single dynamic {@link Import}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public class SimpleExport<T>
     implements Export<T> {
 
-  private Map<String, ?> attributes;
-  private volatile Import<T> service;
+  // track usage of the original dynamic service so we can unwind it later
+  private static final class CountingImport<T>
+      extends DelegatingImport<T> {
 
-  /**
-   * Create a new {@link Export} using the given {@link Import} details.
-   * 
-   * @param service service to be exported
-   */
-  public SimpleExport(final Import<T> service) {
-    this.service = service;
+    private int count;
+
+    CountingImport(final Import<T> service) {
+      super(service);
+    }
+
+    @Override
+    public T get() {
+      count++;
+      return super.get();
+    }
+
+    @Override
+    public void unget() {
+      count--;
+      super.unget();
+    }
+
+    void unwind() {
+      // service swapped while still in use, so balance the surplus of "gets"
+      while (count-- > 0) {
+        super.unget();
+      }
+    }
   }
 
-  public T get() {
+  private Import<T> service;
+  private Map<String, ?> attributes;
+
+  /**
+   * Create a new {@link Export} from the given {@link Import}.
+   * 
+   * @param service service being exported
+   */
+  public SimpleExport(final Import<T> service) {
+    this.service = new CountingImport<T>(service);
+  }
+
+  public synchronized T get() {
     return service.get();
   }
 
   public synchronized Map<String, ?> attributes() {
-    final Map<String, ?> liveAttributes = service.attributes();
-    // can override attributes but must honour the original service availability
-    return null == attributes || null == liveAttributes ? liveAttributes : attributes;
+    return null == attributes ? service.attributes() : attributes;
   }
 
-  public void unget() {
+  public synchronized void unget() {
     service.unget();
   }
 
-  public synchronized void put(final T newInstance) {
-    unput();
+  public boolean available() {
+    return service.available();
+  }
 
-    if (null != newInstance) {
-      // override original service with new fixed instance
-      service = new StaticImport<T>(newInstance, attributes);
+  public synchronized void put(final T newInstance) {
+    // might need to balance the gets + ungets
+    if (service instanceof CountingImport) {
+      ((CountingImport<?>) service).unwind();
     }
+
+    service = new StaticImport<T>(newInstance, service.attributes());
   }
 
   public synchronized void attributes(final Map<String, ?> newAttributes) {
-    // override original map
     attributes = newAttributes;
   }
 
-  public synchronized void unput() {
-    if (null == attributes) {
-      // perform lazy backup if needed
-      attributes = service.attributes();
-    }
-    service = unavailable();
+  public void unput() {
+    put(null); // simple alias
   }
 }

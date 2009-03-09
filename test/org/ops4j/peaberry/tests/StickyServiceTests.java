@@ -46,12 +46,15 @@ public final class StickyServiceTests {
         return placeholder[0];
       }
 
-      @SuppressWarnings("unchecked")
       public Map<String, ?> attributes() {
-        return null == placeholder[0] ? null : Collections.EMPTY_MAP;
+        return Collections.emptyMap();
       }
 
       public void unget() {}
+
+      public boolean available() {
+        return null != placeholder[0];
+      }
     };
 
     final Import<String> reusableService = sticky(new Callable<Boolean>() {
@@ -100,7 +103,6 @@ public final class StickyServiceTests {
     placeholder[0] = "three";
 
     assertNull(staticService.get());
-    assertNull(staticService.attributes());
     assertEquals(reusableService.get(), "three");
     assertNull(brokenService.get());
   }

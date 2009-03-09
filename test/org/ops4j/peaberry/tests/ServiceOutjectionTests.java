@@ -33,6 +33,7 @@ import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.util.AbstractDecorator;
 import org.ops4j.peaberry.util.AbstractWatcher;
+import org.ops4j.peaberry.util.StaticImport;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -147,22 +148,12 @@ public final class ServiceOutjectionTests
     check(multipleWatcher, "[A, B]");
     check(decoratedWatcher, "[<=A=>]");
 
-    final Export<Id> exportedId = registry.add(new Import<Id>() {
-      public Id get() {
-        return new Id() {
-          @Override
-          public String toString() {
-            return "C";
-          }
-        };
+    final Export<Id> exportedId = registry.add(new StaticImport<Id>(new Id() {
+      @Override
+      public String toString() {
+        return "C";
       }
-
-      public Map<String, ?> attributes() {
-        return null;
-      }
-
-      public void unget() {}
-    });
+    }));
 
     check(singleWatcher, "[A]");
     check(multipleWatcher, "[A, B, C]");
@@ -212,18 +203,8 @@ public final class ServiceOutjectionTests
 
   public void testServiceWatcher() {
     final ServiceWatcher<String> watcher = new AbstractWatcher<String>() {};
-    final Export<String> export = watcher.add(new Import<String>() {
-
-      public String get() {
-        return "hello";
-      }
-
-      public Map<String, ?> attributes() {
-        return singletonMap("KEY", "VALUE");
-      }
-
-      public void unget() {}
-    });
+    final Export<String> export =
+        watcher.add(new StaticImport<String>("hello", singletonMap("KEY", "VALUE")));
 
     assertEquals(export.get(), "hello");
     assertEquals(export.attributes().get("KEY"), "VALUE");
@@ -232,13 +213,13 @@ public final class ServiceOutjectionTests
     export.unput();
 
     assertEquals(export.get(), null);
-    assertEquals(export.attributes(), null);
+    assertEquals(export.attributes().get("KEY"), "VALUE");
     export.unget();
 
     export.attributes(singletonMap("KEY", null));
 
     assertEquals(export.get(), null);
-    assertEquals(export.attributes(), null);
+    assertEquals(export.attributes().get("KEY"), null);
     export.unget();
 
     export.put("world");
@@ -250,7 +231,7 @@ public final class ServiceOutjectionTests
     export.put(null);
 
     assertEquals(export.get(), null);
-    assertEquals(export.attributes(), null);
+    assertEquals(export.attributes().get("KEY"), null);
     export.unget();
   }
 }

@@ -18,7 +18,6 @@ package org.ops4j.peaberry.osgi;
 
 import static org.osgi.framework.Constants.OBJECTCLASS;
 
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,6 +25,7 @@ import java.util.Set;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.util.SimpleExport;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -35,89 +35,56 @@ import org.osgi.framework.ServiceRegistration;
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 final class OSGiServiceExport<T>
-    implements Export<T> {
+    extends SimpleExport<T> {
 
   private final BundleContext bundleContext;
-  private Import<T> originalService;
-
-  private T instance;
-  private Map<String, ?> attributes;
   private ServiceRegistration reg;
 
   OSGiServiceExport(final BundleContext bundleContext, final Import<T> service) {
+    super(service);
     this.bundleContext = bundleContext;
-    this.originalService = service;
-
-    // grab service so it can be exported
-    instance = service.get();
-    attributes = service.attributes();
-
     exportOSGiService();
   }
 
-  // Import aspect...
-
-  public T get() {
-    return instance;
-  }
-
-  @SuppressWarnings("unchecked")
-  public Map<String, ?> attributes() {
-    return null == attributes ? Collections.EMPTY_MAP : attributes;
-  }
-
-  public void unget() {/* nothing to do */}
-
-  // Export aspect...
-
+  @Override
   public synchronized void put(final T newInstance) {
-    if (newInstance != instance) { // NOPMD
-      removeOSGiService();
-      instance = newInstance;
-      exportOSGiService();
-    }
-  }
-
-  public synchronized void attributes(final Map<String, ?> newAttributes) {
-    attributes = newAttributes;
-    if (null != reg) {
-      reg.setProperties(getProperties());
-    }
-  }
-
-  public synchronized void unput() {
     removeOSGiService();
-    instance = null;
+    super.put(newInstance);
+    exportOSGiService();
+  }
+
+  @Override
+  public synchronized void attributes(final Map<String, ?> newAttributes) {
+    super.attributes(newAttributes);
+    if (null != reg) {
+      reg.setProperties(getProperties(newAttributes));
+    }
   }
 
   private void exportOSGiService() {
+    final T instance = get();
     if (null != instance) {
-      reg = bundleContext.registerService(getInterfaceNames(), instance, getProperties());
+      final Dictionary<String, ?> properties = getProperties(attributes());
+      final String[] interfaceNames = getInterfaceNames(instance, properties);
+      reg = bundleContext.registerService(interfaceNames, instance, properties);
     }
   }
 
   private void removeOSGiService() {
-
-    // first remove the registered service
     if (null != reg) {
       try {
         reg.unregister();
       } catch (final RuntimeException re) {/* already gone */} // NOPMD
       reg = null;
     }
-
-    // can now release the original service
-    if (null != originalService) {
-      try {
-        originalService.unget();
-      } catch (final RuntimeException re) {/* already gone */} // NOPMD
-      originalService = null;
-    }
   }
 
-  private String[] getInterfaceNames() {
+  private static Dictionary<String, ?> getProperties(final Map<String, ?> attributes) {
+    return null == attributes || attributes.isEmpty() ? null : new AttributeDictionary(attributes);
+  }
 
-    final Object objectClass = null == attributes ? null : attributes.get(OBJECTCLASS);
+  private static String[] getInterfaceNames(final Object instance, final Dictionary<?, ?> properties) {
+    final Object objectClass = null == properties ? null : properties.get(OBJECTCLASS);
 
     // check service attributes setting
     if (objectClass instanceof String[]) {
@@ -133,9 +100,5 @@ final class OSGiServiceExport<T>
     }
 
     return names.toArray(new String[names.size()]);
-  }
-
-  private Dictionary<String, ?> getProperties() {
-    return null == attributes || attributes.isEmpty() ? null : new AttributeDictionary(attributes);
   }
 }

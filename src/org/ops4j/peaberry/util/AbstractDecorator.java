@@ -34,19 +34,12 @@ public abstract class AbstractDecorator<S>
     implements ImportDecorator<S> {
 
   public <T extends S> Import<T> decorate(final Import<T> service) {
-    return new Import<T>() {
+    return new DelegatingImport<T>(service) {
 
+      @Override
       @SuppressWarnings("unchecked")
       public T get() {
         return (T) decorate(service.get(), service.attributes());
-      }
-
-      public Map<String, ?> attributes() {
-        return service.attributes();
-      }
-
-      public void unget() {
-        service.unget();
       }
     };
   }

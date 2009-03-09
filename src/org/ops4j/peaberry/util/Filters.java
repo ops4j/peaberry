@@ -73,13 +73,13 @@ public final class Filters {
   /**
    * Create an {@link AttributeFilter} based on the given service attributes.
    * 
-   * @param attributes service attributes
-   * @return service attribute filter
+   * @param sampleAttributes sample attributes
+   * @return sample attribute filter
    */
-  public static AttributeFilter attributes(final Map<String, ?> attributes) {
+  public static AttributeFilter attributes(final Map<String, ?> sampleAttributes) {
     return new AttributeFilter() {
-      public boolean matches(final Map<String, ?> targetAttributes) {
-        return targetAttributes.entrySet().containsAll(attributes.entrySet());
+      public boolean matches(final Map<String, ?> attributes) {
+        return null != attributes && attributes.entrySet().containsAll(sampleAttributes.entrySet());
       }
     };
   }

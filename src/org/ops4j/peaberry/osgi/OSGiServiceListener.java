@@ -205,7 +205,7 @@ final class OSGiServiceListener
 
       // now do a linear search applying the given filter
       final OSGiServiceImport nextImport = imports.get(i);
-      if (null == filter || nextImport.matches(filter)) {
+      if (null == filter || filter.matches(nextImport.attributes())) {
         return nextImport;
       }
     }

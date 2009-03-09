@@ -130,6 +130,10 @@ public final class ServiceInterceptionTests
       }
 
       public void unget() {}
+
+      public boolean available() {
+        return null != placeholder[0];
+      }
     });
 
     assertNull(service.get());

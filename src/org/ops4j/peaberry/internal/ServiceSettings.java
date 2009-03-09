@@ -124,27 +124,27 @@ final class ServiceSettings<T>
   private static final class SampleAttributeFilter
       implements AttributeFilter {
 
-    private final Map<String, ?> attributes;
+    private final Map<String, ?> sampleAttributes;
 
     public SampleAttributeFilter(final Map<String, ?> attributes) {
-      this.attributes = attributes;
+      this.sampleAttributes = attributes;
     }
 
-    public boolean matches(final Map<String, ?> targetAttributes) {
-      return targetAttributes.entrySet().containsAll(attributes.entrySet());
+    public boolean matches(final Map<String, ?> attributes) {
+      return null != attributes && attributes.entrySet().containsAll(sampleAttributes.entrySet());
     }
 
     @Override
     public boolean equals(final Object rhs) {
       if (rhs instanceof SampleAttributeFilter) {
-        return attributes.equals(((SampleAttributeFilter) rhs).attributes);
+        return sampleAttributes.equals(((SampleAttributeFilter) rhs).sampleAttributes);
       }
       return false;
     }
 
     @Override
     public int hashCode() {
-      return attributes.hashCode();
+      return sampleAttributes.hashCode();
     }
   }
 
@@ -152,9 +152,9 @@ final class ServiceSettings<T>
     final AttributeFilter attributeFilter = filter.get(injector);
     if (null == attributeFilter) {
       // no filter, try using the current attributes as a sample filter
-      final Map<String, ?> serviceAttributes = attributes.get(injector);
-      if (null != serviceAttributes && !serviceAttributes.isEmpty()) {
-        return new SampleAttributeFilter(serviceAttributes);
+      final Map<String, ?> sampleAttributes = attributes.get(injector);
+      if (null != sampleAttributes && !sampleAttributes.isEmpty()) {
+        return new SampleAttributeFilter(sampleAttributes);
       }
     }
     return attributeFilter;

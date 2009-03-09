@@ -16,7 +16,6 @@
 
 package org.ops4j.peaberry.util;
 
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 
 import java.util.Map;
@@ -24,55 +23,35 @@ import java.util.Map;
 import org.ops4j.peaberry.Import;
 
 /**
- * An {@link Import} based on a static instance and attribute map.
+ * An {@link Import} consisting of a fixed instance and optional attribute map.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 public final class StaticImport<T>
     implements Import<T> {
 
-  private static final Import<?> UNAVAILABLE = new StaticImport<Object>();
-
-  /**
-   * @return an unavailable {@link Import}.
-   */
-  @SuppressWarnings("unchecked")
-  public static <T> Import<T> unavailable() {
-    return (Import) UNAVAILABLE;
-  }
-
   private final T instance;
   private final Map<String, ?> attributes;
 
-  // unavailable service
-  private StaticImport() {
-    this.instance = null;
-    this.attributes = null;
-  }
-
   /**
-   * Create a new {@link Import} for the given instance and empty attribute map.
+   * Create a static {@link Import} for the given instance.
    * 
    * @param instance service instance
    */
   public StaticImport(final T instance) {
     this.instance = instance;
-    this.attributes = emptyMap();
+    this.attributes = null;
   }
 
   /**
-   * Create a new {@link Import} for the given instance and attribute map.
+   * Create a static {@link Import} for the given instance and attribute map.
    * 
    * @param instance service instance
    * @param attributes service attributes
    */
   public StaticImport(final T instance, final Map<String, ?> attributes) {
     this.instance = instance;
-    if (null == attributes) {
-      this.attributes = emptyMap();
-    } else {
-      this.attributes = unmodifiableMap(attributes);
-    }
+    this.attributes = null == attributes ? null : unmodifiableMap(attributes);
   }
 
   public T get() {
@@ -84,4 +63,8 @@ public final class StaticImport<T>
   }
 
   public void unget() {/* nothing to do */}
+
+  public boolean available() {
+    return null != instance;
+  }
 }

@@ -17,12 +17,12 @@
 package org.ops4j.peaberry.util.decorators;
 
 import java.lang.ref.WeakReference;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.util.DelegatingImport;
 
 /**
  * An {@link ImportDecorator} that caches the first valid service instance and
@@ -45,24 +45,20 @@ public final class StickyDecorator<S>
   }
 
   private final class StickyImport<T>
-      implements Import<T> {
+      extends DelegatingImport<T> {
 
-    private final Import<T> service;
     private WeakReference<T> instanceRef;
     private boolean reset = true;
 
     StickyImport(final Import<T> service) {
-      this.service = service;
+      super(service);
     }
 
-    private T instance() {
-      return null == instanceRef ? null : instanceRef.get();
-    }
-
+    @Override
     public synchronized T get() {
 
-      // use attributes() to detect when the current service instance is invalid
-      if (null != resetTask && null != instanceRef && null == attributes()) {
+      // when service becomes unavailable we ask if the client wants to reset
+      if (null != resetTask && null != instanceRef && !super.available()) {
 
         // always clear the current service once it's invalid
         instanceRef.clear();
@@ -76,30 +72,27 @@ public final class StickyDecorator<S>
         }
 
         if (reset) {
-          service.unget(); // balance previous successful get
+          super.unget(); // balance previous successful get
         }
       }
 
       if (reset) {
         try {
-          final T instance = service.get();
+          final T instance = super.get();
           instanceRef = new WeakReference<T>(instance);
           reset = null == instance;
         } finally {
           if (reset) {
             instanceRef = null;
-            service.unget(); // balance previous unsuccessful get
+            super.unget(); // balance previous unsuccessful get
           }
         }
       }
 
-      return instance();
+      return null == instanceRef ? null : instanceRef.get();
     }
 
-    public synchronized Map<String, ?> attributes() {
-      return null == instance() ? null : service.attributes();
-    }
-
+    @Override
     public void unget() {/* nothing to do */}
   }
 

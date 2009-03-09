@@ -37,7 +37,7 @@ public interface Import<T> {
   /**
    * Get the attributes associated with the service.
    * 
-   * @return current attribute map, null if the service is unavailable
+   * @return current attribute map
    */
   Map<String, ?> attributes();
 
@@ -45,4 +45,13 @@ public interface Import<T> {
    * Stop using the imported service instance.
    */
   void unget();
+
+  /**
+   * Is the imported service instance available?
+   * 
+   * @return true if the service is available, otherwise false
+   * 
+   * @since 1.1
+   */
+  boolean available();
 }

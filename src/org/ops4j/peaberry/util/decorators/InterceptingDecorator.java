@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -30,6 +29,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.util.DelegatingImport;
 
 import com.google.inject.matcher.Matcher;
 
@@ -59,45 +59,43 @@ public final class InterceptingDecorator<S>
 
   // use JDK proxy for simplicity
   private final class ProxyImport<T>
-      implements Import<T>, InvocationHandler {
+      extends DelegatingImport<T>
+      implements InvocationHandler {
 
-    private final Import<T> service;
     private volatile T proxy;
 
     ProxyImport(final Import<T> service) {
-      this.service = service;
+      super(service);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T get() {
       if (null == proxy) {
         synchronized (this) {
           try {
-            final T instance = service.get();
+            final T instance = super.get();
             if (null == proxy && null != instance) {
               // lazily-create proxy, only needs to be created once per service
               final ClassLoader loader = interceptors[0].getClass().getClassLoader();
               proxy = (T) Proxy.newProxyInstance(loader, getInterfaces(instance), this);
             }
           } finally {
-            service.unget();
+            super.unget();
           }
         }
       }
       return proxy; // proxy will use get() to delegate to the active service
     }
 
-    public Map<String, ?> attributes() {
-      return service.attributes();
-    }
-
+    @Override
     public void unget() {/* proxy does the cleanup */}
 
     public Object invoke(final Object unused, final Method method, final Object[] args)
         throws Throwable {
       try {
 
-        final Object instance = service.get();
+        final Object instance = super.get();
         if (null == instance) {
           // just in case a decorator returns null
           throw new ServiceUnavailableException();
@@ -111,7 +109,7 @@ public final class InterceptingDecorator<S>
         return intercept(instance, method, args);
 
       } finally {
-        service.unget();
+        super.unget();
       }
     }
 

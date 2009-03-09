@@ -35,6 +35,12 @@ import org.ops4j.peaberry.ServiceException;
 public final class LdapAttributeFilter
     implements AttributeFilter {
 
+  private static final Mapper EMPTY_MAPPER = new Mapper() {
+    public Object lookup(final String key) {
+      return null;
+    }
+  };
+
   private final Object[] program;
   private volatile String filter;
 
@@ -56,13 +62,18 @@ public final class LdapAttributeFilter
   }
 
   public boolean matches(final Map<String, ?> attributes) {
+    final Mapper mapper;
 
-    // adapt attribute map to expected type
-    final Mapper mapper = new Mapper() {
-      public Object lookup(final String key) {
-        return attributes.get(key);
-      }
-    };
+    // optimize case where there are no attributes
+    if (null == attributes || attributes.isEmpty()) {
+      mapper = EMPTY_MAPPER;
+    } else {
+      mapper = new Mapper() {
+        public Object lookup(final String key) {
+          return attributes.get(key);
+        }
+      };
+    }
 
     try {
       return new Evaluator(program).evaluate(mapper);

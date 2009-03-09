@@ -38,31 +38,32 @@ public abstract class AbstractWatcher<S>
 
   @SuppressWarnings("unchecked")
   public <T extends S> Export<T> add(final Import<T> service) {
-    final TrackingExport export = new TrackingExport((Import) service);
-    return export.isInterested() ? (Export) export : null;
+    TrackingExport export = new TrackingExport((Import) service);
+    return null == export.tracker ? null : (Export) export;
   }
 
   private final class TrackingExport
       extends SimpleExport<S> {
 
-    private S tracker;
+    S tracker; // customized tracker object
 
     TrackingExport(final Import<S> service) {
       super(service);
 
-      tracker = adding(service);
-    }
-
-    boolean isInterested() {
-      return null != tracker;
+      tracker = adding(this);
     }
 
     @Override
     public synchronized void put(final S newInstance) {
+      if (null == newInstance && null != tracker) {
+        removed(tracker);
+        tracker = null;
+      }
+
       super.put(newInstance);
 
       if (null != newInstance) {
-        tracker = adding(new StaticImport<S>(newInstance, attributes()));
+        tracker = adding(this);
       }
     }
 
@@ -71,17 +72,7 @@ public abstract class AbstractWatcher<S>
       super.attributes(newAttributes);
 
       if (null != tracker) {
-        modified(tracker, attributes());
-      }
-    }
-
-    @Override
-    public synchronized void unput() {
-      super.unput();
-
-      if (null != tracker) {
-        removed(tracker);
-        tracker = null;
+        modified(tracker, newAttributes);
       }
     }
   }

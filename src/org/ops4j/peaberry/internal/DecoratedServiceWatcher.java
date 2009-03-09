@@ -60,7 +60,7 @@ final class DecoratedServiceWatcher<S>
       public synchronized void put(final T instance) {
         // force decoration of new instance
         backingService.put(instance);
-        publishedService.put(decoratedService.get());
+        publishedService.put(null == instance ? null : decoratedService.get());
       }
 
       public synchronized void attributes(final Map<String, ?> attributes) {
@@ -78,18 +78,22 @@ final class DecoratedServiceWatcher<S>
         }
       }
 
-      // Import aspect... (retrieve the decorated instances/attributes)
+      // Import aspect... (retrieve the undecorated instances/attributes)
 
       public T get() {
-        return decoratedService.get();
+        return backingService.get();
       }
 
       public Map<String, ?> attributes() {
-        return decoratedService.attributes();
+        return backingService.attributes();
       }
 
       public void unget() {
-        decoratedService.unget();
+        backingService.unget();
+      }
+
+      public boolean available() {
+        return backingService.available();
       }
     };
   }

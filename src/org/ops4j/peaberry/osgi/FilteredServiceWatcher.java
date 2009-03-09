@@ -22,6 +22,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.util.SimpleExport;
 
 /**
  * Pre-filtered {@link ServiceWatcher} that handles mutable services.
@@ -45,26 +46,24 @@ final class FilteredServiceWatcher<S>
   }
 
   private final class FilteredExport<T extends S>
-      implements Export<T> {
+      extends SimpleExport<T> {
 
-    private final Import<T> service;
     private Export<T> realExport;
 
     FilteredExport(final Import<T> service) {
-      this.service = service;
-      synchronized (this) {
-        checkMatchingService();
-      }
+      super(service);
+
+      checkMatchingService();
     }
 
     private void checkMatchingService() {
-      if (((OSGiServiceImport) (Import<?>) service).matches(filter)) {
+      if (filter.matches(super.attributes())) {
         if (null == realExport) {
           // service metadata now matches
-          realExport = watcher.add(service);
+          realExport = watcher.add(this);
         }
       } else if (null != realExport) {
-        // metadata doesn't match anymore
+        // metadata doesn't match anymore!
         final Export<T> temp = realExport;
         realExport = null;
         temp.unput();
@@ -73,36 +72,33 @@ final class FilteredServiceWatcher<S>
 
     // Export aspect is only active when service matches filter
 
-    public void put(final T instance) {
-      // this method will never actually get called for an OSGi service
-      throw new UnsupportedOperationException();
-    }
+    @Override
+    public synchronized void put(final T instance) {
+      super.put(instance);
 
-    public synchronized void attributes(final Map<String, ?> attributes) {
       if (null != realExport) {
-        realExport.attributes(attributes);
+        realExport.put(instance);
       }
-      checkMatchingService(); // can safely assume OSGi service is alive
     }
 
+    @Override
+    public synchronized void attributes(final Map<String, ?> newAttributes) {
+      super.attributes(newAttributes);
+
+      if (null != realExport) {
+        realExport.attributes(newAttributes);
+      }
+
+      checkMatchingService(); // re-check filter against latest attributes
+    }
+
+    @Override
     public synchronized void unput() {
+      super.unput();
+
       if (null != realExport) {
-        realExport.unput(); // last method to be called for an OSGi service
+        realExport.unput();
       }
-    }
-
-    // Import aspect is always available
-
-    public T get() {
-      return service.get();
-    }
-
-    public Map<String, ?> attributes() {
-      return service.attributes();
-    }
-
-    public void unget() {
-      service.unget();
     }
   }
 

@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -94,10 +93,6 @@ final class OSGiServiceImport
     return oldRank != rank;
   }
 
-  boolean matches(final AttributeFilter filter) {
-    return filter.matches(attributes);
-  }
-
   public Object get() {
     count.getAndIncrement();
     if (DORMANT == state) {
@@ -117,12 +112,16 @@ final class OSGiServiceImport
   }
 
   public Map<String, ?> attributes() {
-    return INVALID == state ? null : attributes;
+    return attributes;
   }
 
   public void unget() {
     generation = cacheGeneration;
     count.decrementAndGet();
+  }
+
+  public boolean available() {
+    return INVALID != state;
   }
 
   /**

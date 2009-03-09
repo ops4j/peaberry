@@ -16,23 +16,22 @@
 
 package org.ops4j.peaberry.tests;
 
-import static com.google.inject.name.Names.named;
 import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.Attributes.union;
-import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import static org.osgi.framework.Constants.SERVICE_DESCRIPTION;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Map;
 
-import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.builders.ServiceBuilder;
 import org.ops4j.peaberry.util.AbstractDecorator;
 import org.ops4j.peaberry.util.Decorators;
+import org.ops4j.peaberry.util.DelegatingImport;
+import org.ops4j.peaberry.util.StaticImport;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -78,18 +77,11 @@ public final class DecoratedServiceTests
       implements ImportDecorator<Id> {
 
     public <T extends Id> Import<T> decorate(final Import<T> service) {
-      return new Import<T>() {
+      return new DelegatingImport<T>(service) {
 
-        public T get() {
-          return service.get();
-        }
-
+        @Override
         public Map<String, ?> attributes() {
-          return union(service.attributes(), singletonMap(SERVICE_DESCRIPTION, "DECORATED"));
-        }
-
-        public void unget() {
-          service.unget();
+          return union(super.attributes(), singletonMap(SERVICE_DESCRIPTION, "DECORATED"));
         }
       };
     }
@@ -107,12 +99,6 @@ public final class DecoratedServiceTests
 
     bind(iterable(Id.class)).toProvider(builder.multiple());
     bind(Id.class).toProvider(builder.single().direct());
-
-    bind(export(Id.class)).annotatedWith(named("id")).toProvider(
-        service(new Id() {}).decoratedWith(new IdDecorator()).export());
-
-    bind(export(Id.class)).annotatedWith(named("attributes")).toProvider(
-        service(new Id() {}).decoratedWith(new AttributeDecorator()).export());
   }
 
   public void testDecoratedServiceInjection() {
@@ -124,16 +110,6 @@ public final class DecoratedServiceTests
     check(getInstance(Key.get(Id.class)), "<-A->");
 
     check(ids, "[<-A->, <-B->, <-C->]");
-
-    Export<? extends Id> exportedId;
-
-    exportedId = injector.getInstance(Key.get(export(Id.class), named("id")));
-    assertEquals(exportedId.attributes().get(SERVICE_DESCRIPTION), null);
-    exportedId.unput();
-
-    exportedId = injector.getInstance(Key.get(export(Id.class), named("attributes")));
-    assertEquals(exportedId.attributes().get(SERVICE_DESCRIPTION), "DECORATED");
-    exportedId.unput();
   }
 
   public void testDecoratorChaining() {
@@ -147,18 +123,7 @@ public final class DecoratedServiceTests
       protected String decorate(final String instance, final Map<String, ?> attributes) {
         return "<2>" + instance + "<3>";
       }
-    }).decorate(new Import<String>() {
-
-      public String get() {
-        return "HELLO";
-      }
-
-      public Map<String, ?> attributes() {
-        return null;
-      }
-
-      public void unget() {}
-    }).get();
+    }).decorate(new StaticImport<String>("HELLO")).get();
 
     assertEquals(text, "<1><2>HELLO<3><4>");
   }

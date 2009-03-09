@@ -78,4 +78,11 @@ final class ConcurrentImport<T>
       temp.unget();
     }
   }
+
+  public synchronized boolean available() {
+    if (null == service) {
+      return services.iterator().hasNext();
+    }
+    return service.available();
+  }
 }

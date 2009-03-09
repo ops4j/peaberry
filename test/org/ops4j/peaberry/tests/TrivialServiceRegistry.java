@@ -65,6 +65,10 @@ final class TrivialServiceRegistry
               }
 
               public void unget() {}
+
+              public boolean available() {
+                return null != service;
+              }
             });
           }
         }
@@ -95,6 +99,10 @@ final class TrivialServiceRegistry
       }
 
       public void unget() {}
+
+      public boolean available() {
+        return null != instance;
+      }
 
       public void put(final Object newService) {
         throw new UnsupportedOperationException();
