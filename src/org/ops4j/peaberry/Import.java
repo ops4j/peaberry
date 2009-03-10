@@ -47,7 +47,7 @@ public interface Import<T> {
   void unget();
 
   /**
-   * Is the imported service instance available?
+   * Is the service instance available?
    * 
    * @return true if the service is available, otherwise false
    * 

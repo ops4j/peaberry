@@ -85,11 +85,11 @@ final class ImportProxyClassLoader
       throws ClassNotFoundException {
 
     // short-circuit access to these classes
-    if (UNAVAILABLE_CLAZZ_NAME.equals(name)) {
-      return ServiceUnavailableException.class;
-    }
     if (IMPORT_CLAZZ_NAME.equals(name)) {
       return Import.class;
+    }
+    if (UNAVAILABLE_CLAZZ_NAME.equals(name)) {
+      return ServiceUnavailableException.class;
     }
 
     return super.loadClass(name, resolve);

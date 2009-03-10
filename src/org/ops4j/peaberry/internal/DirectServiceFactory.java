@@ -65,6 +65,7 @@ final class DirectServiceFactory {
         return instance;
       }
     }
+
     return null;
   }
 

@@ -63,7 +63,7 @@ final class ComputedMapFactory {
     public ComputedMap(final ReferenceType keyType, final ReferenceType valType,
         final int capacity, final Function<K, V> function) {
 
-      // small level of concurrency, as most threads read
+      // small concurrency level, as most threads just read
       super(capacity, 0.75f, 2, keyType, valType, IDENTITY);
       this.function = function;
     }

@@ -97,7 +97,6 @@ public final class InterceptingDecorator<S>
 
         final Object instance = super.get();
         if (null == instance) {
-          // just in case a decorator returns null
           throw new ServiceUnavailableException();
         }
 

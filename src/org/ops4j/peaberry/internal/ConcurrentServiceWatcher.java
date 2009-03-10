@@ -67,7 +67,7 @@ final class ConcurrentServiceWatcher<S>
         if (null != currentExport && thisImport.equals(currentImport)) {
           currentExport.put((S) newInstance);
 
-          // is this a removal?
+          // is this being removed?
           if (null == newInstance) {
             updateBestService();
           }

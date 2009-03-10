@@ -27,6 +27,7 @@ import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
 import org.ops4j.peaberry.builders.ImportDecorator;
+import org.ops4j.peaberry.util.Filters;
 import org.ops4j.peaberry.util.StaticImport;
 
 import com.google.inject.Injector;
@@ -120,41 +121,14 @@ final class ServiceSettings<T>
     return decorator.get(injector);
   }
 
-  // simple filter based on sample attributes
-  private static final class SampleAttributeFilter
-      implements AttributeFilter {
-
-    private final Map<String, ?> sampleAttributes;
-
-    public SampleAttributeFilter(final Map<String, ?> attributes) {
-      this.sampleAttributes = attributes;
-    }
-
-    public boolean matches(final Map<String, ?> attributes) {
-      return null != attributes && attributes.entrySet().containsAll(sampleAttributes.entrySet());
-    }
-
-    @Override
-    public boolean equals(final Object rhs) {
-      if (rhs instanceof SampleAttributeFilter) {
-        return sampleAttributes.equals(((SampleAttributeFilter) rhs).sampleAttributes);
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return sampleAttributes.hashCode();
-    }
-  }
-
   private AttributeFilter getFilter(final Injector injector) {
     final AttributeFilter attributeFilter = filter.get(injector);
     if (null == attributeFilter) {
       // no filter, try using the current attributes as a sample filter
       final Map<String, ?> sampleAttributes = attributes.get(injector);
       if (null != sampleAttributes && !sampleAttributes.isEmpty()) {
-        return new SampleAttributeFilter(sampleAttributes);
+        filter = newSetting(Filters.attributes(sampleAttributes));
+        return filter.get(injector);
       }
     }
     return attributeFilter;

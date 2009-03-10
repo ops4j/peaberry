@@ -41,7 +41,7 @@ final class FilteredServiceWatcher<S>
   }
 
   public <T extends S> Export<T> add(final Import<T> service) {
-    // service metadata can change, so must be able to recheck
+    // service metadata can change, so must be able to re-check
     return new FilteredExport<T>(service);
   }
 
@@ -73,11 +73,11 @@ final class FilteredServiceWatcher<S>
     // Export aspect is only active when service matches filter
 
     @Override
-    public synchronized void put(final T instance) {
-      super.put(instance);
+    public synchronized void put(final T newInstance) {
+      super.put(newInstance);
 
       if (null != realExport) {
-        realExport.put(instance);
+        realExport.put(newInstance);
       }
     }
 
@@ -90,15 +90,6 @@ final class FilteredServiceWatcher<S>
       }
 
       checkMatchingService(); // re-check filter against latest attributes
-    }
-
-    @Override
-    public synchronized void unput() {
-      super.unput();
-
-      if (null != realExport) {
-        realExport.unput();
-      }
     }
   }
 

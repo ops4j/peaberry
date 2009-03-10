@@ -73,10 +73,10 @@ final class DecoratedServiceWatcher<S>
       this.published = published;
     }
 
-    public synchronized void put(final T instance) {
+    public synchronized void put(final T newInstance) {
       // force decoration of new instance
-      original.put(instance);
-      published.put(null == instance ? null : decorated.get());
+      original.put(newInstance);
+      published.put(null == newInstance ? null : decorated.get());
     }
 
     public synchronized void attributes(final Map<String, ?> attributes) {

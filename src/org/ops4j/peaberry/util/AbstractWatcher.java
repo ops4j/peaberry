@@ -55,7 +55,7 @@ public abstract class AbstractWatcher<S>
 
     @Override
     public synchronized void put(final S newInstance) {
-      if (null == newInstance && null != tracker) {
+      if (null != tracker) {
         removed(tracker);
         tracker = null;
       }
