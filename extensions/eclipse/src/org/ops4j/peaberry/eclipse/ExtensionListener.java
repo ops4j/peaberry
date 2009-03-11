@@ -205,7 +205,7 @@ final class ExtensionListener
 
       // now do a linear search applying the given filter
       final ExtensionImport nextImport = imports.get(i);
-      if (null == filter || nextImport.matches(filter)) {
+      if (null == filter || filter.matches(nextImport.attributes())) {
         return nextImport;
       }
     }

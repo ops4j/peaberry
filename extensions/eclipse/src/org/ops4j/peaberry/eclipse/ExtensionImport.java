@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
-import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceUnavailableException;
@@ -51,8 +50,8 @@ final class ExtensionImport
   private final IConfigurationElement config;
   private final Class<?> clazz;
 
+  private volatile Object instance;
   private volatile int state;
-  private Object instance;
 
   private final Map<String, ?> attributes;
   private final List<Export<?>> watchers;
@@ -65,10 +64,6 @@ final class ExtensionImport
 
     attributes = collectAttributes(config);
     watchers = new ArrayList<Export<?>>(2);
-  }
-
-  boolean matches(final AttributeFilter filter) {
-    return filter.matches(attributes);
   }
 
   public Object get() {
@@ -89,10 +84,14 @@ final class ExtensionImport
   }
 
   public Map<String, ?> attributes() {
-    return config.isValid() ? attributes : null;
+    return attributes;
   }
 
   public void unget() {/* do nothing */}
+
+  public boolean available() {
+    return config.isValid();
+  }
 
   /**
    * Protected from concurrent access by {@link ExtensionListener}.

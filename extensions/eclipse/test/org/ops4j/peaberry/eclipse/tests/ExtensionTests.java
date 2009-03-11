@@ -20,12 +20,10 @@ import static com.google.inject.Guice.createInjector;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.eclipse.ExtensionInterface;
+import org.ops4j.peaberry.util.StaticImport;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.testng.annotations.Test;
@@ -60,22 +58,11 @@ public final class ExtensionTests {
   }
 
   public void testExtensionPoint() {
-    registry.add(new Import<Item>() {
-
-      public Item get() {
-        return new Item() {
-          public String getLabel() {
-            return "Service-based menu item";
-          }
-        };
+    registry.add(new StaticImport<Item>(new Item() {
+      public String getLabel() {
+        return "Service-based menu item";
       }
-
-      public Map<String, ?> attributes() {
-        return Collections.emptyMap();
-      }
-
-      public void unget() {}
-    });
+    }));
 
     System.out.println("@ExtensionInterface proxy");
     System.out.println("----------------------------------------------------------------");

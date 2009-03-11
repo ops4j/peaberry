@@ -38,10 +38,7 @@ final class FilteredExtensionWatcher<S>
   }
 
   public <T extends S> Export<T> add(final Import<T> service) {
-    if (((ExtensionImport) (Import<?>) service).matches(filter)) {
-      return watcher.add(service);
-    }
-    return null;
+    return filter.matches(service.attributes()) ? watcher.add(service) : null;
   }
 
   @Override
