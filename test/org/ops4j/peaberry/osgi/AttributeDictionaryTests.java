@@ -18,6 +18,8 @@ package org.ops4j.peaberry.osgi;
 
 import static org.ops4j.peaberry.util.Attributes.properties;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -28,12 +30,42 @@ import java.util.Properties;
 import org.testng.annotations.Test;
 
 /**
- * Check that the attribute-dictionary adapter behaves as expected.
+ * Check that the attribute-dictionary adapters behave as expected.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
 @Test
 public final class AttributeDictionaryTests {
+
+  public void testImmutableAttributes() {
+
+    final ImmutableAttribute a1 = new ImmutableAttribute("a", "a");
+    final ImmutableAttribute a2 = new ImmutableAttribute("a", "a");
+
+    final ImmutableAttribute nullK = new ImmutableAttribute(null, "a");
+    final ImmutableAttribute nullV = new ImmutableAttribute("a", null);
+
+    assertEquals(a1, a2);
+
+    assertEquals(nullK, nullK);
+    assertEquals(nullV, nullV);
+
+    assertEquals(a1.hashCode(), a2.hashCode());
+
+    nullK.hashCode();
+    nullV.hashCode();
+
+    assertNotSame(a1, nullV);
+    assertNotSame(nullK, nullV);
+    assertNotSame(nullK, a1);
+
+    assertFalse(a1.equals("test"));
+
+    try {
+      a2.setValue("c");
+      fail("Expected UnsupportedOperationException");
+    } catch (final UnsupportedOperationException e) {}
+  }
 
   public void testAttributeDictionaryAdapter() {
 
