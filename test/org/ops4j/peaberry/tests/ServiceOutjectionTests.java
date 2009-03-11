@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
@@ -154,8 +155,11 @@ public final class ServiceOutjectionTests
     bind(Id.class).toProvider(
         service(Id.class).out(Key.get(Watcher.class, named("single"))).single());
 
-    bind(iterable(Id.class)).toProvider(
-        service(Id.class).out(Key.get(Watcher.class, named("multiple"))).multiple());
+    bind(iterable(Id.class)).toProvider(service(Id.class).filter(new AttributeFilter() {
+      public boolean matches(Map<String, ?> attributes) {
+        return null == attributes || !attributes.containsKey("IGNORE_ME");
+      }
+    }).out(Key.get(Watcher.class, named("multiple"))).multiple());
 
     bind(Id.class).annotatedWith(named("decorated")).toProvider(
         service(Id.class).decoratedWith(new Decorator()).out(
@@ -200,7 +204,7 @@ public final class ServiceOutjectionTests
     exportedId.attributes(singletonMap(SERVICE_RANKING, 42));
 
     check(singleWatcher, "[C]");
-    check(multipleWatcher, "[A, B, C, D]");
+    check(multipleWatcher, "[A, B, C, D]"); // order of appearance, not ranking
     check(decoratedWatcher, "[<=C=>]");
 
     exportedId.put(new Id() {
@@ -219,6 +223,18 @@ public final class ServiceOutjectionTests
     check(singleWatcher, "[E]");
     check(multipleWatcher, "[B, D, E]");
     check(decoratedWatcher, "[<=E=>]");
+
+    exportedId.attributes(singletonMap("IGNORE_ME", null));
+
+    check(singleWatcher, "[D]");
+    check(multipleWatcher, "[B, D]");
+    check(decoratedWatcher, "[<=D=>]");
+
+    exportedId.attributes(null);
+
+    check(singleWatcher, "[D]");
+    check(multipleWatcher, "[B, D, E]");
+    check(decoratedWatcher, "[<=D=>]");
 
     exportedId.unput();
 
