@@ -107,7 +107,9 @@ final class ServiceSettings<T>
       // clone all settings to preserve state
       return (ServiceSettings<T>) super.clone();
     } catch (final CloneNotSupportedException e) {
+      // /CLOVER:OFF
       return this;
+      // /CLOVER:ON
     }
   }
 

@@ -17,18 +17,16 @@
 package org.ops4j.peaberry.tests;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
-import org.ops4j.peaberry.util.StaticImport;
+import org.ops4j.peaberry.util.SimpleExport;
 
 import com.google.inject.Singleton;
 
@@ -41,21 +39,18 @@ import com.google.inject.Singleton;
 final class TrivialServiceRegistry
     implements ServiceRegistry {
 
-  final Map<Object, Map<String, ?>> registry = new HashMap<Object, Map<String, ?>>();
+  final List<Import<?>> registry = new ArrayList<Import<?>>();
 
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
     return new Iterable<Import<T>>() {
-      public Iterator<Import<T>> iterator() {
 
+      @SuppressWarnings("unchecked")
+      public Iterator<Import<T>> iterator() {
         final List<Import<T>> imports = new ArrayList<Import<T>>();
 
-        for (final Entry<Object, Map<String, ?>> e : registry.entrySet()) {
-
-          @SuppressWarnings("unchecked")
-          final T service = (T) e.getKey();
-
-          if (clazz.isInstance(service) && (null == filter || filter.matches(e.getValue()))) {
-            imports.add(new StaticImport<T>(service, e.getValue()));
+        for (Import<?> i : registry) {
+          if (clazz.isInstance(i.get()) && (null == filter || filter.matches(i.attributes()))) {
+            imports.add((Import) i);
           }
         }
 
@@ -70,36 +65,23 @@ final class TrivialServiceRegistry
   }
 
   public <T> Export<T> add(final Import<T> service) {
-    final T instance = service.get();
+    registry.add(service);
 
-    registry.put(instance, service.attributes());
+    return new SimpleExport<T>(service) {
 
-    return new Export<T>() {
-
-      public T get() {
-        return instance;
-      }
-
-      public Map<String, ?> attributes() {
-        return registry.get(instance);
-      }
-
-      public void unget() {}
-
-      public boolean available() {
-        return null != instance;
-      }
-
+      @Override
       public void put(final Object newService) {
         throw new UnsupportedOperationException();
       }
 
+      @Override
       public void attributes(final Map<String, ?> newAttributes) {
-        registry.put(instance, newAttributes);
+        throw new UnsupportedOperationException();
       }
 
+      @Override
       public void unput() {
-        registry.remove(instance);
+        registry.remove(service);
       }
     };
   }

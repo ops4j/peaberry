@@ -76,7 +76,9 @@ final class ComputedMapFactory {
         // no mapping, use key to compute a value
         final V newValue = function.compute((K) key);
         value = putIfAbsent((K) key, newValue);
+        // /CLOVER:OFF
         if (null == value) {
+          // /CLOVER:ON
           return newValue;
         }
       }

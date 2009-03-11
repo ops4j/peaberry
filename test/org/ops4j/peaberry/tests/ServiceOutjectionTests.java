@@ -162,7 +162,7 @@ public final class ServiceOutjectionTests
             Key.get(Watcher.class, named("decorated"))).single());
 
     bind(Id.class).annotatedWith(named("disinterested")).toProvider(
-        service(Id.class).out(new DisinterestedWatcher()).single());
+        service(Id.class).decoratedWith(new Decorator()).out(new DisinterestedWatcher()).single());
   }
 
   public void testServiceOutjection() {

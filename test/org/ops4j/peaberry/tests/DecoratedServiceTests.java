@@ -16,26 +16,20 @@
 
 package org.ops4j.peaberry.tests;
 
-import static java.util.Collections.singletonMap;
 import static org.ops4j.peaberry.Peaberry.service;
-import static org.ops4j.peaberry.util.Attributes.union;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
-import static org.osgi.framework.Constants.SERVICE_DESCRIPTION;
 import static org.testng.Assert.assertEquals;
 
 import java.util.Map;
 
-import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.builders.ImportDecorator;
 import org.ops4j.peaberry.builders.ServiceBuilder;
 import org.ops4j.peaberry.util.AbstractDecorator;
 import org.ops4j.peaberry.util.Decorators;
-import org.ops4j.peaberry.util.DelegatingImport;
 import org.ops4j.peaberry.util.StaticImport;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 
 import examples.ids.Id;
@@ -73,25 +67,8 @@ public final class DecoratedServiceTests
     }
   }
 
-  public static class AttributeDecorator
-      implements ImportDecorator<Id> {
-
-    public <T extends Id> Import<T> decorate(final Import<T> service) {
-      return new DelegatingImport<T>(service) {
-
-        @Override
-        public Map<String, ?> attributes() {
-          return union(super.attributes(), singletonMap(SERVICE_DESCRIPTION, "DECORATED"));
-        }
-      };
-    }
-  }
-
   @Inject
   Iterable<Id> ids;
-
-  @Inject
-  Injector injector;
 
   @Override
   protected void configure() {
@@ -113,7 +90,7 @@ public final class DecoratedServiceTests
   }
 
   public void testDecoratorChaining() {
-    final String text = Decorators.chain(new AbstractDecorator<String>() {
+    final ImportDecorator<String> decorator = Decorators.chain(new AbstractDecorator<String>() {
       @Override
       protected String decorate(final String instance, final Map<String, ?> attributes) {
         return "<1>" + instance + "<4>";
@@ -123,8 +100,8 @@ public final class DecoratedServiceTests
       protected String decorate(final String instance, final Map<String, ?> attributes) {
         return "<2>" + instance + "<3>";
       }
-    }).decorate(new StaticImport<String>("HELLO")).get();
+    });
 
-    assertEquals(text, "<1><2>HELLO<3><4>");
+    assertEquals(decorator.decorate(new StaticImport<String>("HELLO")).get(), "<1><2>HELLO<3><4>");
   }
 }

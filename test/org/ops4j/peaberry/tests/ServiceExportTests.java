@@ -93,6 +93,7 @@ public final class ServiceExportTests
         service(Id.class).attributes(singletonMap("id", "TEST")).single());
   }
 
+  @SuppressWarnings("unchecked")
   public void testServiceExports() {
     reset();
 
@@ -105,7 +106,7 @@ public final class ServiceExportTests
     check(sampleId, "TEST");
 
     // now publish our service (will get a later service.id)
-    final Export<? extends Id> exportedId = getInstance(Key.get(export(Id.class)));
+    final Export<Id> exportedId = (Export) getInstance(Key.get(export(Id.class)));
 
     // exported service won't be used, as it doesn't match the filter
     check(importedId, "TEST");
@@ -127,6 +128,17 @@ public final class ServiceExportTests
     check(importedId, "**EXPORTED**");
     check(importedIds, "[**EXPORTED**, TEST]");
     check(sampleId, "**EXPORTED**");
+
+    exportedId.put(new Id() {
+      @Override
+      public String toString() {
+        return "UPDATED";
+      }
+    });
+
+    check(importedId, "**UPDATED**");
+    check(importedIds, "[**UPDATED**, TEST]");
+    check(sampleId, "**UPDATED**");
 
     exportedId.unput();
 

@@ -53,9 +53,11 @@ final class ImportProxyClassLoader
     } catch (final LinkageError e) {
       throw new ServiceException(e);
     } catch (final NoSuchMethodException e) {
+      // /CLOVER:OFF
       throw new ServiceException(e);
     } catch (final ClassNotFoundException e) {
       throw new ServiceException(e);
+      // /CLOVER:ON
     }
   }
 

@@ -101,11 +101,13 @@ final class ServiceProxyFactory {
       // minimize wrapping of exceptions to help with problem determination
       return constructor.newInstance(null == decorator ? service : decorator.decorate(service));
     } catch (final InstantiationException e) {
+      // /CLOVER:OFF
       throw new ServiceException(e);
     } catch (final IllegalAccessException e) {
       throw new ServiceException(e);
     } catch (final InvocationTargetException e) {
       throw new ServiceException(e);
+      // /CLOVER:ON
     }
   }
 }
