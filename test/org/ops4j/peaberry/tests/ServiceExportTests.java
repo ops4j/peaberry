@@ -78,7 +78,7 @@ public final class ServiceExportTests
     bind(export(Id.class)).toProvider(
         service(Key.get(ExportedIdImpl.class)).decoratedWith(new AbstractDecorator<Id>() {
           @Override
-          protected Id decorate(final Id instance, Map<String, ?> attributes) {
+          protected Id decorate(final Id instance, final Map<String, ?> attributes) {
             return new Id() {
               @Override
               public String toString() {

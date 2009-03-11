@@ -130,12 +130,12 @@ public final class ServiceOutjectionTests
     }
 
     @Override
-    protected void modified(Id instance, Map<String, ?> attributes) {
+    protected void modified(final Id instance, final Map<String, ?> attributes) {
       throw new IllegalStateException();
     }
 
     @Override
-    protected void removed(Id instance) {
+    protected void removed(final Id instance) {
       throw new IllegalStateException();
     }
 
@@ -156,7 +156,7 @@ public final class ServiceOutjectionTests
         service(Id.class).out(Key.get(Watcher.class, named("single"))).single());
 
     bind(iterable(Id.class)).toProvider(service(Id.class).filter(new AttributeFilter() {
-      public boolean matches(Map<String, ?> attributes) {
+      public boolean matches(final Map<String, ?> attributes) {
         return null == attributes || !attributes.containsKey("IGNORE_ME");
       }
     }).out(Key.get(Watcher.class, named("multiple"))).multiple());

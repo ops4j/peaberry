@@ -48,7 +48,7 @@ final class TrivialServiceRegistry
       public Iterator<Import<T>> iterator() {
         final List<Import<T>> imports = new ArrayList<Import<T>>();
 
-        for (Import<?> i : registry) {
+        for (final Import<?> i : registry) {
           if (clazz.isInstance(i.get()) && (null == filter || filter.matches(i.attributes()))) {
             imports.add((Import) i);
           }

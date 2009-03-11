@@ -1,5 +1,5 @@
 
--classpath: ${final.jar}
+-classpath: ${final.jar},${build.dir}/test-classes
 
 Private-Package:\
  ${module}(.util|.util.ldap|.util.decorators),\

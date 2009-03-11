@@ -44,7 +44,7 @@ public final class InternalWatcherTests {
 
     final ImportDecorator<Object> decoA = new AbstractDecorator<Object>() {
       @Override
-      protected Object decorate(Object instance, Map<String, ?> attributes) {
+      protected Object decorate(final Object instance, final Map<String, ?> attributes) {
         return instance;
       }
     };
@@ -53,17 +53,21 @@ public final class InternalWatcherTests {
 
     final ImportDecorator<Object> decoB = new AbstractDecorator<Object>() {
       @Override
-      protected Object decorate(Object instance, Map<String, ?> attributes) {
+      protected Object decorate(final Object instance, final Map<String, ?> attributes) {
         return instance;
       }
     };
 
     final ServiceWatcher<Object> watcherB = new AbstractWatcher<Object>() {};
 
-    ServiceWatcher<?> decoratedWatcherA1 = new DecoratedServiceWatcher<Object>(decoA, watcherA);
-    ServiceWatcher<?> decoratedWatcherA2 = new DecoratedServiceWatcher<Object>(decoA, watcherA);
-    ServiceWatcher<?> decoratedWatcherB1 = new DecoratedServiceWatcher<Object>(decoA, watcherB);
-    ServiceWatcher<?> decoratedWatcherB2 = new DecoratedServiceWatcher<Object>(decoB, watcherA);
+    final ServiceWatcher<?> decoratedWatcherA1 =
+        new DecoratedServiceWatcher<Object>(decoA, watcherA);
+    final ServiceWatcher<?> decoratedWatcherA2 =
+        new DecoratedServiceWatcher<Object>(decoA, watcherA);
+    final ServiceWatcher<?> decoratedWatcherB1 =
+        new DecoratedServiceWatcher<Object>(decoA, watcherB);
+    final ServiceWatcher<?> decoratedWatcherB2 =
+        new DecoratedServiceWatcher<Object>(decoB, watcherA);
 
     assertEquals(decoratedWatcherA1, decoratedWatcherA2);
     assertNotSame(decoratedWatcherB1, decoratedWatcherB2);
@@ -85,27 +89,27 @@ public final class InternalWatcherTests {
 
     final ServiceWatcher<Object> watcherA = new AbstractWatcher<Object>() {
       @Override
-      protected Object adding(Import<Object> service) {
+      protected Object adding(final Import<Object> service) {
         final Object instance = service.get();
         results.add(instance);
         return instance;
       }
 
       @Override
-      protected void removed(Object instance) {
+      protected void removed(final Object instance) {
         results.remove(instance);
       }
     };
 
     final ServiceWatcher<Object> watcherB = new AbstractWatcher<Object>() {};
 
-    ServiceWatcher<Object> concurrentWatcherA1 =
+    final ServiceWatcher<Object> concurrentWatcherA1 =
         new ConcurrentServiceWatcher<Object>(servicesA, watcherA);
-    ServiceWatcher<Object> concurrentWatcherA2 =
+    final ServiceWatcher<Object> concurrentWatcherA2 =
         new ConcurrentServiceWatcher<Object>(servicesA, watcherA);
-    ServiceWatcher<Object> concurrentWatcherB1 =
+    final ServiceWatcher<Object> concurrentWatcherB1 =
         new ConcurrentServiceWatcher<Object>(servicesA, watcherB);
-    ServiceWatcher<Object> concurrentWatcherB2 =
+    final ServiceWatcher<Object> concurrentWatcherB2 =
         new ConcurrentServiceWatcher<Object>(servicesB, watcherA);
 
     assertEquals(concurrentWatcherA1, concurrentWatcherA2);

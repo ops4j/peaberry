@@ -16,6 +16,8 @@
 
 package org.ops4j.peaberry.osgi;
 
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -37,6 +39,7 @@ public class OSGiServiceRegistry
     implements CachingServiceRegistry {
 
   private final BundleContext bundleContext;
+  private final Map<Import<?>, ?> exported;
 
   // per-class map of service listeners (much faster than polling)
   private final ConcurrentMap<String, OSGiServiceListener> listenerMap =
@@ -45,17 +48,21 @@ public class OSGiServiceRegistry
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
+    exported = new WeakHashMap<Import<?>, Object>();
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
     return new IterableOSGiService<T>(registerListener(clazz), filter);
   }
 
-  public <T> Export<T> add(final Import<T> service) {
-    // avoid cycles by ignoring our own services
-    if (service instanceof OSGiServiceImport) {
+  public synchronized <T> Export<T> add(final Import<T> service) {
+    // avoid cycles by ignoring our own services and already exported services
+    if (service instanceof OSGiServiceImport || exported.containsKey(service)) {
       return null;
     }
+
+    exported.put(service, null); // weak hash-map allows GC
+
     return new OSGiServiceExport<T>(bundleContext, service);
   }
 

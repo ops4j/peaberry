@@ -104,16 +104,16 @@ public final class DirectServiceTests
           }};
 
       @SuppressWarnings("unchecked")
-      public <T> Iterable<Import<T>> lookup(Class<T> clazz, AttributeFilter filter) {
+      public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
         return Arrays.asList((Import<T>[]) bogusImports);
       }
 
-      public <T> void watch(Class<T> clazz, AttributeFilter filter,
-          ServiceWatcher<? super T> watcher) {
+      public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
+          final ServiceWatcher<? super T> watcher) {
         throw new UnsupportedOperationException();
       }
 
-      public <T> Export<T> add(Import<T> service) {
+      public <T> Export<T> add(final Import<T> service) {
         throw new UnsupportedOperationException();
       }
     });
