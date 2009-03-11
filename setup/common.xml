@@ -59,9 +59,8 @@
   </target>
 
   <target name="test.bundle">
-    <property name="module.cp" value="${build}/test-classes"/>
     <pathconvert pathsep="," dirsep="/" property="-classpath">
-      <path path="${test.cp};${module.cp}"/>
+      <path path="${test.cp};${build}/test-classes"/>
     </pathconvert>
     <bnd files="${test.bnd}" output="${build}/test/bundles"/>
   </target>
