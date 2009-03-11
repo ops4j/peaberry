@@ -28,6 +28,7 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.util.StaticImport;
 
 import com.google.inject.Singleton;
 
@@ -54,22 +55,7 @@ final class TrivialServiceRegistry
           final T service = (T) e.getKey();
 
           if (clazz.isInstance(service) && (null == filter || filter.matches(e.getValue()))) {
-            imports.add(new Import<T>() {
-
-              public T get() {
-                return service;
-              }
-
-              public Map<String, ?> attributes() {
-                return e.getValue();
-              }
-
-              public void unget() {}
-
-              public boolean available() {
-                return null != service;
-              }
-            });
+            imports.add(new StaticImport<T>(service, e.getValue()));
           }
         }
 
@@ -95,7 +81,7 @@ final class TrivialServiceRegistry
       }
 
       public Map<String, ?> attributes() {
-        return service.attributes();
+        return registry.get(instance);
       }
 
       public void unget() {}

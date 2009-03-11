@@ -22,6 +22,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
@@ -50,6 +51,7 @@ public final class ServiceFilterTests {
     final Map<String, ?> attributes = Attributes.objectClass(A.class);
 
     assertTrue(filter.matches(attributes));
+    assertFalse(filter.matches(null));
   }
 
   public void testMultipleObjectClassFilter() {
@@ -57,6 +59,7 @@ public final class ServiceFilterTests {
     final Map<String, ?> attributes = Attributes.objectClass(A.class, B.class, C.class);
 
     assertTrue(filter.matches(attributes));
+    assertFalse(filter.matches(Collections.<String, Object> emptyMap()));
   }
 
   public void testFilterHashCodeAndEquals() {

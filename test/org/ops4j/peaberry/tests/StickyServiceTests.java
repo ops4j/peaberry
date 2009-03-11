@@ -21,12 +21,13 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.fail;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceException;
+import org.ops4j.peaberry.util.SimpleExport;
+import org.ops4j.peaberry.util.StaticImport;
 import org.testng.annotations.Test;
 
 /**
@@ -38,24 +39,7 @@ import org.testng.annotations.Test;
 public final class StickyServiceTests {
 
   public void testStickiness() {
-    final String[] placeholder = new String[1];
-
-    final Import<String> target = new Import<String>() {
-
-      public String get() {
-        return placeholder[0];
-      }
-
-      public Map<String, ?> attributes() {
-        return Collections.emptyMap();
-      }
-
-      public void unget() {}
-
-      public boolean available() {
-        return null != placeholder[0];
-      }
-    };
+    final Export<String> target = new SimpleExport<String>(new StaticImport<String>(null));
 
     final Import<String> reusableService = sticky(new Callable<Boolean>() {
       public Boolean call() {
@@ -71,7 +55,7 @@ public final class StickyServiceTests {
 
     final Import<String> brokenService = sticky(new Callable<Boolean>() {
       public Boolean call() {
-        return null;
+        return null; // invalid response
       }
     }).decorate(target);
 
@@ -79,19 +63,19 @@ public final class StickyServiceTests {
     assertNull(reusableService.get());
     assertNull(brokenService.get());
 
-    placeholder[0] = "one";
+    target.put("one");
 
     assertEquals(staticService.get(), "one");
     assertEquals(reusableService.get(), "one");
     assertEquals(brokenService.get(), "one");
 
-    placeholder[0] = "two";
+    target.put("two");
 
     assertEquals(staticService.get(), "one");
     assertEquals(reusableService.get(), "one");
     assertEquals(brokenService.get(), "one");
 
-    placeholder[0] = null;
+    target.put(null);
 
     assertNull(staticService.get());
     assertNull(reusableService.get());
@@ -100,10 +84,16 @@ public final class StickyServiceTests {
       fail("Expected ServiceException");
     } catch (final ServiceException e) {}
 
-    placeholder[0] = "three";
+    target.put("three");
 
     assertNull(staticService.get());
     assertEquals(reusableService.get(), "three");
+    assertNull(brokenService.get());
+
+    target.unput();
+
+    assertNull(staticService.get());
+    assertNull(reusableService.get());
     assertNull(brokenService.get());
   }
 }

@@ -65,6 +65,10 @@ public final class ServiceOutjectionTests
   Id decoratedId;
 
   @Inject
+  @Named("disinterested")
+  Id disinterestedId;
+
+  @Inject
   ServiceRegistry registry;
 
   @Inject
@@ -116,8 +120,33 @@ public final class ServiceOutjectionTests
     }
   }
 
+  protected static class DisinterestedWatcher
+      extends AbstractWatcher<Id> {
+
+    @Override
+    protected Id adding(final Import<Id> service) {
+      return null;
+    }
+
+    @Override
+    protected void modified(Id instance, Map<String, ?> attributes) {
+      throw new IllegalStateException();
+    }
+
+    @Override
+    protected void removed(Id instance) {
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public String toString() {
+      return "[]";
+    }
+  }
+
   @Override
   protected void configure() {
+    // use eager singletons so we get the same instance injected locally
     bind(Watcher.class).annotatedWith(named("single")).to(Watcher.class).asEagerSingleton();
     bind(Watcher.class).annotatedWith(named("multiple")).to(Watcher.class).asEagerSingleton();
     bind(Watcher.class).annotatedWith(named("decorated")).to(Watcher.class).asEagerSingleton();
@@ -131,6 +160,9 @@ public final class ServiceOutjectionTests
     bind(Id.class).annotatedWith(named("decorated")).toProvider(
         service(Id.class).decoratedWith(new Decorator()).out(
             Key.get(Watcher.class, named("decorated"))).single());
+
+    bind(Id.class).annotatedWith(named("disinterested")).toProvider(
+        service(Id.class).out(new DisinterestedWatcher()).single());
   }
 
   public void testServiceOutjection() {

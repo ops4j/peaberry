@@ -86,12 +86,22 @@ public final class ServiceInjectionTests
     assertFalse(i.hasNext()); // only B is left
     assertEquals(b, id);
 
+    register(-8, "D");
+
+    check(id, "B");
+    check(ids, "[B, D]");
+    final Id d = i.next(); // we have a D
+    check(d, "D");
+
     try {
       i.remove();
       fail("Expected UnsupportedOperationException");
     } catch (final UnsupportedOperationException e) {}
 
     unregister("B");
+    unregister("D");
+
     missing(b); // service has gone
+    missing(d); // service has gone
   }
 }

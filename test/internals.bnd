@@ -2,7 +2,6 @@
 -classpath: ${final.jar}
 
 Private-Package:\
- ${module},\
- ${module}(.builders|.util|.util.*),\
+ ${module}(.util|.util.ldap|.util.decorators),\
  ${module}(.internal|.osgi);-split-package:=merge-first
 
