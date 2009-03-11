@@ -107,10 +107,10 @@ public final class EclipseRegistry
 
     listener = listenerMap.get(clazzName);
     if (null == listener) {
-      final ExtensionListener newListener = new ExtensionListener(extensionRegistry, safeClazz);
+      final ExtensionListener newListener = new ExtensionListener(safeClazz);
       listener = listenerMap.putIfAbsent(clazzName, newListener);
       if (null == listener) {
-        newListener.start();
+        newListener.start(extensionRegistry);
         return newListener;
       }
     }

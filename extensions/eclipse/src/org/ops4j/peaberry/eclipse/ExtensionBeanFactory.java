@@ -39,6 +39,12 @@ final class ExtensionBeanFactory {
   private ExtensionBeanFactory() {}
 
   static Object newInstance(final Class<?> clazz, final IConfigurationElement config) {
+
+    // client just wants the actual configuration object
+    if (Object.class == clazz || IConfigurationElement.class == clazz) {
+      return config;
+    }
+
     try {
       // first try to instantiate direct class
       return newExtensionImpl(clazz, config);

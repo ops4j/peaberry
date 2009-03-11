@@ -20,6 +20,7 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.logging.Level.WARNING;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ final class ExtensionImport
   private volatile Object instance;
   private volatile int state;
 
-  private final Map<String, ?> attributes;
+  private volatile Map<String, ?> attributes;
   private final List<Export<?>> watchers;
 
   ExtensionImport(final long id, final IConfigurationElement config, final Class<?> clazz) {
@@ -62,7 +63,6 @@ final class ExtensionImport
     this.config = config;
     this.clazz = clazz;
 
-    attributes = collectAttributes(config);
     watchers = new ArrayList<Export<?>>(2);
   }
 
@@ -84,6 +84,14 @@ final class ExtensionImport
   }
 
   public Map<String, ?> attributes() {
+    // perform lazy conversion
+    if (null == attributes) {
+      synchronized (this) {
+        if (null == attributes) {
+          attributes = collectAttributes(config);
+        }
+      }
+    }
     return attributes;
   }
 
@@ -100,16 +108,28 @@ final class ExtensionImport
     watchers.add(export);
   }
 
+  IConfigurationElement getConfigurationElement() {
+    return config;
+  }
+
   /**
    * Protected from concurrent access by {@link ExtensionListener}.
    */
-  void invalidate() {
+  boolean invalidate(final Collection<IExtension> candidates) {
+    try {
+      if (!candidates.contains(config.getDeclaringExtension())) {
+        return false; /* this doesn't belong to any candidate */
+      }
+    } catch (final InvalidRegistryObjectException e) {/* already invalid */}
+
     notifyWatchers();
     watchers.clear();
     synchronized (this) {
       instance = null;
       state = INVALID;
     }
+
+    return true; /* clean-up parent list */
   }
 
   private void notifyWatchers() {
@@ -153,19 +173,19 @@ final class ExtensionImport
       final IExtension extension = config.getDeclaringExtension();
 
       // use @ to avoid conflicting with attributes in the XML
-      map.put("@id", extension.getUniqueIdentifier());
-      map.put("@label", extension.getLabel());
-      map.put("@contributor", config.getContributor());
-      map.put("@namespace", config.getNamespaceIdentifier());
-      map.put("@point", extension.getExtensionPointUniqueIdentifier());
+      safePut(map, "@id", extension.getUniqueIdentifier());
+      safePut(map, "@label", extension.getLabel());
+      safePut(map, "@contributor", config.getContributor());
+      safePut(map, "@namespace", config.getNamespaceIdentifier());
+      safePut(map, "@point", extension.getExtensionPointUniqueIdentifier());
 
       // similarly use () to avoid conflicts
-      map.put("name()", config.getName());
-      map.put("text()", config.getValue());
+      safePut(map, "name()", config.getName());
+      safePut(map, "text()", config.getValue());
 
       // now load the actual attributes from the XML
       for (final String key : config.getAttributeNames()) {
-        map.put(key, config.getAttribute(key));
+        safePut(map, key, config.getAttribute(key));
       }
 
     } catch (final InvalidRegistryObjectException re) {
@@ -173,5 +193,11 @@ final class ExtensionImport
     }
 
     return unmodifiableMap(map);
+  }
+
+  private static <T> void safePut(final Map<String, T> map, final String key, final T value) {
+    if (null != value) {
+      map.put(key, value);
+    }
   }
 }

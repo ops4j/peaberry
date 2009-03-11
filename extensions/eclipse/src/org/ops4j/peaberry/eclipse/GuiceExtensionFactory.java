@@ -154,7 +154,7 @@ public final class GuiceExtensionFactory
 
       final List<Module> modules = new ArrayList<Module>();
 
-      // first add the default SGi service and Eclipse extension bindings
+      // first add the default OSGi service and Eclipse extension bindings
       modules.add(osgiModule(resolve(contributor).getBundleContext(), eclipseRegistry()));
 
       // now add any module extensions contributed by the current plug-in

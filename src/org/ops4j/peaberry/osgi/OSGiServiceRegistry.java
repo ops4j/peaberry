@@ -52,6 +52,10 @@ public class OSGiServiceRegistry
   }
 
   public <T> Export<T> add(final Import<T> service) {
+    // avoid cycles by ignoring our own services
+    if (service instanceof OSGiServiceImport) {
+      return null;
+    }
     return new OSGiServiceExport<T>(bundleContext, service);
   }
 

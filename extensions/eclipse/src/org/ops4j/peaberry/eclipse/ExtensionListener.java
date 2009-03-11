@@ -20,10 +20,11 @@ import static java.util.Collections.binarySearch;
 import static java.util.logging.Level.WARNING;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -46,7 +47,6 @@ final class ExtensionListener
 
   private static final Logger LOGGER = Logger.getLogger(ExtensionListener.class.getName());
 
-  private final IExtensionRegistry registry;
   private final Class<?> clazz;
 
   private final String point;
@@ -55,12 +55,10 @@ final class ExtensionListener
 
   private final List<ExtensionImport> imports;
   private final List<ServiceWatcher<Object>> watchers;
-  private final Set<String> activeExtensions;
 
-  ExtensionListener(final IExtensionRegistry registry, final Class<?> clazz) {
+  ExtensionListener(final Class<?> clazz) {
     final ExtensionInterface metadata = clazz.getAnnotation(ExtensionInterface.class);
 
-    this.registry = registry;
     this.clazz = clazz;
 
     // no annotation => use lower-case class as point id
@@ -75,14 +73,13 @@ final class ExtensionListener
 
     imports = new ArrayList<ExtensionImport>(4);
     watchers = new ArrayList<ServiceWatcher<Object>>(2);
-    activeExtensions = new HashSet<String>(4);
   }
 
-  synchronized void start() {
+  synchronized void start(final IExtensionRegistry registry) {
     final IExtensionPoint[] extensionPoints;
 
     // register listener first to avoid race condition
-    if (Object.class == clazz) {
+    if (Object.class == clazz || IConfigurationElement.class == clazz) {
       registry.addListener(this);
       extensionPoints = registry.getExtensionPoints();
     } else {
@@ -95,39 +92,38 @@ final class ExtensionListener
       return;
     }
 
+    final Set<IConfigurationElement> ignore = getExistingConfigurationElements();
+
     // retrieve any matching extensions for each point
     for (final IExtensionPoint p : extensionPoints) {
       for (final IExtension e : p.getExtensions()) {
-        insertExtension(e);
+        insertExtension(e, ignore);
       }
     }
   }
 
   public synchronized void added(final IExtension[] extensions) {
+    final Set<IConfigurationElement> ignore = getExistingConfigurationElements();
+
+    // each extension can have many configs
     for (final IExtension e : extensions) {
-      insertExtension(e);
+      insertExtension(e, ignore);
     }
   }
 
-  public synchronized void removed(final IExtension[] extensions) {
-
-    // collect extension ids to speed up checking
-    final Set<String> ids = new HashSet<String>(extensions.length);
-    for (final IExtension e : extensions) {
-      ids.add(e.getUniqueIdentifier());
+  private Set<IConfigurationElement> getExistingConfigurationElements() {
+    final Set<IConfigurationElement> elements = new HashSet<IConfigurationElement>();
+    for (final ExtensionImport i : imports) {
+      elements.add(i.getConfigurationElement());
     }
+    return elements;
+  }
 
-    activeExtensions.removeAll(ids);
-
+  public synchronized void removed(final IExtension[] extensions) {
+    final List<IExtension> candidates = Arrays.asList(extensions);
     for (final Iterator<ExtensionImport> i = imports.iterator(); i.hasNext();) {
-      final ExtensionImport extensionImport = i.next();
-
-      // remove any elements that belong to the removed extensions
-      final Map<String, ?> attributes = extensionImport.attributes();
-      if (null == attributes || ids.contains(attributes.get("@id"))) {
+      if (i.next().invalidate(candidates)) {
         i.remove();
-
-        extensionImport.invalidate();
       }
     }
   }
@@ -147,20 +143,19 @@ final class ExtensionListener
     }
   }
 
-  private void insertExtension(final IExtension extension) {
-    if (!activeExtensions.add(extension.getUniqueIdentifier())) {
-      return; // we've already seen this particular extension
+  private void insertExtension(final IExtension extension, final Set<IConfigurationElement> ignore) {
+    final List<IConfigurationElement> candidates = new ArrayList<IConfigurationElement>();
+
+    if (aggregate) {
+      candidates.add(new AggregatedExtension(extension));
+    } else {
+      Collections.addAll(candidates, extension.getConfigurationElements());
     }
 
-    final IConfigurationElement[] configurations;
-    if (aggregate) {
-      configurations = new IConfigurationElement[]{new AggregatedExtension(extension)};
-    } else {
-      configurations = extension.getConfigurationElements();
-    }
+    candidates.removeAll(ignore);
 
     // create an import for each major configuration element
-    for (final IConfigurationElement config : configurations) {
+    for (final IConfigurationElement config : candidates) {
       final ExtensionImport i = new ExtensionImport(++idCounter, config, clazz); // NOPMD
       imports.add(i);
 

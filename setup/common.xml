@@ -59,7 +59,11 @@
   </target>
 
   <target name="test.bundle">
-    <bnd files="${test.bnd}" output="${build}/test/bundles" classpath="${build}/test-classes"/>
+    <property name="module.cp" value="${build}/test-classes"/>
+    <pathconvert pathsep="," dirsep="/" property="-classpath">
+      <path path="${test.cp};${module.cp}"/>
+    </pathconvert>
+    <bnd files="${test.bnd}" output="${build}/test/bundles"/>
   </target>
 
   <target name="test.jar" depends="jar,testcases">
