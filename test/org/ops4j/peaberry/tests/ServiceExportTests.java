@@ -23,9 +23,15 @@ import static org.ops4j.peaberry.util.Attributes.names;
 import static org.ops4j.peaberry.util.Attributes.union;
 import static org.ops4j.peaberry.util.Filters.ldap;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
+import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
+import java.util.Map;
+
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.util.AbstractDecorator;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -47,6 +53,9 @@ public final class ServiceExportTests
   Id importedId;
 
   @Inject
+  Iterable<Id> importedIds;
+
+  @Inject
   @Named("sample")
   Id sampleId;
 
@@ -61,8 +70,23 @@ public final class ServiceExportTests
 
   @Override
   protected void configure() {
+    bind(AttributeFilter.class).toInstance(ldap("(id=TEST)"));
     bind(Id.class).toProvider(service(Id.class).filter(ldap("(id=TEST)")).single());
-    bind(export(Id.class)).toProvider(service(Key.get(ExportedIdImpl.class)).export());
+    bind(iterable(Id.class)).toProvider(
+        service(Id.class).filter(Key.get(AttributeFilter.class)).multiple());
+
+    bind(export(Id.class)).toProvider(
+        service(Key.get(ExportedIdImpl.class)).decoratedWith(new AbstractDecorator<Id>() {
+          @Override
+          protected Id decorate(final Id instance, Map<String, ?> attributes) {
+            return new Id() {
+              @Override
+              public String toString() {
+                return "**" + instance + "**";
+              }
+            };
+          }
+        }).out(Key.get(ServiceRegistry.class)).export());
 
     // exercise the filter code that uses sample attributes...
     bind(Id.class).annotatedWith(named("sample")).toProvider(
@@ -73,9 +97,11 @@ public final class ServiceExportTests
     reset();
 
     missing(importedId);
+    check(importedIds, "[]");
 
     register("TEST");
     check(importedId, "TEST");
+    check(importedIds, "[TEST]");
     check(sampleId, "TEST");
 
     // now publish our service (will get a later service.id)
@@ -83,6 +109,7 @@ public final class ServiceExportTests
 
     // exported service won't be used, as it doesn't match the filter
     check(importedId, "TEST");
+    check(importedIds, "[TEST]");
     check(sampleId, "TEST");
 
     // modify exported service so it matches the import filter (drop ranking)
@@ -90,21 +117,26 @@ public final class ServiceExportTests
 
     // exported service still won't be used, as ranking isn't higher
     check(importedId, "TEST");
+    check(importedIds, "[TEST, **EXPORTED**]");
     check(sampleId, "TEST");
 
     // modify our exported service so it matches the import filter (add ranking)
     exportedId.attributes(union(names("id=TEST"), singletonMap(SERVICE_RANKING, 8)));
 
     // exported service should now be used, as it has a higher ranking
-    check(importedId, "EXPORTED");
-    check(sampleId, "EXPORTED");
+    check(importedId, "**EXPORTED**");
+    check(importedIds, "[**EXPORTED**, TEST]");
+    check(sampleId, "**EXPORTED**");
 
     exportedId.unput();
+
     check(importedId, "TEST");
+    check(importedIds, "[TEST]");
     check(sampleId, "TEST");
 
     unregister("TEST");
     missing(importedId);
+    check(importedIds, "[]");
     missing(sampleId);
   }
 }

@@ -22,11 +22,20 @@ import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 import static org.ops4j.peaberry.util.TypeLiterals.iterable;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.lang.annotation.Retention;
+import java.util.Arrays;
+import java.util.Map;
 
+import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
+import org.ops4j.peaberry.Import;
+import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.ServiceUnavailableException;
+import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.util.StaticImport;
 import org.testng.annotations.Test;
 
 import com.google.inject.Inject;
@@ -75,6 +84,41 @@ public final class DirectServiceTests
   @Named("out")
   CharSequence outToken;
 
+  public DirectServiceTests() {
+    super(new ServiceRegistry() {
+      private final Import<?>[] bogusImports =
+          new Import[]{new StaticImport<Object>(null), new Import<Object>() {
+            public Object get() {
+              throw new ServiceUnavailableException();
+            }
+
+            public Map<String, ?> attributes() {
+              return null;
+            }
+
+            public void unget() {}
+
+            public boolean available() {
+              return false;
+            }
+          }};
+
+      @SuppressWarnings("unchecked")
+      public <T> Iterable<Import<T>> lookup(Class<T> clazz, AttributeFilter filter) {
+        return Arrays.asList((Import<T>[]) bogusImports);
+      }
+
+      public <T> void watch(Class<T> clazz, AttributeFilter filter,
+          ServiceWatcher<? super T> watcher) {
+        throw new UnsupportedOperationException();
+      }
+
+      public <T> Export<T> add(Import<T> service) {
+        throw new UnsupportedOperationException();
+      }
+    });
+  }
+
   @Override
   protected void configure() {
     bind(Id.class).toProvider(service(Id.class).single().direct());
@@ -106,7 +150,7 @@ public final class DirectServiceTests
     // direct binding to non-existent service
     final Holder noService = getInstance(Key.get(Holder.class));
 
-    assertTrue(null == noService.id);
+    assertNull(noService.id);
     check(noService.ids, "[]");
 
     // Note: we can still call the direct service here, because its binding is
