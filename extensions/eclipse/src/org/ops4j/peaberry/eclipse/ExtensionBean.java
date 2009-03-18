@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  */
 @Target(TYPE)
 @Retention(RUNTIME)
-public @interface ExtensionInterface {
+public @interface ExtensionBean {
 
   /**
    * if true then the Extension elements will be combined into one bean

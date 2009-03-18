@@ -57,7 +57,7 @@ final class ExtensionListener
   private final List<ServiceWatcher<Object>> watchers;
 
   ExtensionListener(final Class<?> clazz) {
-    final ExtensionInterface metadata = clazz.getAnnotation(ExtensionInterface.class);
+    final ExtensionBean metadata = clazz.getAnnotation(ExtensionBean.class);
 
     this.clazz = clazz;
 

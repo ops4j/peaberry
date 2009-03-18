@@ -18,7 +18,9 @@ package org.ops4j.peaberry.eclipse;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 import org.eclipse.core.runtime.ContributorFactoryOSGi;
 import org.eclipse.core.runtime.CoreException;
@@ -76,15 +78,37 @@ final class ExtensionBeanFactory {
   }
 
   static String mapName(final AnnotatedElement type, final String name) {
-    if (type.isAnnotationPresent(MapContent.class)) {
+    if (null != findAnnotation(type, "MapContent")) {
       return CONTENT_KEY;
     }
-    final MapName mapName = type.getAnnotation(MapName.class);
-    return null == mapName || mapName.value().length() == 0 ? name : mapName.value();
+    final String mapName = getAnnotationValue(findAnnotation(type, "MapName"), String.class);
+    return null == mapName || mapName.length() == 0 ? name : mapName;
   }
 
   static String mapContent(final IConfigurationElement config, final String elementKey) {
     return CONTENT_KEY.equals(elementKey) ? config.getValue() : config.getAttribute(elementKey);
+  }
+
+  static Annotation findAnnotation(final AnnotatedElement element, final String simpleName) {
+    for (Annotation a : element.getAnnotations()) {
+      if (simpleName.equals(a.annotationType().getSimpleName())) {
+        return a;
+      }
+    }
+    return null;
+  }
+
+  @SuppressWarnings("unchecked")
+  static <T> T getAnnotationValue(final Annotation element, final Class<? extends T> clazz) {
+
+    try {
+      final Method m = element.annotationType().getDeclaredMethod("value");
+      if (clazz.isAssignableFrom(m.getReturnType())) {
+        return (T) m.invoke(element);
+      }
+    } catch (final Exception e) {/* no such setting */}
+
+    return null;
   }
 
   static Class<?> loadExtensionClass(final IConfigurationElement config, final String clazzName) {

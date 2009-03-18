@@ -22,7 +22,7 @@ import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
-import org.ops4j.peaberry.eclipse.ExtensionInterface;
+import org.ops4j.peaberry.eclipse.ExtensionBean;
 import org.ops4j.peaberry.util.StaticImport;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -45,7 +45,7 @@ public final class ExtensionTests {
     BUNDLE_CONTEXT = bundle.getBundleContext();
   }
 
-  @ExtensionInterface("examples.menu.items")
+  @ExtensionBean("examples.menu.items")
   private static interface ItemFacade {
     String getLabel();
   }
@@ -64,7 +64,7 @@ public final class ExtensionTests {
       }
     }));
 
-    System.out.println("@ExtensionInterface proxy");
+    System.out.println("@ExtensionBean proxy");
     System.out.println("----------------------------------------------------------------");
     for (final Import<ItemFacade> item : registry.lookup(ItemFacade.class, null)) {
       System.out.println("getClass(): " + item.get().getClass());
