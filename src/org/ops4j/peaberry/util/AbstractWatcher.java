@@ -32,6 +32,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * the OSGi {@link ServiceTrackerCustomizer}.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
+ * 
+ * @since 1.1
  */
 public abstract class AbstractWatcher<S>
     implements ServiceWatcher<S> {

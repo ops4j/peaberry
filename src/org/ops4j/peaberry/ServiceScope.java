@@ -17,19 +17,10 @@
 package org.ops4j.peaberry;
 
 /**
- * A service watcher can receive services provided by other registries.
+ * @deprecated use {@link ServiceWatcher} instead.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
- * 
- * @since 1.1
  */
-public interface ServiceWatcher<S> {
-
-  /**
-   * Add the given service to this watcher.
-   * 
-   * @param service imported service handle
-   * @return exported service handle, null if the watcher is not interested
-   */
-  <T extends S> Export<T> add(Import<T> service);
-}
+@Deprecated
+public interface ServiceScope<S>
+    extends ServiceWatcher<S> {}
