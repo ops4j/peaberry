@@ -17,8 +17,16 @@
 package org.ops4j.peaberry.eclipse.tests;
 
 import static com.google.inject.Guice.createInjector;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
@@ -45,9 +53,28 @@ public final class ExtensionTests {
     BUNDLE_CONTEXT = bundle.getBundleContext();
   }
 
+  @Target({METHOD, TYPE})
+  @Retention(RUNTIME)
+  public @interface MapName {
+    String value();
+  }
+
+  @Target(METHOD)
+  @Retention(RUNTIME)
+  public @interface MapContent {}
+
   @ExtensionBean("examples.menu.items")
   private static interface ItemFacade {
     String getLabel();
+
+    @MapName("label")
+    String getSomeTag();
+
+    @org.ops4j.peaberry.eclipse.MapName("label")
+    String getAnotherTag();
+
+    @MapContent
+    String getContent();
   }
 
   @Inject
@@ -69,16 +96,21 @@ public final class ExtensionTests {
     for (final Import<ItemFacade> item : registry.lookup(ItemFacade.class, null)) {
       System.out.println("getClass(): " + item.get().getClass());
       System.out.println("toString(): " + item.get().toString());
-      System.out.println("getName():  " + item.get().getLabel());
+      System.out.println("getLabel(): " + item.get().getLabel());
       System.out.println("equals():   " + item.get().equals(item.get()));
       System.out.println("----------------------------------------------------------------");
+
+      // confirm @MapName/@MapContent works in the generated bean
+      assertEquals(item.get().getSomeTag(), item.get().getLabel());
+      assertEquals(item.get().getAnotherTag(), item.get().getLabel());
+      assertNull(item.get().getContent()); // no content in example
     }
     System.out.println("\ncreateExecutableExtension");
     System.out.println("----------------------------------------------------------------");
     for (final Import<Item> item : registry.lookup(Item.class, null)) {
       System.out.println("getClass(): " + item.get().getClass());
       System.out.println("toString(): " + item.get().toString());
-      System.out.println("getName():  " + item.get().getLabel());
+      System.out.println("getLabel(): " + item.get().getLabel());
       System.out.println("equals():   " + item.get().equals(item.get()));
       System.out.println("----------------------------------------------------------------");
     }
