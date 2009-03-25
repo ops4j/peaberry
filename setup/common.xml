@@ -24,9 +24,21 @@
   <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${bnd.jar}"/>
   <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${contrib.jar}"/>
 
-  <target name="jar" depends="compile">
+  <target name="check.stamp">
+    <condition property="ignore.stamp">
+      <contains string="${qualifier}" substring="SNAPSHOT"/>
+    </condition>
+  </target>
+
+  <target name="stamp" unless="ignore.stamp">
+    <exec executable="svnversion" outputproperty="svn.revision"/>
+    <property name="build.stamp" value="-v${svn.revision}"/>
+  </target>
+
+  <target name="jar" depends="compile,check.stamp,stamp">
+    <property name="build.stamp" value=""/>
     <mkdir dir="${dist}"/>
-    <foreach target="main.bundle" param="main.bnd">
+    <foreach target="main.bundle" param="main.bnd" inheritAll="true">
       <path>
         <fileset dir="${src}" includes="*.bnd"/>
       </path>
@@ -51,7 +63,7 @@
 
   <target name="testcases" depends="jar,test.compile">
     <mkdir dir="${build}/test/bundles"/>
-    <foreach target="test.bundle" param="test.bnd">
+    <foreach target="test.bundle" param="test.bnd" inheritAll="true">
       <path>
         <fileset dir="${test}" includes="*.bnd"/>
       </path>

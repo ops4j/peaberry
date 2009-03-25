@@ -1,7 +1,7 @@
 
 Bundle-Name: ${ant.project.name}
 Bundle-SymbolicName: ${module}
-Bundle-Version: ${version}
+Bundle-Version: ${main.version}${build.stamp}${qualifier}
 
 Bundle-Description: ${title}
 Bundle-DocURL: http://code.google.com/p/peaberry/
