@@ -90,7 +90,7 @@ final class ExtensionBeanFactory {
   }
 
   static Annotation findAnnotation(final AnnotatedElement element, final String simpleName) {
-    for (Annotation a : element.getAnnotations()) {
+    for (final Annotation a : element.getAnnotations()) {
       if (simpleName.equals(a.annotationType().getSimpleName())) {
         return a;
       }
