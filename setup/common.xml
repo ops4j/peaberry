@@ -31,8 +31,15 @@
   </target>
 
   <target name="stamp" unless="ignore.stamp">
-    <exec executable="svnversion" outputproperty="svn.revision">
-      <arg value="src"/>
+    <exec executable="svn">
+      <arg value="up"/>
+      <arg value="-N"/>
+      <arg value="-rCOMMITTED"/>
+      <redirector outputproperty="svn.revision">
+        <outputfilterchain>
+          <replaceregex pattern="At revision (.+)\." replace="\1"/>
+        </outputfilterchain>
+      </redirector>
     </exec>
     <property name="build.stamp" value="-v${svn.revision}"/>
   </target>
