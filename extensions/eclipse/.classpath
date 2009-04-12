@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="build/test-classes" path="test"/>
 	<classpathentry kind="lib" path="/peaberry/lib/ant/testng-5.8.jar"/>
-	<classpathentry kind="lib" path="/peaberry/lib/build/guice-customloader-20090411.jar"/>
+	<classpathentry kind="lib" path="/peaberry/lib/build/guice-customloader-20090412.jar"/>
 	<classpathentry kind="lib" path="/peaberry/build/classes">
 		<accessrules>
 			<accessrule kind="accessible" pattern="org/ops4j/peaberry/util/*"/>
