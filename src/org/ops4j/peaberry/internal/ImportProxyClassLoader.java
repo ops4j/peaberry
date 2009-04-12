@@ -43,13 +43,13 @@ final class ImportProxyClassLoader
   private static final String UNAVAILABLE_CLAZZ_NAME = ServiceUnavailableException.class.getName();
   private static final String IMPORT_CLAZZ_NAME = Import.class.getName();
 
+  private static final Object NULL_CLASS_LOADER_KEY = new Object();
+
   @SuppressWarnings("unchecked")
   static <T> Constructor<T> getProxyConstructor(final Class<T> clazz) {
     try {
       // use a different custom classloader for each class-space, to avoid leaks
-      final ClassLoader proxyLoader = getProxyClassLoader(clazz.getClassLoader());
-      final Class<?> proxyClazz = proxyLoader.loadClass(getProxyName(clazz.getName()));
-      return (Constructor<T>) proxyClazz.getConstructor(Import.class);
+      return (Constructor<T>) getProxyClass(clazz).getConstructor(Import.class);
     } catch (final LinkageError e) {
       throw new ServiceException(e);
     } catch (final NoSuchMethodException e) {
@@ -61,21 +61,55 @@ final class ImportProxyClassLoader
     }
   }
 
+  /**
+   * @return unique proxy class per given type
+   */
+  static Class<?> getProxyClass(final Class<?> clazz)
+      throws ClassNotFoundException {
+
+    final Object key = getKeyFromClassLoader(clazz.getClassLoader());
+    final String name = getProxyName(clazz.getName());
+
+    return LOADER_MAP.get(key).loadClass(name);
+  }
+
+  /**
+   * @return non-null key for the given class loader
+   */
+  static Object getKeyFromClassLoader(final ClassLoader classLoader) {
+    if (classLoader != null) {
+      return classLoader;
+    }
+
+    try {
+      return doPrivileged(new PrivilegedAction<ClassLoader>() {
+        public ClassLoader run() {
+          return getSystemClassLoader();
+        }
+      });
+    } catch (final SecurityException e) {
+      return NULL_CLASS_LOADER_KEY; // unable to canonicalise!
+    }
+  }
+
+  /**
+   * @return class loader related to the given key
+   */
+  static ClassLoader getClassLoaderFromKey(final Object key) {
+    return NULL_CLASS_LOADER_KEY != key ? (ClassLoader) key : null;
+  }
+
   // weak map of classloaders, to allow eager collection of proxied classes
-  private static final ConcurrentMap<ClassLoader, ClassLoader> LOADER_MAP =
-      computedMap(WEAK, WEAK, 32, new Function<ClassLoader, ClassLoader>() {
-        public ClassLoader compute(final ClassLoader parent) {
+  private static final ConcurrentMap<Object, ClassLoader> LOADER_MAP =
+      computedMap(WEAK, WEAK, 32, new Function<Object, ClassLoader>() {
+        public ClassLoader compute(final Object parentKey) {
           return doPrivileged(new PrivilegedAction<ClassLoader>() {
             public ClassLoader run() {
-              return new ImportProxyClassLoader(parent);
+              return new ImportProxyClassLoader(getClassLoaderFromKey(parentKey));
             }
           });
         }
       });
-
-  private static ClassLoader getProxyClassLoader(final ClassLoader typeLoader) {
-    return LOADER_MAP.get(null == typeLoader ? getSystemClassLoader() : typeLoader);
-  }
 
   // delegate to the original type's classloader
   ImportProxyClassLoader(final ClassLoader parent) {
