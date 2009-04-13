@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.eclipse.ExtensionBean;
+import org.ops4j.peaberry.eclipse.GuiceExtensionFactory;
 import org.ops4j.peaberry.util.StaticImport;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -115,5 +116,7 @@ public final class ExtensionTests {
       System.out.println("----------------------------------------------------------------");
     }
     System.out.println();
+
+    GuiceExtensionFactory.cleanup();
   }
 }

@@ -76,9 +76,10 @@ public final class EclipseRegistry
         null == filter ? watcher : new FilteredExtensionWatcher(filter, watcher));
   }
 
-  public void cleanup() {
-    for (final ExtensionListener l : listenerMap.values()) {
-      extensionRegistry.removeListener(l);
+  // see activator
+  void cleanup() {
+    for (final String k : listenerMap.keySet()) {
+      extensionRegistry.removeListener(listenerMap.remove(k));
     }
   }
 

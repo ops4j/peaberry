@@ -23,8 +23,9 @@ import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.eclipse.EclipseRegistry.eclipseRegistry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.CoreException;
@@ -109,9 +110,9 @@ public final class GuiceExtensionFactory
 
   private static final Logger LOGGER = Logger.getLogger(GuiceExtensionFactory.class.getName());
 
-  // injectors are re-used for extensions with the same contributor
-  private static final ConcurrentHashMap<IContributor, Injector> INJECTORS =
-      new ConcurrentHashMap<IContributor, Injector>();
+  // re-use injectors for extensions with the same contributor
+  private static final Map<IContributor, Injector> INJECTORS =
+      new HashMap<IContributor, Injector>();
 
   private IContributor contributor;
   private String clazzName;
@@ -144,33 +145,43 @@ public final class GuiceExtensionFactory
     return getInjector().getInstance(clazz);
   }
 
-  // TODO: cleanup injectors when plug-ins are uninstalled
+  /**
+   * Remove any {@link Injector}s belonging to uninstalled bundles.
+   */
+  public static void cleanup() {
+    synchronized (INJECTORS) { // LOCK
+      for (final IContributor c : INJECTORS.keySet()) {
+        if (null == resolve(c)) {
+          INJECTORS.remove(c);
+        }
+      }
+    } // UNLOCK
+  }
 
   private Injector getInjector()
       throws CoreException {
 
-    Injector injector = INJECTORS.get(contributor);
-    if (null == injector) {
-
-      final List<Module> modules = new ArrayList<Module>();
-
-      // first add the default OSGi service and Eclipse extension bindings
-      modules.add(osgiModule(resolve(contributor).getBundleContext(), eclipseRegistry()));
-
-      // now add any module extensions contributed by the current plug-in
-      for (final IConfigurationElement e : getRegistry().getConfigurationElementsFor(POINT_ID)) {
-        if (contributor.equals(e.getContributor())) {
-          modules.add((Module) e.createExecutableExtension("class"));
-        }
-      }
-
-      final Injector newInjector = createInjector(modules);
-      injector = INJECTORS.putIfAbsent(contributor, newInjector);
+    synchronized (INJECTORS) { // LOCK
+      Injector injector = INJECTORS.get(contributor);
       if (null == injector) {
-        return newInjector;
+
+        final List<Module> modules = new ArrayList<Module>();
+
+        // first add the OSGi service registry and Eclipse extension bindings
+        modules.add(osgiModule(resolve(contributor).getBundleContext(), eclipseRegistry()));
+
+        // now add any module extensions contributed by the current plug-in
+        for (final IConfigurationElement e : getRegistry().getConfigurationElementsFor(POINT_ID)) {
+          if (contributor.equals(e.getContributor())) {
+            modules.add((Module) e.createExecutableExtension("class"));
+          }
+        }
+
+        injector = createInjector(modules);
+        INJECTORS.put(contributor, injector);
       }
-    }
-    return injector;
+      return injector;
+    } // UNLOCK
   }
 
   private CoreException newCoreException(final Throwable e) {
