@@ -117,7 +117,6 @@
   <target name="wipe">
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
-    <delete dir="${doc}"/>
   </target>
 
   <target name="doc" depends="check.doc,make.doc"/>

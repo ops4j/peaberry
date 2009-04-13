@@ -38,6 +38,7 @@ import org.ops4j.peaberry.ServiceUnavailableException;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class ExtensionImport
     implements Import<Object>, Comparable<ExtensionImport> {
 
@@ -120,7 +121,7 @@ final class ExtensionImport
       if (!candidates.contains(config.getDeclaringExtension())) {
         return false; /* this doesn't belong to any candidate */
       }
-    } catch (final InvalidRegistryObjectException e) {/* already invalid */}
+    } catch (final InvalidRegistryObjectException e) {/* already invalid */} // NOPMD
 
     notifyWatchers();
     watchers.clear();
