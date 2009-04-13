@@ -96,7 +96,7 @@ final class ImportProxyClassLoader
    * @return class loader related to the given key
    */
   static ClassLoader getClassLoaderFromKey(final Object key) {
-    return NULL_CLASS_LOADER_KEY != key ? (ClassLoader) key : null;
+    return NULL_CLASS_LOADER_KEY != key ? (ClassLoader) key : null; // NOPMD
   }
 
   // weak map of classloaders, to allow eager collection of proxied classes
