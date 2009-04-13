@@ -106,7 +106,7 @@ final class ExtensionBeanFactory {
       if (clazz.isAssignableFrom(m.getReturnType())) {
         return (T) m.invoke(element);
       }
-    } catch (final Throwable e) {/* no such setting */}
+    } catch (final Exception e) {/* no such setting */} // NOPMD
 
     return null;
   }
