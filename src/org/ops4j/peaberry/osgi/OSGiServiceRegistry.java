@@ -16,6 +16,10 @@
 
 package org.ops4j.peaberry.osgi;
 
+import static org.ops4j.peaberry.Peaberry.NATIVE_FILTER_HINT;
+import static org.ops4j.peaberry.util.Filters.ldap;
+import static org.osgi.framework.Constants.OBJECTCLASS;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -37,18 +41,26 @@ public class OSGiServiceRegistry
     implements CachingServiceRegistry {
 
   private final BundleContext bundleContext;
+  private final boolean useNativeFilter;
 
-  // per-class map of service listeners (much faster than polling)
+  // per-class/filter map of service listeners (much faster than polling)
   private final ConcurrentMap<String, OSGiServiceListener> listenerMap =
       new ConcurrentHashMap<String, OSGiServiceListener>(16, 0.75f, 2);
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
     this.bundleContext = bundleContext;
+
+    useNativeFilter = Boolean.valueOf(bundleContext.getProperty(NATIVE_FILTER_HINT));
   }
 
   public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
-    return new IterableOSGiService<T>(registerListener(clazz), filter);
+
+    // might combine class filter and user filter as one LDAP string
+    final AttributeFilter[] filterRef = new AttributeFilter[]{filter};
+    final String ldapFilter = getLdapFilter(clazz, filterRef);
+
+    return new IterableOSGiService<T>(registerListener(ldapFilter), filterRef[0]);
   }
 
   public <T> Export<T> add(final Import<T> service) {
@@ -63,8 +75,15 @@ public class OSGiServiceRegistry
   public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceWatcher<? super T> watcher) {
 
-    registerListener(clazz).addWatcher(
-        null == filter ? watcher : new FilteredServiceWatcher(filter, watcher));
+    // might combine class filter and user filter as one LDAP string
+    final AttributeFilter[] filterRef = new AttributeFilter[]{filter};
+    final String ldapFilter = getLdapFilter(clazz, filterRef);
+
+    if (null == filterRef[0]) {
+      registerListener(ldapFilter).addWatcher(watcher);
+    } else {
+      registerListener(ldapFilter).addWatcher(new FilteredServiceWatcher(filter, watcher));
+    }
   }
 
   public void flush(final int targetGeneration) {
@@ -92,14 +111,14 @@ public class OSGiServiceRegistry
     return false;
   }
 
-  private <T> OSGiServiceListener registerListener(final Class<T> clazz) {
-    final String clazzName = (null == clazz ? Object.class : clazz).getName();
+  private OSGiServiceListener registerListener(final String filter) {
+    final String key = null == filter ? "" : filter;
     OSGiServiceListener listener;
 
-    listener = listenerMap.get(clazzName);
+    listener = listenerMap.get(key);
     if (null == listener) {
-      final OSGiServiceListener newListener = new OSGiServiceListener(bundleContext, clazzName);
-      listener = listenerMap.putIfAbsent(clazzName, newListener);
+      final OSGiServiceListener newListener = new OSGiServiceListener(bundleContext, filter);
+      listener = listenerMap.putIfAbsent(key, newListener);
       if (null == listener) {
         newListener.start();
         return newListener;
@@ -107,5 +126,27 @@ public class OSGiServiceRegistry
     }
 
     return listener;
+  }
+
+  private String getLdapFilter(final Class<?> clazz, final AttributeFilter[] filterRef) {
+    final String clazzFilter;
+
+    if (null != clazz && Object.class != clazz) { // NOPMD
+      clazzFilter = '(' + OBJECTCLASS + '=' + clazz.getName() + ')';
+    } else {
+      clazzFilter = null;
+    }
+
+    if (useNativeFilter && null != filterRef[0]) {
+      try {
+        // can the user filter object be normalized to an LDAP string?
+        final String filter = ldap(filterRef[0].toString()).toString();
+        filterRef[0] = null; // yes, so we don't need object anymore
+
+        return null == clazzFilter ? filter : "(&" + clazzFilter + filter + ')';
+      } catch (final IllegalArgumentException e) {/* not native LDAP */} // NOPMD
+    }
+
+    return clazzFilter;
   }
 }

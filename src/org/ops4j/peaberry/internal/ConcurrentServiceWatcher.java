@@ -119,7 +119,7 @@ final class ConcurrentServiceWatcher<S>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof ConcurrentServiceWatcher) {
+    if (rhs instanceof ConcurrentServiceWatcher<?>) {
       final ConcurrentServiceWatcher<?> concurrentWatcher = (ConcurrentServiceWatcher<?>) rhs;
       return services.equals(concurrentWatcher.services)
           && watcher.equals(concurrentWatcher.watcher);

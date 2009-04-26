@@ -91,7 +91,7 @@ final class IterableOSGiService<T>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof IterableOSGiService) {
+    if (rhs instanceof IterableOSGiService<?>) {
       final IterableOSGiService<?> iterable = (IterableOSGiService<?>) rhs;
       return listener.equals(iterable.listener) && equals(filter, iterable.filter);
     }

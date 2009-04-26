@@ -92,7 +92,7 @@ final class DecoratedServiceWatcher<S>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof DecoratedServiceWatcher) {
+    if (rhs instanceof DecoratedServiceWatcher<?>) {
       final DecoratedServiceWatcher<?> decoratedWatcher = (DecoratedServiceWatcher<?>) rhs;
       return decorator.equals(decoratedWatcher.decorator)
           && watcher.equals(decoratedWatcher.watcher);

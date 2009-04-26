@@ -95,7 +95,7 @@ final class FilteredServiceWatcher<S>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof FilteredServiceWatcher) {
+    if (rhs instanceof FilteredServiceWatcher<?>) {
       final FilteredServiceWatcher<?> filteredWatcher = (FilteredServiceWatcher<?>) rhs;
       return filter.equals(filteredWatcher.filter) && watcher.equals(filteredWatcher.watcher);
     }

@@ -53,18 +53,19 @@ public final class Filters {
    */
   public static AttributeFilter objectClass(final Class<?>... interfaces) {
     final StringBuilder filter = new StringBuilder();
-
-    // must AND multiple clauses
-    if (interfaces.length > 1) {
-      filter.append("(&");
-    }
+    int numClauses = 0;
 
     for (final Class<?> i : interfaces) {
-      filter.append('(' + OBJECTCLASS + '=').append(i.getName()).append(')');
+      if (null != i && Object.class != i) { // NOPMD
+        filter.append('(' + OBJECTCLASS + '=').append(i.getName()).append(')');
+        numClauses++;
+      }
     }
 
-    if (interfaces.length > 1) {
-      filter.append(')');
+    if (0 == numClauses) {
+      return null;
+    } else if (1 < numClauses) {
+      filter.insert(0, "(&").append(')');
     }
 
     return new LdapAttributeFilter(filter.toString());

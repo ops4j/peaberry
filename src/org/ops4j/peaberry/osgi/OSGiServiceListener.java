@@ -18,7 +18,6 @@ package org.ops4j.peaberry.osgi;
 
 import static java.util.Collections.binarySearch;
 import static java.util.logging.Level.WARNING;
-import static org.osgi.framework.Constants.OBJECTCLASS;
 import static org.osgi.framework.ServiceEvent.MODIFIED;
 import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
@@ -47,22 +46,15 @@ final class OSGiServiceListener
 
   private static final Logger LOGGER = Logger.getLogger(OSGiServiceListener.class.getName());
 
-  private static final String OBJECT_CLAZZ_NAME = Object.class.getName();
-
   private final BundleContext bundleContext;
-  private final String clazzFilter;
+  private final String ldapFilter;
 
   private final List<OSGiServiceImport> imports;
   private final List<ServiceWatcher<Object>> watchers;
 
-  OSGiServiceListener(final BundleContext bundleContext, final String clazzName) {
+  OSGiServiceListener(final BundleContext bundleContext, final String ldapFilter) {
     this.bundleContext = bundleContext;
-
-    if (OBJECT_CLAZZ_NAME.equals(clazzName)) {
-      clazzFilter = null; // match all registered services
-    } else {
-      clazzFilter = '(' + OBJECTCLASS + '=' + clazzName + ')';
-    }
+    this.ldapFilter = ldapFilter;
 
     imports = new ArrayList<OSGiServiceImport>(4);
     watchers = new ArrayList<ServiceWatcher<Object>>(2);
@@ -72,10 +64,10 @@ final class OSGiServiceListener
     try {
 
       // register listener first to avoid race condition
-      bundleContext.addServiceListener(this, clazzFilter);
+      bundleContext.addServiceListener(this, ldapFilter);
 
       // retrieve snapshot of any matching services that are already registered
-      final ServiceReference[] refs = bundleContext.getServiceReferences(null, clazzFilter);
+      final ServiceReference[] refs = bundleContext.getServiceReferences(null, ldapFilter);
       if (null != refs) {
 
         // wrap service references to optimize sorting

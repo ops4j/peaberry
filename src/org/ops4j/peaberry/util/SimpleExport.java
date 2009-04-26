@@ -89,7 +89,7 @@ public class SimpleExport<T>
 
   public synchronized void put(final T newInstance) {
     // might need to balance the gets + ungets
-    if (service instanceof CountingImport) {
+    if (service instanceof CountingImport<?>) {
       ((CountingImport<?>) service).unwind();
     }
 

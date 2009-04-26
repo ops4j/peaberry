@@ -133,15 +133,21 @@ public final class Peaberry {
 
   /**
    * Name of system property ({@code "org.ops4j.peaberry.cache.interval"})
-   * defining the time in milliseconds between flushes of the service cache.
+   * suggests the time in milliseconds between flushes of the service cache.
    */
-  public static final String CACHE_INTERVAL_PROPERTY = "org.ops4j.peaberry.cache.interval";
+  public static final String CACHE_INTERVAL_HINT = "org.ops4j.peaberry.cache.interval";
 
   /**
    * Name of system property ({@code "org.ops4j.peaberry.cache.generations"})
-   * defining the number of flushes before an unused service is released.
+   * suggests the number of flushes before an unused service is released.
    */
-  public static final String CACHE_GENERATIONS_PROPERTY = "org.ops4j.peaberry.cache.generations";
+  public static final String CACHE_GENERATIONS_HINT = "org.ops4j.peaberry.cache.generations";
+
+  /**
+   * Name of system property ({@code "org.ops4j.peaberry.filter.native"})
+   * suggests using {@code AttributeFilter.toString()} as native filter.
+   */
+  public static final String NATIVE_FILTER_HINT = "org.ops4j.peaberry.filter.native";
 
   /**
    * Create a new Guice binding {@link Module} for the given bundle context.
