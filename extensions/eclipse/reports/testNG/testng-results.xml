@@ -1,0 +1,14 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="org.ops4j.peaberry.eclipse">
+    <groups>
+    </groups>
+    <test name="UnitTests">
+      <class name="org.ops4j.peaberry.eclipse.tests.ExtensionTests">
+        <test-method status="PASS" signature="testExtensionPoint()" name="testExtensionPoint" duration-ms="151" started-at="2009-05-04T15:10:24Z" finished-at="2009-05-04T15:10:25Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

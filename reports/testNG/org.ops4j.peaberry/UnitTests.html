@@ -1,0 +1,238 @@
+<html>
+<head>
+<title>TestNG:  UnitTests</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>UnitTests</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>32/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Mon May 04 15:09:52 SGT 2009</td>
+</tr>
+<tr><td>Total time:</td><td>12 seconds (12875 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='3' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td width="30%"><b>Exception</b></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.osgi.AttributeDictionaryTests.testAttributeDictionaryAdapter()'>testAttributeDictionaryAdapter</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceFilterTests.testAttributeFilter()'>testAttributeFilter</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceAttributeTests.testAttributeUnion()'>testAttributeUnion</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceConfigurationTests.testBrokenConfiguration()'>testBrokenConfiguration</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceFilterTests.testBrokenLdapFilterStrings()'>testBrokenLdapFilterStrings</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.internal.ConcurrentImportTests.testConcurrentProperties()'>testConcurrentProperties</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.internal.InternalWatcherTests.testConcurrentWatcherEquality()'>testConcurrentWatcherEquality</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceRegistryTests.testCustomRegistry()'>testCustomRegistry</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.DecoratedServiceTests.testDecoratedServiceInjection()'>testDecoratedServiceInjection</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.internal.InternalWatcherTests.testDecoratedWatcherEquality()'>testDecoratedWatcherEquality</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.DecoratedServiceTests.testDecoratorChaining()'>testDecoratorChaining</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.DirectServiceTests.testDirectServiceInjection()'>testDirectServiceInjection</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceFilterTests.testFilterHashCodeAndEquals()'>testFilterHashCodeAndEquals</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.internal.ImportProxyClassLoaderTests.testGetProxyConstructor()'>testGetProxyConstructor</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.osgi.AttributeDictionaryTests.testImmutableAttributes()'>testImmutableAttributes</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceInterceptionTests.testMissingInterceptor()'>testMissingInterceptor</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceFilterTests.testMultipleObjectClassFilter()'>testMultipleObjectClassFilter</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceAttributeTests.testNameAttributes()'>testNameAttributes</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceInterceptionTests.testNullInterception()'>testNullInterception</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceAttributeTests.testPropertyAttributes()'>testPropertyAttributes</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.internal.ProxyPerformanceTests.testProxyPerformance()'>testProxyPerformance</td>
+<td>5</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceExportTests.testServiceExports()'>testServiceExports</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceInjectionTests.testServiceInjection()'>testServiceInjection</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceInterceptionTests.testServiceInterception()'>testServiceInterception</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServicePerformanceTests.testServiceLookupPerformance()'>testServiceLookupPerformance</td>
+<td>6</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceOutjectionTests.testServiceOutjection()'>testServiceOutjection</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceContentionTests.testServiceRankingIntegrity()'>testServiceRankingIntegrity</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceTypeTests.testServiceTypesAndSignatures()'>testServiceTypesAndSignatures</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceOutjectionTests.testServiceWatcher()'>testServiceWatcher</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceFilterTests.testSingleObjectClassFilter()'>testSingleObjectClassFilter</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.ServiceContentionTests.testSingleServiceContention()'>testSingleServiceContention</td>
+<td>0</td>
+<td></td>
+</tr>
+<tr>
+<td title='org.ops4j.peaberry.tests.StickyServiceTests.testStickiness()'>testStickiness</td>
+<td>0</td>
+<td></td>
+</tr>
+</table><p>
+</body>
+</html>

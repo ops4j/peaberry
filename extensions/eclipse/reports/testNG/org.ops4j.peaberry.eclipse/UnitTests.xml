@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="UnitTests" failures="0" tests="1" time="0.164" errors="0">
+  <properties/>
+  <testcase name="testExtensionPoint" time="0.151" classname="org.ops4j.peaberry.eclipse.tests.ExtensionTests"/>
+</testsuite>

@@ -31,10 +31,14 @@
   </target>
 
   <target name="stamp" unless="ignore.stamp">
+    <pathconvert dirsep="/" property="root.dir">
+      <path path="${common.dir}/.."/>
+    </pathconvert>
     <exec executable="svn">
       <arg value="up"/>
       <arg value="-N"/>
       <arg value="-rCOMMITTED"/>
+      <arg value="${root.dir}"/>
       <redirector outputproperty="svn.revision">
         <outputfilterchain>
           <replaceregex pattern="At revision (.+)\." replace="\1"/>
@@ -117,7 +121,6 @@
   <target name="wipe">
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
-    <delete dir="${doc}"/>
   </target>
 
   <target name="doc" depends="check.doc,make.doc"/>
