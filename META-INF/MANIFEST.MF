@@ -10,7 +10,7 @@ Export-Package: org.ops4j.peaberry.builders;uses:="com.google.inject,o
 Bundle-Name: peaberry
 Created-By: 1.6.0_11 (Sun Microsystems Inc.)
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-Version: 1.1.0.SNAPSHOT
+Bundle-Version: 1.2.0.SNAPSHOT
 Bundle-Activator: org.ops4j.peaberry.osgi.Activator
 Bundle-ManifestVersion: 2
 Bundle-Description: peaberry - dynamic service extension for Google-Gu
