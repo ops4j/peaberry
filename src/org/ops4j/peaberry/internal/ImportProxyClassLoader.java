@@ -77,7 +77,7 @@ final class ImportProxyClassLoader
    * @return non-null key for the given class loader
    */
   static Object getKeyFromClassLoader(final ClassLoader classLoader) {
-    if (classLoader != null) {
+    if (null != classLoader) {
       return classLoader;
     }
 

@@ -7,7 +7,7 @@
       <execEnv>J2SE-1.5</execEnv>
    </targetJRE>
 
-   <location path="${workspace_loc:/peaberry/lib/build}"/>
+   <location useDefault="true"/>
 
    <content useAllPlugins="true">
       <plugins>
@@ -21,7 +21,7 @@
       <features>
       </features>
       <extraLocations>
-         <location path="${eclipse_home}/plugins"/>
+         <location path="${project_loc:peaberry}/lib/build"/>
       </extraLocations>
    </content>
 
