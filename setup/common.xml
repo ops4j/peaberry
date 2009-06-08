@@ -98,7 +98,7 @@
       <path path="${deploy.cp};${final.jar}"/>
     </makeurl>
     <testng outputDir="${doc}/testNG" suiteRunnerClass="Director">
-      <xmlfileset dir="${test}"/>
+      <xmlfileset dir="${build}/test-classes"/>
       <sysproperty key="test.suite.name" value="${module}"/>
       <sysproperty key="felix.config.properties" value="${felix.config.properties}"/>
       <sysproperty key="boot.urls" value="${boot.urls}"/>
