@@ -163,20 +163,29 @@ final class ServiceSettings<T>
     return imports;
   }
 
+  private Export<T> export; // workaround issue 35: Guice calls twice by mistake
+
   Export<T> getExport(final Injector injector) {
 
-    // watcher might be null, but registry setting will be non-null
-    ServiceWatcher<? super T> serviceWatcher = watcher.get(injector);
-    if (null == serviceWatcher) {
-      serviceWatcher = registry.get(injector);
+    // this might cause a reentrant call...
+    final T instance = service.get(injector);
+    if (null == export) {
+
+      // watcher might be null, but registry setting will be non-null
+      ServiceWatcher<? super T> serviceWatcher = watcher.get(injector);
+      if (null == serviceWatcher) {
+        serviceWatcher = registry.get(injector);
+      }
+
+      // decorate the watcher if necessary, to support decorated exports
+      final ImportDecorator<? super T> watcherDecorator = decorator.get(injector);
+      if (null != watcherDecorator) {
+        serviceWatcher = new DecoratedServiceWatcher<T>(watcherDecorator, serviceWatcher);
+      }
+
+      export = serviceWatcher.add(new StaticImport<T>(instance, attributes.get(injector)));
     }
 
-    // decorate the watcher if necessary, to support decorated exports
-    final ImportDecorator<? super T> watcherDecorator = decorator.get(injector);
-    if (null != watcherDecorator) {
-      serviceWatcher = new DecoratedServiceWatcher<T>(watcherDecorator, serviceWatcher);
-    }
-
-    return serviceWatcher.add(new StaticImport<T>(service.get(injector), attributes.get(injector)));
+    return export;
   }
 }

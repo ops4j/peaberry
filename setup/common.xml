@@ -100,6 +100,7 @@
     <testng outputDir="${doc}/testNG" suiteRunnerClass="Director">
       <xmlfileset dir="${build}/test-classes"/>
       <sysproperty key="test.suite.name" value="${module}"/>
+      <sysproperty key="clover.pertest.coverage" value="off"/>
       <sysproperty key="felix.config.properties" value="${felix.config.properties}"/>
       <sysproperty key="boot.urls" value="${boot.urls}"/>
       <sysproperty key="deploy.urls" value="${deploy.urls}"/>
