@@ -28,6 +28,8 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.cache.CachingServiceRegistry;
+import org.ops4j.peaberry.cache.FilteredServiceWatcher;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.Inject;

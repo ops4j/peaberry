@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.osgi;
+package org.ops4j.peaberry.cache;
 
 import java.util.Map;
 
@@ -29,13 +29,13 @@ import org.ops4j.peaberry.util.SimpleExport;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class FilteredServiceWatcher<S>
+public final class FilteredServiceWatcher<S>
     implements ServiceWatcher<S> {
 
   final AttributeFilter filter;
   final ServiceWatcher<S> watcher;
 
-  FilteredServiceWatcher(final AttributeFilter filter, final ServiceWatcher<S> watcher) {
+  public FilteredServiceWatcher(final AttributeFilter filter, final ServiceWatcher<S> watcher) {
     this.filter = filter;
     this.watcher = watcher;
   }

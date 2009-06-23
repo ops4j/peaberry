@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.osgi;
+package org.ops4j.peaberry.cache;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

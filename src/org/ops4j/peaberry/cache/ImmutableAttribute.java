@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.osgi;
+package org.ops4j.peaberry.cache;
 
 import java.util.Map.Entry;
 
@@ -23,13 +23,13 @@ import java.util.Map.Entry;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class ImmutableAttribute
+public final class ImmutableAttribute
     implements Entry<String, Object> {
 
   private final String k;
   private final Object v;
 
-  ImmutableAttribute(final String key, final Object value) {
+  public ImmutableAttribute(final String key, final Object value) {
     k = key;
     v = value;
   }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.osgi;
+package org.ops4j.peaberry.cache;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -27,4 +27,4 @@ import com.google.inject.BindingAnnotation;
 @Target(PARAMETER)
 @Retention(RUNTIME)
 @BindingAnnotation
-@interface PrivateBinding {}
+public @interface Chain {}

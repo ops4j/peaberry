@@ -2,6 +2,6 @@
 -classpath: ${final.jar},${build.dir}/test-classes
 
 Private-Package:\
- ${module}(.util|.util.ldap|.util.decorators),\
+ ${module}(.cache|.util|.util.ldap|.util.decorators),\
  ${module}(.internal|.osgi);-split-package:=merge-first
 

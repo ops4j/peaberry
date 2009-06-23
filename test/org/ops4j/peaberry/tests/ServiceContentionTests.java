@@ -161,8 +161,9 @@ public final class ServiceContentionTests
           prevRank = Integer.MAX_VALUE;
           for (final RankService next : rankings) {
             try {
-              assert prevRank >= next.rank() : "Expected " + prevRank + " >= " + next.rank();
-              prevRank = next.rank();
+              int nextRank = next.rank();
+              assert prevRank >= nextRank : "Expected " + prevRank + " >= " + nextRank;
+              prevRank = nextRank;
             } catch (final ServiceUnavailableException e) {}
           }
         } while (testThread[0] == Thread.currentThread());

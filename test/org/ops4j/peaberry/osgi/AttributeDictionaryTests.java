@@ -27,6 +27,7 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import org.ops4j.peaberry.cache.ImmutableAttribute;
 import org.testng.annotations.Test;
 
 /**

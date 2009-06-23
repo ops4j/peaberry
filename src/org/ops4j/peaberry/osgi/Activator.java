@@ -26,6 +26,7 @@ import static org.osgi.framework.Bundle.ACTIVE;
 import static org.osgi.framework.Bundle.STARTING;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
+import org.ops4j.peaberry.cache.CachingServiceRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

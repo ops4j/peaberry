@@ -21,6 +21,7 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.ops4j.peaberry.cache.ImmutableAttribute;
 import org.osgi.framework.ServiceReference;
 
 /**

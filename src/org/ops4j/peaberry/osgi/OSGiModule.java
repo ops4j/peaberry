@@ -20,6 +20,9 @@ import java.util.Arrays;
 
 import org.ops4j.peaberry.BundleScoped;
 import org.ops4j.peaberry.ServiceRegistry;
+import org.ops4j.peaberry.cache.CachingServiceRegistry;
+import org.ops4j.peaberry.cache.Chain;
+import org.ops4j.peaberry.cache.RegistryChain;
 import org.osgi.framework.BundleContext;
 
 import com.google.inject.AbstractModule;
@@ -53,12 +56,13 @@ public final class OSGiModule
     if (registries.length == 0) {
       bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
     } else {
-      bind(ServiceRegistry[].class).annotatedWith(PrivateBinding.class).toInstance(registries);
+      bind(ServiceRegistry.class).annotatedWith(Chain.class).to(CachingServiceRegistry.class);
+      bind(ServiceRegistry[].class).annotatedWith(Chain.class).toInstance(registries);
       bind(ServiceRegistry.class).to(RegistryChain.class);
     }
 
-    // use CachingServiceRegistry so it will be used as the published API
-    bind(CachingServiceRegistry.class).in(BundleScoped.class);
+    // the binding key class will be used as the bundle-scoped service API
+    bind(CachingServiceRegistry.class).to(OSGiServiceRegistry.class).in(BundleScoped.class);
   }
 
   @Override

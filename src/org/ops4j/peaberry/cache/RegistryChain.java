@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.osgi;
+package org.ops4j.peaberry.cache;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -38,8 +38,8 @@ public class RegistryChain
   private final ServiceRegistry[] registries;
 
   @Inject
-  public RegistryChain(final CachingServiceRegistry mainRegistry,
-      @PrivateBinding final ServiceRegistry[] extraRegistries) {
+  public RegistryChain(@Chain final ServiceRegistry mainRegistry,
+      @Chain final ServiceRegistry[] extraRegistries) {
 
     // merge main and additional registries into a single array
     registries = new ServiceRegistry[1 + extraRegistries.length];
