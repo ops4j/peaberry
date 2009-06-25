@@ -62,7 +62,7 @@ public final class Activator
   /**
    * Cleans up registered {@link CachingServiceRegistry}s at a fixed interval.
    */
-  public static final class ImportManager
+  public static class ImportManager
       implements Runnable {
 
     private final Bundle bundle;
@@ -85,7 +85,7 @@ public final class Activator
       this.registries = registries;
     }
 
-    public void run() {
+    public final void run() {
       int gen = 0;
 
       do {

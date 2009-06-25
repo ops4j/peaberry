@@ -64,7 +64,7 @@ public abstract class AbstractServiceListener<T> {
     }
   }
 
-  protected void insertService(final AbstractServiceImport<T> i) {
+  protected final void insertService(final AbstractServiceImport<T> i) {
     // find insertion point that maintains ordering
     final int insertIndex = binarySearch(imports, i);
 
@@ -79,19 +79,7 @@ public abstract class AbstractServiceListener<T> {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private static void notifyWatcher(final ServiceWatcher watcher, final AbstractServiceImport i) {
-    try {
-      final Export export = watcher.add(i);
-      if (null != export) {
-        i.addWatcher(export);
-      }
-    } catch (final RuntimeException re) {
-      LOGGER.log(WARNING, "Exception in service watcher", re);
-    }
-  }
-
-  protected void updateService(final AbstractServiceImport<T> i) {
+  protected final void updateService(final AbstractServiceImport<T> i) {
     // use linear search in case ranking has changed
     final int index = imports.indexOf(i);
 
@@ -113,12 +101,24 @@ public abstract class AbstractServiceListener<T> {
     }
   }
 
-  protected void removeService(final Import<T> i) {
+  protected final void removeService(final Import<T> i) {
     // use linear search in case ranking has changed
     final int index = imports.indexOf(i);
     if (0 <= index) {
       // flush cache even if being used
       imports.remove(index).invalidate();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static void notifyWatcher(final ServiceWatcher watcher, final AbstractServiceImport i) {
+    try {
+      final Export export = watcher.add(i);
+      if (null != export) {
+        i.addWatcher(export);
+      }
+    } catch (final RuntimeException re) {
+      LOGGER.log(WARNING, "Exception in service watcher", re);
     }
   }
 

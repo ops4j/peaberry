@@ -45,7 +45,7 @@ public abstract class AbstractServiceRegistry
   }
 
   @SuppressWarnings("unchecked")
-  public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
+  public final <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
 
     // might combine class filter and user filter as one LDAP string
     final AttributeFilter[] filterRef = new AttributeFilter[]{filter};
@@ -55,7 +55,7 @@ public abstract class AbstractServiceRegistry
   }
 
   @SuppressWarnings("unchecked")
-  public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
+  public final <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceWatcher<? super T> watcher) {
 
     // might combine class filter and user filter as one LDAP string
@@ -69,7 +69,7 @@ public abstract class AbstractServiceRegistry
     }
   }
 
-  public void flush(final int targetGeneration) {
+  public final void flush(final int targetGeneration) {
     // look for unused cached service instances to flush...
     for (final AbstractServiceListener<?> i : listenerMap.values()) {
       i.flush(targetGeneration);
@@ -97,14 +97,14 @@ public abstract class AbstractServiceRegistry
     final String clazzFilter;
 
     if (null != clazz && Object.class != clazz) { // NOPMD
-      clazzFilter = "(OBJECTCLASS=" + clazz.getName() + ')';
+      clazzFilter = "(objectClass=" + clazz.getName() + ')';
     } else {
       clazzFilter = null;
     }
 
     if (useNativeFilter && null != filterRef[0]) {
       try {
-        // can the user filter object be normalised to an LDAP string?
+        // can the user filter object be normalized to an LDAP string?
         final String filter = ldap(filterRef[0].toString()).toString();
         filterRef[0] = null; // yes, so we don't need object anymore
 

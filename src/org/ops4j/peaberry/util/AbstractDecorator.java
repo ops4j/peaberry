@@ -33,7 +33,7 @@ import org.ops4j.peaberry.builders.ImportDecorator;
 public abstract class AbstractDecorator<S>
     implements ImportDecorator<S> {
 
-  public <T extends S> Import<T> decorate(final Import<T> service) {
+  public final <T extends S> Import<T> decorate(final Import<T> service) {
     return new DelegatingImport<T>(service) {
 
       @Override

@@ -44,17 +44,17 @@ public class OSGiServiceRegistry
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return String.format("OSGiServiceRegistry[%s]", bundleContext.getBundle());
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return bundleContext.hashCode();
   }
 
   @Override
-  public boolean equals(final Object rhs) {
+  public final boolean equals(final Object rhs) {
     if (rhs instanceof OSGiServiceRegistry) {
       return bundleContext.equals(((OSGiServiceRegistry) rhs).bundleContext);
     }
@@ -62,11 +62,11 @@ public class OSGiServiceRegistry
   }
 
   @Override
-  protected <T> AbstractServiceListener<T> createListener(final String filter) {
+  protected final <T> AbstractServiceListener<T> createListener(final String filter) {
     return new OSGiServiceListener<T>(bundleContext, filter);
   }
 
-  public <T> Export<T> add(final Import<T> service) {
+  public final <T> Export<T> add(final Import<T> service) {
     // avoid cycles by ignoring our own services
     if (service instanceof OSGiServiceExport<?>) {
       return null;

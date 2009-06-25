@@ -38,7 +38,6 @@ public abstract class AbstractServiceImport<T>
   private static final Logger LOGGER = Logger.getLogger(AbstractServiceImport.class.getName());
 
   static final int MODIFIED = 0;
-
   static final int UNREGISTERING = 1;
 
   private static final int INVALID = -1;
@@ -64,7 +63,7 @@ public abstract class AbstractServiceImport<T>
     watchers = new ArrayList<Export<?>>(2);
   }
 
-  public T get() {
+  public final T get() {
     count.getAndIncrement();
     if (DORMANT == state) {
       synchronized (this) {
@@ -82,24 +81,24 @@ public abstract class AbstractServiceImport<T>
     return instance;
   }
 
-  public void unget() {
+  public final void unget() {
     generation = cacheGeneration;
     count.decrementAndGet();
   }
 
-  public boolean available() {
+  public final boolean available() {
     return INVALID != state;
   }
 
   /**
-   * Protected from concurrent access by {@link OSGiServiceListener}.
+   * Protected from concurrent access by {@link AbstractServiceListener}.
    */
   void addWatcher(final Export<?> export) {
     watchers.add(export);
   }
 
   /**
-   * Protected from concurrent access by {@link OSGiServiceListener}.
+   * Protected from concurrent access by {@link AbstractServiceListener}.
    */
   void invalidate() {
     notifyWatchers(UNREGISTERING);
@@ -110,12 +109,12 @@ public abstract class AbstractServiceImport<T>
     }
   }
 
-  public static void setCacheGeneration(final int newGeneration) {
+  public static final void setCacheGeneration(final int newGeneration) {
     cacheGeneration = newGeneration;
   }
 
   /**
-   * Protected from concurrent access by {@link OSGiServiceListener}.
+   * Protected from concurrent access by {@link AbstractServiceListener}.
    */
   void flush(final int targetGeneration) {
 

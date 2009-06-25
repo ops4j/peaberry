@@ -47,7 +47,7 @@ public class RegistryChain
     registries[0] = mainRegistry;
   }
 
-  public <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
+  public final <T> Iterable<Import<T>> lookup(final Class<T> clazz, final AttributeFilter filter) {
 
     @SuppressWarnings("unchecked")
     final Iterable<Import<T>>[] lazyIterables = new Iterable[registries.length];
@@ -80,7 +80,7 @@ public class RegistryChain
     };
   }
 
-  public <T> void watch(final Class<T> clazz, final AttributeFilter filter,
+  public final <T> void watch(final Class<T> clazz, final AttributeFilter filter,
       final ServiceWatcher<? super T> watcher) {
 
     for (final ServiceRegistry r : registries) {
@@ -90,22 +90,22 @@ public class RegistryChain
     }
   }
 
-  public <T> Export<T> add(final Import<T> service) {
+  public final <T> Export<T> add(final Import<T> service) {
     return registries[0].add(service); // only add to main repository
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return String.format("RegistryChain%s", Arrays.toString(registries));
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return Arrays.hashCode(registries);
   }
 
   @Override
-  public boolean equals(final Object rhs) {
+  public final boolean equals(final Object rhs) {
     if (rhs instanceof RegistryChain) {
       return Arrays.equals(registries, ((RegistryChain) rhs).registries);
     }

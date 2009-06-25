@@ -16,8 +16,6 @@
 
 package org.ops4j.peaberry.util;
 
-import static org.osgi.framework.Constants.OBJECTCLASS;
-
 import java.util.Map;
 
 import org.ops4j.peaberry.AttributeFilter;
@@ -57,7 +55,7 @@ public final class Filters {
 
     for (final Class<?> i : interfaces) {
       if (null != i && Object.class != i) { // NOPMD
-        filter.append('(' + OBJECTCLASS + '=').append(i.getName()).append(')');
+        filter.append("(objectClass=").append(i.getName()).append(')');
         numClauses++;
       }
     }

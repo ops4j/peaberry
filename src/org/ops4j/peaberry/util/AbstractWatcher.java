@@ -21,7 +21,6 @@ import java.util.Map;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceWatcher;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * Skeletal implementation to simplify development of {@link ServiceWatcher}s.
@@ -29,7 +28,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * Developers only have to extend this class and provide implementations of the
  * {@link #adding(Import)}, {@link #modified(Object, Map)}, and {@link #removed}
  * service tracking methods. The design of this helper class is loosely based on
- * the OSGi {@link ServiceTrackerCustomizer}.
+ * the OSGi ServiceTrackerCustomizer.
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  * 
@@ -39,7 +38,7 @@ public abstract class AbstractWatcher<S>
     implements ServiceWatcher<S> {
 
   @SuppressWarnings("unchecked")
-  public <T extends S> Export<T> add(final Import<T> service) {
+  public final <T extends S> Export<T> add(final Import<T> service) {
     final TrackingExport export = new TrackingExport((Import) service);
     return null == export.tracker ? null : (Export) export;
   }
