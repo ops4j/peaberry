@@ -16,20 +16,12 @@
 
 package org.ops4j.peaberry.osgi;
 
-import static java.util.Collections.binarySearch;
-import static java.util.logging.Level.WARNING;
 import static org.osgi.framework.ServiceEvent.MODIFIED;
 import static org.osgi.framework.ServiceEvent.REGISTERED;
 import static org.osgi.framework.ServiceEvent.UNREGISTERING;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.ops4j.peaberry.AttributeFilter;
-import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.ServiceException;
-import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.cache.AbstractServiceListener;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -41,26 +33,20 @@ import org.osgi.framework.ServiceReference;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class OSGiServiceListener
+final class OSGiServiceListener<T>
+    extends AbstractServiceListener<T>
     implements ServiceListener {
-
-  private static final Logger LOGGER = Logger.getLogger(OSGiServiceListener.class.getName());
 
   private final BundleContext bundleContext;
   private final String ldapFilter;
 
-  private final List<OSGiServiceImport> imports;
-  private final List<ServiceWatcher<Object>> watchers;
-
   OSGiServiceListener(final BundleContext bundleContext, final String ldapFilter) {
     this.bundleContext = bundleContext;
     this.ldapFilter = ldapFilter;
-
-    imports = new ArrayList<OSGiServiceImport>(4);
-    watchers = new ArrayList<ServiceWatcher<Object>>(2);
   }
 
-  synchronized void start() {
+  @Override
+  protected synchronized void start() {
     try {
 
       // register listener first to avoid race condition
@@ -72,7 +58,7 @@ final class OSGiServiceListener
 
         // wrap service references to optimize sorting
         for (final ServiceReference r : refs) {
-          insertService(new OSGiServiceImport(bundleContext, r)); // NOPMD
+          insertService(new OSGiServiceImport<T>(bundleContext, r)); // NOPMD
         }
       }
 
@@ -82,126 +68,22 @@ final class OSGiServiceListener
   }
 
   public synchronized void serviceChanged(final ServiceEvent event) {
-    final OSGiServiceImport i = new OSGiServiceImport(bundleContext, event.getServiceReference());
+
+    final OSGiServiceImport<T> service =
+        new OSGiServiceImport<T>(bundleContext, event.getServiceReference());
 
     switch (event.getType()) {
     case REGISTERED:
-      insertService(i);
+      insertService(service);
       break;
     case MODIFIED:
-      updateService(i);
+      updateService(service);
       break;
     case UNREGISTERING:
-      removeService(i);
+      removeService(service);
       break;
     default:
       break;
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  synchronized void addWatcher(final ServiceWatcher watcher) {
-    if (!watchers.contains(watcher) && watchers.add(watcher)) {
-
-      // report existing imports to the new watcher
-      for (final OSGiServiceImport i : imports) {
-        notifyWatcher(watcher, i);
-      }
-    }
-  }
-
-  synchronized void flush(final int targetGeneration) {
-    // flush any unused cached service instances
-    for (final OSGiServiceImport i : imports) {
-      i.flush(targetGeneration);
-    }
-  }
-
-  private void insertService(final OSGiServiceImport i) {
-    // find insertion point that maintains ordering
-    final int insertIndex = binarySearch(imports, i);
-
-    if (insertIndex < 0) {
-      // new object, must flip index
-      imports.add(~insertIndex, i);
-
-      // report new import to any watching watchers
-      for (final ServiceWatcher<Object> w : watchers) {
-        notifyWatcher(w, i);
-      }
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static void notifyWatcher(final ServiceWatcher watcher, final OSGiServiceImport i) {
-    try {
-      final Export export = watcher.add(i);
-      if (null != export) {
-        i.addWatcher(export);
-      }
-    } catch (final RuntimeException re) {
-      LOGGER.log(WARNING, "Exception in service watcher", re);
-    }
-  }
-
-  private void updateService(final OSGiServiceImport i) {
-    // use linear search in case ranking has changed
-    final int index = imports.indexOf(i);
-
-    if (0 <= index) {
-      // keep existing instance as it might be in use
-      final OSGiServiceImport orig = imports.get(index);
-
-      // need to re-order list?
-      if (orig.updateRanking()) {
-        imports.remove(index);
-        imports.add(~binarySearch(imports, orig), orig);
-      }
-
-      // finally update any watchers
-      orig.notifyWatchers(MODIFIED);
-    } else {
-      // not seen before
-      insertService(i);
-    }
-  }
-
-  private void removeService(final OSGiServiceImport i) {
-    // use linear search in case ranking has changed
-    final int index = imports.indexOf(i);
-    if (0 <= index) {
-      // flush cache even if being used
-      imports.remove(index).invalidate();
-    }
-  }
-
-  synchronized OSGiServiceImport findNextImport(final OSGiServiceImport prevImport,
-      final AttributeFilter filter) {
-
-    if (imports.isEmpty()) {
-      return null;
-    }
-
-    if (null == prevImport && null == filter) {
-      return imports.get(0);
-    }
-
-    // estimate last position based on previous value and current list
-    return findNextImport(filter, null == prevImport ? ~0 : binarySearch(imports, prevImport));
-  }
-
-  private OSGiServiceImport findNextImport(final AttributeFilter filter, final int prevIndex) {
-
-    // may need to flip position if previous import is no longer in the list
-    for (int i = prevIndex < 0 ? ~prevIndex : prevIndex + 1; i < imports.size(); i++) {
-
-      // now do a linear search applying the given filter
-      final OSGiServiceImport nextImport = imports.get(i);
-      if (null == filter || filter.matches(nextImport.attributes())) {
-        return nextImport;
-      }
-    }
-
-    return null; // no matching service
   }
 }

@@ -26,6 +26,7 @@ import static org.osgi.framework.Bundle.ACTIVE;
 import static org.osgi.framework.Bundle.STARTING;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
+import org.ops4j.peaberry.cache.AbstractServiceImport;
 import org.ops4j.peaberry.cache.CachingServiceRegistry;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -89,7 +90,7 @@ public final class Activator
 
       do {
         // generation was flushed, safe to re-use
-        OSGiServiceImport.setCacheGeneration(gen);
+        AbstractServiceImport.setCacheGeneration(gen);
 
         try {
           Thread.sleep(interval);

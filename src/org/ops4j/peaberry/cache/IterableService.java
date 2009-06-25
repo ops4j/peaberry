@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.osgi;
+package org.ops4j.peaberry.cache;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -23,7 +23,7 @@ import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Import;
 
 /**
- * Filtered iterable view over dynamic collection of {@link OSGiServiceImport}s.
+ * Filtered iterable over dynamic collection of {@link AbstractServiceImport}s.
  * <p>
  * The iterator provided by this view is valid even if the underlying collection
  * of services changes - because it keeps track of where it would be in the list
@@ -31,13 +31,13 @@ import org.ops4j.peaberry.Import;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class IterableOSGiService<T>
+final class IterableService<T>
     implements Iterable<Import<T>> {
 
-  final OSGiServiceListener listener;
+  final AbstractServiceListener<T> listener;
   final AttributeFilter filter;
 
-  IterableOSGiService(final OSGiServiceListener listener, final AttributeFilter filter) {
+  IterableService(final AbstractServiceListener<T> listener, final AttributeFilter filter) {
     this.listener = listener;
     this.filter = filter;
   }
@@ -45,15 +45,14 @@ final class IterableOSGiService<T>
   public Iterator<Import<T>> iterator() {
     return new Iterator<Import<T>>() {
 
-      // keep track of where we've been...
-      private OSGiServiceImport prevImport;
-      private OSGiServiceImport nextImport;
+      // track where we've been...
+      private Import<T> prevImport;
+      private Import<T> nextImport;
 
       public boolean hasNext() {
         return null != findNextImport();
       }
 
-      @SuppressWarnings("unchecked")
       public Import<T> next() {
 
         if (null == findNextImport()) {
@@ -64,14 +63,14 @@ final class IterableOSGiService<T>
         prevImport = nextImport;
         nextImport = null;
 
-        return (Import) prevImport;
+        return prevImport;
       }
 
-      private OSGiServiceImport findNextImport() {
+      private Import<T> findNextImport() {
         if (null == nextImport) {
 
           // based on our last result and the current list, find next result...
-          final OSGiServiceImport tempImport = listener.findNextImport(prevImport, filter);
+          final Import<T> tempImport = listener.findNextImport(prevImport, filter);
 
           // ...and cache it
           if (null != tempImport) {
@@ -91,8 +90,8 @@ final class IterableOSGiService<T>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof IterableOSGiService<?>) {
-      final IterableOSGiService<?> iterable = (IterableOSGiService<?>) rhs;
+    if (rhs instanceof IterableService<?>) {
+      final IterableService<?> iterable = (IterableService<?>) rhs;
       return listener.equals(iterable.listener) && equals(filter, iterable.filter);
     }
     return false;
