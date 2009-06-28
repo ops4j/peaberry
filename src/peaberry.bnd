@@ -7,7 +7,7 @@ extra.includes:\
  META-INF/LICENSE.asm=../LICENSE.asm
 
 -exportcontents:\
- ${module}(|.builders|.util);version=${api.version}
+ ${module}(|.builders|.cache|.util);version=${api.version}
 
 extra.imports:\
  javax.*;resolution:=optional
