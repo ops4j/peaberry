@@ -44,20 +44,20 @@ public final class LdapAttributeFilter
   private final Object[] program;
   private volatile String filter;
 
-  public LdapAttributeFilter(final String filter) {
-    final Parser parser = new Parser(new LdapLexer(new StringReader(filter)));
+  public LdapAttributeFilter(final String ldapFilter) {
+    final Parser parser = new Parser(new LdapLexer(new StringReader(ldapFilter)));
 
     try {
       parser.start();
     } catch (final Exception e) {
-      throw new IllegalArgumentException("Bad LDAP filter: " + filter, e);
+      throw new IllegalArgumentException("Bad LDAP filter: " + ldapFilter, e);
     }
 
     program = parser.getProgram();
     // filter is assigned lazily
 
     if (null == program || program.length == 0) {
-      throw new IllegalArgumentException("Bad LDAP filter: " + filter);
+      throw new IllegalArgumentException("Bad LDAP filter: " + ldapFilter);
     }
   }
 

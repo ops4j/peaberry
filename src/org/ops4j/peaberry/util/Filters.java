@@ -34,13 +34,13 @@ public final class Filters {
   /**
    * Create an {@link AttributeFilter} based on the given LDAP filter string.
    * 
-   * @param filter RFC-1960 LDAP filter
+   * @param ldapFilter RFC-1960 LDAP filter
    * @return service attribute filter
    * 
    * @see <a href="http://www.ietf.org/rfc/rfc1960.txt">RFC-1960</a>
    */
-  public static AttributeFilter ldap(final String filter) {
-    return new LdapAttributeFilter(filter);
+  public static AttributeFilter ldap(final String ldapFilter) {
+    return new LdapAttributeFilter(ldapFilter);
   }
 
   /**

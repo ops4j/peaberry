@@ -26,6 +26,7 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
+import org.ops4j.peaberry.cache.FilteredServiceWatcher;
 
 /**
  * Eclipse Extension {@link ServiceRegistry} implementation.
@@ -73,7 +74,7 @@ public final class EclipseRegistry
       final ServiceWatcher<? super T> watcher) {
 
     registerListener(clazz).addWatcher(
-        null == filter ? watcher : new FilteredExtensionWatcher(filter, watcher));
+        null == filter ? watcher : new FilteredServiceWatcher(filter, watcher));
   }
 
   // see activator

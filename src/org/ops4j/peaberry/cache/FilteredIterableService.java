@@ -31,13 +31,13 @@ import org.ops4j.peaberry.Import;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class IterableService<T>
+final class FilteredIterableService<T>
     implements Iterable<Import<T>> {
 
   final AbstractServiceListener<T> listener;
   final AttributeFilter filter;
 
-  IterableService(final AbstractServiceListener<T> listener, final AttributeFilter filter) {
+  FilteredIterableService(final AbstractServiceListener<T> listener, final AttributeFilter filter) {
     this.listener = listener;
     this.filter = filter;
   }
@@ -90,8 +90,8 @@ final class IterableService<T>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof IterableService<?>) {
-      final IterableService<?> iterable = (IterableService<?>) rhs;
+    if (rhs instanceof FilteredIterableService<?>) {
+      final FilteredIterableService<?> iterable = (FilteredIterableService<?>) rhs;
       return listener.equals(iterable.listener) && equals(filter, iterable.filter);
     }
     return false;

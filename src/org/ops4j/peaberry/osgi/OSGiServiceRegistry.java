@@ -62,8 +62,8 @@ public class OSGiServiceRegistry
   }
 
   @Override
-  protected final <T> AbstractServiceListener<T> createListener(final String filter) {
-    return new OSGiServiceListener<T>(bundleContext, filter);
+  protected final <T> AbstractServiceListener<T> createListener(final String ldapFilter) {
+    return new OSGiServiceListener<T>(bundleContext, ldapFilter);
   }
 
   public final <T> Export<T> add(final Import<T> service) {

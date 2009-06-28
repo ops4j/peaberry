@@ -51,7 +51,7 @@ public abstract class AbstractServiceRegistry
     final AttributeFilter[] filterRef = new AttributeFilter[]{filter};
     final String ldapFilter = getLdapFilter(clazz, filterRef);
 
-    return new IterableService(registerListener(ldapFilter), filterRef[0]);
+    return new FilteredIterableService(registerListener(ldapFilter), filterRef[0]);
   }
 
   @SuppressWarnings("unchecked")
@@ -76,13 +76,13 @@ public abstract class AbstractServiceRegistry
     }
   }
 
-  private AbstractServiceListener<?> registerListener(final String filter) {
-    final String key = null == filter ? "" : filter;
+  private AbstractServiceListener<?> registerListener(final String ldapFilter) {
+    final String key = null == ldapFilter ? "" : ldapFilter;
     AbstractServiceListener<?> listener;
 
     listener = listenerMap.get(key);
     if (null == listener) {
-      final AbstractServiceListener<?> newListener = createListener(filter);
+      final AbstractServiceListener<?> newListener = createListener(ldapFilter);
       listener = listenerMap.putIfAbsent(key, newListener);
       if (null == listener) {
         newListener.start();
@@ -105,15 +105,15 @@ public abstract class AbstractServiceRegistry
     if (useNativeFilter && null != filterRef[0]) {
       try {
         // can the user filter object be normalized to an LDAP string?
-        final String filter = ldap(filterRef[0].toString()).toString();
+        final String ldapFilter = ldap(filterRef[0].toString()).toString();
         filterRef[0] = null; // yes, so we don't need object anymore
 
-        return null == clazzFilter ? filter : "(&" + clazzFilter + filter + ')';
+        return null == clazzFilter ? ldapFilter : "(&" + clazzFilter + ldapFilter + ')';
       } catch (final IllegalArgumentException e) {/* not native LDAP */} // NOPMD
     }
 
     return clazzFilter;
   }
 
-  protected abstract <T> AbstractServiceListener<T> createListener(String filter);
+  protected abstract <T> AbstractServiceListener<T> createListener(String ldapFilter);
 }
