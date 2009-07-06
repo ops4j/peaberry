@@ -91,7 +91,7 @@ final class IterableExtension<T>
 
   @Override
   public boolean equals(final Object rhs) {
-    if (rhs instanceof IterableExtension) {
+    if (rhs instanceof IterableExtension<?>) {
       final IterableExtension<?> iterable = (IterableExtension<?>) rhs;
       return listener.equals(iterable.listener) && equals(filter, iterable.filter);
     }

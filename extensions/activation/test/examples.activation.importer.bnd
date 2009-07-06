@@ -1,0 +1,3 @@
+Bundle-SymbolicName: examples.activation.importer
+Private-Package: examples.activation.importer.internal
+Bundle-Module: examples.activation.importer.internal.Config
