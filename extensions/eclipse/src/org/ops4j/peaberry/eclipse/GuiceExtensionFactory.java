@@ -114,12 +114,16 @@ public final class GuiceExtensionFactory
   private static final Map<IContributor, Injector> INJECTORS =
       new HashMap<IContributor, Injector>();
 
+  private IConfigurationElement configuration;
   private IContributor contributor;
   private String clazzName;
 
   public void setInitializationData(final IConfigurationElement config, final String name,
       final Object data) {
 
+    configuration = config;
+
+    // find contributor while still valid
     contributor = config.getContributor();
 
     // if there's no (string-based) adapter data then class must be under "id"
@@ -142,7 +146,11 @@ public final class GuiceExtensionFactory
       throw newCoreException(e);
     }
 
-    return getInjector().getInstance(clazz);
+    final Object o = getInjector().getInstance(clazz);
+    if (o instanceof IExecutableExtension) {
+      ((IExecutableExtension) o).setInitializationData(configuration, null, null);
+    }
+    return o;
   }
 
   /**
