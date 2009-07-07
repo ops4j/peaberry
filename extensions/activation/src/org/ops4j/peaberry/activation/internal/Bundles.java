@@ -21,20 +21,19 @@ import org.osgi.framework.Bundle;
 
 /**
  * @author Todor Boev (rinsvind@gmail.com)
- *
+ * 
  */
 public class Bundles {
-  private Bundles() {
-  }
-  
+  private Bundles() {}
+
   public static String toString(final Bundle bundle) {
     return bundle.getSymbolicName() + "(" + bundle.getBundleId() + ")";
   }
-  
+
   public static Class<?> loadClass(final Bundle bundle, final String name) {
     try {
       return bundle.loadClass(name);
-    } catch (ClassNotFoundException e) {
+    } catch (final ClassNotFoundException e) {
       throw new PeaberryActivationException("Failed to load " + name + " from " + toString(bundle));
     }
   }

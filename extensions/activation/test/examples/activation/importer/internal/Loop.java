@@ -29,7 +29,7 @@ public class Loop {
   private Thread thread;
   private boolean running;
 
-  public Loop(Runnable body) {
+  public Loop(final Runnable body) {
     this.body = body;
   }
 

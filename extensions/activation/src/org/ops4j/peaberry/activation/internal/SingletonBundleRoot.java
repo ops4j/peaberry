@@ -15,7 +15,8 @@
  */
 package org.ops4j.peaberry.activation.internal;
 
-import static org.ops4j.peaberry.activation.internal.Reflection.*;
+import static org.ops4j.peaberry.activation.internal.Reflection.findMethods;
+import static org.ops4j.peaberry.activation.internal.Reflection.invoke;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -27,28 +28,28 @@ import com.google.inject.Key;
 
 public class SingletonBundleRoot
     extends AbstractBundleRoot<Object> {
-  
+
   private final List<Method> start;
   private final List<Method> stop;
-  
-  public SingletonBundleRoot(Key<Object> key) {
-    super (key);
-    
-    Class<?> type = key.getTypeLiteral().getRawType();
-    this.start = findMethods(type, Start.class);
-    this.stop = findMethods(type, Stop.class);
+
+  public SingletonBundleRoot(final Key<Object> key) {
+    super(key);
+
+    final Class<?> type = key.getTypeLiteral().getRawType();
+    start = findMethods(type, Start.class);
+    stop = findMethods(type, Stop.class);
   }
-  
+
   @Override
-  protected void activate(Object root) {
-    for (Method meth : start) {
+  protected void activate(final Object root) {
+    for (final Method meth : start) {
       invoke(root, meth);
     }
   }
 
   @Override
-  protected void deactivate(Object root) {
-    for (Method meth : stop) {
+  protected void deactivate(final Object root) {
+    for (final Method meth : stop) {
       invoke(root, meth);
     }
   }

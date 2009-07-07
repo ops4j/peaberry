@@ -26,37 +26,37 @@ import examples.activation.hello.Hello;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- *
+ * 
  */
 public class Greeter {
   private final Loop loop;
-  
+
   @Inject
   public Greeter(final Hello hello) {
-    this.loop = new Loop(new Runnable() {
+    loop = new Loop(new Runnable() {
       private long no = 0;
-      
+
       public void run() {
         try {
-          hello.hello("number " + (no++));
-        } catch (ServiceUnavailableException sue) {
+          hello.hello("number " + no++);
+        } catch (final ServiceUnavailableException sue) {
           /* Ignore - keep trying every second */
         }
-        
+
         try {
           Thread.sleep(1000);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
           /* Ignore */
         }
       }
     });
   }
-  
+
   @Start
   public void start() {
     loop.start();
   }
-  
+
   @Stop
   public void stop() {
     loop.stop();

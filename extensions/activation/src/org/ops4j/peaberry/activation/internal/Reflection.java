@@ -36,30 +36,31 @@ public class Reflection {
     try {
       try {
         return type.newInstance();
-      } catch (InstantiationException e) {
+      } catch (final InstantiationException e) {
         return type.getConstructor().newInstance();
       }
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new PeaberryActivationException("Error creating " + type + " from default constructor", e);
     }
   }
 
-  public static Method findMethod(final Class<?> type, final String name, final Class<?>... argTypes) {
+  public static Method findMethod(final Class<?> type, final String name,
+      final Class<?>... argTypes) {
     try {
       return type.getMethod(name, argTypes);
-    } catch (SecurityException e) {
+    } catch (final SecurityException e) {
       throw new PeaberryActivationException(e);
-    } catch (NoSuchMethodException e) {
+    } catch (final NoSuchMethodException e) {
       return null;
     }
   }
 
-  public static List<Method> findMethods(final Class<?> type, final Class<? extends Annotation> tag,
-      final Class<?>... argTypes) {
+  public static List<Method> findMethods(final Class<?> type,
+      final Class<? extends Annotation> tag, final Class<?>... argTypes) {
 
     final List<Method> res = new ArrayList<Method>();
 
-    for (Method meth : type.getMethods()) {
+    for (final Method meth : type.getMethods()) {
       if (meth.getAnnotation(tag) == null) {
         continue;
       }
@@ -77,7 +78,7 @@ public class Reflection {
   public static Object invoke(final Object that, final Method method, final Object... args) {
     try {
       return method.invoke(that, args);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       throw new PeaberryActivationException("Error invoking " + method + "." + that, e);
     }
   }

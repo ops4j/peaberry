@@ -35,47 +35,47 @@ public class BundleTracker
     implements SynchronousBundleListener {
 
   private final BundleContext bc;
-  private final Map<Long, BundleActivation> handlers; 
+  private final Map<Long, BundleActivation> handlers;
 
   public BundleTracker(final BundleContext bc) {
     this.bc = bc;
-    this.handlers = new HashMap<Long, BundleActivation>(); 
+    handlers = new HashMap<Long, BundleActivation>();
   }
-  
+
   public synchronized void open() {
-    for (Bundle bundle: bc.getBundles()) {
+    for (final Bundle bundle : bc.getBundles()) {
       switch (bundle.getState()) {
       case Bundle.RESOLVED:
         scan(bundle);
         break;
-        
+
       case Bundle.ACTIVE:
         scan(bundle);
         activate(bundle);
         break;
       }
     }
-    
+
     bc.addBundleListener(this);
   }
-  
+
   public synchronized void close() {
     bc.removeBundleListener(this);
-    
-    for (BundleActivation handler : handlers.values()) {
+
+    for (final BundleActivation handler : handlers.values()) {
       handler.deactivate();
     }
     handlers.clear();
   }
-  
+
   public synchronized void bundleChanged(final BundleEvent event) {
     final Bundle bundle = event.getBundle();
-    
+
     switch (event.getType()) {
     case BundleEvent.RESOLVED:
       scan(bundle);
       break;
-      
+
     case BundleEvent.STARTED:
       activate(bundle);
       break;
@@ -83,7 +83,7 @@ public class BundleTracker
     case BundleEvent.STOPPED:
       deactivate(bundle);
       break;
-      
+
     case BundleEvent.UNRESOLVED:
       clean(bundle);
       break;
@@ -96,14 +96,14 @@ public class BundleTracker
     if (header == null) {
       return;
     }
-    
-    final Class<? extends Module> moduleClass = (Class<? extends Module>) 
-      Bundles.loadClass(bundle, header);
-      
+
+    final Class<? extends Module> moduleClass =
+        (Class<? extends Module>) Bundles.loadClass(bundle, header);
+
     final BundleActivation handler = new BundleActivation(bundle, moduleClass);
     handlers.put(bundle.getBundleId(), handler);
   }
-  
+
   private void activate(final Bundle bundle) {
     final BundleActivation handler = handlers.get(bundle.getBundleId());
     if (handler != null) {
@@ -117,7 +117,7 @@ public class BundleTracker
       handler.deactivate();
     }
   }
-  
+
   private void clean(final Bundle bundle) {
     handlers.remove(bundle.getBundleId());
   }

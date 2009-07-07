@@ -17,7 +17,7 @@ package examples.activation.hello;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- *
+ * 
  */
 public interface Hello {
   void hello(String who);

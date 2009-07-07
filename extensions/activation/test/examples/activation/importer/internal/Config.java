@@ -25,12 +25,14 @@ import examples.activation.hello.Hello;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- *
+ * 
  */
 public class Config
     extends AbstractModule {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see com.google.inject.AbstractModule#configure()
    */
   @Override

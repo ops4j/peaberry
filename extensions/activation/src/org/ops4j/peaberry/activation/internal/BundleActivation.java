@@ -43,27 +43,27 @@ import com.google.inject.spi.BindingScopingVisitor;
  */
 public class BundleActivation {
   private static final BindingScopingVisitor<Boolean> SINGLETONS =
-    new BindingScopingVisitor<Boolean>() {
-      public Boolean visitEagerSingleton() {
-        return true;
-      }
+      new BindingScopingVisitor<Boolean>() {
+        public Boolean visitEagerSingleton() {
+          return true;
+        }
 
-      public Boolean visitScope(Scope scope) {
-        return Scopes.SINGLETON == scope;
-      }
+        public Boolean visitScope(final Scope scope) {
+          return Scopes.SINGLETON == scope;
+        }
 
-      public Boolean visitScopeAnnotation(Class<? extends Annotation> tag) {
-        return Singleton.class == tag;
-      }
+        public Boolean visitScopeAnnotation(final Class<? extends Annotation> tag) {
+          return Singleton.class == tag;
+        }
 
-      public Boolean visitNoScoping() {
-        return false;
-      }
-    };
+        public Boolean visitNoScoping() {
+          return false;
+        }
+      };
 
   private final Bundle bundle;
   private final Class<? extends Module> moduleClass;
-  
+
   private List<BundleRoot<?>> roots;
   private Injector injector;
 
@@ -80,7 +80,7 @@ public class BundleActivation {
     createInjector();
     createRoots();
 
-    for (BundleRoot<?> root : roots) {
+    for (final BundleRoot<?> root : roots) {
       root.activate(injector);
     }
   }
@@ -94,12 +94,12 @@ public class BundleActivation {
      * Deactivate in reverse order. This should bing down the services before we
      * stop the active roots
      */
-    for (ListIterator<BundleRoot<?>> iter = roots.listIterator(roots.size()); iter
+    for (final ListIterator<BundleRoot<?>> iter = roots.listIterator(roots.size()); iter
         .hasPrevious();) {
 
       try {
         iter.previous().deactivate();
-      } catch (Exception e) {
+      } catch (final Exception e) {
         /*
          * FIX Accumulate these into an error list and at the end of the
          * deactivation toss an exception containing the list like Guice does
@@ -117,9 +117,9 @@ public class BundleActivation {
   }
 
   private void createInjector() {
-    injector = Guice.createInjector(
-        Peaberry.osgiModule(bundle.getBundleContext()),
-        Reflection.create(moduleClass));
+    injector =
+        Guice.createInjector(Peaberry.osgiModule(bundle.getBundleContext()), Reflection
+            .create(moduleClass));
   }
 
   @SuppressWarnings("unchecked")
@@ -128,14 +128,13 @@ public class BundleActivation {
     final List<BundleRoot<?>> exports = new ArrayList<BundleRoot<?>>();
 
     /* Scan for singletons first */
-    for (Map.Entry<Key<?>, Binding<?>> e : injector.getBindings().entrySet()) {
+    for (final Map.Entry<Key<?>, Binding<?>> e : injector.getBindings().entrySet()) {
       final Key<?> k = e.getKey();
       final Binding<?> b = e.getValue();
 
       if (b.acceptScopingVisitor(SINGLETONS)) {
         singletons.add(new SingletonBundleRoot((Key<Object>) k));
-      } 
-      else if (Export.class == k.getTypeLiteral().getRawType()) {
+      } else if (Export.class == k.getTypeLiteral().getRawType()) {
         exports.add(new ExportBundleRoot((Key<Export<?>>) k));
       }
     }

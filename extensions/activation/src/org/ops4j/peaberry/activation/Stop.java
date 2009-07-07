@@ -15,8 +15,8 @@
  */
 package org.ops4j.peaberry.activation;
 
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static java.lang.annotation.ElementType.*;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -30,5 +30,4 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface Stop {
-}
+public @interface Stop {}

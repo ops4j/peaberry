@@ -17,18 +17,18 @@ package org.ops4j.peaberry.activation;
 
 public class PeaberryActivationException
     extends RuntimeException {
-  
+
   private static final long serialVersionUID = 4426711611653094637L;
 
-  public PeaberryActivationException(String message) {
-    this (message, null);
+  public PeaberryActivationException(final String message) {
+    this(message, null);
   }
-  
-  public PeaberryActivationException(Exception cause) {
-    this (null, cause);
+
+  public PeaberryActivationException(final Exception cause) {
+    this(null, cause);
   }
-  
-  public PeaberryActivationException(String message, Exception cause) {
-    super (message, cause);
+
+  public PeaberryActivationException(final String message, final Exception cause) {
+    super(message, cause);
   }
 }

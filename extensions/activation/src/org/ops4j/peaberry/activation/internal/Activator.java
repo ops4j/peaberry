@@ -20,13 +20,13 @@ import org.osgi.framework.BundleContext;
 
 /**
  * @author Todor Boev (rinsvind@gmail.com)
- *
+ * 
  */
 public class Activator
     implements BundleActivator {
-  
+
   private BundleTracker tracker;
-  
+
   public void start(final BundleContext bc) {
     tracker = new BundleTracker(bc);
     tracker.open();

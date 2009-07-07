@@ -22,7 +22,7 @@ import com.google.inject.AbstractModule;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- *
+ * 
  */
 public class Config
     extends AbstractModule {
@@ -30,6 +30,6 @@ public class Config
   @Override
   protected void configure() {
     bind(export(HelloImpl.class)).toProvider(service(HelloImpl.class).export());
-    //bind(HelloImpl.class).in(Singleton.class);
+    // bind(HelloImpl.class).in(Singleton.class);
   }
 }

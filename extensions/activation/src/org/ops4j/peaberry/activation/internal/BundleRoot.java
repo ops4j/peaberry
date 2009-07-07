@@ -20,11 +20,11 @@ import com.google.inject.Injector;
 
 /**
  * @author Todor Boev (rinsvind@gmail.com)
- *
+ * 
  * @param <T>
  */
 public interface BundleRoot<T> {
   void activate(Injector injector);
-  
+
   void deactivate();
 }

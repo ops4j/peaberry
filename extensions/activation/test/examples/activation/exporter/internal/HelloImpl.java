@@ -19,12 +19,12 @@ import examples.activation.hello.Hello;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- *
+ * 
  */
 public class HelloImpl
     implements Hello {
 
-  public void hello(String who) {
+  public void hello(final String who) {
     System.out.println("Hello " + who);
   }
 }
