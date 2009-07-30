@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package examples.activation.hello;
+package examples.serviceroot;
+
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
  * 
  */
-public interface Hello {
-  void hello(String who);
+public class HelloImpl
+    implements Hello {
+
+  public void hello(final String who) {
+    System.out.println("Hello " + who);
+  }
 }

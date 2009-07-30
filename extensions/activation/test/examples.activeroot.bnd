@@ -1,0 +1,3 @@
+Bundle-SymbolicName: examples.activeroot
+Export-Package: examples.activeroot
+Bundle-Module: examples.activeroot.Config

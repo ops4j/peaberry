@@ -1,0 +1,3 @@
+Bundle-SymbolicName: examples.serviceroot
+Export-Package: examples.serviceroot
+Bundle-Module: examples.serviceroot.Config

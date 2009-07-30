@@ -1,3 +1,0 @@
-Bundle-SymbolicName: examples.activation.exporter
-Private-Package: examples.activation.exporter.internal
-Bundle-Module: examples.activation.exporter.internal.Config

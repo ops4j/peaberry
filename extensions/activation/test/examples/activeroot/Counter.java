@@ -14,30 +14,38 @@
  * limitations under the License.
  */
 
-package examples.activation.importer.internal;
+package examples.activeroot;
 
-import org.ops4j.peaberry.Peaberry;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-
-import examples.activation.hello.Hello;
+import org.ops4j.peaberry.activation.Start;
+import org.ops4j.peaberry.activation.Stop;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- * 
  */
-public class Config
-    extends AbstractModule {
+public class Counter {
+  @Start
+  public void start() {
+    starts++;
+  }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.AbstractModule#configure()
-   */
-  @Override
-  protected void configure() {
-    bind(Hello.class).toProvider(Peaberry.service(Hello.class).single());
-    bind(Greeter.class).in(Singleton.class);
+  @Stop
+  public void stop() {
+    stops++;
+  }
+
+  private static int starts;
+  private static int stops;
+
+  public synchronized static int starts() {
+    return starts;
+  }
+  
+  public synchronized static int stops() {
+    return stops;
+  }
+  
+  public synchronized static void reset() {
+    starts = 0;
+    stops = 0;
   }
 }
