@@ -19,6 +19,7 @@ import static org.ops4j.peaberry.Peaberry.service;
 import static org.ops4j.peaberry.util.TypeLiterals.export;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
@@ -29,7 +30,7 @@ public class Config
 
   @Override
   protected void configure() {
-    bind(export(HelloImpl.class)).toProvider(service(HelloImpl.class).export());
+    bind(export(HelloImpl.class)).toProvider(service(HelloImpl.class).export()).in(Singleton.class);
     // bind(HelloImpl.class).in(Singleton.class);
   }
 }

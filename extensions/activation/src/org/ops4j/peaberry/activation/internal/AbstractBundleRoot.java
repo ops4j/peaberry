@@ -28,6 +28,7 @@ import com.google.inject.Key;
  */
 public abstract class AbstractBundleRoot<T>
     implements BundleRoot<T> {
+  
   private final Key<T> key;
   private T instance;
 
@@ -35,12 +36,20 @@ public abstract class AbstractBundleRoot<T>
     this.key = key;
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "[ " + key + " ]";
+  }
+  
   public final void activate(final Injector inj) {
+    System.out.println(this + ": activate()");
+    
     instance = inj.getInstance(key);
     activate(instance);
   }
 
   public final void deactivate() {
+    System.out.println(this + ": deactivate()");
     try {
       deactivate(instance);
     } finally {
