@@ -13,17 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package examples.serviceroot;
 
+package examples.singleton;
+
+import static com.google.inject.matcher.Matchers.*;
+
+import org.ops4j.peaberry.activation.Start;
+import org.ops4j.peaberry.activation.Stop;
+import org.ops4j.peaberry.activation.invocations.InvocationLogModule;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
  * 
  */
-public class HelloImpl
-    implements Hello {
+public class Config
+    extends AbstractModule {
 
-  public void hello(final String who) {
-    System.out.println("Hello " + who);
+  @Override
+  protected void configure() {
+    bind(SingletonRoot.class).in(Singleton.class);
+
+    install(new InvocationLogModule(
+      subclassesOf(SingletonRoot.class), annotatedWith(Start.class).or(annotatedWith(Stop.class))));
   }
 }

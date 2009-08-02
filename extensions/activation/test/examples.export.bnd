@@ -1,0 +1,3 @@
+Bundle-SymbolicName: examples.export
+Export-Package: examples.export
+Bundle-Module: examples.export.Config

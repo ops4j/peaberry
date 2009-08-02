@@ -79,7 +79,7 @@ public class Reflection {
     try {
       return method.invoke(that, args);
     } catch (final Exception e) {
-      throw new PeaberryActivationException("Error invoking " + method + "." + that, e);
+      throw new PeaberryActivationException("Error invoking " + that + "#" + method, e);
     }
   }
 }

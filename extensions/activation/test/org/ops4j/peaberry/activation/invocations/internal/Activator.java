@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-package examples.activeroot;
+package org.ops4j.peaberry.activation.invocations.internal;
 
-import org.ops4j.peaberry.Peaberry;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-
-import examples.serviceroot.Hello;
+import org.ops4j.peaberry.activation.invocations.InvocationLog;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- * 
+ *
  */
-public class Config
-    extends AbstractModule {
+public class Activator implements BundleActivator {
+  public void start(final BundleContext bc) {
+    bc.registerService(InvocationLog.class.getName(), new InvocationLogImpl(), null);
+  }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.AbstractModule#configure()
-   */
-  @Override
-  protected void configure() {
-    bind(Hello.class).toProvider(Peaberry.service(Hello.class).single());
-    bind(Counter.class).in(Singleton.class);
+  public void stop(final BundleContext bc) {
+    /* Nothing to do */
   }
 }

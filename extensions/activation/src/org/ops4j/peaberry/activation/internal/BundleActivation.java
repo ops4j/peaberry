@@ -61,6 +61,45 @@ public class BundleActivation {
         }
       };
 
+//  private static final BindingTargetVisitor<Object, Boolean> INSTANCES =
+//      new BindingTargetVisitor<Object, Boolean>() {
+//        public Boolean visit(InstanceBinding<?> arg) {
+//          return true;
+//        }
+//
+//        public Boolean visit(ProviderInstanceBinding<?> arg) {
+//          return false;
+//        }
+//
+//        public Boolean visit(ProviderKeyBinding<?> arg) {
+//          return false;
+//        }
+//
+//        public Boolean visit(LinkedKeyBinding<?> arg) {
+//          return false;
+//        }
+//
+//        public Boolean visit(ExposedBinding<?> arg) {
+//          return false;
+//        }
+//
+//        public Boolean visit(UntargettedBinding<?> arg) {
+//          return false;
+//        }
+//
+//        public Boolean visit(ConstructorBinding<?> arg) {
+//          return false;
+//        }
+//
+//        public Boolean visit(ConvertedConstantBinding<?> arg) {
+//          return false;
+//        }
+//
+//        public Boolean visit(ProviderBinding<?> arg) {
+//          return false;
+//        }
+//      };
+
   private final Bundle bundle;
   private final Class<? extends Module> moduleClass;
 
@@ -91,8 +130,8 @@ public class BundleActivation {
     }
 
     /*
-     * Deactivate in reverse order. This should bing down the services before we
-     * stop the active roots
+     * Deactivate in reverse order. This should bring down the services before
+     * we stop the active roots.
      */
     for (final ListIterator<BundleRoot<?>> iter = roots.listIterator(roots.size()); iter
         .hasPrevious();) {
@@ -132,10 +171,15 @@ public class BundleActivation {
       final Key<?> k = e.getKey();
       final Binding<?> b = e.getValue();
 
-      if (b.acceptScopingVisitor(SINGLETONS)) {
-        singletons.add(new SingletonBundleRoot((Key<Object>) k));
-      } else if (Export.class == k.getTypeLiteral().getRawType()) {
+      /*
+       * Exports are captured before singletons. In this way exports that have
+       * been redundantly marked as singleton are treated correctly rather than
+       * scanned for start/stop methods etc.
+       */
+      if (Export.class == k.getTypeLiteral().getRawType()) {
         exports.add(new ExportBundleRoot((Key<Export<?>>) k));
+      } else if (b.acceptScopingVisitor(SINGLETONS) /*|| b.acceptTargetVisitor(INSTANCES)*/) {
+        singletons.add(new SingletonBundleRoot((Key<Object>) k));
       }
     }
 

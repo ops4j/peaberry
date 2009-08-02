@@ -42,14 +42,11 @@ public abstract class AbstractBundleRoot<T>
   }
   
   public final void activate(final Injector inj) {
-    System.out.println(this + ": activate()");
-    
     instance = inj.getInstance(key);
     activate(instance);
   }
 
   public final void deactivate() {
-    System.out.println(this + ": deactivate()");
     try {
       deactivate(instance);
     } finally {

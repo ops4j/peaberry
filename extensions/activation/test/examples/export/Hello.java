@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package examples.serviceroot;
-
-import static org.ops4j.peaberry.Peaberry.service;
-import static org.ops4j.peaberry.util.TypeLiterals.export;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
+package examples.export;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
  * 
  */
-public class Config
-    extends AbstractModule {
-
-  @Override
-  protected void configure() {
-    bind(export(HelloImpl.class)).toProvider(service(HelloImpl.class).export()).in(Singleton.class);
-    // bind(HelloImpl.class).in(Singleton.class);
-  }
+public interface Hello {
+  void hello(String who);
 }

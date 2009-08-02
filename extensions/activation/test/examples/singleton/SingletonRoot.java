@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package examples.serviceroot;
+
+package examples.singleton;
+
+import org.ops4j.peaberry.activation.Start;
+import org.ops4j.peaberry.activation.Stop;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- * 
  */
-public interface Hello {
-  void hello(String who);
+public class SingletonRoot {
+  @Start
+  public void start() {
+  }
+
+  @Stop
+  public void stop() {
+  }
 }
