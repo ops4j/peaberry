@@ -51,7 +51,13 @@ public class BundleTracker
 
       case Bundle.ACTIVE:
         scan(bundle);
-        activate(bundle);
+        
+        try {
+          activate(bundle);
+        } catch (Exception e) {
+          /* Log this somehow */
+          e.printStackTrace();
+        }
         break;
       }
     }
