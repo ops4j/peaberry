@@ -98,10 +98,11 @@ public class BundleTracker
 
   @SuppressWarnings("unchecked")
   private void scan(final Bundle bundle) {
-    final String header = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
+    String header = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
     if (header == null) {
       return;
     }
+    header = header.trim();  
 
     final Class<? extends Module> moduleClass =
         (Class<? extends Module>) Bundles.loadClass(bundle, header);
