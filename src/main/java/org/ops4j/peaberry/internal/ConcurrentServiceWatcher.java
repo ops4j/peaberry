@@ -83,10 +83,10 @@ final class ConcurrentServiceWatcher<S>
         if (null != currentExport && thisImport.equals(currentImport)) {
           currentExport.attributes(newAttributes);
         }
-      }
 
-      // has ranking changed?
-      updateBestService();
+        // has ranking changed?
+        updateBestService();
+      }
     }
   }
 
