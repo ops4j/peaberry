@@ -4,13 +4,14 @@
   <packaging>pom</packaging>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.ops4j.peaberry</groupId>
-  <artifactId>build</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <groupId>org.ops4j.peaberry.build</groupId>
+  <artifactId>distribution</artifactId>
+  <version>1.2-SNAPSHOT</version>
 
-  <name>peaberry - distribution</name>
+  <name>peaberry - Distribution</name>
 
   <modules>
+    <module>aopalliance</module>
     <module>peaberry</module>
     <module>extensions</module>
   </modules>

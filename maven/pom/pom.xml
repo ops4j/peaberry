@@ -10,11 +10,9 @@
   <packaging>pom</packaging>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.ops4j.peaberry</groupId>
+  <groupId>org.ops4j.peaberry.build</groupId>
   <artifactId>parent</artifactId>
-  <version>1.0-SNAPSHOT</version>
-
-  <url>http://code.google.com/p/peaberry/</url>
+  <version>1.2-SNAPSHOT</version>
 
   <description>
  The peaberry project is an extension library for Google-Guice
@@ -46,38 +44,69 @@
   </scm>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>1.5</source>
-            <target>1.5</target>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <configuration>
-            <preparationGoals>clean install</preparationGoals>
-            <tagBase>https://peaberry.googlecode.com/svn/tags</tagBase>
-          </configuration>
-        </plugin>
-        <plugin>
-          <extensions>true</extensions>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.0.1</version>
-          <configuration>
-            <instructions>
-              <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
-              <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
-              <Bundle-DocURL>${project.url}</Bundle-DocURL>
-            </instructions>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <preparationGoals>clean install</preparationGoals>
+          <tagBase>https://peaberry.googlecode.com/svn/tags</tagBase>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.0.1</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <module/>
+            <extra.imports/>
+            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+            <Export-Package>
+              $(module);version=${project.version}
+            </Export-Package>
+            <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+            <Import-Package>
+              !$(module).*,
+              $(extra.imports),
+              com.google.*;version="[1,2)",
+              org.osgi.*;version="[1.3,2)",
+              *
+            </Import-Package>
+            <_removeheaders>
+              Built-By,Tool,Created-By,Build-Jdk,
+              Include-Resource,Private-Package,
+              Ignore-Package,Bnd-LastModified
+            </_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 
   <dependencyManagement>
     <dependencies>
@@ -85,6 +114,21 @@
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.core</artifactId>
         <version>4.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j</groupId>
+        <artifactId>peaberry</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.peaberry.dependencies</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>3.2</version>
       </dependency>
       <dependency>
         <groupId>aopalliance</groupId>
@@ -95,6 +139,12 @@
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
         <version>2.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
     </dependencies>
   </dependencyManagement>

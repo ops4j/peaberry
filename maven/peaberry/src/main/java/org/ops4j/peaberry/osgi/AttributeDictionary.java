@@ -27,13 +27,13 @@ import java.util.Map;
  * 
  * @author mcculls@gmail.com (Stuart McCulloch)
  */
-final class AttributeDictionary
+public final class AttributeDictionary
     extends Dictionary<String, Object> {
 
   private final Map<String, Object> attributes;
 
   @SuppressWarnings("unchecked")
-  AttributeDictionary(final Map<String, ?> attributes) {
+  public AttributeDictionary(final Map<String, ?> attributes) {
     this.attributes = (Map) attributes;
   }
 

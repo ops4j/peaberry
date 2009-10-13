@@ -16,16 +16,13 @@
 
 package org.ops4j.peaberry.util.ldap;
 
-import java.io.StringReader;
 import java.util.Map;
 
-import org.apache.felix.framework.util.ldap.EvaluationException;
-import org.apache.felix.framework.util.ldap.Evaluator;
-import org.apache.felix.framework.util.ldap.LdapLexer;
-import org.apache.felix.framework.util.ldap.Mapper;
-import org.apache.felix.framework.util.ldap.Parser;
 import org.ops4j.peaberry.AttributeFilter;
-import org.ops4j.peaberry.ServiceException;
+import org.ops4j.peaberry.osgi.AttributeDictionary;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * Implementation of LDAP {@link AttributeFilter}, uses code from Apache Felix.
@@ -35,76 +32,34 @@ import org.ops4j.peaberry.ServiceException;
 public final class LdapAttributeFilter
     implements AttributeFilter {
 
-  private static final Mapper EMPTY_MAPPER = new Mapper() {
-    public Object lookup(final String key) {
-      return null;
-    }
-  };
-
-  private final Object[] program;
-  private volatile String filter;
+  private final Filter filter;
 
   public LdapAttributeFilter(final String ldapFilter) {
-    final Parser parser = new Parser(new LdapLexer(new StringReader(ldapFilter)));
-
     try {
-      parser.start();
-    } catch (final Exception e) {
-      throw new IllegalArgumentException("Bad LDAP filter: " + ldapFilter, e);
-    }
-
-    program = parser.getProgram();
-    // filter is assigned lazily
-
-    if (null == program || program.length == 0) {
+      filter = FrameworkUtil.createFilter(ldapFilter);
+    } catch (final InvalidSyntaxException e) {
       throw new IllegalArgumentException("Bad LDAP filter: " + ldapFilter);
     }
   }
 
   public boolean matches(final Map<String, ?> attributes) {
-    final Mapper mapper;
-
-    // optimize case where there are no attributes
-    if (null == attributes || attributes.isEmpty()) {
-      mapper = EMPTY_MAPPER;
-    } else {
-      mapper = new Mapper() {
-        public Object lookup(final String key) {
-          return attributes.get(key);
-        }
-      };
-    }
-
-    try {
-      return new Evaluator(program).evaluate(mapper);
-    } catch (final EvaluationException e) {
-      throw new ServiceException("Problem evaluating filter: " + this, e);
-    }
+    return filter.match(null == attributes ? null : new AttributeDictionary(attributes));
   }
 
   @Override
   public String toString() {
-    // double-checked locking is safe in Java5
-    if (null == filter) {
-      synchronized (this) {
-        if (null == filter) {
-          // calculate normalized version of filter string
-          filter = new Evaluator(program).toStringInfix();
-        }
-      }
-    }
-    return filter;
+    return filter.toString();
   }
 
   @Override
   public int hashCode() {
-    return toString().hashCode();
+    return filter.hashCode();
   }
 
   @Override
   public boolean equals(final Object obj) {
     if (obj instanceof LdapAttributeFilter) {
-      return toString().equals(obj.toString());
+      return filter.equals(((LdapAttributeFilter) obj).filter);
     }
     return false;
   }
