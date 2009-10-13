@@ -5,15 +5,13 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.build</groupId>
-  <artifactId>distribution</artifactId>
+  <artifactId>dependencies</artifactId>
   <version>1.2-SNAPSHOT</version>
 
-  <name>peaberry - Distribution</name>
+  <name>peaberry - Required dependencies</name>
 
   <modules>
-    <module>dependencies</module>
-    <module>peaberry</module>
-    <module>extensions</module>
+    <module>aopalliance</module>
   </modules>
 
 </project>
