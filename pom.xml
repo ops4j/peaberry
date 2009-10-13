@@ -3,9 +3,9 @@
 
   <parent>
     <relativePath>../pom</relativePath>
-    <groupId>org.ops4j.peaberry</groupId>
+    <groupId>org.ops4j.peaberry.build</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
   </parent>
 
   <packaging>bundle</packaging>
@@ -13,9 +13,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j</groupId>
   <artifactId>peaberry</artifactId>
-  <version>1.2-SNAPSHOT</version>
 
-  <name>peaberry - dynamic service extension for Google-Guice</name>
+  <name>peaberry - Dynamic services for Guice</name>
+
+  <url>http://code.google.com/p/peaberry/</url>
 
   <licenses>
     <license>
@@ -28,25 +29,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <version>1.8.1</version>
-      <optional>true</optional>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>org.osgi.foundation</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
-      <version>3.2</version>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>aopalliance</groupId>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
       <artifactId>aopalliance</artifactId>
     </dependency>
     <dependency>
@@ -58,6 +46,24 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <id>unpack-dependencies</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>asm,org.osgi.core</includeArtifactIds>
+              <includes>org/objectweb/**,org/osgi/framework/FrameworkUtil*</includes>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.pyx4me</groupId>
         <artifactId>proguard-maven-plugin</artifactId>
         <version>2.0.4</version>
@@ -67,28 +73,16 @@
             <goals>
               <goal>proguard</goal>
             </goals>
+            <configuration>
+              <injar>classes</injar>
+              <exclusions>
+                <exclusion>
+                  <groupId>asm</groupId><artifactId>asm</artifactId>
+                </exclusion>
+              </exclusions>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <injar>classes</injar>
-          <outjar>${project.build.finalName}-shaded.jar</outjar>
-          <assembly>
-            <inclusions>
-              <inclusion>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>org.apache.felix.framework</artifactId>
-                <filter>org/apache/felix/framework/util/ldap/**</filter>
-              </inclusion>
-              <inclusion>
-                <groupId>asm</groupId>
-                <artifactId>asm</artifactId>
-              </inclusion>
-            </inclusions>
-          </assembly>
-          <libs>
-            <lib>${java.home}/lib/rt.jar</lib>
-          </libs>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -96,21 +90,15 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-Activator>org.ops4j.peaberry.osgi.Activator</Bundle-Activator>
-            <_exportcontents>
-              org.ops4j.peaberry(|.builders|.cache|.util);version=${project.version}
-            </_exportcontents>
-            <Private-Package>!*</Private-Package>
-            <Include-Resource>
-              @target/${project.build.finalName}-shaded.jar
-            </Include-Resource>
-            <Import-Package>
-              !org.ops4j.peaberry.*,
-              javax.*;resolution:=optional,
-              org.osgi.*;version="[1.3,2)",
-              com.google.*;version="[1,2)",
-              *
-            </Import-Package>
+            <module>org.ops4j.peaberry</module>
+            <extra.imports>javax.*;resolution:=optional</extra.imports>
+            <Bundle-Activator>$(module).osgi.Activator</Bundle-Activator>
+            <Export-Package>
+              $(module)(|.builders|.cache|.util);version=${project.version}
+            </Export-Package>
+            <Private-Package>
+              $(module).*,pbry.*
+            </Private-Package>
           </instructions>
         </configuration>
       </plugin>
