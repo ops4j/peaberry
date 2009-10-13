@@ -39,7 +39,7 @@ public class OSGiServiceRegistry
 
   @Inject
   public OSGiServiceRegistry(final BundleContext bundleContext) {
-    super(Boolean.valueOf(bundleContext.getProperty(NATIVE_FILTER_HINT)));
+    super(Boolean.parseBoolean(bundleContext.getProperty(NATIVE_FILTER_HINT)));
     this.bundleContext = bundleContext;
   }
 
