@@ -50,6 +50,12 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <attach>false</attach>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
