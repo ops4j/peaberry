@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.ops4j</groupId>
+    <artifactId>master</artifactId>
+    <version>1.0.1</version>
+  </parent>
+
+  <packaging>pom</packaging>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.ops4j.peaberry</groupId>
+  <artifactId>parent</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <url>http://code.google.com/p/peaberry/</url>
+
+  <description>
+    The peaberry project is an extension library for Google-Guice
+    that supports dependency injection of dynamic services.
+
+    It provides OSGi integration out of the box, and has plug-in
+    support for other registry-based service frameworks. It ships
+    as an OSGi bundle that can be dropped into any R4 framework,
+    such as Apache Felix or Eclipse/Equinox. 
+  </description>
+
+  <issueManagement>
+    <url>http://code.google.com/p/peaberry/issues/list</url>
+  </issueManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Guice and OSGi</name>
+      <subscribe>guice-osgi-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>guice-osgi+unsubscribe@googlegroups.com</unsubscribe>
+      <archive>http://groups.google.com/group/guice-osgi</archive>
+      <post>guice-osgi@googlegroups.com</post>
+    </mailingList>
+  </mailingLists>
+
+  <scm>
+    <connection>scm:svn:https://peaberry.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/trunk</developerConnection>
+  </scm>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <preparationGoals>clean install</preparationGoals>
+            <tagBase>https://peaberry.googlecode.com/svn/tags</tagBase>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>4.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>2.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
