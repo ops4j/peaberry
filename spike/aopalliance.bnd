@@ -1,7 +1,0 @@
--include: common.bnd
-
-Export-Package: *
-
--output:\
- ${aop.jar}
-

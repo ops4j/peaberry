@@ -1,8 +1,0 @@
--include: ../common.bnd
-
-Bundle-Activator:\
- examples.types.internal.TypeServiceActivator
-
-Private-Package:\
- examples.types.internal
-

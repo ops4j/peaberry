@@ -1,5 +1,0 @@
--include: ../common.bnd
-
-Export-Package:\
- examples.ids
-
