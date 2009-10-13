@@ -83,14 +83,6 @@
               </inclusion>
             </inclusions>
           </assembly>
-          <options>
-            <option>-keepattributes *Annotation*,Exceptions,InnerClasses,Signature</option>
-            <option>-keep public class org.ops4j.peaberry.** { *; }</option>
-            <option>-dontusemixedcaseclassnames</option>
-            <option>-useuniqueclassmembernames</option>
-            <option>-allowaccessmodification</option>
-            <option>-repackageclasses pbry</option>
-          </options>
           <libs>
             <lib>${java.home}/lib/rt.jar</lib>
           </libs>
