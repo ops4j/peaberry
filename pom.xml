@@ -36,6 +36,7 @@
     <dependency>
       <groupId>org.ops4j.peaberry.dependencies</groupId>
       <artifactId>aopalliance</artifactId>
+      <type>bundle</type>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -59,6 +60,7 @@
               <includeArtifactIds>asm,org.osgi.core</includeArtifactIds>
               <includes>org/objectweb/**,org/osgi/framework/FrameworkUtil*</includes>
               <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
             </configuration>
           </execution>
         </executions>
