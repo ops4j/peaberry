@@ -12,38 +12,24 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.dependencies</groupId>
-  <artifactId>aopalliance</artifactId>
-  <version>1.0</version>
+  <artifactId>javax.inject</artifactId>
+  <version>1</version>
 
-  <name>peaberry - AOP Alliance API</name>
+  <name>peaberry - javax.inject API</name>
 
-  <url>http://aopalliance.sourceforge.net/</url>
+  <url>http://code.google.com/p/atinject/</url>
 
-  <description>Java/J2EE AOP standards</description>
-
-  <licenses>
-    <license>
-      <name>Public Domain</name>
-    </license>
-  </licenses>
+  <description>JSR 330: Dependency Injection for Java</description>
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.3</source>
-          <target>1.3</target>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.3</Bundle-RequiredExecutionEnvironment>
-            <Export-Package>org.aopalliance.*</Export-Package>
+            <Export-Package>javax.inject.*</Export-Package>
             <Import-Package>*</Import-Package>
           </instructions>
         </configuration>

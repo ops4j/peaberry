@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.build</groupId>
-  <artifactId>distribution</artifactId>
+  <artifactId>peaberry</artifactId>
   <version>1.2-SNAPSHOT</version>
 
   <name>peaberry - Distribution</name>
@@ -15,5 +15,34 @@
     <module>peaberry</module>
     <module>extensions</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>2.2-beta-4</version>
+            <executions>
+              <execution>
+                <id>assemble-distribution</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                  <descriptors>
+                    <descriptor>src/assemble/dist.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
