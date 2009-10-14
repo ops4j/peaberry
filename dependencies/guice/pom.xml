@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <relativePath>../../pom</relativePath>
+    <groupId>org.ops4j.peaberry.build</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.2-SNAPSHOT</version>
+  </parent>
+
+  <packaging>pom</packaging>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.ops4j.peaberry.dependencies</groupId>
+  <artifactId>guice</artifactId>
+  <version>2.1.0-SNAPSHOT</version>
+
+  <name>peaberry - Guice snapshot</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <type>bundle</type>
+                  <file>lib/guice-snapshot.jar</file>
+                </artifact>
+                <artifact>
+                  <type>jar</type>
+                  <classifier>sources</classifier>
+                  <file>lib/guice-snapshot-src.jar</file>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

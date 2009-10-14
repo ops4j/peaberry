@@ -39,8 +39,14 @@
       <type>bundle</type>
     </dependency>
     <dependency>
-      <groupId>com.google.inject</groupId>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
+      <artifactId>javax.inject</artifactId>
+      <type>bundle</type>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
       <artifactId>guice</artifactId>
+      <type>bundle</type>
     </dependency>
   </dependencies>
 

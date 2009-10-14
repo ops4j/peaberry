@@ -13,6 +13,7 @@
   <modules>
     <module>javax.inject</module>
     <module>aopalliance</module>
+    <module>guice</module>
   </modules>
 
 </project>
