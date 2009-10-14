@@ -11,6 +11,7 @@
   <name>peaberry - Required dependencies</name>
 
   <modules>
+    <module>javax.inject</module>
     <module>aopalliance</module>
   </modules>
 

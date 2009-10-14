@@ -160,21 +160,24 @@
         <groupId>org.ops4j</groupId>
         <artifactId>peaberry</artifactId>
         <version>${project.version}</version>
+        <type>bundle</type>
       </dependency>
       <dependency>
         <groupId>org.ops4j.peaberry.dependencies</groupId>
         <artifactId>aopalliance</artifactId>
         <version>1.0</version>
+        <type>bundle</type>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.peaberry.dependencies</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+        <type>bundle</type>
       </dependency>
       <dependency>
         <groupId>asm</groupId>
         <artifactId>asm</artifactId>
         <version>3.2</version>
-      </dependency>
-      <dependency>
-        <groupId>aopalliance</groupId>
-        <artifactId>aopalliance</artifactId>
-        <version>1.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
