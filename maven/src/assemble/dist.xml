@@ -15,9 +15,12 @@
             <useProjectAttachments>true</useProjectAttachments>
             <useTransitiveDependencies>false</useTransitiveDependencies>
             <includes>
-              <include>*sources*.jar</include>
-              <include>*javadoc*.jar</include>
+              <include>*sources</include>
+              <include>*javadoc</include>
             </includes>
+            <excludes>
+              <exclude>*asc</exclude>
+            </excludes>
           </dependencySet>
         </dependencySets>
       </binaries>
@@ -34,9 +37,12 @@
             <useProjectAttachments>true</useProjectAttachments>
             <useTransitiveDependencies>false</useTransitiveDependencies>
             <includes>
-              <include>*sources*.jar</include>
-              <include>*javadoc*.jar</include>
+              <include>*sources</include>
+              <include>*javadoc</include>
             </includes>
+            <excludes>
+              <exclude>*asc</exclude>
+            </excludes>
           </dependencySet>
         </dependencySets>
       </binaries>
