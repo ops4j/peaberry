@@ -24,6 +24,24 @@
  original OSGi ServiceRegistry to inject both services and extensions.
   </description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <module>org.ops4j.peaberry.eclipse</module>
+            <Bundle-SymbolicName>$(symbolic.name);singleton:=true</Bundle-SymbolicName>
+            <Bundle-Activator>$(module).Activator</Bundle-Activator>
+            <api.version>1.0</api.version>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.ops4j</groupId>
@@ -60,27 +78,5 @@
       <systemPath>${project.basedir}/lib/org.eclipse.equinox.supplement_1.1.100.v20080722-0500.jar</systemPath>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-
-            <module>org.ops4j.peaberry.eclipse</module>
-            <api.version>1.0</api.version>
-
-            <Bundle-SymbolicName>$(symbolic.name);singleton:=true</Bundle-SymbolicName>
-
-            <Bundle-Activator>$(module).Activator</Bundle-Activator>
-
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

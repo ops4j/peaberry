@@ -27,6 +27,23 @@
  appropriate service registrations, requests, and activation calls.
   </description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <module>org.ops4j.peaberry.activation</module>
+            <Bundle-Activator>$(module).internal.Activator</Bundle-Activator>
+            <api.version>1.0</api.version>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.ops4j</groupId>
@@ -39,25 +56,5 @@
       <type>bundle</type>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-
-            <module>org.ops4j.peaberry.activation</module>
-            <api.version>1.0</api.version>
-
-            <Bundle-Activator>$(module).internal.Activator</Bundle-Activator>
-
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
