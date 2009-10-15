@@ -16,6 +16,7 @@
   <name>peaberry - Distribution</name>
 
   <modules>
+    <module>pom</module>
     <module>dependencies</module>
     <module>peaberry</module>
     <module>extensions</module>

@@ -93,18 +93,7 @@
   <dependencies>
     <dependency>
       <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>aopalliance</artifactId>
-      <type>bundle</type>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>javax.inject</artifactId>
-      <type>bundle</type>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
       <artifactId>guice</artifactId>
-      <type>bundle</type>
     </dependency>
     <dependency>
       <groupId>asm</groupId>
