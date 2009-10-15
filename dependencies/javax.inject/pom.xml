@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.dependencies</groupId>
   <artifactId>javax.inject</artifactId>
-  <version>1-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
 
   <name>peaberry - javax.inject API</name>
 

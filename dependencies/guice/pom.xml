@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.dependencies</groupId>
   <artifactId>guice</artifactId>
-  <version>2.1.0-SNAPSHOT</version>
+  <version>2.1-SNAPSHOT</version>
 
   <name>peaberry - Guice snapshot</name>
 
