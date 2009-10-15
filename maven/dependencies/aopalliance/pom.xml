@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.dependencies</groupId>
   <artifactId>aopalliance</artifactId>
-  <version>1.0</version>
+  <version>1.0-SNAPSHOT</version>
 
   <name>peaberry - AOP Alliance API</name>
 
