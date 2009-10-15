@@ -15,7 +15,7 @@
  */
 
 /**
- * <i>peaberry</i> - dynamic service extension for <a target="_blank"
+ * <i>peaberry</i> - Dynamic services for <a target="_blank"
  * href="http://code.google.com/p/google-guice/">Google-Guice</a>.
  *
  * <p>The principal members of this package are:

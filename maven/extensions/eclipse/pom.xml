@@ -16,6 +16,14 @@
 
   <name>peaberry - EclipseRegistry extension</name>
 
+  <url>http://code.google.com/p/peaberry/wiki/EclipseRegistry</url>
+
+  <description>
+ Peaberry Eclipse provides a read-only ServiceRegistry implementation
+ backed by the Eclipse Extension registry. This can be mixed with the
+ original OSGi ServiceRegistry to inject both services and extensions.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>org.ops4j</groupId>
@@ -61,8 +69,14 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+
             <module>org.ops4j.peaberry.eclipse</module>
+            <api.version>1.0</api.version>
+
+            <Bundle-SymbolicName>$(symbolic.name);singleton:=true</Bundle-SymbolicName>
+
             <Bundle-Activator>$(module).Activator</Bundle-Activator>
+
           </instructions>
         </configuration>
       </plugin>
