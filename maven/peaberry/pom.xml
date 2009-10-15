@@ -28,38 +28,6 @@
  such as Apache Felix or Eclipse/Equinox.
   </description>
 
-  <licenses>
-    <license>
-      <name>ALv2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-      <distribution>repo</distribution>
-      <comments>Copyright (C) 2008 Stuart McCulloch</comments>
-    </license>
-  </licenses>
-
-  <dependencies>
-    <dependency>
-      <groupId>asm</groupId>
-      <artifactId>asm</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>aopalliance</artifactId>
-      <type>bundle</type>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>javax.inject</artifactId>
-      <type>bundle</type>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>guice</artifactId>
-      <type>bundle</type>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
       <plugin>
@@ -106,26 +74,43 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-
             <module>org.ops4j.peaberry</module>
-            <api.version>1.1</api.version>
-
             <Bundle-Activator>$(module).osgi.Activator</Bundle-Activator>
-
+            <extra.imports>javax.*;resolution:=optional</extra.imports>
+            <api.version>1.1</api.version>
             <Export-Package>
               $(module)(|.builders|.cache|.util);version=$(api.version)
             </Export-Package>
-
             <Private-Package>
               $(module).*,pbry.*
             </Private-Package>
-
-            <extra.imports>javax.*;resolution:=optional</extra.imports>
-
           </instructions>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
+      <artifactId>aopalliance</artifactId>
+      <type>bundle</type>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
+      <artifactId>javax.inject</artifactId>
+      <type>bundle</type>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
+      <artifactId>guice</artifactId>
+      <type>bundle</type>
+    </dependency>
+    <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 
 </project>

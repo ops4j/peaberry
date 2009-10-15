@@ -37,8 +37,8 @@
                 </artifact>
                 <artifact>
                   <type>jar</type>
-                  <classifier>sources</classifier>
                   <file>lib/guice-snapshot-src.jar</file>
+                  <classifier>sources</classifier>
                 </artifact>
               </artifacts>
             </configuration>

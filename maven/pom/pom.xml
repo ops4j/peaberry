@@ -37,6 +37,10 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.0-beta-1</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>2.3</version>
         </plugin>
@@ -45,19 +49,13 @@
           <version>2.3</version>
         </plugin>
         <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.2-beta-2</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
           <version>2.0</version>
         </plugin>
         <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.4</version>
-          <configuration>
-            <updateReleaseInfo>true</updateReleaseInfo>
-          </configuration>
+          <groupId>com.pyx4me</groupId>
+          <artifactId>proguard-maven-plugin</artifactId>
+          <version>2.0.4</version>
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -72,29 +70,17 @@
           <version>2.4.3</version>
         </plugin>
         <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>2.0-beta-7</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.0-beta-1</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>2.2</version>
-          <configuration>
-            <archive>
-              <addMavenDescriptor>false</addMavenDescriptor>
-            </archive>
-          </configuration>
         </plugin>
         <plugin>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.3</version>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.4</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
@@ -108,14 +94,23 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>1.4</version>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.3</version>
         </plugin>
         <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.0.1</version>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.0-beta-7</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.4</version>
+          <configuration>
+            <updateReleaseInfo>true</updateReleaseInfo>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-release-plugin</artifactId>
@@ -126,13 +121,57 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>com.pyx4me</groupId>
-          <artifactId>proguard-maven-plugin</artifactId>
-          <version>2.0.4</version>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.0.1</version>
+          <configuration>
+            <instructions>
+
+              <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
+
+              <module>$(symbolic.name)</module>
+              <api.version>${project.version}</api.version>
+              <extra.imports/>
+
+              <Bundle-Name>${project.artifactId}</Bundle-Name>
+              <Bundle-SymbolicName>$(symbolic.name)</Bundle-SymbolicName>
+              <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+              <Bundle-DocURL>${project.url}</Bundle-DocURL>
+
+              <Export-Package>
+                !$(module).internal.*,$(module).*;version=$(api.version)
+              </Export-Package>
+
+              <Import-Package>
+                !$(module).*,
+                $(extra.imports),
+                com.google.inject.*;version="[1,2)",
+                org.osgi.framework;version="[1.3,2)",
+                *
+              </Import-Package>
+
+              <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+
+              <_removeheaders>
+                Built-By,Tool,Created-By,Build-Jdk,
+                Include-Resource,Private-Package,
+                Ignore-Package,Bnd-LastModified
+              </_removeheaders>
+
+            </instructions>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
@@ -159,47 +198,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-
-            <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
-
-            <module>$(symbolic.name)</module>
-            <api.version>${project.version}</api.version>
-            <extra.imports/>
-
-            <Bundle-Name>${project.artifactId}</Bundle-Name>
-            <Bundle-SymbolicName>$(symbolic.name)</Bundle-SymbolicName>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
-            <Bundle-DocURL>${project.url}</Bundle-DocURL>
-
-            <Export-Package>
-              !$(module).internal.*,$(module).*;version=$(api.version)
-            </Export-Package>
-
-            <Import-Package>
-              !$(module).*,
-              $(extra.imports),
-              com.google.inject.*;version="[1,2)",
-              org.osgi.framework;version="[1.3,2)",
-              *
-            </Import-Package>
-
-            <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
-
-            <_removeheaders>
-              Built-By,Tool,Created-By,Build-Jdk,
-              Include-Resource,Private-Package,
-              Ignore-Package,Bnd-LastModified
-            </_removeheaders>
-
-          </instructions>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -208,9 +206,6 @@
       <id>release</id>
       <build>
         <plugins>
-          <plugin>
-            <artifactId>maven-deploy-plugin</artifactId>
-          </plugin>
           <plugin>
             <artifactId>maven-source-plugin</artifactId>
             <executions>
