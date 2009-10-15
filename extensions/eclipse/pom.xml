@@ -34,7 +34,7 @@
           <instructions>
             <module>org.ops4j.peaberry.eclipse</module>
             <Bundle-SymbolicName>$(symbolic.name);singleton:=true</Bundle-SymbolicName>
-            <Bundle-Activator>$(module).Activator</Bundle-Activator>
+            <Bundle-Activator>$(module).internal.Activator</Bundle-Activator>
             <api.version>1.0</api.version>
           </instructions>
         </configuration>

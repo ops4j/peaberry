@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.ops4j.peaberry.eclipse;
+package org.ops4j.peaberry.eclipse.internal;
 
+import org.ops4j.peaberry.eclipse.EclipseRegistry;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -30,6 +31,6 @@ public final class Activator
   public void start(final BundleContext bundleContext) {/* nothing to do */}
 
   public void stop(final BundleContext bundleContext) {
-    ((EclipseRegistry) EclipseRegistry.eclipseRegistry()).cleanup();
+    ((EclipseRegistry) EclipseRegistry.eclipseRegistry()).shutdown();
   }
 }

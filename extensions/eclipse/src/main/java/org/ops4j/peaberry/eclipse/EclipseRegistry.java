@@ -77,8 +77,8 @@ public final class EclipseRegistry
         null == filter ? watcher : new FilteredServiceWatcher(filter, watcher));
   }
 
-  // see activator
-  void cleanup() {
+  // see bundle activator
+  public void shutdown() {
     for (final String k : listenerMap.keySet()) {
       extensionRegistry.removeListener(listenerMap.remove(k));
     }
