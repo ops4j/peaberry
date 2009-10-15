@@ -14,9 +14,19 @@
   <groupId>org.ops4j</groupId>
   <artifactId>peaberry</artifactId>
 
-  <name>peaberry - Dynamic services for Guice</name>
+  <name>peaberry - Dynamic services for Google-Guice</name>
 
   <url>http://code.google.com/p/peaberry/</url>
+
+  <description>
+ The peaberry project is an extension library for Google-Guice
+ that supports dependency injection of dynamic services.
+
+ It provides OSGi integration out of the box, and has plug-in
+ support for other registry-based service frameworks. It ships
+ as an OSGi bundle that can be dropped into any R4 framework,
+ such as Apache Felix or Eclipse/Equinox.
+  </description>
 
   <licenses>
     <license>
@@ -54,7 +64,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.1</version>
         <executions>
           <execution>
             <id>unpack-dependencies</id>
@@ -74,7 +83,6 @@
       <plugin>
         <groupId>com.pyx4me</groupId>
         <artifactId>proguard-maven-plugin</artifactId>
-        <version>2.0.4</version>
         <executions>
           <execution>
             <phase>process-classes</phase>
@@ -98,15 +106,22 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+
             <module>org.ops4j.peaberry</module>
-            <extra.imports>javax.*;resolution:=optional</extra.imports>
+            <api.version>1.1</api.version>
+
             <Bundle-Activator>$(module).osgi.Activator</Bundle-Activator>
+
             <Export-Package>
-              $(module)(|.builders|.cache|.util);version=${project.version}
+              $(module)(|.builders|.cache|.util);version=$(api.version)
             </Export-Package>
+
             <Private-Package>
               $(module).*,pbry.*
             </Private-Package>
+
+            <extra.imports>javax.*;resolution:=optional</extra.imports>
+
           </instructions>
         </configuration>
       </plugin>
