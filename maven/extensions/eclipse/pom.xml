@@ -46,12 +46,6 @@
     <dependency>
       <groupId>org.ops4j</groupId>
       <artifactId>peaberry</artifactId>
-      <type>bundle</type>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>guice</artifactId>
-      <type>bundle</type>
     </dependency>
     <dependency>
       <groupId>org.eclipse.equinox</groupId>

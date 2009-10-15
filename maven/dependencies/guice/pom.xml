@@ -32,7 +32,7 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <type>bundle</type>
+                  <type>jar</type>
                   <file>lib/guice-snapshot.jar</file>
                 </artifact>
                 <artifact>
@@ -47,5 +47,16 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
+      <artifactId>aopalliance</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.peaberry.dependencies</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
