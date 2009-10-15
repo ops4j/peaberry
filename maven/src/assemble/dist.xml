@@ -48,4 +48,14 @@
       </binaries>
     </moduleSet>
   </moduleSets>
+  <files>
+    <file>
+      <source>dependencies/guice/lib/guice-snapshot.jar</source>
+      <destName>guice-2.1-SNAPSHOT.jar</destName>
+    </file>
+    <file>
+      <source>dependencies/guice/lib/guice-snapshot-src.jar</source>
+      <destName>guice-2.1-SNAPSHOT-sources.jar</destName>
+    </file>
+  </files>
 </assembly>
