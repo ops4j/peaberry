@@ -16,6 +16,17 @@
 
   <name>peaberry - Activation extension</name>
 
+  <url>http://code.google.com/p/peaberry/wiki/PeaberryActivation</url>
+
+  <description>
+ Peaberry Activation removes the need to write Bundle-Activators.
+
+ Users can work in a more declarative way by writing service binding
+ modules and listing them under the 'Bundle-Module' header. Peaberry
+ Activation detects bundles containing this header and performs the
+ appropriate service registrations, requests, and activation calls.
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>org.ops4j</groupId>
@@ -37,8 +48,12 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+
             <module>org.ops4j.peaberry.activation</module>
+            <api.version>1.0</api.version>
+
             <Bundle-Activator>$(module).internal.Activator</Bundle-Activator>
+
           </instructions>
         </configuration>
       </plugin>

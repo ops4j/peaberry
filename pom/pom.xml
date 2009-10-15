@@ -14,16 +14,6 @@
   <artifactId>parent</artifactId>
   <version>1.2-SNAPSHOT</version>
 
-  <description>
- The peaberry project is an extension library for Google-Guice
- that supports dependency injection of dynamic services.
-
- It provides OSGi integration out of the box, and has plug-in
- support for other registry-based service frameworks. It ships
- as an OSGi bundle that can be dropped into any R4 framework,
- such as Apache Felix or Eclipse/Equinox. 
-  </description>
-
   <issueManagement>
     <url>http://code.google.com/p/peaberry/issues/list</url>
   </issueManagement>
@@ -135,6 +125,11 @@
             <tagBase>https://peaberry.googlecode.com/svn/tags</tagBase>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>com.pyx4me</groupId>
+          <artifactId>proguard-maven-plugin</artifactId>
+          <version>2.0.4</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -170,26 +165,38 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <module/>
+
+            <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
+
+            <module>$(symbolic.name)</module>
+            <api.version>${project.version}</api.version>
             <extra.imports/>
-            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-SymbolicName>$(symbolic.name)</Bundle-SymbolicName>
             <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+            <Bundle-DocURL>${project.url}</Bundle-DocURL>
+
             <Export-Package>
-              !$(module).internal;$(module).*;version=${project.version}
+              !$(module).internal.*,$(module).*;version=$(api.version)
             </Export-Package>
-            <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+
             <Import-Package>
               !$(module).*,
               $(extra.imports),
-              com.google.*;version="[1,2)",
-              org.osgi.*;version="[1.3,2)",
+              com.google.inject.*;version="[1,2)",
+              org.osgi.framework;version="[1.3,2)",
               *
             </Import-Package>
+
+            <_versionpolicy>[$(version;==;$(@)),$(version;+;$(@)))</_versionpolicy>
+
             <_removeheaders>
               Built-By,Tool,Created-By,Build-Jdk,
               Include-Resource,Private-Package,
               Ignore-Package,Bnd-LastModified
             </_removeheaders>
+
           </instructions>
         </configuration>
       </plugin>

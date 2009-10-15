@@ -42,6 +42,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Bundle-License>Public Domain</Bundle-License>
             <Bundle-RequiredExecutionEnvironment>J2SE-1.3</Bundle-RequiredExecutionEnvironment>
             <Export-Package>org.aopalliance.*</Export-Package>
             <Import-Package>*</Import-Package>
