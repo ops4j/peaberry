@@ -84,6 +84,9 @@
             <Private-Package>
               $(module).*,pbry.*
             </Private-Package>
+            <Include-Resource>
+              {maven-resources},META-INF/proguard.map=target/proguard_map.txt
+            </Include-Resource>
           </instructions>
         </configuration>
       </plugin>
