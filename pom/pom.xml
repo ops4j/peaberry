@@ -209,6 +209,10 @@
                   <additionalPlugins>
                     <additionalPlugin>org.apache.maven.plugins:maven-release-plugin</additionalPlugin>
                   </additionalPlugins>
+                  <unCheckedPluginList>
+                    org.apache.maven.plugins:maven-eclipse-plugin,
+                    org.apache.maven.plugins:maven-idea-plugin
+                  </unCheckedPluginList>
                 </requirePluginVersions>
                 <requireMavenVersion>
                   <version>2.2.1</version>
