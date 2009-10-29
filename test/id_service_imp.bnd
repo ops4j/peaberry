@@ -1,7 +1,0 @@
-
-Bundle-Activator:\
- examples.ids.internal.Activator
-
-Private-Package:\
- examples.ids.internal
-

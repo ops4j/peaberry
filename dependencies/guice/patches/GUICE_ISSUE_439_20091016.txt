@@ -1,0 +1,187 @@
+Index: servlet/build.properties
+===================================================================
+--- servlet/build.properties	(revision 1119)
++++ servlet/build.properties	(working copy)
+@@ -4,3 +4,4 @@
+ build.dir=build
+ test.class=com.google.inject.servlet.AllTests
+ module=com.google.inject.servlet
++fragment=true
+Index: struts2/plugin/build.properties
+===================================================================
+--- struts2/plugin/build.properties	(revision 1119)
++++ struts2/plugin/build.properties	(working copy)
+@@ -2,3 +2,4 @@
+ src.dir=src
+ build.dir=build
+ module=com.google.inject.struts2
++fragment=true
+Index: src/com/google/inject/Injector.java
+===================================================================
+--- src/com/google/inject/Injector.java	(revision 1119)
++++ src/com/google/inject/Injector.java	(working copy)
+@@ -227,7 +227,7 @@
+   /**
+    * Returns a map containing all scopes in the injector. The maps keys are scoping annotations
+    * like {@code Singleton.class}, and the values are scope instances, such as {@code
+-   * Scopes.SINGLETON. The returned map is immutable.
++   * Scopes.SINGLETON}. The returned map is immutable.
+    *
+    * <p>This method is part of the Guice SPI and is intended for use by tools and extensions.
+    */
+Index: common.xml
+===================================================================
+--- common.xml	(revision 1119)
++++ common.xml	(working copy)
+@@ -25,13 +25,14 @@
+   <target name="manifest" description="Generate OSGi manifest." depends="compile">
+     <dirname property="common.basedir" file="${ant.file.common}"/>
+     <taskdef resource="aQute/bnd/ant/taskdef.properties"
+-      classpath="${common.basedir}/lib/build/bnd-0.0.305.jar"/>
++      classpath="${common.basedir}/lib/build/bnd-0.0.369.jar"/>
+ 
+     <fail unless="module" message="Missing 'module' property (use the primary package name in this jar)"/>
++    <property name="imports" value=""/>
+ 
+     <property name="Bundle-Name" value="${ant.project.name}"/>
+     <property name="Bundle-SymbolicName" value="${module}"/>
+-    <property name="Bundle-Version" value="${replace;${version};^[^0-9];${api.version}.$0}"/>
++    <property name="Bundle-Version" value="${replace;${version};^[^0-9];0.0.0.$0}"/>
+ 
+     <property name="Bundle-Description" value="Guice is a lightweight dependency injection framework for Java 5 and above"/>
+     <property name="Bundle-DocURL" value="http://code.google.com/p/google-guice/"/>
+@@ -39,12 +40,18 @@
+     <property name="Bundle-License" value="http://www.apache.org/licenses/LICENSE-2.0"/>
+     <property name="Bundle-Vendor" value="Google Inc."/>
+ 
+-    <property name="exclude.imports" value=""/>
+-    <property name="api.range" value="&quot;[${api.version},${version;+;${api.version}})&quot;"/>
+-    <property name="guice.imports" value="com.google.inject.*;version=${api.range}"/>
+-    <property name="Import-Package" value="${exclude.imports},${guice.imports},*;resolution:=optional"/>
+     <property name="Export-Package" value="!${module}.internal.*,${module}.*;version=${api.version}"/>
+ 
++    <condition property="Import-Package" value="!com.google.inject.*,*" else="!${module}.*,${imports},*">
++      <istrue value="${fragment}"/>
++    </condition>
++
++    <condition property="Fragment-Host" value="com.google.inject">
++      <istrue value="${fragment}"/>
++    </condition>
++
++    <property name="-nouses" value="true"/>
++
+     <property name="-removeheaders" value="Bnd-LastModified,Ignore-Package,Include-Resource,Private-Package,Tool"/>
+ 
+     <bndwrap jars="${build.dir}/classes" output="${build.dir}"/>
+Index: build.properties
+===================================================================
+--- build.properties	(revision 1119)
++++ build.properties	(working copy)
+@@ -25,4 +25,4 @@
+   com.google.inject.util
+ test.class=com.google.inject.AllTests
+ module=com.google.inject
+-exclude.imports: !net.sf.cglib.*,!org.objectweb.asm.*
++imports=!net.sf.cglib.*,!org.objectweb.asm.*
+Index: build.xml
+===================================================================
+--- build.xml	(revision 1119)
++++ build.xml	(working copy)
+@@ -2,9 +2,6 @@
+ 
+ <project name="guice" default="compile">
+ 
+-  <property name="DynamicImport-Package" value="org.aopalliance.intercept"/>
+-  <property name="exclude.imports" value="!com.google.common.*,!net.sf.*,!org.objectweb.*"/>
+-
+   <import file="common.xml"/>
+ 
+   <path id="compile.classpath">
+@@ -12,7 +9,6 @@
+     <fileset dir="${lib.dir}/build" includes="*.jar"/>
+   </path>
+ 
+-
+   <target name="jar" depends="jar.withdeps, manifest" description="Build jar.">
+     <jar jarfile="${build.dir}/dist/guice-${version}.jar"
+         manifest="${build.dir}/META-INF/MANIFEST.MF">
+@@ -85,9 +81,11 @@
+         <pathelement location="${build.dir}/test"/>
+         <pathelement location="${build.dir}/dist/guice-${version}.jar"/>
+         <pathelement location="lib/aopalliance.jar"/>
++        <pathelement location="lib/javax.inject.jar"/>
+         <pathelement location="lib/build/junit.jar"/>
+         <pathelement location="lib/build/servlet-api-2.5.jar"/>
+         <pathelement location="lib/build/easymock.jar"/>
++        <pathelement location="lib/build/javax.inject-tck.jar"/>
+       </classpath>
+       <arg value="com.google.inject.AllTests"/>    
+       <syspropertyset>
+Index: lifecycle/build.properties
+===================================================================
+--- lifecycle/build.properties	(revision 1119)
++++ lifecycle/build.properties	(working copy)
+@@ -3,3 +3,4 @@
+ build.dir=build
+ test.class=com.google.inject.lifecycle.LifecycleTest
+ module=com.google.inject.lifecycle
++fragment=true
+Index: extensions/throwingproviders/build.properties
+===================================================================
+--- extensions/throwingproviders/build.properties	(revision 1119)
++++ extensions/throwingproviders/build.properties	(working copy)
+@@ -4,3 +4,4 @@
+ build.dir=build
+ test.class=com.google.inject.throwingproviders.ThrowingProviderBinderTest
+ module=com.google.inject.throwingproviders
++fragment=true
+Index: extensions/multibindings/build.properties
+===================================================================
+--- extensions/multibindings/build.properties	(revision 1119)
++++ extensions/multibindings/build.properties	(working copy)
+@@ -4,3 +4,4 @@
+ build.dir=build
+ test.class=com.google.inject.multibindings.AllTests
+ module=com.google.inject.multibindings
++fragment=true
+Index: extensions/grapher/build.properties
+===================================================================
+--- extensions/grapher/build.properties	(revision 1119)
++++ extensions/grapher/build.properties	(working copy)
+@@ -4,3 +4,4 @@
+ build.dir=build
+ test.class=com.google.inject.grapher.AllTests
+ module=com.google.inject.grapher
++fragment=true
+Index: extensions/assistedinject/build.properties
+===================================================================
+--- extensions/assistedinject/build.properties	(revision 1119)
++++ extensions/assistedinject/build.properties	(working copy)
+@@ -4,3 +4,4 @@
+ build.dir=build
+ test.class=com.google.inject.assistedinject.FactoryProviderTest
+ module=com.google.inject.assistedinject
++fragment=true
+Index: spring/build.properties
+===================================================================
+--- spring/build.properties	(revision 1119)
++++ spring/build.properties	(working copy)
+@@ -3,3 +3,4 @@
+ build.dir=build
+ test.class=com.google.inject.spring.SpringTest
+ module=com.google.inject.spring
++fragment=true
+Index: lib/build/bnd-0.0.305.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: lib/build/bnd-0.0.369.jar
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: lib/build/bnd-0.0.369.jar
+___________________________________________________________________
+Added: svn:mime-type
+   + application/octet-stream
+

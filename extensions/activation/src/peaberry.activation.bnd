@@ -1,2 +1,0 @@
-Bundle-Activator: ${module}.internal.Activator
--include: ~${common.dir}/common.bnd

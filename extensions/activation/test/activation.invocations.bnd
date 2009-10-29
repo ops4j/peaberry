@@ -1,4 +1,0 @@
-Bundle-SymbolicName: activation.invocations
-Export-Package: org.ops4j.peaberry.activation.invocations
-Private-Package: org.ops4j.peaberry.activation.invocations.internal
-Bundle-Activator: org.ops4j.peaberry.activation.invocations.internal.Activator
