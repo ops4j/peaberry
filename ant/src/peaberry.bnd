@@ -1,0 +1,14 @@
+
+-include: ~${common.dir}/common.bnd
+
+Bundle-Activator: ${module}.osgi.Activator
+
+extra.includes:\
+ META-INF/LICENSE.asm=../LICENSE.asm
+
+-exportcontents:\
+ ${module}(|.builders|.cache|.util);version=${api.version}
+
+extra.imports:\
+ javax.*;resolution:=optional
+

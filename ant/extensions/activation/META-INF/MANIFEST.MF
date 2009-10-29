@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Export-Package: org.ops4j.peaberry.activation;version="1.0"
+Bundle-Name: peaberry.activation
+Created-By: 1.6.0_13 (Sun Microsystems Inc.)
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Version: 1.2.0.SNAPSHOT
+Bundle-Activator: org.ops4j.peaberry.activation.internal.Activator
+Bundle-ManifestVersion: 2
+Bundle-Description: peaberry - Activation extension
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Import-Package: com.google.inject;version="[1,2)",com.google.inject.sp
+ i;version="[1,2)",org.ops4j.peaberry;version="[1.1,2)",org.ops4j.peab
+ erry.activation;version="[1.0,2)",org.osgi.framework;version="[1.3,2)
+ "
+Bundle-SymbolicName: org.ops4j.peaberry.activation
+Bundle-DocURL: http://code.google.com/p/peaberry/
+

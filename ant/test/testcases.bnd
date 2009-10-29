@@ -1,0 +1,4 @@
+
+Private-Package:\
+ ${module}.tests
+

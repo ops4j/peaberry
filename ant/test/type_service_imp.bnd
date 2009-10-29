@@ -1,0 +1,7 @@
+
+Bundle-Activator:\
+ examples.types.internal.Activator
+
+Private-Package:\
+ examples.types.internal
+

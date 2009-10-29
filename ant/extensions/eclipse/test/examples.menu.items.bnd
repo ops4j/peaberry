@@ -1,0 +1,13 @@
+
+Bundle-SymbolicName: examples.menu.items;singleton:=true
+Eclipse-LazyStart: true
+
+Private-Package:\
+ examples.menu.internal
+
+Include-Resource:\
+ plugin.xml=examples.menu.items.xml
+
+Import-Package:\
+ org.ops4j.peaberry.eclipse,*
+

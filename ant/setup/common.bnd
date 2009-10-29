@@ -1,0 +1,32 @@
+
+Bundle-Name: ${ant.project.name}
+Bundle-SymbolicName: ${module}
+Bundle-Version: ${main.version}${build.stamp}${qualifier}
+
+Bundle-Description: ${title}
+Bundle-DocURL: http://code.google.com/p/peaberry/
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+
+Include-Resource:\
+ META-INF/NOTICE=../NOTICE,\
+ META-INF/LICENSE=../LICENSE,\
+ ${extra.includes}
+
+Private-Package:\
+ ${module}.*
+
+-versionpolicy:\
+ "[${@},${version;+;${@}})"
+
+Import-Package:\
+ org.osgi.framework;version="[1.3,2)",\
+ com.google.inject.*;version="[1,2)",\
+ ${extra.imports},*
+
+-exportcontents:\
+ ${module};version=${api.version}
+
+-output:\
+ ${final.jar}
+

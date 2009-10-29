@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+	<extension point="examples.menu.items">
+		<item label="Open"
+		      class="examples.menu.internal.ItemImpl" />
+		<item label="Close"
+		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
+		      id="examples.menu.internal.ItemImpl" />
+		<item label="Save"
+		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory:examples.menu.Item" />
+		<item label="Exit"
+		      class="org.ops4j.peaberry.eclipse.GuiceExtensionFactory"
+		      id="examples.menu.internal.ItemExtensionImpl" />
+	</extension>
+	<extension point="org.ops4j.peaberry.eclipse.modules">
+	    <module class="examples.menu.internal.ItemModule" />
+	</extension>
+</plugin>

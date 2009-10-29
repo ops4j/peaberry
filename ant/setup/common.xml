@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<project name="common">
+
+  <dirname property="common.dir" file="${ant.file.common}"/>
+  <property file="${common.dir}/common.properties"/>
+  <property name="build.dir" location="${build}"/>
+
+  <target name="compile">
+    <mkdir dir="${build}/classes"/>
+    <javac debug="on" srcdir="${src}" source="1.5" target="1.5"
+        destdir="${build}/classes" classpath="${build.cp}">
+      <compilerarg value="-Xlint:all,-deprecation"/>
+    </javac>
+  </target>
+
+  <target name="test.compile" depends="compile">
+    <mkdir dir="${build}/test-classes"/>
+    <javac debug="on" srcdir="${test}" source="1.5" target="1.5"
+        destdir="${build}/test-classes" classpath="${test.cp}">
+      <compilerarg value="-Xlint:all,-deprecation"/>
+    </javac>
+  </target>
+
+  <taskdef resource="aQute/bnd/ant/taskdef.properties" classpath="${bnd.jar}"/>
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="${contrib.jar}"/>
+
+  <target name="check.stamp">
+    <condition property="ignore.stamp">
+      <contains string="${qualifier}" substring="SNAPSHOT"/>
+    </condition>
+  </target>
+
+  <target name="stamp" unless="ignore.stamp">
+    <pathconvert dirsep="/" property="root.dir">
+      <path path="${common.dir}/.."/>
+    </pathconvert>
+    <exec executable="svn">
+      <arg value="up"/>
+      <arg value="-N"/>
+      <arg value="-rCOMMITTED"/>
+      <arg value="${root.dir}"/>
+      <redirector outputproperty="svn.revision">
+        <outputfilterchain>
+          <replaceregex pattern="At revision (.+)\." replace="\1"/>
+        </outputfilterchain>
+      </redirector>
+    </exec>
+    <property name="build.stamp" value="-v${svn.revision}"/>
+  </target>
+
+  <target name="jar" depends="compile,check.stamp,stamp">
+    <property name="build.stamp" value=""/>
+    <mkdir dir="${dist}"/>
+    <foreach target="main.bundle" param="main.bnd" inheritAll="true">
+      <path>
+        <fileset dir="${src}" includes="*.bnd"/>
+      </path>
+    </foreach>
+    <property name="pde.manifest" value=""/>
+    <concat destfile="META-INF/MANIFEST.MF">
+      <zipfileset src="${final.jar}" includes="META-INF/MANIFEST.MF"/>
+      <header>${pde.manifest}</header>
+      <filterchain>
+        <tokenfilter delimoutput="\n"/>
+      </filterchain>
+    </concat>
+  </target>
+
+  <target name="main.bundle">
+    <property name="module.cp" value="${build}/classes"/>
+    <pathconvert pathsep="," dirsep="/" property="-classpath">
+      <path path="${build.cp};${module.cp}"/>
+    </pathconvert>
+    <bnd files="${main.bnd}"/>
+  </target>
+
+  <target name="testcases" depends="jar,test.compile">
+    <mkdir dir="${build}/test/bundles"/>
+    <foreach target="test.bundle" param="test.bnd" inheritAll="true">
+      <path>
+        <fileset dir="${test}" includes="*.bnd"/>
+      </path>
+    </foreach>
+  </target>
+
+  <target name="test.bundle">
+    <pathconvert pathsep="," dirsep="/" property="-classpath">
+      <path path="${test.cp};${build}/test-classes"/>
+    </pathconvert>
+    <bnd files="${test.bnd}" output="${build}/test/bundles"/>
+  </target>
+
+  <target name="test.jar" depends="jar,testcases">
+    <taskdef resource="testngtasks" classpath="${testng.jar}"/>
+    <makeurl file="${common.dir}/felix.properties" property="felix.config.properties"/>
+    <property name="deploy.cp" value=""/>
+    <makeurl property="deploy.urls">
+      <path path="${deploy.cp};${final.jar}"/>
+    </makeurl>
+    <testng outputDir="${doc}/testNG" suiteRunnerClass="Director">
+      <xmlfileset dir="${build}/test-classes"/>
+      <sysproperty key="test.suite.name" value="${module}"/>
+      <sysproperty key="clover.pertest.coverage" value="off"/>
+      <sysproperty key="felix.config.properties" value="${felix.config.properties}"/>
+      <sysproperty key="boot.urls" value="${boot.urls}"/>
+      <sysproperty key="deploy.urls" value="${deploy.urls}"/>
+      <sysproperty key="build.dir" value="${build.dir}"/>
+      <classpath>
+        <pathelement location="${felix.jar}"/>
+        <pathelement location="${director.jar}"/>
+        <pathelement location="${clover.jar}"/>
+      </classpath>
+    </testng>
+  </target>
+
+  <target name="clean">
+    <delete failonerror="false" includeemptydirs="true">
+      <fileset dir="${build}" excludes="dist/**"/>
+    </delete>
+  </target>
+
+  <target name="wipe">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+    <delete dir="${doc}"/>
+  </target>
+
+  <target name="doc" depends="check.doc,make.doc"/>
+
+  <target name="check.doc">
+    <available file="${doc}/javadoc/index.html" property="have.doc"/>
+  </target>
+
+  <target name="make.doc" unless="have.doc">
+    <mkdir dir="${doc}/javadoc"/>
+    <javadoc destdir="${doc}/javadoc" classpath="${build.cp}"
+        sourcepath="${src};${common.dir}/../src" packagenames="${api.packages}"
+        use="true" author="false" windowtitle="${title}">
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+      <link href="http://google-guice.googlecode.com/svn/trunk/latest-javadoc/"/>
+      <link href="http://peaberry.googlecode.com/svn/tags/1.0/reports/javadoc/"/>
+      <link href="http://help.eclipse.org/stable/topic/org.eclipse.platform.doc.isv/reference/api/"/>
+      <link href="http://aopalliance.sourceforge.net/doc/"/>
+      <link href="http://www2.osgi.org/javadoc/r4/"/>
+    </javadoc>
+  </target>
+
+  <target name="dist" depends="jar,doc">
+    <jar destfile="${dist}/${ant.project.name}-${version}-javadoc.jar" basedir="${doc}/javadoc"/>
+    <jar destfile="${dist}/${ant.project.name}-${version}-sources.jar" basedir="${src}">
+      <metainf dir="." includes="NOTICE,LICENSE"/>
+    </jar>
+    <copy todir="${dist}">
+      <fileset dir="." includes="NOTICE,LICENSE*,README.TXT"/>
+      <fileset dir="${common.dir}" includes="pom.xml"/>
+      <filtermapper>
+        <replacestring from="pom.xml" to="${ant.project.name}-${version}.pom"/>
+      </filtermapper>
+      <filterset>
+        <filter token="GUICE_VERSION" value="${guice.version}"/>
+        <filter token="PROJECT" value="${ant.project.name}"/>
+        <filter token="VERSION" value="${version}"/>
+      </filterset>
+    </copy>
+    <checksum format="MD5SUM" algorithm="md5">
+      <fileset dir="${dist}" includes="*.jar,*.pom"/>
+    </checksum>
+  </target>
+
+  <target name="test.dist" depends="test.jar"/>
+
+  <target name="with.clover">
+    <taskdef resource="cloverlib.xml" classpath="${clover.jar}"/>
+    <clover-setup initstring="${build}/instrument/coverage.db">
+      <methodContext name="toString" regexp="(.* )?public String toString\(\).*"/>
+      <methodContext name="privateCtor" regexp="(.* )?private \w+\(\).*"/>
+      <statementContext name="testFail" regexp="(.* )?fail\(.*"/>
+      <testsources dir="${test}">
+        <testclass annotation="Test"/>
+      </testsources>
+    </clover-setup>
+  </target>
+
+  <target name="clover.report">
+    <clover-report>
+      <current outfile="${doc}/coverage" title="${title}">
+        <fileset dir="${src}" includes="org/**/*.java" excludes="**/*Exception.java"/>
+        <format type="html" filter="toString,privateCtor,testFail"/>
+      </current>
+    </clover-report>
+  </target>
+
+  <target name="pmd" depends="compile">
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"
+        classpath="${jaxen.jar};${pmd.jar};${asm.jar}"/>
+    <mkdir dir="${doc}/coverage"/>
+    <pmd rulesetfiles="${common.dir}/pmd.xml" shortFilenames="true">
+      <formatter type="html" toFile="${doc}/coverage/pmd.html" linkPrefix="" linePrefix="src-"/>
+      <fileset dir="${src}" includes="org/**/*.java"/>
+    </pmd>
+  </target>
+
+  <target name="reports" depends="clean,with.clover,jar,test.jar,clover.report,pmd"/>
+
+</project>

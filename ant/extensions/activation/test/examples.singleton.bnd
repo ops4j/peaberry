@@ -1,0 +1,3 @@
+Bundle-SymbolicName: examples.singleton
+Export-Package: examples.singleton
+Bundle-Module: examples.singleton.Config
