@@ -1,0 +1,353 @@
+Index: src/com/google/inject/internal/DefaultConstructionProxyFactory.java
+===================================================================
+--- src/com/google/inject/internal/DefaultConstructionProxyFactory.java	(revision 1121)
++++ src/com/google/inject/internal/DefaultConstructionProxyFactory.java	(working copy)
+@@ -24,6 +24,8 @@
+ import java.lang.reflect.Modifier;
+ import java.util.List;
+ 
++import net.sf.cglib.core.CodeGenerationException;
++
+ /**
+  * Produces construction proxies that invoke the class constructor.
+  *
+@@ -47,6 +49,7 @@
+     // Use FastConstructor if the constructor is public.
+     if (Modifier.isPublic(constructor.getModifiers())) {
+       /*if[AOP]*/
++      try {
+       return new ConstructionProxy<T>() {
+         Class<T> classToConstruct = constructor.getDeclaringClass();
+         final net.sf.cglib.reflect.FastConstructor fastConstructor
+@@ -68,6 +71,10 @@
+           return ImmutableMap.of();
+         }
+       };
++      } catch (CodeGenerationException e) {
++        // FastConstructor failed: make accessible before reverting to JDK reflection
++        constructor.setAccessible(true);
++      }
+       /*end[AOP]*/
+     } else {
+       constructor.setAccessible(true);
+Index: src/com/google/inject/internal/ProxyFactory.java
+===================================================================
+--- src/com/google/inject/internal/ProxyFactory.java	(revision 1121)
++++ src/com/google/inject/internal/ProxyFactory.java	(working copy)
+@@ -17,6 +17,8 @@
+ package com.google.inject.internal;
+ 
+ import static com.google.inject.internal.BytecodeGen.newFastClass;
++
++import com.google.inject.ProvisionException;
+ import com.google.inject.spi.InjectionPoint;
+ import java.lang.reflect.Constructor;
+ import java.lang.reflect.InvocationTargetException;
+@@ -153,11 +155,15 @@
+ 
+     // Create the proxied class. We're careful to ensure that all enhancer state is not-specific
+     // to this injector. Otherwise, the proxies for each injector will waste PermGen memory
++    try {
+     Enhancer enhancer = BytecodeGen.newEnhancer(declaringClass, visibility);
+     enhancer.setCallbackFilter(new IndicesCallbackFilter(declaringClass, methods));
+     enhancer.setCallbackTypes(callbackTypes);
+     return new ProxyConstructor<T>(enhancer, injectionPoint, callbacks, interceptors);
++    } catch (Throwable e) {
++      throw new ProvisionException("Unable to method intercept: " + declaringClass, e);
+   }
++  }
+ 
+   private static class MethodInterceptorsPair {
+     final Method method;
+Index: src/com/google/inject/internal/SingleMethodInjector.java
+===================================================================
+--- src/com/google/inject/internal/SingleMethodInjector.java	(revision 1121)
++++ src/com/google/inject/internal/SingleMethodInjector.java	(working copy)
+@@ -23,6 +23,8 @@
+ import java.lang.reflect.Method;
+ import java.lang.reflect.Modifier;
+ 
++import net.sf.cglib.core.CodeGenerationException;
++
+ /**
+  * Invokes an injectable method.
+  */
+@@ -45,6 +47,7 @@
+     int modifiers = method.getModifiers();
+     if (!Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers)) {
+       /*if[AOP]*/
++      try {
+       final net.sf.cglib.reflect.FastMethod fastMethod
+           = BytecodeGen.newFastClass(method.getDeclaringClass(), Visibility.forMember(method))
+               .getMethod(method);
+@@ -55,6 +58,10 @@
+           return fastMethod.invoke(target, parameters);
+         }
+       };
++      } catch (CodeGenerationException e) {
++        // FastMethod failed: make accessible before reverting to JDK reflection
++        method.setAccessible(true);
++      }
+       /*end[AOP]*/
+     }
+ 
+Index: src/com/google/inject/internal/BytecodeGen.java
+===================================================================
+--- src/com/google/inject/internal/BytecodeGen.java	(revision 1121)
++++ src/com/google/inject/internal/BytecodeGen.java	(working copy)
+@@ -16,7 +16,6 @@
+ 
+ package com.google.inject.internal;
+ 
+-import static com.google.inject.internal.Preconditions.checkNotNull;
+ import java.lang.reflect.Constructor;
+ import java.lang.reflect.Member;
+ import java.lang.reflect.Method;
+@@ -57,20 +56,45 @@
+  */
+ final class BytecodeGen {
+ 
+-  private static final Logger logger = Logger.getLogger(BytecodeGen.class.getName());
++  static final Logger LOGGER = Logger.getLogger(BytecodeGen.class.getName());
+ 
+-  static final ClassLoader GUICE_CLASS_LOADER = BytecodeGen.class.getClassLoader();
++  private static final class ClassSpace {
++    final ClassLoader classLoader;
+ 
++    ClassSpace(ClassLoader classLoader) {
++      this.classLoader = classLoader;
++    }
++
++    @Override public boolean equals( Object obj ) {
++      if (obj instanceof ClassSpace) {
++        return classLoader == ((ClassSpace)obj).classLoader;
++      }
++      return false;
++    }
++
++    @Override public int hashCode() {
++      return null == classLoader ? 0 : classLoader.hashCode();
++    }
++
++    @Override public String toString() {
++      return null == classLoader ? "SystemClassLoader" : classLoader.toString();
++    }
++  }
++
++  static final ClassSpace SYSTEM_CLASS_SPACE = getSystemClassSpace();
++
++  static final ClassSpace GUICE_CLASS_SPACE = getClassSpace(BytecodeGen.class.getClassLoader());
++
+   /** ie. "com.google.inject.internal" */
+-  private static final String GUICE_INTERNAL_PACKAGE
++  static final String GUICE_INTERNAL_PACKAGE
+       = BytecodeGen.class.getName().replaceFirst("\\.internal\\..*$", ".internal");
+ 
+   /*if[AOP]*/
+   /** either "net.sf.cglib", or "com.google.inject.internal.cglib" */
+-  private static final String CGLIB_PACKAGE
++  static final String CGLIB_PACKAGE
+       = net.sf.cglib.proxy.Enhancer.class.getName().replaceFirst("\\.cglib\\..*$", ".cglib");
+ 
+-  static final net.sf.cglib.core.NamingPolicy NAMING_POLICY
++  private static final net.sf.cglib.core.NamingPolicy NAMING_POLICY
+       = new net.sf.cglib.core.DefaultNamingPolicy() {
+     @Override protected String getTag() {
+       return "ByGuice";
+@@ -82,49 +106,43 @@
+   end[NO_AOP]*/
+ 
+   /** Use "-Dguice.custom.loader=false" to disable custom classloading. */
+-  static final boolean HOOK_ENABLED
+-      = "true".equals(System.getProperty("guice.custom.loader", "true"));
++  private static final boolean CUSTOM_LOADER_ENABLED
++      = "true".equalsIgnoreCase(System.getProperty("guice.custom.loader", "true"));
+ 
+   /**
+    * Weak cache of bridge class loaders that make the Guice implementation
+    * classes visible to various code-generated proxies of client classes.
+    */
+-  private static final Map<ClassLoader, ClassLoader> CLASS_LOADER_CACHE
++  private static final Map<ClassSpace, ClassLoader> BRIDGE_CLASS_LOADER_CACHE
+       = new MapMaker().weakKeys().weakValues().makeComputingMap(
+-          new Function<ClassLoader, ClassLoader>() {
+-    public ClassLoader apply(final @Nullable ClassLoader typeClassLoader) {
+-      logger.fine("Creating a bridge ClassLoader for " + typeClassLoader);
++          new Function<ClassSpace, ClassLoader>() {
++    public ClassLoader apply(final ClassSpace classSpace) {
++      LOGGER.fine("Creating a bridge ClassLoader for " + classSpace);
+       return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+         public ClassLoader run() {
+-          return new BridgeClassLoader(typeClassLoader);
++          return new BridgeClassLoader(classSpace.classLoader);
+         }
+       });
+     }
+   });
+ 
+-  /**
+-   * For class loaders, {@code null}, is always an alias to the
+-   * {@link ClassLoader#getSystemClassLoader() system class loader}. This method
+-   * will not return null.
+-   */
+-  private static ClassLoader canonicalize(ClassLoader classLoader) {
+-    return classLoader != null
+-        ? classLoader
+-        : checkNotNull(getSystemClassLoaderOrNull(), "Couldn't get a ClassLoader");
+-  }
+-
+-  /**
+-   * Returns the system classloader, or {@code null} if we don't have
+-   * permission.
+-   */
+-  private static ClassLoader getSystemClassLoaderOrNull() {
++  private static ClassSpace getSystemClassSpace() {
++    ClassLoader systemClassLoader = null;
+     try {
++      systemClassLoader = AccessController.doPrivileged(
++          new PrivilegedAction<ClassLoader>() {
++        public ClassLoader run() {
+       return ClassLoader.getSystemClassLoader();
+-    } catch (SecurityException e) {
+-      return null;
+     }
++      });
++    } catch (SecurityException e) {/* ignore */}
++    return new ClassSpace(systemClassLoader);
+   }
+ 
++  private static ClassSpace getClassSpace(ClassLoader classLoader) {
++    return null == classLoader ? SYSTEM_CLASS_SPACE : new ClassSpace(classLoader);
++  }
++
+   /**
+    * Returns the class loader to host generated classes for {@code type}.
+    */
+@@ -133,10 +151,8 @@
+   }
+ 
+   private static ClassLoader getClassLoader(Class<?> type, ClassLoader delegate) {
+-    delegate = canonicalize(delegate);
+ 
+-    // if the application is running in the System classloader, assume we can run there too
+-    if (delegate == getSystemClassLoaderOrNull()) {
++    if (!CUSTOM_LOADER_ENABLED) {
+       return delegate;
+     }
+ 
+@@ -145,10 +161,17 @@
+       return delegate;
+     }
+ 
+-    if (HOOK_ENABLED && Visibility.forType(type) == Visibility.PUBLIC) {
+-      return CLASS_LOADER_CACHE.get(delegate);
++    ClassSpace classSpace = getClassSpace(delegate);
++
++    // same class space, no bridging required
++    if (GUICE_CLASS_SPACE.equals(classSpace)) {
++      return delegate;
+     }
+ 
++    if (Visibility.forType(type) == Visibility.PUBLIC) {
++      return BRIDGE_CLASS_LOADER_CACHE.get(classSpace);
++    }
++
+     return delegate;
+   }
+ 
+@@ -162,7 +185,7 @@
+       generator.setClassLoader(getClassLoader(type));
+     }
+     generator.setNamingPolicy(NAMING_POLICY);
+-    logger.fine("Loading " + type + " FastClass with " + generator.getClassLoader());
++    LOGGER.fine("Loading " + type + " FastClass with " + generator.getClassLoader());
+     return generator.create();
+   }
+ 
+@@ -174,7 +197,7 @@
+       enhancer.setClassLoader(getClassLoader(type));
+     }
+     enhancer.setNamingPolicy(NAMING_POLICY);
+-    logger.fine("Loading " + type + " Enhancer with " + enhancer.getClassLoader());
++    LOGGER.fine("Loading " + type + " Enhancer with " + enhancer.getClassLoader());
+     return enhancer;
+   }
+   /*end[AOP]*/
+@@ -193,7 +216,7 @@
+      * target class. These generated classes may be loaded by our bridge classloader.
+      */
+     PUBLIC {
+-      public Visibility and(Visibility that) {
++      @Override public Visibility and(Visibility that) {
+         return that;
+       }
+     },
+@@ -205,7 +228,7 @@
+      * garbage collected.
+      */
+     SAME_PACKAGE {
+-      public Visibility and(Visibility that) {
++      @Override public Visibility and(Visibility that) {
+         return this;
+       }
+     };
+@@ -215,8 +238,8 @@
+         return SAME_PACKAGE;
+       }
+ 
+-      Class[] parameterTypes = member instanceof Constructor
+-          ? ((Constructor) member).getParameterTypes()
++      Class<?>[] parameterTypes = member instanceof Constructor<?>
++          ? ((Constructor<?>) member).getParameterTypes()
+           : ((Method) member).getParameterTypes();
+       for (Class<?> type : parameterTypes) {
+         if (forType(type) == SAME_PACKAGE) {
+@@ -240,19 +263,27 @@
+    * Loader for Guice-generated classes. For referenced classes, this delegates to either either the
+    * user's classloader (which is the parent of this classloader) or Guice's class loader.
+    */
+-  private static class BridgeClassLoader extends ClassLoader {
++  private static final class BridgeClassLoader extends ClassLoader {
+ 
+-    public BridgeClassLoader(ClassLoader usersClassLoader) {
++    BridgeClassLoader(ClassLoader usersClassLoader) {
+       super(usersClassLoader);
+     }
+ 
+     @Override protected Class<?> loadClass(String name, boolean resolve)
+         throws ClassNotFoundException {
+ 
+-      // delegate internal requests to Guice class space
++      ClassSpace classSpace = null;
++
++      // redirect requests for Guice internal classes and reflection helpers
+       if (name.startsWith(GUICE_INTERNAL_PACKAGE) || name.startsWith(CGLIB_PACKAGE)) {
++        classSpace = GUICE_CLASS_SPACE;
++      } else if (name.startsWith("sun.reflect")) {
++        classSpace = SYSTEM_CLASS_SPACE;
++      }
++
++      if (classSpace != null) {
+         try {
+-          Class<?> clazz = GUICE_CLASS_LOADER.loadClass(name);
++          Class<?> clazz = classSpace.classLoader.loadClass(name);
+           if (resolve) {
+             resolveClass(clazz);
+           }
+Index: test/com/googlecode/guice/BytecodeGenTest.java
+===================================================================
+--- test/com/googlecode/guice/BytecodeGenTest.java	(revision 1121)
++++ test/com/googlecode/guice/BytecodeGenTest.java	(working copy)
+@@ -190,11 +190,10 @@
+       }
+     }).getInstance(ProxyTest.class);
+ 
+-    // unforunately, the expected classloader depends on which class loader loaded this test.
++    // expected outcome varies depending who loaded the proxy test
+     if (ProxyTest.class.getClassLoader() == systemClassLoader) {
+       assertSame(testProxy.getClass().getClassLoader(), systemClassLoader);
+     } else {
+-      assertNotSame(testProxy.getClass().getClassLoader(), ProxyTest.class.getClassLoader());
+       assertNotSame(testProxy.getClass().getClassLoader(), systemClassLoader);
+     }
+   }

@@ -579,19 +579,3 @@ Index: src/com/google/inject/Injector.java
 +   */
 +  List<TypeConverterBinding> getTypeConverterBindings();
  }
-Index: build.xml
-===================================================================
---- build.xml	(revision 1119)
-+++ build.xml	(working copy)
-@@ -85,9 +85,11 @@
-         <pathelement location="${build.dir}/test"/>
-         <pathelement location="${build.dir}/dist/guice-${version}.jar"/>
-         <pathelement location="lib/aopalliance.jar"/>
-+        <pathelement location="lib/javax.inject.jar"/>
-         <pathelement location="lib/build/junit.jar"/>
-         <pathelement location="lib/build/servlet-api-2.5.jar"/>
-         <pathelement location="lib/build/easymock.jar"/>
-+        <pathelement location="lib/build/javax.inject-tck.jar"/>
-       </classpath>
-       <arg value="com.google.inject.AllTests"/>    
-       <syspropertyset>
