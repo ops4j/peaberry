@@ -1,98 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>../../pom</relativePath>
+    <relativePath>../pom</relativePath>
     <groupId>org.ops4j.peaberry.build</groupId>
     <artifactId>parent</artifactId>
     <version>1.2-SNAPSHOT</version>
   </parent>
 
-  <packaging>bundle</packaging>
+  <packaging>pom</packaging>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.ops4j.peaberry.extensions</groupId>
-  <artifactId>peaberry.activation</artifactId>
+  <artifactId>peaberry.activation.build</artifactId>
 
-  <name>peaberry - Activation extension</name>
+  <name>peaberry - Activation extension build</name>
 
-  <url>http://code.google.com/p/peaberry/wiki/PeaberryActivation</url>
-
-  <description>
- Peaberry Activation removes the need to write Bundle-Activators.
-
- Users can work in a more declarative way by writing service binding
- modules and listing them under the 'Bundle-Module' header. Peaberry
- Activation detects bundles containing this header and performs the
- appropriate service registrations, requests, and activation calls.
-  </description>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <module>org.ops4j.peaberry.activation</module>
-            <Bundle-Activator>$(module).internal.Activator</Bundle-Activator>
-            <api.version>1.0</api.version>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>maven-paxexam-plugin</artifactId>
-        <version>1.2.0</version>
-        <executions>
-          <execution>
-            <id>generate-config</id>
-            <goals>
-              <goal>generate-depends-file</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.ops4j</groupId>
-      <artifactId>peaberry</artifactId>
-    </dependency>
-
-    <!-- test engine -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam-junit</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam-container-default</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.swissbox</groupId>
-      <artifactId>pax-swissbox-tinybundles</artifactId>
-      <version>1.2.0</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>main</module>
+    <module>test</module>
+  </modules>
 </project>
