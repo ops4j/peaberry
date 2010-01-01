@@ -17,17 +17,16 @@
 package org.ops4j.peaberry.activation.examples.singleton;
 
 import static com.google.inject.matcher.Matchers.*;
+import static org.ops4j.peaberry.activation.invocations.Invocations.*;
 
 import org.ops4j.peaberry.activation.Start;
 import org.ops4j.peaberry.activation.Stop;
-import org.ops4j.peaberry.activation.invocations.InvocationLogModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- * 
  */
 public class Config
     extends AbstractModule {
@@ -36,7 +35,8 @@ public class Config
   protected void configure() {
     bind(SingletonRoot.class).in(Singleton.class);
 
-    install(new InvocationLogModule(
-      subclassesOf(SingletonRoot.class), annotatedWith(Start.class).or(annotatedWith(Stop.class))));
+    install(trackerModule(
+      subclassesOf(SingletonRoot.class), 
+      annotatedWith(Start.class).or(annotatedWith(Stop.class))));
   }
 }

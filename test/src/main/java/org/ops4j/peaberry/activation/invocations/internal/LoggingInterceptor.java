@@ -19,7 +19,7 @@ package org.ops4j.peaberry.activation.invocations.internal;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.ops4j.peaberry.ServiceUnavailableException;
-import org.ops4j.peaberry.activation.invocations.InvocationLog;
+import org.ops4j.peaberry.activation.invocations.InvocationTracker;
 
 import com.google.inject.Inject;
 
@@ -30,10 +30,10 @@ import com.google.inject.Inject;
 public class LoggingInterceptor
     implements MethodInterceptor {
 
-  private InvocationLog log;
+  private InvocationTracker log;
 
   @Inject
-  public void init(final InvocationLog l) {
+  public void init(final InvocationTracker l) {
     log = l;
   }
 

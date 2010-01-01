@@ -15,7 +15,10 @@
  */
 package org.ops4j.peaberry.activation.internal;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ops4j.peaberry.activation.Constants;
@@ -23,8 +26,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.SynchronousBundleListener;
-
-import com.google.inject.Module;
 
 /**
  * The bundle lifecycle tracking core of the extender.
@@ -45,14 +46,9 @@ public class BundleTracker
   public synchronized void open() {
     for (final Bundle bundle : bc.getBundles()) {
       switch (bundle.getState()) {
-      case Bundle.RESOLVED:
-        scan(bundle);
-        break;
-
       case Bundle.ACTIVE:
-        scan(bundle);
-        
         try {
+          scan(bundle);
           activate(bundle);
         } catch (Exception e) {
           /* Log this somehow */
@@ -69,7 +65,7 @@ public class BundleTracker
     bc.removeBundleListener(this);
 
     for (final BundleActivation handler : handlers.values()) {
-      handler.deactivate();
+      handler.stop();
     }
     handlers.clear();
   }
@@ -78,50 +74,51 @@ public class BundleTracker
     final Bundle bundle = event.getBundle();
 
     switch (event.getType()) {
-    case BundleEvent.RESOLVED:
-      scan(bundle);
-      break;
-
     case BundleEvent.STARTED:
+      scan(bundle);
       activate(bundle);
       break;
 
     case BundleEvent.STOPPED:
       deactivate(bundle);
-      break;
-
-    case BundleEvent.UNRESOLVED:
       clean(bundle);
       break;
     }
   }
 
-  @SuppressWarnings("unchecked")
   private void scan(final Bundle bundle) {
-    String header = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
-    if (header == null) {
+    /* The module is mandatory */
+    String moduleHeader = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
+    if (moduleHeader == null) {
       return;
     }
-    header = header.trim();  
+    moduleHeader = moduleHeader.trim();  
+    
+    /* Configurations are optional */
+    final List<String> configList; 
+    String configHeader = (String) bundle.getHeaders().get(Constants.BUNDLE_CONFIG);
+    if (configHeader != null) {
+      configHeader = configHeader.trim();
+      configList = Arrays.asList(configHeader.split(","));
+    } else {
+      configList = Collections.emptyList();
+    }
 
-    final Class<? extends Module> moduleClass =
-        (Class<? extends Module>) Bundles.loadClass(bundle, header);
-
-    final BundleActivation handler = new BundleActivation(bundle, moduleClass);
+    final BundleActivation handler = new BundleActivation(bundle, moduleHeader, configList);
     handlers.put(bundle.getBundleId(), handler);
   }
 
   private void activate(final Bundle bundle) {
     final BundleActivation handler = handlers.get(bundle.getBundleId());
     if (handler != null) {
-      handler.activate();
+      handler.start(this);
     }
   }
 
   private void deactivate(final Bundle bundle) {
     final BundleActivation handler = handlers.get(bundle.getBundleId());
     if (handler != null) {
-      handler.deactivate();
+      handler.stop();
     }
   }
 

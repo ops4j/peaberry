@@ -22,4 +22,6 @@ public interface Constants {
    * module can install many more modules.
    */
   String BUNDLE_MODULE = "Bundle-Module";
+  
+  String BUNDLE_CONFIG = "Bundle-Config";
 }

@@ -16,20 +16,27 @@
 
 package org.ops4j.peaberry.activation.invocations.internal;
 
-import org.ops4j.peaberry.activation.invocations.InvocationLog;
+import static org.ops4j.peaberry.Peaberry.*;
+
+import org.ops4j.peaberry.Export;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+
 /**
  * @author rinsvind@gmail.com (Todor Boev)
- *
  */
 public class Activator implements BundleActivator {
+  @Inject
+  private Export<InvocationTrackerImpl> trackerExport;
+  
   public void start(final BundleContext bc) {
-    bc.registerService(InvocationLog.class.getName(), new InvocationLogImpl(), null);
+    Guice.createInjector(osgiModule(bc), new InvocationsModule()).injectMembers(this);
   }
 
   public void stop(final BundleContext bc) {
-    /* Nothing to do */
+    trackerExport.unput();
   }
 }

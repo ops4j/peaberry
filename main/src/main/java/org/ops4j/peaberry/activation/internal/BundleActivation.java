@@ -17,6 +17,9 @@ package org.ops4j.peaberry.activation.internal;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -25,6 +28,9 @@ import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.activation.PeaberryActivationException;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 
 import com.google.inject.Binding;
 import com.google.inject.Guice;
@@ -43,75 +49,82 @@ import com.google.inject.spi.BindingScopingVisitor;
  */
 public class BundleActivation {
   private static final BindingScopingVisitor<Boolean> SINGLETONS =
-      new BindingScopingVisitor<Boolean>() {
-        public Boolean visitEagerSingleton() {
-          return true;
-        }
+    new BindingScopingVisitor<Boolean>() {
+      public Boolean visitEagerSingleton() {
+        return true;
+      }
 
-        public Boolean visitScope(final Scope scope) {
-          return Scopes.SINGLETON == scope;
-        }
+      public Boolean visitScope(final Scope scope) {
+        return Scopes.SINGLETON == scope;
+      }
 
-        public Boolean visitScopeAnnotation(final Class<? extends Annotation> tag) {
-          return Singleton.class == tag;
-        }
+      public Boolean visitScopeAnnotation(final Class<? extends Annotation> tag) {
+        return Singleton.class == tag;
+      }
 
-        public Boolean visitNoScoping() {
-          return false;
-        }
-      };
-
-//  private static final BindingTargetVisitor<Object, Boolean> INSTANCES =
-//      new BindingTargetVisitor<Object, Boolean>() {
-//        public Boolean visit(InstanceBinding<?> arg) {
-//          return true;
-//        }
-//
-//        public Boolean visit(ProviderInstanceBinding<?> arg) {
-//          return false;
-//        }
-//
-//        public Boolean visit(ProviderKeyBinding<?> arg) {
-//          return false;
-//        }
-//
-//        public Boolean visit(LinkedKeyBinding<?> arg) {
-//          return false;
-//        }
-//
-//        public Boolean visit(ExposedBinding<?> arg) {
-//          return false;
-//        }
-//
-//        public Boolean visit(UntargettedBinding<?> arg) {
-//          return false;
-//        }
-//
-//        public Boolean visit(ConstructorBinding<?> arg) {
-//          return false;
-//        }
-//
-//        public Boolean visit(ConvertedConstantBinding<?> arg) {
-//          return false;
-//        }
-//
-//        public Boolean visit(ProviderBinding<?> arg) {
-//          return false;
-//        }
-//      };
+      public Boolean visitNoScoping() {
+        return false;
+      }
+    };
 
   private final Bundle bundle;
   private final Class<? extends Module> moduleClass;
+  private final List<String> configPids; 
 
+  private Map<String, Module> configModules;
   private List<BundleRoot<?>> roots;
   private Injector injector;
 
-  public BundleActivation(final Bundle bundle, final Class<? extends Module> moduleClass) {
+  @SuppressWarnings("unchecked")
+  public BundleActivation(final Bundle bundle, final String module, final List<String> configs) {
     this.bundle = bundle;
-    this.moduleClass = moduleClass;
+    this.moduleClass = (Class<? extends Module>) Bundles.loadClass(bundle, module);
+    this.configPids = configs;
+    this.configModules = new HashMap<String, Module>();
   }
 
-  public void activate() {
+  @SuppressWarnings("unchecked")
+  public void start(final Object lock) {
+    /* Start listening for configuration changes */
+    for (final String pid : configPids) {
+      final BundleContext bc = bundle.getBundleContext();
+      
+      final Dictionary props = new Hashtable();
+      props.put("service.pid", pid);
+      props.put("service.bundleLocation", bundle.getLocation());
+      
+      bc.registerService(
+        ManagedService.class.getName(), 
+        new ManagedService() {
+          public void updated(Dictionary props) throws ConfigurationException {
+            synchronized (lock) {
+              if (props == null) {
+                deactivate();
+              } else {
+                configModules.put(pid, new ConfigurationModule(pid, props));
+                
+                if (configModules.size() == configPids.size()) {
+                  deactivate();
+                  activate();
+                }
+              }
+            }
+          }
+        }, 
+        props);
+    }
+    
+    /* If there are no configurations activate now */
+    if (configPids.isEmpty()) {
+      activate();
+    }
+  }
+
+  public void stop() {
+    deactivate();
+  }
+
+  private void activate() {
     if (isActive()) {
       throw new PeaberryActivationException(Bundles.toString(bundle) + " already activated");
     }
@@ -124,7 +137,7 @@ public class BundleActivation {
     }
   }
 
-  public void deactivate() {
+  private void deactivate() {
     if (!isActive()) {
       return;
     }
@@ -156,9 +169,12 @@ public class BundleActivation {
   }
 
   private void createInjector() {
-    injector =
-        Guice.createInjector(Peaberry.osgiModule(bundle.getBundleContext()), Reflection
-            .create(moduleClass));
+    List<Module> modules = new ArrayList<Module>();
+    modules.add(Peaberry.osgiModule(bundle.getBundleContext()));
+    modules.add(Reflection.create(moduleClass));
+    modules.addAll(configModules.values());
+    
+    injector = Guice.createInjector(modules);
   }
 
   @SuppressWarnings("unchecked")
@@ -178,7 +194,7 @@ public class BundleActivation {
        */
       if (Export.class == k.getTypeLiteral().getRawType()) {
         exports.add(new ExportBundleRoot((Key<Export<?>>) k));
-      } else if (b.acceptScopingVisitor(SINGLETONS) /*|| b.acceptTargetVisitor(INSTANCES)*/) {
+      } else if (b.acceptScopingVisitor(SINGLETONS)) {
         singletons.add(new SingletonBundleRoot((Key<Object>) k));
       }
     }
