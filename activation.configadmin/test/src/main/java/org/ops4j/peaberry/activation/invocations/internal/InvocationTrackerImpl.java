@@ -44,8 +44,6 @@ public class InvocationTrackerImpl
   }
   
   public synchronized void log(final MethodInvocation inv) {
-    System.out.println("invocation: " + toString(inv));
-    
     cache.add(inv);
     
     for (InvocationListener l : listeners) {
@@ -73,31 +71,5 @@ public class InvocationTrackerImpl
 
   public synchronized void reset() {
     cache.clear();
-  }
-  
-  private static String toString(MethodInvocation inv) {
-    StringBuilder buf = new StringBuilder();
-    
-    String simpleName = inv.getThis().getClass().getSimpleName();
-    
-    buf.append(simpleName.substring(0, simpleName.indexOf("$")));
-    buf.append("#");
-    buf.append(inv.getMethod().getName());
-    
-    buf.append("(");
-    
-    Class<?>[] argTypes = inv.getMethod().getParameterTypes();
-    Object[] argVals = inv.getArguments();
-    for (int i = 0; i < argVals.length; i++) {
-      buf.append(argVals[i]).append(": ").append(argTypes[i].getSimpleName());
-      
-      if (i < argVals.length - 1) {
-        buf.append(", ");
-      }
-    }
-    
-    buf.append(")");
-    
-    return buf.toString();
   }
 }

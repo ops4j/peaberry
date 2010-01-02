@@ -39,6 +39,9 @@ public class LoggingInterceptor
 
   public Object invoke(final MethodInvocation inv)
       throws Throwable {
+    
+    log(inv);
+    
     /*
      * Log service is optional. It is definitely a bad practice to silently
      * introduce a required service to the classes we enhance with this logging
@@ -47,20 +50,24 @@ public class LoggingInterceptor
     try {
       log.log(inv);
     } catch (ServiceUnavailableException sue) {
-      log(inv);
+      error(inv);
     }
 
     return inv.proceed();
   }
 
   private void log(final MethodInvocation inv) {
-    System.out.println(format(inv));
+    System.out.println(format("Logged", inv));
   }
 
-  private static String format(final MethodInvocation inv) {
+  private void error(final MethodInvocation inv) {
+    System.out.println(format("*** Dropped ***", inv));
+  }
+  
+  private static String format(final String tag, final MethodInvocation inv) {
     final StringBuilder res = new StringBuilder();
 
-    res.append("[Invocation Log] ");
+    res.append("[Invocation " + tag + "] ");
     res.append(inv.getThis().getClass().getName().split("\\$\\$")[0]);
     res.append("#");
     res.append(inv.getMethod().getName());
@@ -69,7 +76,7 @@ public class LoggingInterceptor
     final Object[] args = inv.getArguments();
     for (int i = 0; i < args.length; i++) {
       res.append(args[i]);
-      if (i < args.length) {
+      if (i < args.length - 1) {
         res.append(", ");
       }
     }
