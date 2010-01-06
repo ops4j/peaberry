@@ -84,7 +84,7 @@ public class BundleActivation {
   }
 
   @SuppressWarnings("unchecked")
-  public void start(final Object lock) {
+  public synchronized void start() {
     /* Start listening for configuration changes */
     for (final String pid : configPids) {
       final BundleContext bc = bundle.getBundleContext();
@@ -97,12 +97,14 @@ public class BundleActivation {
         ManagedService.class.getName(), 
         new ManagedService() {
           public void updated(Dictionary props) throws ConfigurationException {
-            synchronized (lock) {
+            synchronized (BundleActivation.this) {
+              /* Configuration deleted or this is the initial empty config */
               if (props == null) {
                 deactivate();
               } else {
                 configModules.put(pid, new ConfigurationModule(pid, props));
                 
+                /* Restart if we have collected all configurations */
                 if (configModules.size() == configPids.size()) {
                   deactivate();
                   activate();
@@ -120,7 +122,7 @@ public class BundleActivation {
     }
   }
 
-  public void stop() {
+  public synchronized void stop() {
     deactivate();
   }
 

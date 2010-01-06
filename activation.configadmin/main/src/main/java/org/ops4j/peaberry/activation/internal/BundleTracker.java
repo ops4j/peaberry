@@ -40,7 +40,7 @@ public class BundleTracker
 
   public BundleTracker(final BundleContext bc) {
     this.bc = bc;
-    handlers = new HashMap<Long, BundleActivation>();
+    this.handlers = new HashMap<Long, BundleActivation>();
   }
 
   public synchronized void open() {
@@ -48,8 +48,7 @@ public class BundleTracker
       switch (bundle.getState()) {
       case Bundle.ACTIVE:
         try {
-          scan(bundle);
-          activate(bundle);
+          start(bundle);
         } catch (Exception e) {
           /* Log this somehow */
           e.printStackTrace();
@@ -75,18 +74,18 @@ public class BundleTracker
 
     switch (event.getType()) {
     case BundleEvent.STARTED:
-      scan(bundle);
-      activate(bundle);
+      start(bundle);
       break;
 
     case BundleEvent.STOPPED:
-      deactivate(bundle);
-      clean(bundle);
+      if (stop(bundle)) {
+        clean(bundle);
+      }
       break;
     }
   }
 
-  private void scan(final Bundle bundle) {
+  private void start(final Bundle bundle) {
     /* The module is mandatory */
     String moduleHeader = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
     if (moduleHeader == null) {
@@ -95,31 +94,28 @@ public class BundleTracker
     moduleHeader = moduleHeader.trim();  
     
     /* Configurations are optional */
-    final List<String> configList; 
-    String configHeader = (String) bundle.getHeaders().get(Constants.BUNDLE_CONFIG);
+    final String configHeader = (String) bundle.getHeaders().get(Constants.BUNDLE_CONFIG);
+    final List<String> configList;
     if (configHeader != null) {
-      configHeader = configHeader.trim();
-      configList = Arrays.asList(configHeader.split(","));
+      configList = Arrays.asList(configHeader.trim().split(","));
     } else {
       configList = Collections.emptyList();
     }
 
     final BundleActivation handler = new BundleActivation(bundle, moduleHeader, configList);
     handlers.put(bundle.getBundleId(), handler);
+    
+    handler.start();
   }
 
-  private void activate(final Bundle bundle) {
+  private boolean stop(final Bundle bundle) {
     final BundleActivation handler = handlers.get(bundle.getBundleId());
-    if (handler != null) {
-      handler.start(this);
+    if (handler == null) {
+      return false;
     }
-  }
-
-  private void deactivate(final Bundle bundle) {
-    final BundleActivation handler = handlers.get(bundle.getBundleId());
-    if (handler != null) {
-      handler.stop();
-    }
+    
+    handler.stop();
+    return true;
   }
 
   private void clean(final Bundle bundle) {
