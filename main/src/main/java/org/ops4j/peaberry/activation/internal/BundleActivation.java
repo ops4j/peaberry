@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Peaberry;
-import org.ops4j.peaberry.activation.PeaberryActivationException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
@@ -37,10 +36,14 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.spi.BindingScopingVisitor;
+import com.google.inject.spi.BindingTargetVisitor;
+import com.google.inject.spi.DefaultBindingTargetVisitor;
+import com.google.inject.spi.ProviderInstanceBinding;
 
 /**
  * Handles the activation of a single bundle.
@@ -63,61 +66,92 @@ public class BundleActivation {
       }
 
       public Boolean visitNoScoping() {
-        return false;
+        return Boolean.FALSE;
       }
     };
 
-  private final Bundle bundle;
-  private final Class<? extends Module> moduleClass;
-  private final List<String> configPids; 
-
-  private Map<String, Module> configModules;
-  private List<BundleRoot<?>> roots;
-  private Injector injector;
-
-  @SuppressWarnings("unchecked")
-  public BundleActivation(final Bundle bundle, final String module, final List<String> configs) {
-    this.bundle = bundle;
-    this.moduleClass = (Class<? extends Module>) Bundles.loadClass(bundle, module);
-    this.configPids = configs;
-    this.configModules = new HashMap<String, Module>();
-  }
-
-  @SuppressWarnings("unchecked")
-  public synchronized void start() {
-    /* Start listening for configuration changes */
-    for (final String pid : configPids) {
-      final BundleContext bc = bundle.getBundleContext();
-      
-      final Dictionary props = new Hashtable();
-      props.put("service.pid", pid);
-      props.put("service.bundleLocation", bundle.getLocation());
-      
-      bc.registerService(
-        ManagedService.class.getName(), 
-        new ManagedService() {
-          public void updated(Dictionary props) throws ConfigurationException {
-            synchronized (BundleActivation.this) {
-              /* Configuration deleted or this is the initial empty config */
-              if (props == null) {
-                deactivate();
-              } else {
-                configModules.put(pid, new ConfigurationModule(pid, props));
-                
-                /* Restart if we have collected all configurations */
-                if (configModules.size() == configPids.size()) {
-                  deactivate();
-                  activate();
-                }
-              }
-            }
+  private static final BindingTargetVisitor<Object, ConfigProvider<?>> CONFIGS = 
+    new DefaultBindingTargetVisitor<Object, ConfigProvider<?>>() {
+      @Override
+      public ConfigProvider<?> visit(ProviderInstanceBinding<?> bind) {
+        Provider<?> prov = bind.getProviderInstance();
+        return (prov instanceof ConfigProvider<?>) ? (ConfigProvider<?>) prov : null;
+      }
+    };
+    
+  private class ConfigTracker implements ManagedService {
+    private final Map<String, ConfigProvider<?>> providers = new HashMap<String, ConfigProvider<?>>();
+    
+    @SuppressWarnings("unchecked")
+    public void updated(final Dictionary props) throws ConfigurationException {
+      synchronized (BundleActivation.this) {
+        if (props == null) {
+          for (ConfigProvider<?> prov : providers.values()) {
+            prov.set(null);
           }
-        }, 
-        props);
+        } else {
+          for (Map.Entry<String, ConfigProvider<?>> entry : providers.entrySet()) {
+            final String key = entry.getKey();
+            final ConfigProvider<?> prov = entry.getValue();
+            final Object val = props.get(key);
+            
+            prov.set(val);
+          }
+        }
+        
+        if (BundleActivation.this.canActivate()) {
+          deactivate();
+          activate();
+        }
+      }
     }
     
-    /* If there are no configurations activate now */
-    if (configPids.isEmpty()) {
+    public void add(ConfigProvider<?> prov) {
+      providers.put(prov.key(), prov);
+    }
+
+    public boolean canActivate() {
+      for (ConfigProvider<?> prov : providers.values()) {
+        if (!prov.canActivate()) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+  
+  private final Bundle bundle;
+  private final Class<? extends Module> moduleClass;
+
+  private Injector injector;
+  private List<BundleRoot<?>> roots;
+  private Map<String, ConfigTracker> configs;
+  private boolean active;
+
+  @SuppressWarnings("unchecked")
+  public BundleActivation(final Bundle bundle, final String module) {
+    this.bundle = bundle;
+    this.moduleClass = (Class<? extends Module>) Bundles.loadClass(bundle, module);
+  }
+
+  public synchronized void start() {
+    /* Create the Injector and introspect the configuration bindings */
+    createInjector();
+    createConfigs();
+    
+    /* Listen for configuration updates */
+    for (final Map.Entry<String, ConfigTracker> e : configs.entrySet()) {
+      final BundleContext bc = bundle.getBundleContext();
+      
+      final Dictionary<String, Object> props = new Hashtable<String, Object>();
+      props.put("service.pid", e.getKey());
+      props.put("service.bundleLocation", bundle.getLocation());
+      
+      bc.registerService(ManagedService.class.getName(), e.getValue(), props);
+    }
+    
+    /* If we can activate now */
+    if (canActivate()) {
       activate();
     }
   }
@@ -128,12 +162,12 @@ public class BundleActivation {
 
   private void activate() {
     if (isActive()) {
-      throw new PeaberryActivationException(Bundles.toString(bundle) + " already activated");
+      throw new IllegalStateException(this + " already active");
     }
-
-    createInjector();
+    active = true;
+    
     createRoots();
-
+    
     for (final BundleRoot<?> root : roots) {
       root.activate(injector);
     }
@@ -143,7 +177,8 @@ public class BundleActivation {
     if (!isActive()) {
       return;
     }
-
+    active = false;
+    
     /*
      * Deactivate in reverse order. This should bring down the services before
      * we stop the active roots.
@@ -162,33 +197,37 @@ public class BundleActivation {
       }
     }
 
-    injector = null;
     roots = null;
   }
 
   private boolean isActive() {
-    return injector != null;
+    return active;
+  }
+  
+  private boolean canActivate() {
+    for (ConfigTracker trk : configs.values()) {
+      if (!trk.canActivate()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private void createInjector() {
-    List<Module> modules = new ArrayList<Module>();
-    modules.add(Peaberry.osgiModule(bundle.getBundleContext()));
-    modules.add(Reflection.create(moduleClass));
-    modules.addAll(configModules.values());
-    
-    injector = Guice.createInjector(modules);
+    injector = Guice.createInjector(
+        Peaberry.osgiModule(bundle.getBundleContext()), Reflection.create(moduleClass));
   }
 
   @SuppressWarnings("unchecked")
   private void createRoots() {
-    final List<BundleRoot<?>> singletons = new ArrayList<BundleRoot<?>>();
     final List<BundleRoot<?>> exports = new ArrayList<BundleRoot<?>>();
+    final List<BundleRoot<?>> singletons = new ArrayList<BundleRoot<?>>();
 
     /* Scan for singletons first */
     for (final Map.Entry<Key<?>, Binding<?>> e : injector.getBindings().entrySet()) {
       final Key<?> k = e.getKey();
       final Binding<?> b = e.getValue();
-
+      
       /*
        * Exports are captured before singletons. In this way exports that have
        * been redundantly marked as singleton are treated correctly rather than
@@ -207,5 +246,24 @@ public class BundleActivation {
      */
     singletons.addAll(exports);
     roots = singletons;
+  }
+  
+  private void createConfigs() {
+    configs = new HashMap<String, ConfigTracker>();
+    
+    for (final Map.Entry<Key<?>, Binding<?>> e : injector.getBindings().entrySet()) {
+      final Binding<?> b = e.getValue();
+      
+      final ConfigProvider<?> prov = b.acceptTargetVisitor(CONFIGS);
+      if (prov != null) {
+        ConfigTracker tracker = configs.get(prov.pid());
+        if (tracker == null) {
+          tracker = new ConfigTracker();
+          configs.put(prov.pid(), tracker);
+        }
+        
+        tracker.add(prov);
+      }
+    }
   }
 }
