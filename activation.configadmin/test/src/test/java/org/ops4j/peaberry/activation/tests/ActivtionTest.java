@@ -84,9 +84,7 @@ public class ActivtionTest extends InvocationTracking {
        .set(BUNDLE_SYMBOLICNAME, CONFIG_MODULE)
        .set(EXPORT_PACKAGE, CONFIG_MODULE)
        .set(BUNDLE_MODULE, org.ops4j.peaberry.activation.examples.config.Config.class.getName())
-       .set(BUNDLE_CONFIG, "test.pid")
        .add(org.ops4j.peaberry.activation.examples.config.Config.class)
-       .add(org.ops4j.peaberry.activation.examples.config.ConfigRoot.class)
        .add(org.ops4j.peaberry.activation.examples.config.ConfigRoot.class)
        .build(withBnd())
        .noStart());
@@ -170,9 +168,9 @@ public class ActivtionTest extends InvocationTracking {
     /* Make a test configuration */
     @SuppressWarnings("unchecked")
     final Dictionary<String, Object> props = new Hashtable(); 
-    props.put("a", 1);
-    props.put("b", 2);
-    props.put("c", 3);
+    props.put(ConfigRoot.CONF_A, 1);
+    props.put(ConfigRoot.CONF_B, 2);
+    props.put(ConfigRoot.CONF_C, 3);
     
     final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
     cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
@@ -208,9 +206,9 @@ public class ActivtionTest extends InvocationTracking {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
-        props.put("a", 1);
-        props.put("b", 2);
-        props.put("c", 3);
+        props.put(ConfigRoot.CONF_A, 1);
+        props.put(ConfigRoot.CONF_B, 2);
+        props.put(ConfigRoot.CONF_C, 3);
         
         final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
         cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
@@ -237,9 +235,9 @@ public class ActivtionTest extends InvocationTracking {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
-        props.put("a", 1);
-        props.put("b", 2);
-        props.put("c", 3);
+        props.put(ConfigRoot.CONF_A, 1);
+        props.put(ConfigRoot.CONF_B, 2);
+        props.put(ConfigRoot.CONF_C, 3);
         
         final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
         cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
@@ -259,9 +257,9 @@ public class ActivtionTest extends InvocationTracking {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
-        props.put("a", 4);
-        props.put("b", 5);
-        props.put("c", 6);
+        props.put(ConfigRoot.CONF_A, 4);
+        props.put(ConfigRoot.CONF_B, 5);
+        props.put(ConfigRoot.CONF_C, 6);
         
         final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
         cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);

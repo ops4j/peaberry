@@ -15,10 +15,7 @@
  */
 package org.ops4j.peaberry.activation.internal;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.ops4j.peaberry.activation.Constants;
@@ -86,23 +83,13 @@ public class BundleTracker
   }
 
   private void start(final Bundle bundle) {
-    /* The module is mandatory */
-    String moduleHeader = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
-    if (moduleHeader == null) {
+    String module = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
+    if (module == null) {
       return;
     }
-    moduleHeader = moduleHeader.trim();  
+    module = module.trim();  
     
-    /* Configurations are optional */
-    final String configHeader = (String) bundle.getHeaders().get(Constants.BUNDLE_CONFIG);
-    final List<String> configList;
-    if (configHeader != null) {
-      configList = Arrays.asList(configHeader.trim().split(","));
-    } else {
-      configList = Collections.emptyList();
-    }
-
-    final BundleActivation handler = new BundleActivation(bundle, moduleHeader, configList);
+    final BundleActivation handler = new BundleActivation(bundle, module);
     handlers.put(bundle.getBundleId(), handler);
     
     handler.start();

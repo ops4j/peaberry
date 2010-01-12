@@ -8,9 +8,9 @@ import com.google.inject.name.Named;
 
 public class ConfigRoot {
   public static final String CONF_PID = "test.pid";
-  public static final String CONF_A = "test.pid" + ".a";
-  public static final String CONF_B = "test.pid" + ".b";
-  public static final String CONF_C = "test.pid" + ".c";
+  public static final String CONF_A = "a";
+  public static final String CONF_B = "b";
+  public static final String CONF_C = "c";
   
   @Inject
   public void setA(@Named(CONF_A) int a) {
