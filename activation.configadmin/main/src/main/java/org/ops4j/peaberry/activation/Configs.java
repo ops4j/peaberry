@@ -9,21 +9,15 @@ public class Configs {
     /* static utility */
   }
   
-  public interface ConfigurationPidBuilder<T> { 
-    ConfigutrationKeyBuilder<T> from(String pid);
+  public interface ConfigPidBuilder<T> { 
+    ConfigKeyBuilder<T> from(String pid);
   }
   
-  public interface ConfigutrationKeyBuilder<T> { 
-    ConfigutraionDefaultValueBuilder<T> named(String key);
+  public interface ConfigKeyBuilder<T> { 
+    Provider<T> named(String key);
   }
   
-  public interface ConfigutraionDefaultValueBuilder<T> { 
-    Provider<T> required();
-    
-    Provider<T> optional(T val);
-  }
-  
-  public static <T> ConfigurationPidBuilder<T> configurable(Class<T> type) {
+  public static <T> ConfigPidBuilder<T> configurable(Class<T> type) {
     return new ConfigProviderBuilder<T>(type);
   }
 }
