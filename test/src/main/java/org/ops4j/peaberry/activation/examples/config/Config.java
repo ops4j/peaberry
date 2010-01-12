@@ -21,13 +21,13 @@ public class Config
     bind(ConfigRoot.class).in(Singleton.class);
     
     bind(Integer.class).annotatedWith(named(CONF_A)).toProvider(
-        configurable(Integer.class).from(CONF_PID).named(CONF_A).required());
+        configurable(Integer.class).from(CONF_PID).named(CONF_A));
     
     bind(Integer.class).annotatedWith(named(CONF_B)).toProvider(
-        configurable(Integer.class).from(CONF_PID).named(CONF_B).required());
+        configurable(Integer.class).from(CONF_PID).named(CONF_B));
     
     bind(Integer.class).annotatedWith(named(CONF_C)).toProvider(
-        configurable(Integer.class).from(CONF_PID).named(CONF_C).required());
+        configurable(Integer.class).from(CONF_PID).named(CONF_C));
     
     install(trackerModule(
         subclassesOf(ConfigRoot.class), 

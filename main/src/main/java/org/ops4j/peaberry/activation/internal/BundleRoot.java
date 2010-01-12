@@ -23,7 +23,9 @@ import com.google.inject.Injector;
  * 
  * @param <T>
  */
-public interface BundleRoot<T> {
+public interface BundleRoot {
+  boolean canActivate();
+  
   void activate(Injector injector);
 
   void deactivate();

@@ -8,33 +8,12 @@ public class ConfigProvider<T> implements Provider<T> {
   private final Class<T> type;
   private final String pid;
   private final String key;
-  private final T defval;
   private T val;
 
-  public ConfigProvider(Class<T> type, String pid, String key, T defval) {
+  public ConfigProvider(Class<T> type, String pid, String key) {
     this.type = type;
     this.pid = pid;
-    this.defval = defval;
     this.key = key;
-  }
-
-  public T get() {
-    if (val != null) {
-      return val;
-    }
-    
-    if (defval != null) {
-      return defval;
-    }
-    
-    throw new PeaberryActivationException("Configuration " + pid + ", key " + key + " is not set");
-  }
-
-  /*
-   * FIX More validation? Automatic conversions? Can I re-use the Guice conversions?
-   */
-  public void set(Object val) {
-    this.val = (val != null) ? type.cast(val) : null;
   }
 
   public String pid() {
@@ -45,7 +24,19 @@ public class ConfigProvider<T> implements Provider<T> {
     return key;
   }
   
-  public boolean canActivate() {
-    return val != null || defval != null;
+  public T get() {
+    if (val == null) {
+      throw new PeaberryActivationException("Configuration " + pid + ", key " + key + " is not set");
+    }
+    return val;
+  }
+
+  /*
+   * FIX More validation? Automatic conversions? Can I re-use the Guice conversions?
+   */
+  public void set(Object val) {
+    if (val != null) {
+      this.val = type.cast(val);
+    }
   }
 }

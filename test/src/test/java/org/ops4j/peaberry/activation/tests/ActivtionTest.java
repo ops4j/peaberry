@@ -15,7 +15,6 @@
  */
 package org.ops4j.peaberry.activation.tests;
 
-//import static com.google.inject.matcher.Matchers.*;
 import static junit.framework.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.swissbox.tinybundles.core.TinyBundles.*;
@@ -176,7 +175,7 @@ public class ActivtionTest extends InvocationTracking {
     cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
     
     /* Consume it and wait for the startup to happen */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 10000, new Callable<Void>() {
+    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
       public Void call() throws Exception {
         activation.start();
         configRoot.start();
@@ -202,7 +201,7 @@ public class ActivtionTest extends InvocationTracking {
     assertNotInvoked(trackedClass(ConfigRoot.class), method("start"));
     
     /* Create the configuration and wait for the startup to happen */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 10000, new Callable<Void>() {
+    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
@@ -231,7 +230,7 @@ public class ActivtionTest extends InvocationTracking {
     configRoot.start();
     
     /* Create the configuration and wait for the startup to happen */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 10000, new Callable<Void>() {
+    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
@@ -253,7 +252,7 @@ public class ActivtionTest extends InvocationTracking {
     resetInvocations();
     
     /* Change the configuration and wait for a restart */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 10000, new Callable<Void>() {
+    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
