@@ -225,21 +225,21 @@ public class ActivtionTest extends InvocationTracking {
   public void testConfigurationChange() 
     throws Exception {
     
-    /* Start the configuration consumer */
-    activation.start();
-    configRoot.start();
-    
     /* Create the configuration and wait for the startup to happen */
+    @SuppressWarnings("unchecked")
+    final Dictionary<String, Object> props = new Hashtable(); 
+    props.put(ConfigRoot.CONF_A, 1);
+    props.put(ConfigRoot.CONF_B, 2);
+    props.put(ConfigRoot.CONF_C, 3);
+    
+    final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
+    cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
+    
+    /* Start the configuration consumer */
     waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
       public Void call() throws Exception {
-        @SuppressWarnings("unchecked")
-        final Dictionary<String, Object> props = new Hashtable(); 
-        props.put(ConfigRoot.CONF_A, 1);
-        props.put(ConfigRoot.CONF_B, 2);
-        props.put(ConfigRoot.CONF_C, 3);
-        
-        final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-        cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
+        activation.start();
+        configRoot.start();
         return null;
       }
     });
