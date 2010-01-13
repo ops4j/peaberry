@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 Todor Boev
+ * Copyright (C) 2010 Todor Boev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.peaberry.activation.examples.export;
+package org.ops4j.peaberry.activation;
 
-import org.ops4j.peaberry.activation.util.PeaberryActivationModule;
+
+import org.ops4j.peaberry.activation.builders.ConfigurablePidBuilder;
+import org.ops4j.peaberry.activation.internal.ConfigProviderBuilder;
 
 /**
+ * A starting point for the fluent API used for config item providers.
+ * 
  * @author rinsvind@gmail.com (Todor Boev)
  */
-public class Config
-    extends PeaberryActivationModule {
-
-  @Override
-  protected void configure() {
-    bindService(HelloImpl.class).export();
+public class Configurables {
+  private Configurables() {
+    /* static utility */
+  }
+  
+  public static <T> ConfigurablePidBuilder<T> configurable(Class<T> type) {
+    return new ConfigProviderBuilder<T>(type);
   }
 }

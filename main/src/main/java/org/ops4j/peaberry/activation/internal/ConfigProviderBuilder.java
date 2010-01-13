@@ -1,15 +1,15 @@
 package org.ops4j.peaberry.activation.internal;
 
-import org.ops4j.peaberry.activation.Configs.ConfigKeyBuilder;
-import org.ops4j.peaberry.activation.Configs.ConfigPidBuilder;
+import org.ops4j.peaberry.activation.builders.ConfigurableKeyBuilder;
+import org.ops4j.peaberry.activation.builders.ConfigurablePidBuilder;
 
 import com.google.inject.Provider;
 
 /*
  * FIX Use a Guice TypeLiteral<T> instead of Class<T>?
  */
-public class ConfigProviderBuilder<T> implements ConfigPidBuilder<T>,
-    ConfigKeyBuilder<T> {
+public class ConfigProviderBuilder<T> implements ConfigurablePidBuilder<T>,
+    ConfigurableKeyBuilder<T> {
   
   private Class<T> type;
   private String pid;
@@ -18,7 +18,7 @@ public class ConfigProviderBuilder<T> implements ConfigPidBuilder<T>,
     this.type = type;
   }
   
-  public ConfigKeyBuilder<T> from(String pid) {
+  public ConfigurableKeyBuilder<T> from(String pid) {
     this.pid = pid;
     return this;
   }
