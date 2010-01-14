@@ -4,13 +4,13 @@ import org.ops4j.peaberry.activation.PeaberryActivationException;
 
 import com.google.inject.Provider;
 
-public class ConfigProvider<T> implements Provider<T> {
+public class ConfigurableProvider<T> implements Provider<T> {
   private final Class<T> type;
   private final String pid;
   private final String key;
   private T val;
 
-  public ConfigProvider(Class<T> type, String pid, String key) {
+  public ConfigurableProvider(Class<T> type, String pid, String key) {
     this.type = type;
     this.pid = pid;
     this.key = key;
