@@ -17,7 +17,7 @@ package org.ops4j.peaberry.activation;
 
 
 import org.ops4j.peaberry.activation.builders.ConfigurablePidBuilder;
-import org.ops4j.peaberry.activation.internal.ConfigProviderBuilder;
+import org.ops4j.peaberry.activation.internal.ConfigurableProviderBuilder;
 
 /**
  * A starting point for the fluent API used for config item providers.
@@ -30,6 +30,6 @@ public class Configurables {
   }
   
   public static <T> ConfigurablePidBuilder<T> configurable(Class<T> type) {
-    return new ConfigProviderBuilder<T>(type);
+    return new ConfigurableProviderBuilder<T>(type);
   }
 }

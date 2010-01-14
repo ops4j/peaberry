@@ -8,13 +8,13 @@ import com.google.inject.Provider;
 /*
  * FIX Use a Guice TypeLiteral<T> instead of Class<T>?
  */
-public class ConfigProviderBuilder<T> implements ConfigurablePidBuilder<T>,
+public class ConfigurableProviderBuilder<T> implements ConfigurablePidBuilder<T>,
     ConfigurableKeyBuilder<T> {
   
   private Class<T> type;
   private String pid;
 
-  public ConfigProviderBuilder(Class<T> type) {
+  public ConfigurableProviderBuilder(Class<T> type) {
     this.type = type;
   }
   
@@ -24,6 +24,6 @@ public class ConfigProviderBuilder<T> implements ConfigurablePidBuilder<T>,
   }
 
   public Provider<T> named(String key) {
-    return new ConfigProvider<T>(type, pid, key);
+    return new ConfigurableProvider<T>(type, pid, key);
   }
 }

@@ -9,14 +9,14 @@ import com.google.inject.Key;
 import com.google.inject.spi.DefaultBindingTargetVisitor;
 import com.google.inject.spi.ProviderInstanceBinding;
 
-public class ConfigBundleRoot implements BundleRoot {
+public class ConfigurationBundleRoot implements BundleRoot {
   /** List of keys for which we must extract ConfigProvider and populate it */
   private final List<Key<?>> keys;
   /** Moves a config item from the Dictionary to a Guice provider */
   private final DefaultBindingTargetVisitor<Object, Object> mover = 
     new DefaultBindingTargetVisitor<Object, Object> () {
       public Object visit(ProviderInstanceBinding<?> target) {
-        ConfigProvider<?> prov = (ConfigProvider<?>) target.getProviderInstance();
+        ConfigurableProvider<?> prov = (ConfigurableProvider<?>) target.getProviderInstance();
         prov.set(config.get(prov.key()));
         return null;
       }
@@ -24,15 +24,15 @@ public class ConfigBundleRoot implements BundleRoot {
   /** The last config we have obtained */
   private Dictionary<String, Object> config;
   
-  public ConfigBundleRoot() {
+  public ConfigurationBundleRoot() {
     this.keys = new ArrayList<Key<?>>();
   }
   
-  public void add(Key<?> key) {
+  public void add(final Key<?> key) {
     keys.add(key);
   }
   
-  public void set(Dictionary<String, Object> config) {
+  public void set(final Dictionary<String, Object> config) {
     this.config = config;
   }
   
@@ -47,6 +47,5 @@ public class ConfigBundleRoot implements BundleRoot {
   }
 
   public void deactivate() {
-    //config = null;
   }
 }

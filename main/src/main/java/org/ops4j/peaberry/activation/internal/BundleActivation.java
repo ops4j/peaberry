@@ -68,12 +68,12 @@ public class BundleActivation {
       }
     };
 
-  private static final BindingTargetVisitor<Object, ConfigProvider<?>> CONFIGS = 
-    new DefaultBindingTargetVisitor<Object, ConfigProvider<?>>() {
+  private static final BindingTargetVisitor<Object, ConfigurableProvider<?>> CONFIGS = 
+    new DefaultBindingTargetVisitor<Object, ConfigurableProvider<?>>() {
       @Override
-      public ConfigProvider<?> visit(ProviderInstanceBinding<?> bind) {
+      public ConfigurableProvider<?> visit(ProviderInstanceBinding<?> bind) {
         Provider<?> prov = bind.getProviderInstance();
-        return (prov instanceof ConfigProvider<?>) ? (ConfigProvider<?>) prov : null;
+        return (prov instanceof ConfigurableProvider<?>) ? (ConfigurableProvider<?>) prov : null;
       }
     };
     
@@ -157,7 +157,7 @@ public class BundleActivation {
   private void createRoots() {
     final List<BundleRoot> exports = new ArrayList<BundleRoot>();
     final List<BundleRoot> singletons = new ArrayList<BundleRoot>();
-    final Map<String, ConfigBundleRoot> configs = new HashMap<String, ConfigBundleRoot>();
+    final Map<String, ConfigurationBundleRoot> configs = new HashMap<String, ConfigurationBundleRoot>();
     
     /* A temporary Injector used to introspect the configuration */
     final Injector injector = createInjector();
@@ -178,17 +178,17 @@ public class BundleActivation {
       } 
       /* Config or singleton */
       else {
-        final ConfigProvider<?> prov = bind.acceptTargetVisitor(CONFIGS);
+        final ConfigurableProvider<?> prov = bind.acceptTargetVisitor(CONFIGS);
         
         /* A config */
         if (prov != null) {
           final String pid = prov.pid();
           
           /* Create and register a new config root or just update an existing one */
-          ConfigBundleRoot config = configs.get(pid);
+          ConfigurationBundleRoot config = configs.get(pid);
           
           if (config == null) {
-            config = new ConfigBundleRoot();
+            config = new ConfigurationBundleRoot();
             configs.put(prov.pid(), config);
             
             /* Expose a ManagedService to track this config */
@@ -196,7 +196,7 @@ public class BundleActivation {
             props.put("service.pid", pid);
             props.put("service.bundleLocation", bundle.getLocation());
             
-            final ConfigBundleRoot updated = config;
+            final ConfigurationBundleRoot updated = config;
             
             bundle.getBundleContext().registerService(
               ManagedService.class.getName(), 

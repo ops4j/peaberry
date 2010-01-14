@@ -39,22 +39,22 @@ public class ConfigurableBinder<T> implements ConfigurablePidBuilder<T>, Configu
   private ConfigurablePidBuilder<T> pidBuilder;
   private ConfigurableKeyBuilder<T> keyBuilder;
   
-  public static <T> ConfigurablePidBuilder<T> configurable(Binder binder, Class<T> type) {
+  public static <T> ConfigurablePidBuilder<T> configurable(final Binder binder, final Class<T> type) {
     return new ConfigurableBinder<T>(binder, type);
   }
   
-  private ConfigurableBinder(Binder binder, Class<T> target) {
+  private ConfigurableBinder(final Binder binder, final Class<T> target) {
     this.binder = binder;
     this.target = target;
     this.pidBuilder = Configurables.configurable(target);
   }
   
-  public ConfigurableKeyBuilder<T> from(String pid) {
+  public ConfigurableKeyBuilder<T> from(final String pid) {
     keyBuilder = pidBuilder.from(pid);
     return this;
   }
 
-  public Provider<T> named(String key) {
+  public Provider<T> named(final String key) {
     final Provider<T> prov = keyBuilder.named(key);
     binder.bind(target).annotatedWith(Names.named(key)).toProvider(prov);
     
