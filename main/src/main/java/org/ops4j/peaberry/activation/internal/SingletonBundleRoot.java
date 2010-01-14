@@ -15,14 +15,10 @@
  */
 package org.ops4j.peaberry.activation.internal;
 
-import static org.ops4j.peaberry.activation.internal.Reflection.findMethods;
-import static org.ops4j.peaberry.activation.internal.Reflection.invoke;
+import static org.ops4j.peaberry.activation.internal.Reflection.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
-
-import org.ops4j.peaberry.activation.Start;
-import org.ops4j.peaberry.activation.Stop;
 
 import com.google.inject.Key;
 
@@ -32,12 +28,13 @@ public class SingletonBundleRoot
   private final List<Method> start;
   private final List<Method> stop;
 
-  public SingletonBundleRoot(final Key<Object> key) {
+  public SingletonBundleRoot(final Key<Object> key, final List<Method> start,
+      final List<Method> stop) {
+    
     super(key);
 
-    final Class<?> type = key.getTypeLiteral().getRawType();
-    start = findMethods(type, Start.class);
-    stop = findMethods(type, Stop.class);
+    this.start = start;
+    this.stop = stop;
   }
 
   @Override
