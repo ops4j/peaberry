@@ -15,7 +15,10 @@
  */
 package org.ops4j.peaberry.activation.internal;
 
+import static org.ops4j.peaberry.activation.internal.Reflection.*;
+
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -26,6 +29,8 @@ import java.util.Map;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Peaberry;
+import org.ops4j.peaberry.activation.Start;
+import org.ops4j.peaberry.activation.Stop;
 import org.osgi.framework.Bundle;
 import org.osgi.service.cm.ManagedService;
 
@@ -223,7 +228,13 @@ public class BundleActivation {
         }
         /* A singleton */
         else if (bind.acceptScopingVisitor(SINGLETONS)) {
-          singletons.add(new SingletonBundleRoot((Key<Object>) key));
+          final Class<?> type = key.getTypeLiteral().getRawType();
+          List<Method> start = findMethods(type, Start.class);
+          List<Method> stop = findMethods(type, Stop.class);
+          
+          if (start.size() + stop.size() > 0) {
+            singletons.add(new SingletonBundleRoot((Key<Object>) key, start, stop));
+          }
         }
       }
     }
