@@ -19,7 +19,7 @@ import static junit.framework.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.swissbox.tinybundles.core.TinyBundles.*;
 import static org.ops4j.peaberry.activation.Constants.*;
-import static org.ops4j.peaberry.activation.tests.Matchers.*;
+import static org.ops4j.peaberry.activation.invocations.util.Matchers.*;
 import static org.ops4j.peaberry.activation.tests.TinyBundleProvisionOption.*;
 import static org.osgi.framework.Constants.*;
 
@@ -40,6 +40,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.ops4j.peaberry.activation.invocations.util.InvocationTracking;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
@@ -122,10 +123,10 @@ public class ActivtionTest extends InvocationTracking {
     activation.start();
     
     singletonRoot.start();
-    assertInvoked(trackedClass(SingletonRoot.class), method("start"));
+    assertInvoked(type(SingletonRoot.class), method("start"));
 
     singletonRoot.stop();
-    assertInvoked(trackedClass(SingletonRoot.class), method("stop"));
+    assertInvoked(type(SingletonRoot.class), method("stop"));
   }
 
   @Test
@@ -137,17 +138,17 @@ public class ActivtionTest extends InvocationTracking {
     assertNull(getReference(Hello.class));
 
     singletonRoot.start();
-    assertNotInvoked(trackedClass(SingletonRoot.class), method("start").or(method("stop")));
+    assertNotInvoked(type(SingletonRoot.class), method("start").or(method("stop")));
 
     /* Extender starts - must activate the bundles */
     activation.start();
     assertEquals(1, getReferenceList(Hello.class).length);
-    assertInvoked(trackedClass(SingletonRoot.class), method("start"));
+    assertInvoked(type(SingletonRoot.class), method("start"));
 
     /* Extender stops - must deactivate the bundles */
     activation.stop();
     assertNull(getReference(Hello.class));
-    assertInvoked(trackedClass(SingletonRoot.class), method("stop"));
+    assertInvoked(type(SingletonRoot.class), method("stop"));
 
     resetInvocations();
     
@@ -157,7 +158,7 @@ public class ActivtionTest extends InvocationTracking {
      */
     activation.start();
     assertEquals(1, getReferenceList(Hello.class).length);
-    assertInvoked(trackedClass(SingletonRoot.class), method("start"));
+    assertInvoked(type(SingletonRoot.class), method("start"));
   }
   
   @Test
@@ -175,18 +176,20 @@ public class ActivtionTest extends InvocationTracking {
     cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
     
     /* Consume it and wait for the startup to happen */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
+    call(new Callable<Void>() {
       public Void call() throws Exception {
         activation.start();
         configRoot.start();
         return null;
       }
-    });
+    })
+    .andWait(type(ConfigRoot.class), method("start"))
+    .until(5000);
     
     /* Check the result */
-    assertInvoked(trackedClass(ConfigRoot.class), method("setA", int.class), 1);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setB", int.class), 2);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setC", int.class), 3);
+    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
+    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
+    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
   }
   
   @Test
@@ -198,10 +201,10 @@ public class ActivtionTest extends InvocationTracking {
     configRoot.start();
     
     /* Check that activation is now performed */
-    assertNotInvoked(trackedClass(ConfigRoot.class), method("start"));
+    assertNotInvoked(type(ConfigRoot.class), method("start"));
     
     /* Create the configuration and wait for the startup to happen */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
+    call(new Callable<Void>() {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
@@ -213,12 +216,14 @@ public class ActivtionTest extends InvocationTracking {
         cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
         return null;
       }
-    });
+    })
+    .andWait(type(ConfigRoot.class), method("start"))
+    .until(5000);
     
     /* Check that activation is now performed */
-    assertInvoked(trackedClass(ConfigRoot.class), method("setA", int.class), 1);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setB", int.class), 2);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setC", int.class), 3);
+    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
+    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
+    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
   }
   
   @Test
@@ -236,23 +241,25 @@ public class ActivtionTest extends InvocationTracking {
     cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
     
     /* Start the configuration consumer */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
+    call(new Callable<Void>() {
       public Void call() throws Exception {
         activation.start();
         configRoot.start();
         return null;
       }
-    });
+    })
+    .andWait(type(ConfigRoot.class), method("start"))
+    .until(5000);
     
     /* Check that activation is now performed */
-    assertInvoked(trackedClass(ConfigRoot.class), method("setA", int.class), 1);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setB", int.class), 2);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setC", int.class), 3);
+    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
+    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
+    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
     
     resetInvocations();
     
     /* Change the configuration and wait for a restart */
-    waitInvocation(trackedClass(ConfigRoot.class), method("start"), 5000, new Callable<Void>() {
+    call(new Callable<Void>() {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
@@ -264,11 +271,13 @@ public class ActivtionTest extends InvocationTracking {
         cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
         return null;
       }
-    });
+    })
+    .andWait(type(ConfigRoot.class), method("start"))
+    .until(5000);
     
     /* Check that the new configuration is set */
-    assertInvoked(trackedClass(ConfigRoot.class), method("setA", int.class), 4);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setB", int.class), 5);
-    assertInvoked(trackedClass(ConfigRoot.class), method("setC", int.class), 6);
+    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 4);
+    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 5);
+    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 6);
   }
 }

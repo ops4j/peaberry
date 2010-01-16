@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.peaberry.activation.tests;
+package org.ops4j.peaberry.activation.invocations.util;
 
 import static junit.framework.Assert.*;
 import static org.ops4j.peaberry.activation.invocations.InvocationListener.*;
@@ -46,11 +46,18 @@ public abstract class InvocationTracking {
   private BundleContext bc;
   private InvocationTracker tracker;
   
+  /**
+   * 
+   */
   @Before
   public void findInvocationTracker() {
     this.tracker = getService(InvocationTracker.class);
   }
   
+  /**
+   * @param symbolicName
+   * @return
+   */
   protected Bundle getBundle(String symbolicName) {
     Bundle res = null;
     for (Bundle b : listBundles()) {
@@ -64,10 +71,18 @@ public abstract class InvocationTracking {
     return res;
   }
   
+  /**
+   * @return
+   */
   protected List<Bundle> listBundles() {
     return Arrays.asList(bc.getBundles());
   }
   
+  /**
+   * @param <T>
+   * @param type
+   * @return
+   */
   @SuppressWarnings("unchecked")
   protected <T> T getService(Class<T> type) {
     ServiceReference ref = getReference(type); 
@@ -79,10 +94,18 @@ public abstract class InvocationTracking {
     return serv;
   }
   
+  /**
+   * @param type
+   * @return
+   */
   protected ServiceReference getReference(Class<?> type) {
     return bc.getServiceReference(type.getName());
   }
   
+  /**
+   * @param type
+   * @return
+   */
   protected ServiceReference[] getReferenceList(Class<?> type) {
     try {
       return bc.getServiceReferences(type.getName(), null);
@@ -91,7 +114,98 @@ public abstract class InvocationTracking {
     }
   }
   
-  protected void waitInvocation(final Matcher<? super Class<?>> type,
+  /**
+   * @param type
+   * @param method
+   */
+  protected void assertNotInvoked(Matcher<? super Class<?>> type, Matcher<? super Method> method) {
+    final List<MethodInvocation> invList = tracker.get(type, method);
+    assertEquals(0, invList.size());
+  }
+  
+  /**
+   * @param type
+   * @param method
+   * @param expArgs
+   */
+  protected void assertInvoked(Matcher<? super Class<?>> type, Matcher<? super Method> method, Object... expArgs) {
+    final List<MethodInvocation> invList = tracker.get(type, method);
+    assertEquals(1, invList.size());
+
+    final MethodInvocation inv = invList.get(0);
+    final Object[] actArgs = inv.getArguments();
+    
+    assertEquals(expArgs.length, actArgs.length);
+    
+    for (int i = 0; i < expArgs.length; i++) {
+      assertEquals(expArgs[i], actArgs[i]);
+    }
+  }
+  
+  /**
+   * 
+   */
+  protected void resetInvocations() {
+    tracker.reset();
+  }
+  
+  /**
+   * 
+   */
+  public interface InvocationHookMatcherBuilder {
+    InvocationHookTimeoutBuilder andWait(Matcher<? super Class<?>> type, 
+        Matcher<? super Method> method);
+  }
+  
+  /**
+   * 
+   */
+  public interface InvocationHookTimeoutBuilder {
+    void until(long timeout) throws Exception;
+  }
+  
+  /**
+   * 
+   */
+  private class InvocationHookBuilder 
+    implements InvocationHookMatcherBuilder, InvocationHookTimeoutBuilder {
+    
+    private Callable<Void> code;
+    private Matcher<? super Class<?>> type;
+    private Matcher<? super Method> method;
+    
+    public InvocationHookBuilder(Callable<Void> code) {
+      this.code = code;
+    }
+    
+    public InvocationHookTimeoutBuilder andWait(Matcher<? super Class<?>> type,
+        Matcher<? super Method> method) {
+      this.type = type;
+      this.method = method;
+      return this;
+    }
+
+    public void until(long timeout) throws Exception {
+      waitInvocation(type, method, timeout, code);
+    }
+  }
+  
+  /**
+   * @param code
+   * @return
+   */
+  protected InvocationHookMatcherBuilder call(Callable<Void> code) {
+    return new InvocationHookBuilder(code);
+  }
+  
+  /**
+   * @param type
+   * @param method
+   * @param timeout
+   * @param code
+   * @throws Exception
+   */
+  private void waitInvocation(final Matcher<? super Class<?>> type,
       final Matcher<? super Method> method, final long timeout, final Callable<Void> code)
       throws Exception {
     
@@ -141,28 +255,5 @@ public abstract class InvocationTracking {
     } finally {
       reg.unregister();
     }
-  }
-  
-  protected void assertNotInvoked(Matcher<? super Class<?>> type, Matcher<? super Method> method) {
-    final List<MethodInvocation> invList = tracker.get(type, method);
-    assertEquals(0, invList.size());
-  }
-  
-  protected void assertInvoked(Matcher<? super Class<?>> type, Matcher<? super Method> method, Object... expArgs) {
-    final List<MethodInvocation> invList = tracker.get(type, method);
-    assertEquals(1, invList.size());
-
-    final MethodInvocation inv = invList.get(0);
-    final Object[] actArgs = inv.getArguments();
-    
-    assertEquals(expArgs.length, actArgs.length);
-    
-    for (int i = 0; i < expArgs.length; i++) {
-      assertEquals(expArgs[i], actArgs[i]);
-    }
-  }
-  
-  protected void resetInvocations() {
-    tracker.reset();
   }
 }

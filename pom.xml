@@ -18,5 +18,6 @@
   <modules>
     <module>main</module>
     <module>test</module>
+    <module>invocations</module>
   </modules>
 </project>
