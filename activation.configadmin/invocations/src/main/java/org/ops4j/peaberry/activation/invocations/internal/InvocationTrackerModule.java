@@ -16,11 +16,11 @@
 
 package org.ops4j.peaberry.activation.invocations.internal;
 
-import static com.google.inject.matcher.Matchers.any;
+import static com.google.inject.matcher.Matchers.*;
+import static org.ops4j.peaberry.Peaberry.*;
 
 import java.lang.reflect.Method;
 
-import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.activation.invocations.InvocationTracker;
 
 import com.google.inject.AbstractModule;
@@ -54,6 +54,6 @@ public final class InvocationTrackerModule
     bindInterceptor(types, methods, log);
     requestInjection(log);
 
-    bind(InvocationTracker.class).toProvider(Peaberry.service(InvocationTracker.class).single());
+    bind(InvocationTracker.class).toProvider(service(InvocationTracker.class).single());
   }
 }

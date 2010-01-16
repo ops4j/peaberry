@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.peaberry.activation.tests;
+package org.ops4j.peaberry.activation.invocations.util;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public final class Matchers {
     /* Static utility */
   }
   
-  public static Matcher<? super Class<?>> trackedClass(Class<?> type) {
+  public static Matcher<? super Class<?>> type(Class<?> type) {
     return subclassesOf(type);
   }
   
