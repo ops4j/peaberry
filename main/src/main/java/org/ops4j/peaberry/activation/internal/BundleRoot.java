@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.ops4j.peaberry.activation.internal;
 
 import com.google.inject.Injector;
 
 /**
- * @author Todor Boev (rinsvind@gmail.com)
+ * Manages one of the initial items that must be created to boostrap a bundle.
+ * 
+ * @author rinsvind@gmail.com (Todor Boev)
  */
 public interface BundleRoot {
-  boolean canActivate();
-  
   void activate(Injector injector);
 
   void deactivate();

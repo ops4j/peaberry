@@ -1,6 +1,5 @@
 package org.ops4j.peaberry.activation.internal;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -16,28 +15,22 @@ public class ConfigurationBundleRoot implements BundleRoot {
   private final DefaultBindingTargetVisitor<Object, Object> mover = 
     new DefaultBindingTargetVisitor<Object, Object> () {
       public Object visit(ProviderInstanceBinding<?> target) {
-        ConfigurableProvider<?> prov = (ConfigurableProvider<?>) target.getProviderInstance();
-        prov.set(config.get(prov.key()));
+        final Dictionary<String, Object> props = tracker.getValue();
+        final ConfigurableProvider<?> prov = (ConfigurableProvider<?>) target.getProviderInstance();
+        prov.set(props.get(prov.key()));
         return null;
       }
     };
   /** The last config we have obtained */
-  private Dictionary<String, Object> config;
+  private ConfigurationBundleActivationTracker tracker;
   
-  public ConfigurationBundleRoot() {
-    this.keys = new ArrayList<Key<?>>();
-  }
-  
-  public void add(final Key<?> key) {
-    keys.add(key);
-  }
-  
-  public void set(final Dictionary<String, Object> config) {
-    this.config = config;
+  public ConfigurationBundleRoot(List<Key<?>> keys, ConfigurationBundleActivationTracker tracker) {
+    this.keys = keys;
+    this.tracker = tracker;
   }
   
   public boolean canActivate() {
-    return config != null;
+    return tracker.getValue() != null;
   }
   
   public void activate(Injector injector) {
