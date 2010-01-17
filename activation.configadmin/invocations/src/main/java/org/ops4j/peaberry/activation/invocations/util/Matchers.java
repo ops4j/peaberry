@@ -34,6 +34,11 @@ public final class Matchers {
   
   public static Matcher<Method> method(final String name, final Class<?>... args) {
     return new AbstractMatcher<Method>() {
+      @Override
+      public String toString() {
+        return "method(" + name + " " + Arrays.toString(args) + ")";
+      }
+      
       public boolean matches(Method m) {
         return name.equals(m.getName()) && Arrays.equals(args, m.getParameterTypes());
       }

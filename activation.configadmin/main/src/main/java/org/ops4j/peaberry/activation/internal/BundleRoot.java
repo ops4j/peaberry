@@ -20,8 +20,6 @@ import com.google.inject.Injector;
 
 /**
  * @author Todor Boev (rinsvind@gmail.com)
- * 
- * @param <T>
  */
 public interface BundleRoot {
   boolean canActivate();

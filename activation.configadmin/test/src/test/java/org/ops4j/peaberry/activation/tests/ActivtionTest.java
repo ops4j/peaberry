@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.peaberry.activation.examples.export.Hello;
+import org.ops4j.peaberry.activation.examples.export.ExportRoot;
 import org.ops4j.peaberry.activation.examples.singleton.SingletonRoot;
 import org.ops4j.peaberry.activation.invocations.util.InvocationTracking;
 import org.osgi.framework.Bundle;
@@ -56,8 +56,8 @@ public class ActivtionTest extends InvocationTracking {
        .set(EXPORT_PACKAGE, EXPORT_MODULE)
        .set(BUNDLE_MODULE, org.ops4j.peaberry.activation.examples.export.Config.class.getName())
        .add(org.ops4j.peaberry.activation.examples.export.Config.class)
-       .add(org.ops4j.peaberry.activation.examples.export.Hello.class)
-       .add(org.ops4j.peaberry.activation.examples.export.HelloImpl.class)
+       .add(org.ops4j.peaberry.activation.examples.export.ExportRoot.class)
+       .add(org.ops4j.peaberry.activation.examples.export.ExportRootImpl.class)
        .build(withBnd())
        .noStart(),
       tinyBundle()
@@ -88,10 +88,10 @@ public class ActivtionTest extends InvocationTracking {
     throws BundleException {
     
     activation.start();
-    assertNull(getReference(Hello.class));
+    assertNull(getReference(ExportRoot.class));
     
     exportRoot.start();
-    assertEquals(exportRoot, getReference(Hello.class).getBundle());
+    assertEquals(exportRoot, getReference(ExportRoot.class).getBundle());
   }
 
   @Test
@@ -113,19 +113,19 @@ public class ActivtionTest extends InvocationTracking {
     
     /* Extended bundles are active and waiting */
     exportRoot.start();
-    assertNull(getReference(Hello.class));
+    assertNull(getReference(ExportRoot.class));
 
     singletonRoot.start();
     assertNotInvoked(type(SingletonRoot.class), method("start").or(method("stop")));
 
     /* Extender starts - must activate the bundles */
     activation.start();
-    assertEquals(1, getReferenceList(Hello.class).length);
+    assertEquals(1, getReferenceList(ExportRoot.class).length);
     assertInvoked(type(SingletonRoot.class), method("start"));
 
     /* Extender stops - must deactivate the bundles */
     activation.stop();
-    assertNull(getReference(Hello.class));
+    assertNull(getReference(ExportRoot.class));
     assertInvoked(type(SingletonRoot.class), method("stop"));
 
     resetInvocations();
@@ -135,7 +135,7 @@ public class ActivtionTest extends InvocationTracking {
      * activations must exist.
      */
     activation.start();
-    assertEquals(1, getReferenceList(Hello.class).length);
+    assertEquals(1, getReferenceList(ExportRoot.class).length);
     assertInvoked(type(SingletonRoot.class), method("start"));
   }
 }
