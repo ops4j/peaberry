@@ -23,24 +23,18 @@ import static org.ops4j.peaberry.activation.invocations.util.Matchers.*;
 import static org.ops4j.peaberry.activation.tests.TinyBundleProvisionOption.*;
 import static org.osgi.framework.Constants.*;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.concurrent.Callable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.peaberry.activation.examples.config.ConfigRoot;
 import org.ops4j.peaberry.activation.examples.export.Hello;
 import org.ops4j.peaberry.activation.examples.singleton.SingletonRoot;
+import org.ops4j.peaberry.activation.invocations.util.InvocationTracking;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.ops4j.peaberry.activation.invocations.util.InvocationTracking;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
@@ -53,16 +47,10 @@ public class ActivtionTest extends InvocationTracking {
     packageOf(org.ops4j.peaberry.activation.examples.export.Config.class);
   private static final String SINGLETON_MODULE = 
     packageOf(org.ops4j.peaberry.activation.examples.singleton.Config.class);
-  private static final String CONFIG_MODULE = 
-    packageOf(org.ops4j.peaberry.activation.examples.config.Config.class);
   
   @Configuration(extend = PeaberryConfiguration.class)
   public static Option[] configure() {
     return options(
-      mavenBundle().groupId("org.ops4j.peaberry.extensions").artifactId("peaberry.activation").versionAsInProject().noStart(),
-      mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.configadmin").versionAsInProject(),
-           
-      /* Build some test bundles on the fly */
       tinyBundle()
        .set(BUNDLE_SYMBOLICNAME, EXPORT_MODULE)
        .set(EXPORT_PACKAGE, EXPORT_MODULE)
@@ -79,20 +67,11 @@ public class ActivtionTest extends InvocationTracking {
        .add(org.ops4j.peaberry.activation.examples.singleton.Config.class)
        .add(org.ops4j.peaberry.activation.examples.singleton.SingletonRoot.class)
        .build(withBnd())
-       .noStart(),
-      tinyBundle()
-       .set(BUNDLE_SYMBOLICNAME, CONFIG_MODULE)
-       .set(EXPORT_PACKAGE, CONFIG_MODULE)
-       .set(BUNDLE_MODULE, org.ops4j.peaberry.activation.examples.config.Config.class.getName())
-       .add(org.ops4j.peaberry.activation.examples.config.Config.class)
-       .add(org.ops4j.peaberry.activation.examples.config.ConfigRoot.class)
-       .build(withBnd())
        .noStart());
   }
   
   private Bundle exportRoot;
   private Bundle singletonRoot;
-  private Bundle configRoot;
   private Bundle activation;
 
   @Before
@@ -101,7 +80,6 @@ public class ActivtionTest extends InvocationTracking {
     
     exportRoot = getBundle(EXPORT_MODULE);
     singletonRoot = getBundle(SINGLETON_MODULE);
-    configRoot = getBundle(CONFIG_MODULE);
     activation = getBundle(ACTIVATION_MODULE);
   }
 
@@ -159,125 +137,5 @@ public class ActivtionTest extends InvocationTracking {
     activation.start();
     assertEquals(1, getReferenceList(Hello.class).length);
     assertInvoked(type(SingletonRoot.class), method("start"));
-  }
-  
-  @Test
-  public void testBasicConfiguration() 
-    throws Exception {
-    
-    /* Make a test configuration */
-    @SuppressWarnings("unchecked")
-    final Dictionary<String, Object> props = new Hashtable(); 
-    props.put(ConfigRoot.CONF_A, 1);
-    props.put(ConfigRoot.CONF_B, 2);
-    props.put(ConfigRoot.CONF_C, 3);
-    
-    final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-    cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
-    
-    /* Consume it and wait for the startup to happen */
-    call(new Callable<Void>() {
-      public Void call() throws Exception {
-        activation.start();
-        configRoot.start();
-        return null;
-      }
-    })
-    .andWait(type(ConfigRoot.class), method("start"))
-    .until(5000);
-    
-    /* Check the result */
-    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
-    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
-    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
-  }
-  
-  @Test
-  public void testLateConfiguration() 
-    throws Exception {
-    
-    /* Start the configuration consumer */
-    activation.start();
-    configRoot.start();
-    
-    /* Check that activation is now performed */
-    assertNotInvoked(type(ConfigRoot.class), method("start"));
-    
-    /* Create the configuration and wait for the startup to happen */
-    call(new Callable<Void>() {
-      public Void call() throws Exception {
-        @SuppressWarnings("unchecked")
-        final Dictionary<String, Object> props = new Hashtable(); 
-        props.put(ConfigRoot.CONF_A, 1);
-        props.put(ConfigRoot.CONF_B, 2);
-        props.put(ConfigRoot.CONF_C, 3);
-        
-        final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-        cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
-        return null;
-      }
-    })
-    .andWait(type(ConfigRoot.class), method("start"))
-    .until(5000);
-    
-    /* Check that activation is now performed */
-    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
-    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
-    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
-  }
-  
-  @Test
-  public void testConfigurationChange() 
-    throws Exception {
-    
-    /* Create the configuration and wait for the startup to happen */
-    @SuppressWarnings("unchecked")
-    final Dictionary<String, Object> props = new Hashtable(); 
-    props.put(ConfigRoot.CONF_A, 1);
-    props.put(ConfigRoot.CONF_B, 2);
-    props.put(ConfigRoot.CONF_C, 3);
-    
-    final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-    cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
-    
-    /* Start the configuration consumer */
-    call(new Callable<Void>() {
-      public Void call() throws Exception {
-        activation.start();
-        configRoot.start();
-        return null;
-      }
-    })
-    .andWait(type(ConfigRoot.class), method("start"))
-    .until(5000);
-    
-    /* Check that activation is now performed */
-    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
-    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
-    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
-    
-    resetInvocations();
-    
-    /* Change the configuration and wait for a restart */
-    call(new Callable<Void>() {
-      public Void call() throws Exception {
-        @SuppressWarnings("unchecked")
-        final Dictionary<String, Object> props = new Hashtable(); 
-        props.put(ConfigRoot.CONF_A, 4);
-        props.put(ConfigRoot.CONF_B, 5);
-        props.put(ConfigRoot.CONF_C, 6);
-        
-        final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-        cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
-        return null;
-      }
-    })
-    .andWait(type(ConfigRoot.class), method("start"))
-    .until(5000);
-    
-    /* Check that the new configuration is set */
-    assertInvoked(type(ConfigRoot.class), method("setA", int.class), 4);
-    assertInvoked(type(ConfigRoot.class), method("setB", int.class), 5);
-    assertInvoked(type(ConfigRoot.class), method("setC", int.class), 6);
   }
 }

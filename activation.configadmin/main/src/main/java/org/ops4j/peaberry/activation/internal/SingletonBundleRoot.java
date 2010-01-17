@@ -23,7 +23,7 @@ import java.util.List;
 import com.google.inject.Key;
 
 public class SingletonBundleRoot
-    extends AbstractBundleRoot<Object> {
+    extends InstanceBundleRoot<Object> {
 
   private final List<Method> start;
   private final List<Method> stop;
