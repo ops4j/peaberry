@@ -20,7 +20,7 @@ import org.ops4j.peaberry.Export;
 import com.google.inject.Key;
 
 public class ExportBundleRoot
-    extends AbstractBundleRoot<Export<?>> {
+    extends InstanceBundleRoot<Export<?>> {
 
   public ExportBundleRoot(final Key<Export<?>> key) {
     super(key);

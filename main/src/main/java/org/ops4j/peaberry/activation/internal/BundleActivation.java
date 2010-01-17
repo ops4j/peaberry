@@ -108,7 +108,7 @@ public class BundleActivation {
 
   private void activate() {
     if (active) {
-      throw new IllegalStateException(this + " already active");
+      throw new IllegalStateException(Bundles.toString(bundle) + " already active");
     }
     active = true;
     
@@ -208,14 +208,11 @@ public class BundleActivation {
               new ManagedService() {
                 public void updated(final Dictionary props) {
                   synchronized (BundleActivation.this) {
-                    if (props == null) {
-                      return;
-                    }
-                    
                     updated.set(props);
                     
+                    deactivate();
+                    
                     if (canActivate()) {
-                      deactivate();
                       activate();
                     }
                   }
