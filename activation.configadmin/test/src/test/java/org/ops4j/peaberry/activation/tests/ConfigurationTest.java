@@ -33,6 +33,7 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.peaberry.activation.examples.config.ConfigRoot;
+import org.ops4j.peaberry.activation.examples.dualconfig.DualConfigRoot;
 import org.ops4j.peaberry.activation.invocations.util.InvocationTracking;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -49,6 +50,8 @@ public class ConfigurationTest extends InvocationTracking {
     "org.ops4j.peaberry.extensions.peaberry.activation";
   private static final String CONFIG_MODULE = 
     packageOf(org.ops4j.peaberry.activation.examples.config.Config.class);
+  private static final String DUAL_CONFIG_MODULE = 
+    packageOf(org.ops4j.peaberry.activation.examples.dualconfig.Config.class);
   
   @Configuration(extend = PeaberryConfiguration.class)
   public static Option[] configure() {
@@ -60,10 +63,19 @@ public class ConfigurationTest extends InvocationTracking {
        .add(org.ops4j.peaberry.activation.examples.config.Config.class)
        .add(org.ops4j.peaberry.activation.examples.config.ConfigRoot.class)
        .build(withBnd())
-       .noStart());
+       .noStart(),
+      tinyBundle()
+      .set(BUNDLE_SYMBOLICNAME, DUAL_CONFIG_MODULE)
+      .set(EXPORT_PACKAGE, DUAL_CONFIG_MODULE)
+      .set(BUNDLE_MODULE, org.ops4j.peaberry.activation.examples.dualconfig.Config.class.getName())
+      .add(org.ops4j.peaberry.activation.examples.dualconfig.Config.class)
+      .add(org.ops4j.peaberry.activation.examples.dualconfig.DualConfigRoot.class)
+      .build(withBnd())
+      .noStart());
   }
   
   private Bundle configRoot;
+  private Bundle dualConfigRoot;
   private Bundle activation;
 
   @Before
@@ -71,6 +83,7 @@ public class ConfigurationTest extends InvocationTracking {
     throws BundleException {
     
     configRoot = getBundle(CONFIG_MODULE);
+    dualConfigRoot = getBundle(DUAL_CONFIG_MODULE);
     activation = getBundle(ACTIVATION_MODULE);
   }
 
@@ -236,8 +249,58 @@ public class ConfigurationTest extends InvocationTracking {
     })
     .andWait(type(ConfigRoot.class), method("stop"))
     .until(5000);
+  }
+  
+  @Test
+  public void testDualConfiguration() 
+    throws Exception {
     
-    /* Check that the bundle has not started */
-    assertNotInvoked(type(ConfigRoot.class), method("start"));
+    /* Start everything */
+    activation.start();
+    dualConfigRoot.start();
+    
+    /* Create the first configuration - startup must not happen */
+    @SuppressWarnings("unchecked")
+    final Dictionary<String, Object> props = new Hashtable(); 
+    props.put(DualConfigRoot.CONF_AA, 1);
+    props.put(DualConfigRoot.CONF_AB, 2);
+    props.put(DualConfigRoot.CONF_AC, 3);
+    
+    final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
+    cm.getConfiguration(DualConfigRoot.CONF_PID_A, dualConfigRoot.getLocation()).update(props);
+    
+    /* Create the second configuration - startup must happen */
+    call(new Callable<Void>() {
+      public Void call() throws Exception {
+        @SuppressWarnings("unchecked")
+        final Dictionary<String, Object> props = new Hashtable(); 
+        props.put(DualConfigRoot.CONF_BA, 4);
+        props.put(DualConfigRoot.CONF_BB, 5);
+        props.put(DualConfigRoot.CONF_BC, 6);
+        
+        final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
+        cm.getConfiguration(DualConfigRoot.CONF_PID_B, dualConfigRoot.getLocation()).update(props);
+        return null;
+      }
+    })
+    .andWait(type(DualConfigRoot.class), method("start"))
+    .until(5000);
+    
+    /* Check that activation is now performed */
+    assertInvoked(type(DualConfigRoot.class), method("setA", int.class, int.class, int.class), 1, 2, 3);
+    assertInvoked(type(DualConfigRoot.class), method("setB", int.class, int.class, int.class), 4, 5, 6);
+    
+    resetInvocations();
+    
+    /* Delete the first configuration - de-activation must happen */
+    call(new Callable<Void>() {
+      public Void call() throws Exception {
+        final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
+        cm.getConfiguration(DualConfigRoot.CONF_PID_A, configRoot.getLocation()).delete();
+        return null;
+      }
+    })
+    .andWait(type(DualConfigRoot.class), method("stop"))
+    .until(5000);
   }
 }
