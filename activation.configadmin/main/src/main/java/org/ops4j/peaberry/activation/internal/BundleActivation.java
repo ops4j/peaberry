@@ -20,19 +20,20 @@ import static org.ops4j.peaberry.activation.internal.Reflection.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Peaberry;
 import org.ops4j.peaberry.activation.Start;
 import org.ops4j.peaberry.activation.Stop;
 import org.osgi.framework.Bundle;
-import org.osgi.service.cm.ManagedService;
 
 import com.google.inject.Binding;
 import com.google.inject.Guice;
@@ -49,7 +50,13 @@ import com.google.inject.spi.DefaultBindingTargetVisitor;
 import com.google.inject.spi.ProviderInstanceBinding;
 
 /**
- * Handles the activation of a single bundle.
+ * Handles the activation of a single bundle. This is the hub that joins
+ * together {@link BundleActivationTracker}s with {@link BundleRoot}s. The
+ * trackers monitor the OSGi environment and trigger the
+ * {@link BundleActivation} to reevaluate of the state of that environment when
+ * it changes. When the evaluation is successful all {@link BundleRoot}s are
+ * activated. When the evaluation is not good all {@link BundleRoot}s are
+ * deactivated.
  * 
  * @author rinsvind@gmail.com (Todor Boev)
  */
@@ -69,7 +76,7 @@ public class BundleActivation {
       }
 
       public Boolean visitNoScoping() {
-        return Boolean.FALSE;
+        return false;
       }
     };
 
@@ -83,28 +90,66 @@ public class BundleActivation {
     };
     
   private final Bundle bundle;
-  private final Class<? extends Module> moduleClass;
+  private final Module module;
+  private final List<BundleActivationTracker<?>> trackers;
+  private final List<BundleRoot> roots;
   
-  private List<BundleRoot> roots;
   private boolean active;
 
-  @SuppressWarnings("unchecked")
-  public BundleActivation(final Bundle bundle, final String module) {
+  public BundleActivation(final Bundle bundle, final String moduleName) {
     this.bundle = bundle;
-    this.moduleClass = (Class<? extends Module>) Bundles.loadClass(bundle, module);
+    
+    @SuppressWarnings("unchecked")
+    final Class<? extends Module> moduleClass = 
+       (Class<? extends Module>) Bundles.loadClass(bundle, moduleName);
+    this.module = Reflection.create(moduleClass);
+    
+    this.trackers = new ArrayList<BundleActivationTracker<?>>();
+    this.roots = new ArrayList<BundleRoot>();
+    
+    /* A temporary Injector used to introspect the bindings */
+    final Injector injector = createInjector();
+    
+    /* Make mutable set of bindings to be consumed by the createXXX methods */
+    final Set<Entry<Key<?>, Binding<?>>> bindings = new HashSet<Entry<Key<?>,Binding<?>>>();
+    bindings.addAll(injector.getBindings().entrySet());
+
+    /*
+     * Configs and Exports are captured before singletons. In this way if they
+     * are redundantly marked as singletons they are not scanned for start/stop
+     * methods etc.
+     */
+    createConfigurations(injector, bindings);
+    createExports(injector, bindings);
+    createSingletons(injector, bindings);
+    
+    /* Add a tracker that will trigger the initial update */
+    trackers.add(new StateBundleActivationTracker(this));
   }
 
+  public Bundle getBundle() {
+    return bundle;
+  }
+  
   public synchronized void start() {
-    createRoots();
-    
-    update();
+    for (BundleActivationTracker<?> t : trackers) {
+      t.start();
+    }
   }
   
   public synchronized void stop() {
-    deactivate();
+    for (BundleActivationTracker<?> t : trackers) {
+      t.stop();
+    }
   }
 
-  private void update() {
+  /**
+   * Must be called by the BundleActivationTrackers while holding the lock of
+   * this BundleActivation. Each tracker must first take the lock, than update
+   * it's value, than call this method. The goal is to guarantee that this
+   * method will always see a stable set of values for all trackers.
+   */
+  public void update() {
     deactivate();
     
     if (canActivate()) {
@@ -113,8 +158,8 @@ public class BundleActivation {
   }
   
   private boolean canActivate() {
-    for (BundleRoot r : roots) {
-      if (!r.canActivate()) {
+    for (BundleActivationTracker<?> t : trackers) {
+      if (!t.canActivate()) {
         return false;
       }
     }
@@ -123,13 +168,13 @@ public class BundleActivation {
   
   private void activate() {
     if (active) {
-      throw new IllegalStateException(Bundles.toString(bundle) + " already active");
+      throw new IllegalStateException(Bundles.toString(bundle) + " already activated");
     }
     active = true;
     
     final Injector injector = createInjector();
     
-    for (final BundleRoot r : roots) {
+    for (BundleRoot r : roots) {
       r.activate(injector);
     }
   }
@@ -144,9 +189,7 @@ public class BundleActivation {
      * Deactivate in reverse order. This should bring down the services before
      * we stop the active roots.
      */
-    for (final ListIterator<BundleRoot> iter = roots.listIterator(roots.size()); iter
-        .hasPrevious();) {
-
+    for (final ListIterator<BundleRoot> iter = roots.listIterator(roots.size()); iter.hasPrevious();) {
       try {
         iter.previous().deactivate();
       } catch (final Exception e) {
@@ -160,90 +203,83 @@ public class BundleActivation {
   }
 
   private Injector createInjector() {
-    return Guice.createInjector(
-        Peaberry.osgiModule(bundle.getBundleContext()), Reflection.create(moduleClass));
+    return Guice.createInjector(Peaberry.osgiModule(bundle.getBundleContext()), module);
   }
 
-  @SuppressWarnings("unchecked")
-  private void createRoots() {
-    final List<BundleRoot> exports = new ArrayList<BundleRoot>();
-    final List<BundleRoot> singletons = new ArrayList<BundleRoot>();
-    final Map<String, ConfigurationBundleRoot> configs = new HashMap<String, ConfigurationBundleRoot>();
-    
-    /* A temporary Injector used to introspect the configuration */
-    final Injector injector = createInjector();
- 
-    for (final Map.Entry<Key<?>, Binding<?>> e : injector.getBindings().entrySet()) {
+  private void createExports(final Injector injector, final Set<Entry<Key<?>, Binding<?>>> entries) {
+    for (final Iterator<Entry<Key<?>, Binding<?>>> iter = entries.iterator(); iter.hasNext();) {
+      final Entry<Key<?>, Binding<?>> e = iter.next();
+      final Key<?> key = e.getKey();
+      
+      if (Export.class == key.getTypeLiteral().getRawType()) {
+        @SuppressWarnings("unchecked")
+        Key<Export<?>> exportKey = (Key<Export<?>>) key;
+        
+        roots.add(new ExportBundleRoot(exportKey));
+        
+        iter.remove();
+      } 
+    }
+  }
+  
+  private void createSingletons(final Injector injector, final Set<Entry<Key<?>, Binding<?>>> entries) {
+    for (final Iterator<Entry<Key<?>, Binding<?>>> iter = entries.iterator(); iter.hasNext();) {
+      final Entry<Key<?>, Binding<?>> e = iter.next();
       final Key<?> key = e.getKey();
       final Binding<?> bind = e.getValue();
       
-      /*
-       * Exports and configs are captured before singletons. In this way exports
-       * and configs that have been redundantly marked as singleton are treated
-       * correctly rather than scanned for start/stop methods etc.
-       */
-      
-      /* An export */
-      if (Export.class == key.getTypeLiteral().getRawType()) {
-        exports.add(new ExportBundleRoot((Key<Export<?>>) key));
-      } 
-      /* Config or singleton */
-      else {
-        final ConfigurableProvider<?> prov = bind.acceptTargetVisitor(CONFIGS);
+      if (bind.acceptScopingVisitor(SINGLETONS)) {
+        final Class<?> type = key.getTypeLiteral().getRawType();
+        final List<Method> start = findMethods(type, Start.class);
+        final List<Method> stop = findMethods(type, Stop.class);
         
-        /* A config */
-        if (prov != null) {
-          final String pid = prov.pid();
+        if (start.size() + stop.size() > 0) {
+          @SuppressWarnings("unchecked")
+          Key<Object> singletonKey = (Key<Object>) key;
           
-          /* Create and register a new config root or just update an existing one */
-          ConfigurationBundleRoot config = configs.get(pid);
+          roots.add(new SingletonBundleRoot(singletonKey, start, stop));
           
-          if (config == null) {
-            config = new ConfigurationBundleRoot();
-            configs.put(prov.pid(), config);
-            
-            /* Expose a ManagedService to track this config */
-            final Dictionary props = new Hashtable();
-            props.put("service.pid", pid);
-            props.put("service.bundleLocation", bundle.getLocation());
-            
-            final ConfigurationBundleRoot updated = config;
-            
-            bundle.getBundleContext().registerService(
-              ManagedService.class.getName(), 
-              new ManagedService() {
-                public void updated(final Dictionary props) {
-                  synchronized (BundleActivation.this) {
-                    updated.set(props);
-                    
-                    BundleActivation.this.update();
-                  }
-                }
-              }, 
-              props);
-          }
-          
-          config.add(key);
+          iter.remove();
         }
-        /* A singleton */
-        else if (bind.acceptScopingVisitor(SINGLETONS)) {
-          final Class<?> type = key.getTypeLiteral().getRawType();
-          final List<Method> start = findMethods(type, Start.class);
-          final List<Method> stop = findMethods(type, Stop.class);
-          
-          if (start.size() + stop.size() > 0) {
-            singletons.add(new SingletonBundleRoot((Key<Object>) key, start, stop));
-          }
+      } 
+    }
+  }
+  
+  private void createConfigurations(final Injector injector, final Set<Entry<Key<?>, Binding<?>>> entries) {
+    /* Group the keys of configurable items by common configuration PIDs */
+    final Map<String, List<Key<?>>> configs = new HashMap<String, List<Key<?>>>();
+    
+    for (final Iterator<Entry<Key<?>, Binding<?>>> iter = entries.iterator(); iter.hasNext();) {
+      final Entry<Key<?>, Binding<?>> e = iter.next();
+      final Key<?> key = e.getKey();
+      final Binding<?> bind = e.getValue();
+      
+      final ConfigurableProvider<?> prov = bind.acceptTargetVisitor(CONFIGS);
+      
+      if (prov != null) {
+        final String pid = prov.pid();
+        
+        List<Key<?>> list = configs.get(pid);
+        if (list == null) {
+          list = new ArrayList<Key<?>>();
+          configs.put(prov.pid(), list);
         }
+        list.add(key);
+        
+        iter.remove();
       }
     }
-
-    this.roots = new ArrayList<BundleRoot>();
-    /* First activate all configurations - so they setup their providers */
-    roots.addAll(configs.values());
-    /* Than activate all singletons - so they start doing work */
-    roots.addAll(singletons);
-    /* Finally activate all exports - so other bundles can use us */
-    roots.addAll(exports);
+    
+    /* Crate configuration roots and their respective trackers */
+    for (Entry<String, List<Key<?>>> e : configs.entrySet()) {
+      final String pid = e.getKey();
+      final List<Key<?>> keys = e.getValue();
+      
+      final ConfigurationBundleActivationTracker tracker = new ConfigurationBundleActivationTracker(pid, this);
+      final ConfigurationBundleRoot updated = new ConfigurationBundleRoot(keys, tracker);
+      
+      roots.add(updated);
+      trackers.add(tracker);
+    }
   }
 }

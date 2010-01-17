@@ -41,10 +41,6 @@ public abstract class InstanceBundleRoot<T>
     return getClass().getSimpleName() + "[ " + key + " ]";
   }
   
-  public final boolean canActivate() {
-    return true;
-  }
-  
   public final void activate(final Injector inj) {
     instance = inj.getInstance(key);
     activate(instance);

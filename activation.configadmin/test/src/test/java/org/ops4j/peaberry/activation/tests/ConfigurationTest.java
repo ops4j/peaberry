@@ -15,9 +15,11 @@
  */
 package org.ops4j.peaberry.activation.tests;
 
+import static junit.framework.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.swissbox.tinybundles.core.TinyBundles.*;
 import static org.ops4j.peaberry.activation.Constants.*;
+import static org.ops4j.peaberry.activation.examples.config.ConfigRoot.*;
 import static org.ops4j.peaberry.activation.invocations.util.Matchers.*;
 import static org.ops4j.peaberry.activation.tests.TinyBundleProvisionOption.*;
 import static org.osgi.framework.Constants.*;
@@ -38,8 +40,7 @@ import org.ops4j.peaberry.activation.invocations.util.InvocationTracking;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.cm.ConfigurationAdmin;
-
-import static org.ops4j.peaberry.activation.examples.config.ConfigRoot.*;
+import org.osgi.service.cm.ManagedService;
 
 /**
  * @author rinsvind@gmail.com (Todor Boev)
@@ -116,6 +117,20 @@ public class ConfigurationTest extends InvocationTracking {
     assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
     assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
     assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
+  }
+  
+  @Test
+  public void testManagedServiceUnregistration() 
+    throws Exception {
+    
+    activation.start();
+    configRoot.start();
+    
+    assertNotNull(getReference(ManagedService.class));
+    
+    activation.stop();
+    
+    assertNull(getReference(ManagedService.class));
   }
   
   @Test

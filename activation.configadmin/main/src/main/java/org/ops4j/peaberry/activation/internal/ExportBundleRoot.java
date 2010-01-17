@@ -27,7 +27,8 @@ public class ExportBundleRoot
   }
 
   @Override
-  protected void activate(final Export<?> root) {}
+  protected void activate(final Export<?> root) {
+  }
 
   @Override
   protected void deactivate(final Export<?> root) {
