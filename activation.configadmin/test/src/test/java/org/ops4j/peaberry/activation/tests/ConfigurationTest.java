@@ -57,6 +57,8 @@ public class ConfigurationTest extends InvocationTracking {
   @Configuration(extend = PeaberryConfiguration.class)
   public static Option[] configure() {
     return options(
+      mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.configadmin").versionAsInProject(),
+        
       tinyBundle()
        .set(BUNDLE_SYMBOLICNAME, CONFIG_MODULE)
        .set(EXPORT_PACKAGE, CONFIG_MODULE)
