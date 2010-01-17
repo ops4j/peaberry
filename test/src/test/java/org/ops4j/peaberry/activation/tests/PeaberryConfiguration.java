@@ -30,8 +30,6 @@ public class PeaberryConfiguration implements CompositeOption {
       mavenBundle().groupId("org.ops4j").artifactId("peaberry").versionAsInProject(),
       mavenBundle().groupId("org.ops4j.peaberry.extensions").artifactId("peaberry.activation").versionAsInProject().noStart(),
       
-      mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.configadmin").versionAsInProject(),
-      
       mavenBundle().groupId("org.ops4j.peaberry.extensions").artifactId("peaberry.activation.invocations").versionAsInProject());
   }
 }

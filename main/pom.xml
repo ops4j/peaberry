@@ -37,6 +37,7 @@
         <configuration>
           <instructions>
             <module>org.ops4j.peaberry.activation</module>
+            <extra.imports>org.osgi.service.cm;resolution:="optional";version="[1.2,2)"</extra.imports>
             <Bundle-Activator>$(module).internal.Activator</Bundle-Activator>
             <api.version>1.0</api.version>
           </instructions>
