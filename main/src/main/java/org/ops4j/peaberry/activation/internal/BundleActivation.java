@@ -97,15 +97,30 @@ public class BundleActivation {
   public synchronized void start() {
     createRoots();
     
-    if (canActivate()) {
-      activate();
-    }
+    update();
   }
   
   public synchronized void stop() {
     deactivate();
   }
 
+  private void update() {
+    deactivate();
+    
+    if (canActivate()) {
+      activate();
+    }
+  }
+  
+  private boolean canActivate() {
+    for (BundleRoot r : roots) {
+      if (!r.canActivate()) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
   private void activate() {
     if (active) {
       throw new IllegalStateException(Bundles.toString(bundle) + " already active");
@@ -142,15 +157,6 @@ public class BundleActivation {
         e.printStackTrace();
       }
     }
-  }
-
-  private boolean canActivate() {
-    for (BundleRoot r : roots) {
-      if (!r.canActivate()) {
-        return false;
-      }
-    }
-    return true;
   }
 
   private Injector createInjector() {
@@ -210,11 +216,7 @@ public class BundleActivation {
                   synchronized (BundleActivation.this) {
                     updated.set(props);
                     
-                    deactivate();
-                    
-                    if (canActivate()) {
-                      activate();
-                    }
+                    BundleActivation.this.update();
                   }
                 }
               }, 
@@ -226,8 +228,8 @@ public class BundleActivation {
         /* A singleton */
         else if (bind.acceptScopingVisitor(SINGLETONS)) {
           final Class<?> type = key.getTypeLiteral().getRawType();
-          List<Method> start = findMethods(type, Start.class);
-          List<Method> stop = findMethods(type, Stop.class);
+          final List<Method> start = findMethods(type, Start.class);
+          final List<Method> stop = findMethods(type, Stop.class);
           
           if (start.size() + stop.size() > 0) {
             singletons.add(new SingletonBundleRoot((Key<Object>) key, start, stop));

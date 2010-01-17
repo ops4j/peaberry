@@ -25,6 +25,6 @@ public class Config
 
   @Override
   protected void configure() {
-    bindService(HelloImpl.class).export();
+    bindService(ExportRootImpl.class).export();
   }
 }
