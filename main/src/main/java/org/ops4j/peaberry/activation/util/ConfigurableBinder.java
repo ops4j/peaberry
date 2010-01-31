@@ -7,8 +7,9 @@ import org.ops4j.peaberry.activation.builders.ConfigurableKeyBuilder;
 import org.ops4j.peaberry.activation.builders.ConfigurablePidBuilder;
 
 import com.google.inject.Binder;
+import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
 /**
@@ -39,30 +40,43 @@ public class ConfigurableBinder<T> implements ConfigurablePidBuilder<T>, Configu
     ConfigurableAnnotatedBuilder<T> {
   
   private final Binder binder;
-  private final Class<T> target;
   
+  private TypeLiteral<T> target;
+  private Key<T> bindKey;
   private ConfigurablePidBuilder<T> pidBuilder;
   private ConfigurableKeyBuilder<T> keyBuilder;
-  private Class<? extends Annotation> markerType;
-  private Annotation marker;
   
   public static <T> ConfigurableAnnotatedBuilder<T> configurable(final Binder binder, final Class<T> type) {
+    return new ConfigurableBinder<T>(binder, TypeLiteral.get(type));
+  }
+  
+  public static <T> ConfigurableAnnotatedBuilder<T> configurable(final Binder binder, final TypeLiteral<T> type) {
     return new ConfigurableBinder<T>(binder, type);
   }
   
-  private ConfigurableBinder(final Binder binder, final Class<T> target) {
+  public static <T> ConfigurableAnnotatedBuilder<T> configurable(final Binder binder, final Key<T> bindKey) {
+    return new ConfigurableBinder<T>(binder, bindKey);
+  }
+  
+  private ConfigurableBinder(final Binder binder, final TypeLiteral<T> target) {
     this.binder = binder;
     this.target = target;
     this.pidBuilder = Configurables.configurable(target);
   }
   
+  private ConfigurableBinder(final Binder binder, final Key<T> bindKey) {
+    this.binder = binder;
+    this.bindKey = bindKey;
+    this.pidBuilder = Configurables.configurable(bindKey);
+  }
+  
   public ConfigurablePidBuilder<T> annotatedWith(final Class<? extends Annotation> markerType) {
-    this.markerType = markerType; 
+    bindKey = Key.get(target, markerType); 
     return this;
   }
 
   public ConfigurablePidBuilder<T> annotatedWith(final Annotation marker) {
-    this.marker = marker;
+    bindKey = Key.get(target, marker);
     return this;
   }
   
@@ -72,21 +86,13 @@ public class ConfigurableBinder<T> implements ConfigurablePidBuilder<T>, Configu
   }
 
   public Provider<T> named(final String key) {
-    final LinkedBindingBuilder<T> lbb;
-    
-    if (markerType != null) {
-      lbb = binder.bind(target).annotatedWith(markerType);
-    }
-    else if (marker != null) {
-      lbb = binder.bind(target).annotatedWith(marker);
-    }
-    else {
-      lbb = binder.bind(target).annotatedWith(Names.named(key));
+    if (bindKey == null) {
+      bindKey = Key.get(target, Names.named(key)); 
     }
     
     final Provider<T> prov = keyBuilder.named(key);
     
-    lbb.toProvider(prov);
+    binder.bind(bindKey).toProvider(prov);
     
     /* Do not allow the provider to escape - we bound it already */
     return null;
