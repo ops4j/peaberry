@@ -1,6 +1,5 @@
 package org.ops4j.peaberry.activation.util;
 
-import org.ops4j.peaberry.activation.builders.ConfigurablePidBuilder;
 import org.ops4j.peaberry.builders.DecoratedServiceBuilder;
 
 import com.google.inject.AbstractModule;
@@ -26,7 +25,7 @@ public abstract class PeaberryActivationModule extends AbstractModule {
     return ServiceBinder.service(binder(), type);
   }
   
-  protected <T> ConfigurablePidBuilder<T> bindConfigurable(Class<T> type) {
+  protected <T> ConfigurableAnnotatedBuilder<T> bindConfigurable(Class<T> type) {
     return ConfigurableBinder.configurable(binder(), type);
   }
 }

@@ -19,7 +19,6 @@ import static junit.framework.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.swissbox.tinybundles.core.TinyBundles.*;
 import static org.ops4j.peaberry.activation.Constants.*;
-import static org.ops4j.peaberry.activation.examples.config.ConfigRoot.*;
 import static org.ops4j.peaberry.activation.invocations.util.Matchers.*;
 import static org.ops4j.peaberry.activation.tests.TinyBundleProvisionOption.*;
 import static org.osgi.framework.Constants.*;
@@ -36,6 +35,7 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.peaberry.activation.examples.config.ConfigRoot;
 import org.ops4j.peaberry.activation.examples.dualconfig.DualConfigRoot;
+import org.ops4j.peaberry.activation.examples.renameconfig.RenamingConfigRoot;
 import org.ops4j.peaberry.activation.invocations.util.InvocationTracking;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -53,6 +53,8 @@ public class ConfigurationTest extends InvocationTracking {
     packageOf(org.ops4j.peaberry.activation.examples.config.Config.class);
   private static final String DUAL_CONFIG_MODULE = 
     packageOf(org.ops4j.peaberry.activation.examples.dualconfig.Config.class);
+  private static final String RENAME_CONFIG_MODULE = 
+    packageOf(org.ops4j.peaberry.activation.examples.renameconfig.Config.class);
   
   @Configuration(extend = PeaberryConfiguration.class)
   public static Option[] configure() {
@@ -74,11 +76,21 @@ public class ConfigurationTest extends InvocationTracking {
       .add(org.ops4j.peaberry.activation.examples.dualconfig.Config.class)
       .add(org.ops4j.peaberry.activation.examples.dualconfig.DualConfigRoot.class)
       .build(withBnd())
+      .noStart(),
+      tinyBundle()
+      .set(BUNDLE_SYMBOLICNAME, RENAME_CONFIG_MODULE)
+      .set(EXPORT_PACKAGE, RENAME_CONFIG_MODULE)
+      .set(BUNDLE_MODULE, org.ops4j.peaberry.activation.examples.renameconfig.Config.class.getName())
+      .add(org.ops4j.peaberry.activation.examples.renameconfig.Config.class)
+      .add(org.ops4j.peaberry.activation.examples.renameconfig.ConfigValue.class)
+      .add(org.ops4j.peaberry.activation.examples.renameconfig.RenamingConfigRoot.class)
+      .build(withBnd())
       .noStart());
   }
   
   private Bundle configRoot;
   private Bundle dualConfigRoot;
+  private Bundle renamedConfigRoot;
   private Bundle activation;
 
   @Before
@@ -87,6 +99,7 @@ public class ConfigurationTest extends InvocationTracking {
     
     configRoot = getBundle(CONFIG_MODULE);
     dualConfigRoot = getBundle(DUAL_CONFIG_MODULE);
+    renamedConfigRoot = getBundle(RENAME_CONFIG_MODULE);
     activation = getBundle(ACTIVATION_MODULE);
   }
 
@@ -97,12 +110,12 @@ public class ConfigurationTest extends InvocationTracking {
     /* Make a test configuration */
     @SuppressWarnings("unchecked")
     final Dictionary<String, Object> props = new Hashtable(); 
-    props.put(CONF_A, 1);
-    props.put(CONF_B, 2);
-    props.put(CONF_C, 3);
+    props.put(ConfigRoot.CONF_A, 1);
+    props.put(ConfigRoot.CONF_B, 2);
+    props.put(ConfigRoot.CONF_C, 3);
     
     final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-    cm.getConfiguration(CONF_PID, configRoot.getLocation()).update(props);
+    cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
     
     /* Consume it and wait for the startup to happen */
     call(new Callable<Void>() {
@@ -119,6 +132,37 @@ public class ConfigurationTest extends InvocationTracking {
     assertInvoked(type(ConfigRoot.class), method("setA", int.class), 1);
     assertInvoked(type(ConfigRoot.class), method("setB", int.class), 2);
     assertInvoked(type(ConfigRoot.class), method("setC", int.class), 3);
+  }
+  
+  @Test
+  public void testRenamedConfiguration() 
+    throws Exception {
+    
+    /* Make a test configuration */
+    @SuppressWarnings("unchecked")
+    final Dictionary<String, Object> props = new Hashtable(); 
+    props.put(RenamingConfigRoot.CONF_A_KEY, 1);
+    props.put(RenamingConfigRoot.CONF_B_KEY, 2);
+    props.put(RenamingConfigRoot.CONF_C_KEY, 3);
+    
+    final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
+    cm.getConfiguration(RenamingConfigRoot.CONF_PID, renamedConfigRoot.getLocation()).update(props);
+    
+    /* Consume it and wait for the startup to happen */
+    call(new Callable<Void>() {
+      public Void call() throws Exception {
+        activation.start();
+        renamedConfigRoot.start();
+        return null;
+      }
+    })
+    .andWait(type(RenamingConfigRoot.class), method("start"))
+    .until(5000);
+    
+    /* Check the result */
+    assertInvoked(type(RenamingConfigRoot.class), method("setRenamed", int.class), 1);
+    assertInvoked(type(RenamingConfigRoot.class), method("setCustomAnnotation", int.class), 2);
+    assertInvoked(type(RenamingConfigRoot.class), method("setDefault", int.class), 3);
   }
   
   @Test
@@ -151,12 +195,12 @@ public class ConfigurationTest extends InvocationTracking {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
-        props.put(CONF_A, 1);
-        props.put(CONF_B, 2);
-        props.put(CONF_C, 3);
+        props.put(ConfigRoot.CONF_A, 1);
+        props.put(ConfigRoot.CONF_B, 2);
+        props.put(ConfigRoot.CONF_C, 3);
         
         final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-        cm.getConfiguration(CONF_PID, configRoot.getLocation()).update(props);
+        cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
         return null;
       }
     })
@@ -176,12 +220,12 @@ public class ConfigurationTest extends InvocationTracking {
     /* Create the configuration and wait for the startup to happen */
     @SuppressWarnings("unchecked")
     final Dictionary<String, Object> props = new Hashtable(); 
-    props.put(CONF_A, 1);
-    props.put(CONF_B, 2);
-    props.put(CONF_C, 3);
+    props.put(ConfigRoot.CONF_A, 1);
+    props.put(ConfigRoot.CONF_B, 2);
+    props.put(ConfigRoot.CONF_C, 3);
     
     final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-    cm.getConfiguration(CONF_PID, configRoot.getLocation()).update(props);
+    cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
     
     /* Start the configuration consumer */
     call(new Callable<Void>() {
@@ -206,12 +250,12 @@ public class ConfigurationTest extends InvocationTracking {
       public Void call() throws Exception {
         @SuppressWarnings("unchecked")
         final Dictionary<String, Object> props = new Hashtable(); 
-        props.put(CONF_A, 4);
-        props.put(CONF_B, 5);
-        props.put(CONF_C, 6);
+        props.put(ConfigRoot.CONF_A, 4);
+        props.put(ConfigRoot.CONF_B, 5);
+        props.put(ConfigRoot.CONF_C, 6);
         
         final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-        cm.getConfiguration(CONF_PID, configRoot.getLocation()).update(props);
+        cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
         return null;
       }
     })
@@ -231,12 +275,12 @@ public class ConfigurationTest extends InvocationTracking {
     /* Create the configuration and wait for the startup to happen */
     @SuppressWarnings("unchecked")
     final Dictionary<String, Object> props = new Hashtable(); 
-    props.put(CONF_A, 1);
-    props.put(CONF_B, 2);
-    props.put(CONF_C, 3);
+    props.put(ConfigRoot.CONF_A, 1);
+    props.put(ConfigRoot.CONF_B, 2);
+    props.put(ConfigRoot.CONF_C, 3);
     
     final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-    cm.getConfiguration(CONF_PID, configRoot.getLocation()).update(props);
+    cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).update(props);
     
     /* Start the configuration consumer */
     call(new Callable<Void>() {
@@ -260,7 +304,7 @@ public class ConfigurationTest extends InvocationTracking {
     call(new Callable<Void>() {
       public Void call() throws Exception {
         final ConfigurationAdmin cm = getService(ConfigurationAdmin.class);
-        cm.getConfiguration(CONF_PID, configRoot.getLocation()).delete();
+        cm.getConfiguration(ConfigRoot.CONF_PID, configRoot.getLocation()).delete();
         return null;
       }
     })

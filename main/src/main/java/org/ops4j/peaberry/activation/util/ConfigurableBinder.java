@@ -1,11 +1,14 @@
 package org.ops4j.peaberry.activation.util;
 
+import java.lang.annotation.Annotation;
+
 import org.ops4j.peaberry.activation.Configurables;
 import org.ops4j.peaberry.activation.builders.ConfigurableKeyBuilder;
 import org.ops4j.peaberry.activation.builders.ConfigurablePidBuilder;
 
 import com.google.inject.Binder;
 import com.google.inject.Provider;
+import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.name.Names;
 
 /**
@@ -32,14 +35,18 @@ import com.google.inject.name.Names;
  * 
  * @param <T>
  */
-public class ConfigurableBinder<T> implements ConfigurablePidBuilder<T>, ConfigurableKeyBuilder<T> {
+public class ConfigurableBinder<T> implements ConfigurablePidBuilder<T>, ConfigurableKeyBuilder<T>,
+    ConfigurableAnnotatedBuilder<T> {
+  
   private final Binder binder;
   private final Class<T> target;
   
   private ConfigurablePidBuilder<T> pidBuilder;
   private ConfigurableKeyBuilder<T> keyBuilder;
+  private Class<? extends Annotation> markerType;
+  private Annotation marker;
   
-  public static <T> ConfigurablePidBuilder<T> configurable(final Binder binder, final Class<T> type) {
+  public static <T> ConfigurableAnnotatedBuilder<T> configurable(final Binder binder, final Class<T> type) {
     return new ConfigurableBinder<T>(binder, type);
   }
   
@@ -49,14 +56,37 @@ public class ConfigurableBinder<T> implements ConfigurablePidBuilder<T>, Configu
     this.pidBuilder = Configurables.configurable(target);
   }
   
+  public ConfigurablePidBuilder<T> annotatedWith(final Class<? extends Annotation> markerType) {
+    this.markerType = markerType; 
+    return this;
+  }
+
+  public ConfigurablePidBuilder<T> annotatedWith(final Annotation marker) {
+    this.marker = marker;
+    return this;
+  }
+  
   public ConfigurableKeyBuilder<T> from(final String pid) {
     keyBuilder = pidBuilder.from(pid);
     return this;
   }
 
   public Provider<T> named(final String key) {
+    final LinkedBindingBuilder<T> lbb;
+    
+    if (markerType != null) {
+      lbb = binder.bind(target).annotatedWith(markerType);
+    }
+    else if (marker != null) {
+      lbb = binder.bind(target).annotatedWith(marker);
+    }
+    else {
+      lbb = binder.bind(target).annotatedWith(Names.named(key));
+    }
+    
     final Provider<T> prov = keyBuilder.named(key);
-    binder.bind(target).annotatedWith(Names.named(key)).toProvider(prov);
+    
+    lbb.toProvider(prov);
     
     /* Do not allow the provider to escape - we bound it already */
     return null;

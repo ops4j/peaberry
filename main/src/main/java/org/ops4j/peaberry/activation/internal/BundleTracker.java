@@ -47,7 +47,7 @@ public class BundleTracker
         try {
           start(bundle);
         } catch (Exception e) {
-          /* Log this somehow */
+          /* TODO Log this somehow */
           e.printStackTrace();
         }
         break;
@@ -74,7 +74,7 @@ public class BundleTracker
       start(bundle);
       break;
 
-    case BundleEvent.STOPPED:
+    case BundleEvent.STOPPING:
       if (stop(bundle)) {
         clean(bundle);
       }
