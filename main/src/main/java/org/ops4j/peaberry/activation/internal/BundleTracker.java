@@ -22,6 +22,7 @@ import org.ops4j.peaberry.activation.Constants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.SynchronousBundleListener;
 
 /**
@@ -46,9 +47,16 @@ public class BundleTracker
       case Bundle.ACTIVE:
         try {
           start(bundle);
-        } catch (Exception e) {
+        } catch (Exception startExc) {
           /* TODO Log this somehow */
-          e.printStackTrace();
+          startExc.printStackTrace();
+          
+          try {
+            bundle.stop(Bundle.STOP_TRANSIENT);
+          } catch (BundleException stopExc) {
+            /* TODO Log this somehow */
+            stopExc.printStackTrace();
+          }
         }
         break;
       }

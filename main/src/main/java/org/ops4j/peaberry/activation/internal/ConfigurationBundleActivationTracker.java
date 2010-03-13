@@ -1,5 +1,7 @@
 package org.ops4j.peaberry.activation.internal;
 
+import static org.osgi.framework.Constants.*;
+
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -23,8 +25,7 @@ public class ConfigurationBundleActivationTracker implements BundleActivationTra
     final Bundle bundle = activation.getBundle();
     
     final Dictionary<String, Object> regprops = new Hashtable<String, Object>();
-    regprops.put("service.pid", pid);
-    regprops.put("service.bundleLocation", bundle.getLocation());
+    regprops.put(SERVICE_PID, pid);
     
     reg = bundle.getBundleContext().registerService(
       ManagedService.class.getName(), 
