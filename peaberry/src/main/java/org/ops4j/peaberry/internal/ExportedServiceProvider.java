@@ -16,10 +16,11 @@
 
 package org.ops4j.peaberry.internal;
 
+import javax.inject.Inject;
+
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.builders.ExportProvider;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 

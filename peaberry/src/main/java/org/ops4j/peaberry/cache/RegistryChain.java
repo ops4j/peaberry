@@ -19,13 +19,13 @@ package org.ops4j.peaberry.cache;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import javax.inject.Inject;
+
 import org.ops4j.peaberry.AttributeFilter;
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.ServiceWatcher;
-
-import com.google.inject.Inject;
 
 /**
  * A {@link ServiceRegistry} that delegates to a series of other registries.
