@@ -18,14 +18,14 @@ package org.ops4j.peaberry.osgi;
 
 import static org.ops4j.peaberry.Peaberry.NATIVE_FILTER_HINT;
 
+import javax.inject.Inject;
+
 import org.ops4j.peaberry.Export;
 import org.ops4j.peaberry.Import;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.cache.AbstractServiceListener;
 import org.ops4j.peaberry.cache.AbstractServiceRegistry;
 import org.osgi.framework.BundleContext;
-
-import com.google.inject.Inject;
 
 /**
  * OSGi {@link ServiceRegistry} implementation.

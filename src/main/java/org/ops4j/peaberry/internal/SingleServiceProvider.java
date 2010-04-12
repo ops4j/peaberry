@@ -19,9 +19,10 @@ package org.ops4j.peaberry.internal;
 import static org.ops4j.peaberry.internal.DirectServiceFactory.directService;
 import static org.ops4j.peaberry.internal.ServiceProxyFactory.serviceProxy;
 
+import javax.inject.Inject;
+
 import org.ops4j.peaberry.builders.ProxyProvider;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 

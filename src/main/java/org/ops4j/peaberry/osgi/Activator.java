@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.osgi;
 
-import static com.google.inject.name.Names.named;
+import static com.google.inject.util.Jsr330.named;
 import static java.lang.Math.max;
 import static org.ops4j.peaberry.Peaberry.CACHE_GENERATIONS_HINT;
 import static org.ops4j.peaberry.Peaberry.CACHE_INTERVAL_HINT;
@@ -24,6 +24,9 @@ import static org.ops4j.peaberry.Peaberry.osgiModule;
 import static org.ops4j.peaberry.Peaberry.service;
 import static org.osgi.framework.Bundle.ACTIVE;
 import static org.osgi.framework.Bundle.STARTING;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.ops4j.peaberry.ServiceUnavailableException;
 import org.ops4j.peaberry.cache.AbstractServiceImport;
@@ -34,11 +37,9 @@ import org.osgi.framework.BundleContext;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
-import com.google.inject.name.Named;
 
 /**
  * OSGi {@link BundleActivator} that manages a cleanup thread for peaberry.
