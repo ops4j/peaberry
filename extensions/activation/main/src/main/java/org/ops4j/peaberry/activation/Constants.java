@@ -15,11 +15,16 @@
  */
 package org.ops4j.peaberry.activation;
 
+/**
+ * Constants for the Peaberry activation API.
+ * 
+ * @author rinsvind@gmail.com (Todor Boev)
+ */
 public interface Constants {
   /**
    * This value of this bundle manifest header must be a the fully qualified
    * name of a Guice module. The module must have a default constructor. The
-   * module can install many more modules.
+   * module can install as many other Guice module as it wishes.
    */
   String BUNDLE_MODULE = "Bundle-Module";
 }

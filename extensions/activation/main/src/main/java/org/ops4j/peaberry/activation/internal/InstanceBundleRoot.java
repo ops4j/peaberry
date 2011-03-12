@@ -26,13 +26,13 @@ import com.google.inject.Key;
  * 
  * @param <T>
  */
-public abstract class AbstractBundleRoot<T>
-    implements BundleRoot<T> {
+public abstract class InstanceBundleRoot<T>
+    implements BundleRoot {
   
   private final Key<T> key;
   private T instance;
 
-  public AbstractBundleRoot(final Key<T> key) {
+  public InstanceBundleRoot(final Key<T> key) {
     this.key = key;
   }
 

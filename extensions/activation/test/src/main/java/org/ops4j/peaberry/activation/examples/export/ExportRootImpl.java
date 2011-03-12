@@ -15,10 +15,15 @@
  */
 package org.ops4j.peaberry.activation.examples.export;
 
+
 /**
  * @author rinsvind@gmail.com (Todor Boev)
  * 
  */
-public interface Hello {
-  void hello(String who);
+public class ExportRootImpl
+    implements ExportRoot {
+
+  public void hello(final String who) {
+    System.out.println("Hello " + who);
+  }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 Todor Boev
+ * Copyright (C) 2010 Todor Boev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.ops4j.peaberry.activation.examples.singleton;
-
-import static com.google.inject.matcher.Matchers.*;
-import static org.ops4j.peaberry.activation.invocations.Invocations.*;
+package org.ops4j.peaberry.activation.examples.config;
 
 import org.ops4j.peaberry.activation.Start;
 import org.ops4j.peaberry.activation.Stop;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
-/**
- * @author rinsvind@gmail.com (Todor Boev)
- */
-public class Config
-    extends AbstractModule {
+public class ConfigRoot {
+  public static final String CONF_PID = "test.pid";
+  public static final String CONF_A = "a";
+  public static final String CONF_B = "b";
+  public static final String CONF_C = "c";
+  
+  @Inject
+  public void setA(@Named(CONF_A) int a) {
+  }
 
-  @Override
-  protected void configure() {
-    bind(SingletonRoot.class).in(Singleton.class);
+  @Inject
+  public void setB(@Named(CONF_B) int b) {
+  }
 
-    install(trackerModule(
-      subclassesOf(SingletonRoot.class), 
-      annotatedWith(Start.class).or(annotatedWith(Stop.class))));
+  @Inject
+  public void setC(@Named(CONF_C) int c) {
+  }
+  
+  @Start
+  public void start() {
+  }
+  
+  @Stop
+  public void stop() {
   }
 }

@@ -22,9 +22,8 @@ import org.ops4j.peaberry.activation.Constants;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.SynchronousBundleListener;
-
-import com.google.inject.Module;
 
 /**
  * The bundle lifecycle tracking core of the extender.
@@ -39,24 +38,25 @@ public class BundleTracker
 
   public BundleTracker(final BundleContext bc) {
     this.bc = bc;
-    handlers = new HashMap<Long, BundleActivation>();
+    this.handlers = new HashMap<Long, BundleActivation>();
   }
 
   public synchronized void open() {
     for (final Bundle bundle : bc.getBundles()) {
       switch (bundle.getState()) {
-      case Bundle.RESOLVED:
-        scan(bundle);
-        break;
-
       case Bundle.ACTIVE:
-        scan(bundle);
-        
         try {
-          activate(bundle);
-        } catch (Exception e) {
-          /* Log this somehow */
-          e.printStackTrace();
+          start(bundle);
+        } catch (Exception startExc) {
+          /* TODO Log this somehow */
+          startExc.printStackTrace();
+          
+          try {
+            bundle.stop(Bundle.STOP_TRANSIENT);
+          } catch (BundleException stopExc) {
+            /* TODO Log this somehow */
+            stopExc.printStackTrace();
+          }
         }
         break;
       }
@@ -69,7 +69,7 @@ public class BundleTracker
     bc.removeBundleListener(this);
 
     for (final BundleActivation handler : handlers.values()) {
-      handler.deactivate();
+      handler.stop();
     }
     handlers.clear();
   }
@@ -78,51 +78,39 @@ public class BundleTracker
     final Bundle bundle = event.getBundle();
 
     switch (event.getType()) {
-    case BundleEvent.RESOLVED:
-      scan(bundle);
-      break;
-
     case BundleEvent.STARTED:
-      activate(bundle);
+      start(bundle);
       break;
 
-    case BundleEvent.STOPPED:
-      deactivate(bundle);
-      break;
-
-    case BundleEvent.UNRESOLVED:
-      clean(bundle);
+    case BundleEvent.STOPPING:
+      if (stop(bundle)) {
+        clean(bundle);
+      }
       break;
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private void scan(final Bundle bundle) {
-    String header = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
-    if (header == null) {
+  private void start(final Bundle bundle) {
+    String module = (String) bundle.getHeaders().get(Constants.BUNDLE_MODULE);
+    if (module == null) {
       return;
     }
-    header = header.trim();  
-
-    final Class<? extends Module> moduleClass =
-        (Class<? extends Module>) Bundles.loadClass(bundle, header);
-
-    final BundleActivation handler = new BundleActivation(bundle, moduleClass);
+    module = module.trim();  
+    
+    final BundleActivation handler = new BundleActivation(bundle, module);
     handlers.put(bundle.getBundleId(), handler);
+    
+    handler.start();
   }
 
-  private void activate(final Bundle bundle) {
+  private boolean stop(final Bundle bundle) {
     final BundleActivation handler = handlers.get(bundle.getBundleId());
-    if (handler != null) {
-      handler.activate();
+    if (handler == null) {
+      return false;
     }
-  }
-
-  private void deactivate(final Bundle bundle) {
-    final BundleActivation handler = handlers.get(bundle.getBundleId());
-    if (handler != null) {
-      handler.deactivate();
-    }
+    
+    handler.stop();
+    return true;
   }
 
   private void clean(final Bundle bundle) {

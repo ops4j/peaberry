@@ -13,17 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.ops4j.peaberry.activation.examples.export;
 
+package org.ops4j.peaberry.activation.invocations;
+
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.aopalliance.intercept.MethodInvocation;
+
+import com.google.inject.matcher.Matcher;
 
 /**
- * @author rinsvind@gmail.com (Todor Boev)
+ * A store for {@link MethodInvocation} objects captured by the invocation logging aspect.
  * 
+ * @author rinsvind@gmail.com (Todor Boev)
  */
-public class HelloImpl
-    implements Hello {
-
-  public void hello(final String who) {
-    System.out.println("Hello " + who);
-  }
+public interface InvocationTracker {
+  void log(MethodInvocation invocation);
+  
+  List<MethodInvocation> get(Matcher<? super Class<?>> type, Matcher<? super Method> method);
+  
+  void reset();
 }

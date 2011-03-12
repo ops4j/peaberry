@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 Todor Boev
+ * Copyright (C) 2010 Todor Boev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.ops4j.peaberry.activation.invocations.internal;
 
-package org.ops4j.peaberry.activation.examples.singleton;
+import static org.ops4j.peaberry.Peaberry.*;
+import static org.ops4j.peaberry.util.TypeLiterals.*;
 
-import static com.google.inject.matcher.Matchers.*;
-import static org.ops4j.peaberry.activation.invocations.Invocations.*;
-
-import org.ops4j.peaberry.activation.Start;
-import org.ops4j.peaberry.activation.Stop;
+import org.ops4j.peaberry.activation.invocations.InvocationListener;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 
-/**
- * @author rinsvind@gmail.com (Todor Boev)
- */
-public class Config
-    extends AbstractModule {
-
+public class InvocationsModule extends AbstractModule {
   @Override
   protected void configure() {
-    bind(SingletonRoot.class).in(Singleton.class);
-
-    install(trackerModule(
-      subclassesOf(SingletonRoot.class), 
-      annotatedWith(Start.class).or(annotatedWith(Stop.class))));
+    bind(export(InvocationTrackerImpl.class)).toProvider(
+        service(InvocationTrackerImpl.class).export());
+    
+    bind(iterable(InvocationListener.class)).toProvider(
+        service(InvocationListener.class)
+        .decoratedWith(new FilteredInvocationListenerDecorator())
+        .multiple());
   }
 }
