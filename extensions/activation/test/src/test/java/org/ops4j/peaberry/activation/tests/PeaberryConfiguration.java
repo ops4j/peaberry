@@ -25,7 +25,7 @@ public class PeaberryConfiguration implements CompositeOption {
     return options(
       mavenBundle().groupId("org.ops4j.peaberry.dependencies").artifactId("aopalliance").versionAsInProject(), 
       mavenBundle().groupId("org.ops4j.peaberry.dependencies").artifactId("javax.inject").versionAsInProject(), 
-      mavenBundle().groupId("org.ops4j.peaberry.dependencies").artifactId("guice").versionAsInProject(),
+      mavenBundle().groupId("com.google.inject").artifactId("guice").versionAsInProject(),
       
       mavenBundle().groupId("org.ops4j").artifactId("peaberry").versionAsInProject(),
       mavenBundle().groupId("org.ops4j.peaberry.extensions").artifactId("peaberry.activation").versionAsInProject().noStart(),

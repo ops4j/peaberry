@@ -16,7 +16,7 @@
 
 package org.ops4j.peaberry.osgi;
 
-import static com.google.inject.util.Jsr330.named;
+import static com.google.inject.name.Names.named;
 import static java.lang.Math.max;
 import static org.ops4j.peaberry.Peaberry.CACHE_GENERATIONS_HINT;
 import static org.ops4j.peaberry.Peaberry.CACHE_INTERVAL_HINT;
