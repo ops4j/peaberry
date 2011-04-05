@@ -28,6 +28,11 @@
  such as Apache Felix or Eclipse/Equinox.
   </description>
 
+  <properties>
+    <proguard.rt.jar>${java.home}/lib/rt.jar</proguard.rt.jar>
+    <proguard.jsse.jar>${java.home}/lib/jsse.jar</proguard.jsse.jar>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -64,6 +69,10 @@
                   <groupId>asm</groupId><artifactId>asm</artifactId>
                 </exclusion>
               </exclusions>
+              <options>
+                <option>-libraryjars ${proguard.rt.jar}</option>
+                <option>-libraryjars ${proguard.jsse.jar}</option>
+              </options>
             </configuration>
           </execution>
         </executions>
@@ -104,5 +113,20 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <proguard.rt.jar>${java.home}/../Classes/classes.jar:${java.home}/../Classes/ui.jar</proguard.rt.jar>
+        <proguard.jsse.jar>${java.home}/../Classes/jsse.jar</proguard.jsse.jar>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>
