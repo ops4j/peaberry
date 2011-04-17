@@ -45,6 +45,18 @@
               <pattern>org.objectweb.asm.*</pattern>
               <result>org.ops4j.peaberry.internal.@1</result>
             </rule>
+            <rule>
+              <pattern>org.osgi.framework.Filter</pattern>
+              <result>org.ops4j.peaberry.internal.Filter</result>
+            </rule>
+            <rule>
+              <pattern>org.osgi.framework.FrameworkUtil</pattern>
+              <result>org.ops4j.peaberry.internal.FrameworkUtil</result>
+            </rule>
+            <rule>
+              <pattern>org.osgi.framework.InvalidSyntaxException</pattern>
+              <result>org.ops4j.peaberry.internal.InvalidSyntaxException</result>
+            </rule>
             <keep>
               <pattern>org.ops4j.peaberry.**</pattern>
             </keep>
