@@ -47,10 +47,13 @@ public abstract class InstanceBundleRoot<T>
   }
 
   public final void deactivate() {
-    try {
-      deactivate(instance);
-    } finally {
-      instance = null;
+    // We don't have an instance if the activation has crashed.
+    if (instance != null) {
+      try {
+        deactivate(instance);
+      } finally {
+        instance = null;
+      }
     }
   }
 

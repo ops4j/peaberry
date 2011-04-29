@@ -29,10 +29,6 @@ public class ConfigurationBundleRoot implements BundleRoot {
     this.tracker = tracker;
   }
   
-  public boolean canActivate() {
-    return tracker.getValue() != null;
-  }
-  
   public void activate(Injector injector) {
     for (final Key<?> k : keys) {
       injector.getBinding(k).acceptTargetVisitor(mover);

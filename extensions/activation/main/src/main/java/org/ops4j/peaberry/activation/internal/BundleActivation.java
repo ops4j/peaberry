@@ -53,7 +53,7 @@ import com.google.inject.spi.ProviderInstanceBinding;
  * Handles the activation of a single bundle. This is the hub that joins
  * together {@link BundleActivationTracker}s with {@link BundleRoot}s. The
  * trackers monitor the OSGi environment and trigger the
- * {@link BundleActivation} to reevaluate of the state of that environment when
+ * {@link BundleActivation} to reevaluate the state of that environment when
  * it changes. When the evaluation is successful all {@link BundleRoot}s are
  * activated. When the evaluation is not good all {@link BundleRoot}s are
  * deactivated.
@@ -152,8 +152,15 @@ public class BundleActivation {
   public void update() {
     deactivate();
     
-    if (canActivate()) {
-      activate();
+    try {
+      if (canActivate()) {
+        activate();
+      }
+    } catch (Exception e) {
+      // TODO Log this somehow
+      e.printStackTrace();
+      
+      deactivate();
     }
   }
   
@@ -194,7 +201,7 @@ public class BundleActivation {
         iter.previous().deactivate();
       } catch (final Exception e) {
         /*
-         * FIX Accumulate these into an error list and at the end of the
+         * TODO Accumulate these into an error list and at the end of the
          * deactivation toss an exception containing the list like Guice does
          */
         e.printStackTrace();
