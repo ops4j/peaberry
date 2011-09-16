@@ -45,6 +45,10 @@ final class AggregatedExtension
     return null;
   }
 
+  public String getAttribute(final String name, final String locale) {
+    return null;
+  }
+
   @SuppressWarnings("deprecation")
   public String getAttributeAsIs(final String name) {
     return null;
@@ -92,6 +96,10 @@ final class AggregatedExtension
   }
 
   public String getValue() {
+    return null;
+  }
+
+  public String getValue(final String locale) {
     return null;
   }
 

@@ -23,8 +23,8 @@ import org.ops4j.pax.exam.options.CompositeOption;
 public class PeaberryConfiguration implements CompositeOption {
   public Option[] getOptions() {
     return options(
-      mavenBundle().groupId("org.ops4j.peaberry.dependencies").artifactId("aopalliance").versionAsInProject(), 
-      mavenBundle().groupId("org.ops4j.peaberry.dependencies").artifactId("javax.inject").versionAsInProject(), 
+      mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.aopalliance").versionAsInProject(), 
+      mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.javax-inject").versionAsInProject(), 
       mavenBundle().groupId("com.google.inject").artifactId("guice").versionAsInProject(),
       
       mavenBundle().groupId("org.ops4j").artifactId("peaberry").versionAsInProject(),

@@ -47,7 +47,7 @@
     <dependency>
       <groupId>org.ops4j</groupId>
       <artifactId>peaberry</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

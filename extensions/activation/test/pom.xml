@@ -39,14 +39,14 @@
     <dependency>
       <groupId>org.ops4j.peaberry.extensions</groupId>
       <artifactId>peaberry.activation.invocations</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     
     <!-- test subject -->
     <dependency>
       <groupId>org.ops4j.peaberry.extensions</groupId>
       <artifactId>peaberry.activation</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
     </dependency>
     
     <!-- test subject dependencies -->

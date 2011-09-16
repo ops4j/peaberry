@@ -96,12 +96,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>aopalliance</artifactId>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.aopalliance</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.ops4j.peaberry.dependencies</groupId>
-      <artifactId>javax.inject</artifactId>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
