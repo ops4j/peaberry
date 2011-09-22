@@ -7,7 +7,7 @@
     <relativePath>../../../pom</relativePath>
     <groupId>org.ops4j.peaberry.build</groupId>
     <artifactId>parent</artifactId>
-    <version>1.2</version>
+    <version>1.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.ops4j.peaberry.extensions</groupId>
