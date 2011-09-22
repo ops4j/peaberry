@@ -48,8 +48,7 @@ import org.osgi.service.cm.ManagedService;
  */
 @RunWith(JUnit4TestRunner.class)
 public class ConfigurationTest extends InvocationTracking {
-  private static final String ACTIVATION_MODULE = 
-    "org.ops4j.peaberry.extensions.peaberry.activation";
+  private static final String ACTIVATION_MODULE = "org.ops4j.peaberry.activation";
   private static final String CONFIG_MODULE = 
     packageOf(org.ops4j.peaberry.activation.examples.config.Config.class);
   private static final String DUAL_CONFIG_MODULE = 

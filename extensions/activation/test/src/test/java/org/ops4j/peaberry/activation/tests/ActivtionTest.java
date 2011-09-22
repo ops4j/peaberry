@@ -41,8 +41,7 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 @RunWith(JUnit4TestRunner.class)
 public class ActivtionTest extends InvocationTracking {
-  private static final String ACTIVATION_MODULE = 
-    "org.ops4j.peaberry.extensions.peaberry.activation";
+  private static final String ACTIVATION_MODULE = "org.ops4j.peaberry.activation";
   private static final String EXPORT_MODULE = 
     packageOf(org.ops4j.peaberry.activation.examples.export.Config.class);
   private static final String SINGLETON_MODULE = 
