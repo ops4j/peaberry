@@ -134,15 +134,12 @@
           <configuration>
             <instructions>
 
-              <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
-
-              <module>$(symbolic.name)</module>
+              <module>$(maven-symbolicname)</module>
               <api.version>${project.version}</api.version>
               <extra.imports />
 
-              <Bundle-Name>${project.artifactId}</Bundle-Name>
-              <Bundle-SymbolicName>$(symbolic.name)</Bundle-SymbolicName>
-              <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+              <Bundle-SymbolicName>$(module);singleton:=true</Bundle-SymbolicName>
+              <Bundle-RequiredExecutionEnvironment>J2SE-1.5,JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
               <Bundle-DocURL>${project.url}</Bundle-DocURL>
 
               <Export-Package>
@@ -152,7 +149,7 @@
               <Import-Package>
                 !$(module).*,
                 $(extra.imports),
-                com.google.inject.*;version="[1,2)",
+                com.google.inject.*;version="1",
                 org.osgi.framework;version="[1.3,2)",
                 *
               </Import-Package>

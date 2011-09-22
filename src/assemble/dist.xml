@@ -18,7 +18,8 @@
         <include>*extensions:*</include>
       </includes>
       <excludes>
-        <exclude>*:*test*</exclude>
+        <exclude>*:*test</exclude>
+        <exclude>*:*invocations</exclude>
       </excludes>
       <binaries>
         <includeDependencies>false</includeDependencies>
