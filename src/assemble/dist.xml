@@ -6,7 +6,7 @@
   <moduleSets>
     <moduleSet>
       <excludes>
-        <exclude>*extensions:*</exclude>
+        <exclude>*.extensions:*</exclude>
       </excludes>
       <binaries>
         <includeDependencies>false</includeDependencies>
@@ -14,15 +14,65 @@
       </binaries>
     </moduleSet>
     <moduleSet>
+      <excludes>
+        <exclude>*.extensions:*</exclude>
+      </excludes>
+      <binaries>
+        <includeDependencies>false</includeDependencies>
+        <attachmentClassifier>sources</attachmentClassifier>
+        <unpack>false</unpack>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <excludes>
+        <exclude>*.extensions:*</exclude>
+      </excludes>
+      <binaries>
+        <includeDependencies>false</includeDependencies>
+        <attachmentClassifier>javadoc</attachmentClassifier>
+        <unpack>false</unpack>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
       <includes>
-        <include>*extensions:*</include>
+        <include>*.extensions:*</include>
       </includes>
       <excludes>
-        <exclude>*:*test</exclude>
+        <exclude>*:*tests</exclude>
         <exclude>*:*invocations</exclude>
       </excludes>
       <binaries>
         <includeDependencies>false</includeDependencies>
+        <outputDirectory>extensions</outputDirectory>
+        <unpack>false</unpack>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+        <include>*.extensions:*</include>
+      </includes>
+      <excludes>
+        <exclude>*:*tests</exclude>
+        <exclude>*:*invocations</exclude>
+      </excludes>
+      <binaries>
+        <includeDependencies>false</includeDependencies>
+        <attachmentClassifier>sources</attachmentClassifier>
+        <outputDirectory>extensions</outputDirectory>
+        <unpack>false</unpack>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+        <include>*.extensions:*</include>
+      </includes>
+      <excludes>
+        <exclude>*:*tests</exclude>
+        <exclude>*:*invocations</exclude>
+      </excludes>
+      <binaries>
+        <includeDependencies>false</includeDependencies>
+        <attachmentClassifier>javadoc</attachmentClassifier>
         <outputDirectory>extensions</outputDirectory>
         <unpack>false</unpack>
       </binaries>
