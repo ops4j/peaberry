@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.build</groupId>
   <artifactId>parent</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
 
   <name>peaberry - Build configuration</name>
 
@@ -32,9 +32,9 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:svn:https://peaberry.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/trunk</developerConnection>
-    <url>http://github.com/ops4j/org.ops4j.master/tree/master/parent</url>
+    <connection>scm:svn:https://peaberry.googlecode.com/svn/tags/1.2/trunk</connection>
+    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/tags/1.2/trunk</developerConnection>
+    <url>scm:svn:https://peaberry.googlecode.com/svn/tags/1.2/parent</url>
   </scm>
 
   <properties>
