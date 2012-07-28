@@ -50,8 +50,8 @@
               <result>org.ops4j.peaberry.internal.Filter</result>
             </rule>
             <rule>
-              <pattern>org.osgi.framework.FrameworkUtil</pattern>
-              <result>org.ops4j.peaberry.internal.FrameworkUtil</result>
+              <pattern>org.osgi.framework.FrameworkUtil*</pattern>
+              <result>org.ops4j.peaberry.internal.FrameworkUtil@1</result>
             </rule>
             <rule>
               <pattern>org.osgi.framework.InvalidSyntaxException</pattern>
