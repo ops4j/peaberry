@@ -18,6 +18,7 @@
   <modules>
     <module>pom</module>
     <module>peaberry</module>
+    <module>peaberry.tests</module>
     <module>extensions</module>
   </modules>
 
