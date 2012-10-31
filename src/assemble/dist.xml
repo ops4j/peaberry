@@ -7,6 +7,7 @@
     <moduleSet>
       <excludes>
         <exclude>*.extensions:*</exclude>
+        <exclude>*:*tests</exclude>
       </excludes>
       <binaries>
         <includeDependencies>false</includeDependencies>
@@ -16,6 +17,7 @@
     <moduleSet>
       <excludes>
         <exclude>*.extensions:*</exclude>
+        <exclude>*:*tests</exclude>
       </excludes>
       <binaries>
         <includeDependencies>false</includeDependencies>
@@ -26,6 +28,7 @@
     <moduleSet>
       <excludes>
         <exclude>*.extensions:*</exclude>
+        <exclude>*:*tests</exclude>
       </excludes>
       <binaries>
         <includeDependencies>false</includeDependencies>
