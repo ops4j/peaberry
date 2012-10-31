@@ -186,6 +186,6 @@ public final class Peaberry {
    * @since 1.3
    */
   public static Module osgiModule(final ServiceRegistry... registries) {
-    return new OSGiModule(null, registries);
+    return new OSGiModule(registries);
   }
 }
