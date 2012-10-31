@@ -5,13 +5,13 @@
     <relativePath>pom</relativePath>
     <groupId>org.ops4j.peaberry.build</groupId>
     <artifactId>parent</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
   </parent>
 
   <scm>
-    <connection>scm:svn:http://peaberry.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/trunk</developerConnection>
-    <url>http://peaberry.googlecode.com/svn/trunk</url>
+    <connection>scm:svn:http://peaberry.googlecode.com/svn/tags/1.3</connection>
+    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/tags/1.3</developerConnection>
+    <url>http://peaberry.googlecode.com/svn/tags/1.3</url>
   </scm>
 
   <packaging>pom</packaging>
