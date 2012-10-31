@@ -32,9 +32,9 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:svn:https://peaberry.googlecode.com/svn/trunk</connection>
+    <connection>scm:svn:http://peaberry.googlecode.com/svn/trunk</connection>
     <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/trunk</developerConnection>
-    <url>http://github.com/ops4j/org.ops4j.master/tree/master/parent</url>
+    <url>http://peaberry.googlecode.com/svn/trunk</url>
   </scm>
 
   <properties>
