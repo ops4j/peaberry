@@ -42,13 +42,6 @@ public final class OSGiModule
     this.registries = registries;
   }
 
-  /**
-   * Use this constructor if BundleContext is already bound in another module.
-   */
-  public OSGiModule() {
-    this(null);
-  }
-
   @Override
   protected void configure() {
     if (bundleContext != null) {

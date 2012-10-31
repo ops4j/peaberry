@@ -174,4 +174,18 @@ public final class Peaberry {
       final ServiceRegistry... registries) {
     return new OSGiModule(bundleContext, registries);
   }
+
+  /**
+   * Create a new Guice binding {@link Module} that uses an externally bound
+   * bundle context along with a list of additional {@link ServiceRegistry}s
+   * to query when injecting or watching for services.
+   * 
+   * @param registries extra service registries
+   * @return OSGi specific Guice bindings
+   * 
+   * @since 1.3
+   */
+  public static Module osgiModule(final ServiceRegistry... registries) {
+    return new OSGiModule(null, registries);
+  }
 }
