@@ -31,12 +31,6 @@
     </mailingList>
   </mailingLists>
 
-  <scm>
-    <connection>scm:svn:http://peaberry.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/trunk</developerConnection>
-    <url>http://peaberry.googlecode.com/svn/trunk</url>
-  </scm>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -125,6 +119,7 @@
           <configuration>
             <preparationGoals>clean install</preparationGoals>
             <tagBase>https://peaberry.googlecode.com/svn/tags</tagBase>
+            <tagNameFormat>@{project.version}</tagNameFormat>
           </configuration>
         </plugin>
         <plugin>
