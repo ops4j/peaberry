@@ -38,17 +38,10 @@ final class BundleScopeImpl
   // attribute used to select bundle-scoped services
   private static final String BUNDLE_ID = "bundle.id";
 
-  final BundleContext bundleContext;
+  final Provider<BundleContext> contextProvider;
 
-  final long bundleId;
-  final String filter;
-
-  BundleScopeImpl(final BundleContext bundleContext) {
-    this.bundleContext = bundleContext;
-
-    // filter services to those registered by this context
-    bundleId = bundleContext.getBundle().getBundleId();
-    filter = '(' + BUNDLE_ID + '=' + bundleId + ')';
+  BundleScopeImpl(final Provider<BundleContext> contextProvider) {
+    this.contextProvider = contextProvider;
   }
 
   public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
@@ -62,9 +55,14 @@ final class BundleScopeImpl
       public T get() {
 
         if (null == instance) {
+          final BundleContext bundleContext = contextProvider.get();
           synchronized (bundleContext) {
             if (null == instance) {
               final ServiceReference[] refs;
+
+              // filter services to those registered by this context
+              final long bundleId = bundleContext.getBundle().getBundleId();
+              final String filter = '(' + BUNDLE_ID + '=' + bundleId + ')';
 
               try {
                 // see if the context has an instance for this binding class
@@ -92,13 +90,13 @@ final class BundleScopeImpl
 
       @Override
       public String toString() {
-        return String.format("%s[BundleScope [%s]]", creator, bundleContext.getBundle());
+        return String.format("%s[BundleScope [%s]]", creator, contextProvider.get().getBundle());
       }
     };
   }
 
   @Override
   public String toString() {
-    return String.format("BundleScope[%s]", bundleContext.getBundle());
+    return "BundleScope";
   }
 }

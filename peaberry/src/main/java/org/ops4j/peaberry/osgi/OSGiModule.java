@@ -16,8 +16,6 @@
 
 package org.ops4j.peaberry.osgi;
 
-import java.util.Arrays;
-
 import org.ops4j.peaberry.BundleScoped;
 import org.ops4j.peaberry.ServiceRegistry;
 import org.ops4j.peaberry.cache.CachingServiceRegistry;
@@ -40,18 +38,24 @@ public final class OSGiModule
   private final ServiceRegistry[] registries;
 
   public OSGiModule(final BundleContext bundleContext, final ServiceRegistry... registries) {
-    if (null == bundleContext) {
-      throw new IllegalArgumentException("null bundle context");
-    }
-
     this.bundleContext = bundleContext;
     this.registries = registries;
   }
 
+  /**
+   * Use this constructor if BundleContext is already bound in another module.
+   */
+  public OSGiModule() {
+    this(null);
+  }
+
   @Override
   protected void configure() {
-    bind(BundleContext.class).toInstance(bundleContext);
-    bindScope(BundleScoped.class, new BundleScopeImpl(bundleContext));
+    if (bundleContext != null) {
+      bind(BundleContext.class).toInstance(bundleContext);
+    }
+
+    bindScope(BundleScoped.class, new BundleScopeImpl(getProvider(BundleContext.class)));
 
     if (registries.length == 0) {
       bind(ServiceRegistry.class).to(CachingServiceRegistry.class);
@@ -63,25 +67,5 @@ public final class OSGiModule
 
     // the binding key class will be used as the bundle-scoped service API
     bind(CachingServiceRegistry.class).to(OSGiServiceRegistry.class).in(BundleScoped.class);
-  }
-
-  @Override
-  public String toString() {
-    return String.format("OSGiModule[%s, %s]", bundleContext.getBundle(), Arrays
-        .toString(registries));
-  }
-
-  @Override
-  public int hashCode() {
-    return bundleContext.hashCode() ^ Arrays.hashCode(registries);
-  }
-
-  @Override
-  public boolean equals(final Object rhs) {
-    if (rhs instanceof OSGiModule) {
-      return bundleContext.equals(((OSGiModule) rhs).bundleContext)
-          && Arrays.equals(registries, ((OSGiModule) rhs).registries);
-    }
-    return false;
   }
 }
