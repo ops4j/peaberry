@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ops4j.peaberry.build</groupId>
   <artifactId>parent</artifactId>
-  <version>1.3</version>
+  <version>1.4-SNAPSHOT</version>
 
   <name>peaberry - Build configuration</name>
 
@@ -311,11 +311,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-
-  <scm>
-    <connection>scm:svn:https://peaberry.googlecode.com/svn/tags/1.3/parent</connection>
-    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/tags/1.3/parent</developerConnection>
-    <url>scm:svn:https://peaberry.googlecode.com/svn/tags/1.3/parent</url>
-  </scm>
 </project>
