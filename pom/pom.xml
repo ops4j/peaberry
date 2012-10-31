@@ -228,6 +228,10 @@
       <build>
         <plugins>
           <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.4</version>
+          </plugin>
+          <plugin>
             <artifactId>maven-source-plugin</artifactId>
             <executions>
               <execution>
