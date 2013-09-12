@@ -5,6 +5,7 @@ import java.util.AbstractSet;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -71,8 +72,12 @@ class ConfigurationMap
           }
 
           public Entry<String, Object> next() {
-            currentKey = null;
-            currentKey = elements.nextElement().toString();
+            try {
+              currentKey = elements.nextElement().toString();
+            }
+            catch (NoSuchElementException e) {
+              currentKey = null;
+            }
             return new Entry<String, Object>()
             {
               private final String key = currentKey;
