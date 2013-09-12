@@ -24,15 +24,15 @@ class ConfigurationMap
 
   @Override
   public boolean containsKey(final Object key) {
+    if (key != null && !(key instanceof String)) {
+      return false;
+    }
     for (Enumeration e = dict.keys(); e.hasMoreElements(); ) {
-      String propsKey = e.nextElement().toString();
-      if (propsKey == null) {
+      Object element = e.nextElement();
+      if (element == null) {
         return key == null;
       }
-      if (!(key instanceof String)) {
-        return false;
-      }
-      if (propsKey.equalsIgnoreCase((String) key)) {
+      if (((String) element).equalsIgnoreCase((String) key)) {
         return true;
       }
     }
