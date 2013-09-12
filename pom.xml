@@ -9,9 +9,9 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:http://peaberry.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://peaberry.googlecode.com/svn/trunk</developerConnection>
-    <url>http://peaberry.googlecode.com/svn/trunk</url>
+    <connection>scm:git@github.com:ops4j/peaberry.git</connection>
+    <developerConnection>scm:git@github.com:ops4j/peaberry.git</developerConnection>
+    <url>https://github.com/ops4j/peaberry</url>
   </scm>
 
   <packaging>pom</packaging>
