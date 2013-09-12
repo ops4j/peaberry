@@ -17,7 +17,7 @@ public class ConfigurationBundleRoot implements BundleRoot {
       public Object visit(ProviderInstanceBinding<?> target) {
         final Dictionary<String, Object> props = tracker.getValue();
         final ConfigurableProvider<?> prov = (ConfigurableProvider<?>) target.getProviderInstance();
-        prov.set(props.get(prov.key()));
+        prov.set(props);
         return null;
       }
     };

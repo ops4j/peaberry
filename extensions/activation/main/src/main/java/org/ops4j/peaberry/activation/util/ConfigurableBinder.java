@@ -97,4 +97,21 @@ public class ConfigurableBinder<T> implements ConfigurablePidBuilder<T>, Configu
     /* Do not allow the provider to escape - we bound it already */
     return null;
   }
+
+  /**
+   * @since 1.4
+   */
+  public Provider<T> all() {
+    if (bindKey == null) {
+      bindKey = Key.get(target);
+    }
+
+    final Provider<T> prov = keyBuilder.all();
+
+    binder.bind(bindKey).toProvider(prov);
+
+    /* Do not allow the provider to escape - we bound it already */
+    return null;
+  }
+
 }

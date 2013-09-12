@@ -24,4 +24,12 @@ public class ConfigurableProviderBuilder<T> implements ConfigurablePidBuilder<T>
   public Provider<T> named(String key) {
     return new ConfigurableProvider<T>(bindKey, pid, key);
   }
+
+  /**
+   * @since 1.4
+   */
+  public Provider<T> all() {
+    return new ConfigurableProvider<T>(bindKey, pid);
+  }
+
 }
