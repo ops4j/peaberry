@@ -4,4 +4,4 @@ The peaberry project is an extension library for Google-Guice that supports depe
 
 Documenation
 ------------
-Till we migrate Peaberry Wiki please refer to http://code.google.com/p/peaberry/w/list
+[Read our Wiki](https://github.com/ops4j/peaberry/wiki/_pages)
