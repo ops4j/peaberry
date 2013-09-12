@@ -18,7 +18,7 @@
   <name>peaberry - Build configuration</name>
 
   <issueManagement>
-    <url>http://code.google.com/p/peaberry/issues/list</url>
+    <url>https://github.com/ops4j/peaberry/issues</url>
   </issueManagement>
 
   <mailingLists>
