@@ -23,6 +23,13 @@ import org.ops4j.peaberry.activation.Stop;
  * @author rinsvind@gmail.com (Todor Boev)
  */
 public class SingletonRoot {
+
+  public static int instanceCounter = 0;
+
+  public SingletonRoot() {
+    instanceCounter++;
+  }
+
   @Start
   public void start() {
   }
