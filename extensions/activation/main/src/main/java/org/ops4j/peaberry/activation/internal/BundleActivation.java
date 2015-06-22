@@ -38,6 +38,7 @@ import org.osgi.framework.Bundle;
 import com.google.inject.Binding;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Stage;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
@@ -108,7 +109,7 @@ public class BundleActivation {
     this.roots = new ArrayList<BundleRoot>();
     
     /* A temporary Injector used to introspect the bindings */
-    final Injector injector = createInjector();
+    final Injector injector = createInjector(Stage.TOOL);
     
     /* Make mutable set of bindings to be consumed by the createXXX methods */
     final Set<Entry<Key<?>, Binding<?>>> bindings = new HashSet<Entry<Key<?>,Binding<?>>>();
@@ -179,7 +180,7 @@ public class BundleActivation {
     }
     active = true;
     
-    final Injector injector = createInjector();
+    final Injector injector = createInjector(Stage.DEVELOPMENT);
     
     for (BundleRoot r : roots) {
       r.activate(injector);
@@ -209,8 +210,8 @@ public class BundleActivation {
     }
   }
 
-  private Injector createInjector() {
-    return Guice.createInjector(Peaberry.osgiModule(bundle.getBundleContext()), module);
+  private Injector createInjector(Stage stage) {
+    return Guice.createInjector(stage, Peaberry.osgiModule(bundle.getBundleContext()), module);
   }
 
   private void createExports(final Injector injector, final Set<Entry<Key<?>, Binding<?>>> entries) {

@@ -33,7 +33,7 @@ public class Config
 
   @Override
   protected void configure() {
-    bind(SingletonRoot.class).in(Singleton.class);
+    bind(SingletonRoot.class).asEagerSingleton();
 
     install(trackerModule(
       subclassesOf(SingletonRoot.class), 

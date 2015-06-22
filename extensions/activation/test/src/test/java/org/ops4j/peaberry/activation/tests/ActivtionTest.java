@@ -96,7 +96,7 @@ public class ActivtionTest extends InvocationTracking {
   @Test
   public void testSingletonRoot() 
     throws BundleException {
-    
+    SingletonRoot.instanceCounter = 0;
     activation.start();
     
     singletonRoot.start();
@@ -104,12 +104,13 @@ public class ActivtionTest extends InvocationTracking {
 
     singletonRoot.stop();
     assertInvoked(type(SingletonRoot.class), method("stop"));
+    assertEquals(1, SingletonRoot.instanceCounter);
   }
 
   @Test
   public void testExtenderRestart() 
     throws BundleException, InvalidSyntaxException {
-    
+    SingletonRoot.instanceCounter = 0;
     /* Extended bundles are active and waiting */
     exportRoot.start();
     assertNull(getReference(ExportRoot.class));
@@ -136,5 +137,6 @@ public class ActivtionTest extends InvocationTracking {
     activation.start();
     assertEquals(1, getReferenceList(ExportRoot.class).length);
     assertInvoked(type(SingletonRoot.class), method("start"));
+    assertEquals(2, SingletonRoot.instanceCounter);
   }
 }
